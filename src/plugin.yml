@@ -1,0 +1,40 @@
+name: floAuction
+version: 2.dev
+description: Auction plugin for economies.
+author: flobi
+website: http://www.hollowmatrix.com/
+
+main: com.flobi.floAuction.floAuction
+database: false
+depend: [Vault, WhatIsIt]
+
+commands:
+  auction:
+    description: Auction commands.
+    permission: auction.
+    usage: Type /<command> for instructions.
+  bid:
+    description: List how many times you have died by fire.
+    aliases: [burning_deaths, burningDeaths]
+    permission: inferno.burningdeaths
+    usage: |
+      /<command> [player]
+      Example: /<command> - see how many times you have burned to death
+      Example: /<command> CaptainIce - see how many times CaptainIce has burned to death
+
+permissions:
+  auction.*:
+    description: Gives access to all auction commands
+    children:
+      auction.admin: true
+      auction.start: true
+      auction.bid: true
+  auction.admin:
+    description: Auction administrative functions.
+    default: op
+  auction.start:
+    description: Allows one to start an auction.
+    default: true
+  auction.bid:
+    description: Allows one to bid on auctions.
+    default: true
