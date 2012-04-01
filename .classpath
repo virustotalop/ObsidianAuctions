@@ -12,5 +12,6 @@
 			<attribute name="javadoc_location" value="http://mythcraft.dyndns.org/javadoc/vault/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Joshua Hatfield/Desktop/Minecraft Folder/Minecraft Server/plugins/WhatIsIt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

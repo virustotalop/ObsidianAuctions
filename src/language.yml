@@ -1,0 +1,53 @@
+CHAT_PREFIX: '[floAuction] '
+PLUGIN_ENABLED: 'has been enabled.&00&11&22&33&44&55&66&77&88&99&aa&bb&cc&dd&ff'
+PLUGIN_DISABLED: 'has been disabled.'
+NO_WHATISIT: 'Disabled due to no WhatIsIt dependency found!'
+NO_VAULT: 'Disabled due to no Vault dependency found!'
+
+PARSE_ERROR_INVALID_QUANTITY: The quantity you specified is invalid.
+PARSE_ERROR_INVALID_STARTING_BID: The staring bid you specified is invalid.
+PARSE_ERROR_INVALID_BID_INCREMENT: The bid increment you specified is invalid.
+PARSE_ERROR_INVALID_TIME: The time you specified is invalid.
+PARSE_ERROR_INVALID_BID: The bid amount you specified is invalid.
+PARSE_ERROR_INVALID_MAX_BID: The max bid amount you specified is invalid.
+ 
+AUCTION_FAIL_HAND_IS_EMPTY: Hold something to auction.
+AUCTION_FAIL_QUANTITY_TOO_LOW: You must offer more than that.
+AUCTION_FAIL_INSUFFICIENT_SUPPLY: You do not have enough of this item.
+AUCTION_FAIL_STARTING_BID_TOO_HIGH: The starting bid is too high.
+AUCTION_FAIL_INCREMENT_TOO_LOW: The bid increment is too small.
+AUCTION_FAIL_INCREMENT_TOO_HIGH: The bid increment is too large.
+AUCTION_FAIL_TIME_TOO_LOW: The specified time is too short.
+AUCTION_FAIL_TIME_TOO_HIGH: The specified time is too long.
+AUCTION_FAIL_INVALID_OWNER: A non-player tried to start an auction? 
+AUCTION_FAIL_AUCTION_EXISTS: There is already an auction going on.
+AUCTION_FAIL_NO_AUCTION_EXISTS: There is no auction at this time.
+AUCTION_FAIL_CONSOLE: Console cannot start auctions.
+AUCTION_FAIL_NOT_OWNER_CANCEL: You cannot cancel auctions you did not start.
+AUCTION_FAIL_NOT_OWNER_END: You cannot end auctions you did not start.
+
+BID_SUCCESS_NO_CHALLENGER: '%1 has bid %2 on the %3.' 
+BID_SUCCESS_OUTBID: '%1 raised the bid to %2, outbidding %3.'
+BID_SUCCESS_UPDATE_OWN_BID: '%1 raised the bid to %3.'
+BID_SUCCESS_UPDATE_OWN_MAX_BID: You raised your own bid to %1. 
+BID_FAIL_IS_AUCTION_OWNER: You cannot bid on your own auction.
+BID_FAIL_ALREADY_CURRENT_BIDDER: You (apparently) can't outbid yourself. 
+BID_FAIL_AUTO_OUTBID: 
+BID_FAIL_OUTBID_UNCERTAINTY:
+BID_FAIL_NO_PERMISSION: You haven't permission to bid.
+BID_FAIL_CANT_ALLOCATE_FUNDS: You haven't the money to bid %1.
+BID_FAIL_NO_BIDDER: A non-player tried to bid on an auction? 
+BID_FAIL_CONSOLE: You can't bid from the console, duh!
+BID_FAIL_NO_AUCTION: There is no auction at this time on which to bid.
+
+AUCTION_CANCEL: The auction has been cancelled. 
+AUCTION_END_NO_BIDS: The auction ended with no bids.
+AUCTION_END_WITH_BIDS: '%1 won the auction for %2 with %3!'
+AUCTION_START: Attention, an auction is beginning!
+AUCTION_HELP: Put help here.
+
+AUCTION_INFO_HEADER: '%1 is auctioning %2 %3'
+AUCTION_INFO_ENCHANTMENT: 'Enchantment: %1'
+AUCTION_INFO_FOOTER: The current bid is %4 by %6
+AUCTION_INFO_NO_AUCTION: Nothing is being auctioned at this time.
+  

@@ -1,5 +1,8 @@
 package com.flobi.floAuction;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,11 +11,17 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.flobi.WhatIsIt.WhatIsIt;
 
 public class floAuction extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
@@ -28,8 +37,21 @@ public class floAuction extends JavaPlugin {
 	public int maxTime = 60;
 	public int minTime = 15;
 	
+	// Config files info.
+	private static File configFile = null;
+	private static InputStream defConfigStream;
+	private static FileConfiguration config = null;
+	private static File textConfigFile = null;
+	private static InputStream defTextConfigStream;
+	private static FileConfiguration textConfig = null;
+	private static YamlConfiguration defConfig = null;
+	private static YamlConfiguration defTextConfig = null;
+	private static File dataFolder;
+	private static ConsoleCommandSender console;
+	
 	// In case items can't be given for some reason, save them
 	public static ArrayList<AuctionLot> OrphanLots =  new ArrayList<AuctionLot>();
+	
 	
 	public static void killOrphan(Player player) {
 		for(int i = 0; i < OrphanLots.size(); i++) {
@@ -46,23 +68,50 @@ public class floAuction extends JavaPlugin {
     public static Chat chat = null;
 
 	public void onEnable() {
-        if (!setupEconomy() ) {
-			log.log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+		console = getServer().getConsoleSender();
+		dataFolder = getDataFolder();
+		defConfigStream = getResource("config.yml");
+		defTextConfigStream = getResource("language.yml");
+        loadConfig();
+		if (getServer().getPluginManager().getPlugin("WhatIsIt") == null) {
+			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("NO_WHATISIT")));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+		}
+		if (!setupEconomy() ) {
+			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("NO_VAULT")));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
         setupPermissions();
         setupChat();
 		
-		log.info(this.getConfig().getName() + " has been enabled.");
+		console.sendMessage(chatPrep(textConfig.getString("PLUGIN_ENABLED")));
 		
 		//TODO: Load orphan lots from save file.
 	}
 	public void onDisable() { 
-		log.info(this.getConfig().getName() + " has been disabled.");
+		console.sendMessage(chatPrep(textConfig.getString("PLUGIN_DISABLED")));
 		
 		//TODO: Save orphan lots from save file.
 	}
+	/**
+	 * Prepares chat, prepending prefix and processing colors.
+	 * 
+	 * @param String message to prepare
+	 * @return String prepared message
+	 */
+    private static String chatPrep(String message) {
+    	message = textConfig.getString("CHAT_PREFIX") + message;
+    	message = ChatColor.translateAlternateColorCodes('&', message);
+    	return message;
+    }
+    private static String chatPrepClean(String message) {
+    	message = textConfig.getString("CHAT_PREFIX") + message;
+    	message = ChatColor.translateAlternateColorCodes('&', message);
+    	message = ChatColor.stripColor(message);
+    	return message;
+    }
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     	Player player = null;
     	Auction auction = null;
@@ -76,7 +125,15 @@ public class floAuction extends JavaPlugin {
      
     	if (cmd.getName().equalsIgnoreCase("auction")) {
     		if (args.length > 0) {
-    			if (
+    			if (args[0].equalsIgnoreCase("reload")) {
+    				//TODO: check permissions
+    				loadConfig();
+    				if (args.length > 1) {
+    					if (textConfig.getString(args[1]) != null) {
+		    				sender.sendMessage(chatPrep(textConfig.getString(args[1])));
+    					}
+    				}
+    			} else if (
         				args[0].equalsIgnoreCase("start") ||
         				args[0].equalsIgnoreCase("this") ||
         				args[0].equalsIgnoreCase("all") ||
@@ -149,17 +206,19 @@ public class floAuction extends JavaPlugin {
     }
     
     public void sendMessage(AuctionMessage messageKey, Player player, Auction scope) {
-//    	String publicMessage = null;
-//    	String privateMessage = null;
-    	
-    	// TODO:  Make this language supportive.
-    	
-    	getServer().broadcastMessage(messageKey.toString());
+    	String message = textConfig.getString(messageKey.toString());
+    	if (message == null) {
+    		message = messageKey.toString();
+    	}
+    		
+    	message = chatPrep(message);
     	
 /*    	switch (messageKey) {
     		case Q1:
     			
     	}*/
+
+    	getServer().broadcastMessage(message);
     }
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -185,5 +244,54 @@ public class floAuction extends JavaPlugin {
         return perms != null;
     }
 
+    /**
+	 * Loads config.yml and text.yml configuration files.
+	 */
+    private static void loadConfig() {
+		if (configFile == null) {
+	    	configFile = new File(dataFolder, "config.yml");
+	    }
+	    config = YamlConfiguration.loadConfiguration(configFile);
+	 
+	    // Look for defaults in the jar
+	    if (defConfig != null) {
+	    	config.setDefaults(defConfig);
+	        defConfigStream = null;
+	    }
+	    if (defConfigStream != null) {
+	        defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+	        config.setDefaults(defConfig);
+	        defConfigStream = null;
+	    }
+	    if (!configFile.exists() && defConfig != null) {
+	    	try {
+	    		defConfig.save(configFile);
+			} catch(IOException ex) {
+				log.severe("Cannot save config.yml");
+			}
+	    }
+	    if (textConfigFile == null) {
+	    	textConfigFile = new File(dataFolder, "language.yml");
+	    }
+	    textConfig = YamlConfiguration.loadConfiguration(textConfigFile);
+	 
+	    // Look for defaults in the jar
+	    if (defTextConfig != null) {
+	        textConfig.setDefaults(defTextConfig);
+	        defTextConfigStream = null;
+	    }
+	    if (defTextConfigStream != null) {
+	        defTextConfig = YamlConfiguration.loadConfiguration(defTextConfigStream);
+	        textConfig.setDefaults(defTextConfig);
+	        defTextConfigStream = null;
+	    }
+	    if (!textConfigFile.exists() && defTextConfig != null) {
+	    	try {
+	    		defTextConfig.save(textConfigFile);
+			} catch(IOException ex) {
+				log.severe("Cannot save language.yml");
+			}
+	    }
+    }
 }
 
