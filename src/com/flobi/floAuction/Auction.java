@@ -1,5 +1,6 @@
 package com.flobi.floAuction;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,6 +15,7 @@ public class Auction {
 	private int minBidIncrement = 0;
 	private int quantity = 0;
 	private int time = 0;
+	private boolean active = false;
 	
 	private AuctionLot lot;
 	private AuctionBid currentBid;
@@ -33,21 +35,30 @@ public class Auction {
 		
 	}
 	public Boolean start() {
-		AuctionMessage lotError = lot.AddItems(quantity, true); 
-		if (lotError != null) {
-			plugin.sendMessage(lotError, owner, this);
+		if (!lot.AddItems(quantity, true)) {
+			plugin.sendMessage("auction-fail-insufficient-supply", owner, this);
 			return false;
 		}
-		plugin.sendMessage(AuctionMessage.AUCTION_START, owner, this);
+		active = true;
+		plugin.sendMessage("auction-start", null, this);
+		info(null);
 		return true;
 	}
-	public void info(Player player) {
-		plugin.sendMessage(AuctionMessage.AUCTION_INFO_HEADER, player, this);
-		plugin.sendMessage(AuctionMessage.AUCTION_INFO_ENCHANTMENT, player, this);
-		plugin.sendMessage(AuctionMessage.AUCTION_INFO_FOOTER, player, this);
+	public void info(CommandSender sender) {
+		if (!active) {
+			plugin.sendMessage("auction-info-no-auction", sender, this);
+		} else if (currentBid == null) {
+			plugin.sendMessage("auction-info-header-nobids", sender, this);
+			plugin.sendMessage("auction-info-enchantment", sender, this);
+			plugin.sendMessage("auction-info-footer-nobids", sender, this);
+		} else {
+			plugin.sendMessage("auction-info-header", sender, this);
+			plugin.sendMessage("auction-info-enchantment", sender, this);
+			plugin.sendMessage("auction-info-footer", sender, this);
+		}
 	}
 	public void cancel(Player canceller) {
-		plugin.sendMessage(AuctionMessage.AUCTION_CANCEL, canceller, this);
+		plugin.sendMessage("auction-cancel", canceller, this);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
 	}
@@ -55,12 +66,12 @@ public class Auction {
 		// TODO: figure out how to clear auction object
 
 		if (currentBid == null || lot == null) {
-			plugin.sendMessage(AuctionMessage.AUCTION_END_NO_BIDS, ender, this);
+			plugin.sendMessage("auction-end-nobids", ender, this);
 			if (lot != null) lot.cancelLot();
 			if (currentBid != null) currentBid.cancelBid();
 			return;
 		}
-		plugin.sendMessage(AuctionMessage.AUCTION_END_WITH_BIDS, ender, this);
+		plugin.sendMessage("auction-end", ender, this);
 		lot.winLot(currentBid.getBidder());
 		currentBid.winBid();
 	}
@@ -81,45 +92,45 @@ public class Auction {
 			return;
 		}
 		if (owner.equals(bidder)) {
-			failBid(bid, AuctionMessage.BID_FAIL_IS_AUCTION_OWNER);
+			failBid(bid, "bid-fail-is-auction-owner");
 			return;
 		}
 		if (currentBid == null) {
-			setNewBid(bid, AuctionMessage.BID_SUCCESS_NO_CHALLENGER);
+			setNewBid(bid, "bid-success-no-challenger");
 			return;
 		}
 		if (currentBid.getBidder().equals(bidder)) {
 			if (bid.outbid(currentBid)) {
 				// TODO: There is also the message, BID_SUCCESS_UPDATE_OWN_MAX_BID, for increasing that w/o increasing bid. 
-				setNewBid(bid, AuctionMessage.BID_SUCCESS_UPDATE_OWN_BID);
+				setNewBid(bid, "bid-success-update-own-bid");
 			} else {
-				failBid(bid, AuctionMessage.BID_FAIL_ALREADY_CURRENT_BIDDER);
+				failBid(bid, "bid-fail-already-current-bidder");
 			}
 			return;
 		}
 		if (currentBid.outbid(bid)) {
-			failBid(bid, AuctionMessage.BID_FAIL_AUTO_OUTBID);
+			failBid(bid, "bid-fail-auto-outbid");
 			return;
 		}
 		if (bid.outbid(currentBid)) {
-			setNewBid(bid, AuctionMessage.BID_SUCCESS_OUTBID);
+			setNewBid(bid, "bid-success-outbid");
 			return;
 		}
-		failBid(bid, AuctionMessage.BID_FAIL_OUTBID_UNCERTAINTY);
+		failBid(bid, "bid-fail-outbid-uncertainty");
 	}
-	private void failBid(AuctionBid newBid, AuctionMessage reason) {
+	private void failBid(AuctionBid newBid, String reason) {
 		newBid.cancelBid();
 		plugin.sendMessage(reason, newBid.getBidder(), this);
 	}
-	private void setNewBid(AuctionBid newBid, AuctionMessage reason) {
+	private void setNewBid(AuctionBid newBid, String reason) {
 		currentBid.cancelBid();
 		currentBid = newBid;
 		plugin.sendMessage(reason, newBid.getBidder(), this);
 	}
 	private Boolean parseHeldItem() {
 		ItemStack heldItem = owner.getItemInHand();
-		if (heldItem == null) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_HAND_IS_EMPTY, owner, this);
+		if (heldItem == null || heldItem.getAmount() == 0) {
+			plugin.sendMessage("auction-fail-hand-is-empty", owner, this);
 			return false;
 		}
 		lot = new AuctionLot(heldItem, owner);
@@ -135,47 +146,50 @@ public class Auction {
 	}
 	private Boolean isValidOwner() {
 		if (owner == null) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_INVALID_OWNER, owner, this);
+			plugin.sendMessage("auction-fail-invalid-owner", (Player) plugin.getServer().getConsoleSender(), this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidAmount() {
 		if (quantity <= 0) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_QUANTITY_TOO_LOW, owner, this);
+			plugin.sendMessage("auction-fail-quantity-too-low", owner, this);
 			return false;
 		}
 		if (!functions.hasAmount(owner, quantity, lot.getTypeStack())) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_INSUFFICIENT_SUPPLY, owner, this);
+			plugin.sendMessage("auction-fail-insufficient-supply", owner, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidStartingBid() {
-		if (startingBid > plugin.maxStartingBid) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_STARTING_BID_TOO_HIGH, owner, this);
+		if (startingBid < 0) {
+			plugin.sendMessage("auction-fail-starting-bid-too-low", owner, this);
+			return false;
+		} else if (startingBid > plugin.maxStartingBid) {
+			plugin.sendMessage("auction-fail-starting-bid-too-high", owner, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidIncrement() {
 		if (getMinBidIncrement() < plugin.minIncrement) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_INCREMENT_TOO_LOW, owner, this);
+			plugin.sendMessage("auction-fail-increment-too-low", owner, this);
 			return false;
 		}
 		if (getMinBidIncrement() > plugin.maxIncrement) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_INCREMENT_TOO_HIGH, owner, this);
+			plugin.sendMessage("auction-fail-increment-too-high", owner, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidTime() {
 		if (time < plugin.minTime) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_TIME_TOO_LOW, owner, this);
+			plugin.sendMessage("auction-fail-time-too-low", owner, this);
 			return false;
 		}
 		if (time > plugin.maxTime) {
-			plugin.sendMessage(AuctionMessage.AUCTION_FAIL_TIME_TOO_HIGH, owner, this);
+			plugin.sendMessage("auction-fail-time-too-high", owner, this);
 			return false;
 		}
 		return true;
@@ -191,7 +205,7 @@ public class Auction {
 				quantity = Integer.parseInt(args[0]);
 			} else {
 				plugin.getServer().broadcastMessage(args[0]);
-				plugin.sendMessage(AuctionMessage.PARSE_ERROR_INVALID_QUANTITY, owner, this);
+				plugin.sendMessage("parse-error-invalid-quantity", owner, this);
 				return false;
 			}
 		} else {
@@ -204,7 +218,7 @@ public class Auction {
 			if (args[1].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
 				startingBid = functions.safeMoney(Double.parseDouble(args[1]));
 			} else {
-				plugin.sendMessage(AuctionMessage.PARSE_ERROR_INVALID_STARTING_BID, owner, this);
+				plugin.sendMessage("parse-error-invalid-starting-bid", owner, this);
 				return false;
 			}
 		} else {
@@ -217,7 +231,7 @@ public class Auction {
 			if (args[2].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
 				minBidIncrement = functions.safeMoney(Double.parseDouble(args[2]));
 			} else {
-				plugin.sendMessage(AuctionMessage.PARSE_ERROR_INVALID_BID_INCREMENT, owner, this);
+				plugin.sendMessage("parse-error-invalid-bid-increment", owner, this);
 				return false;
 			}
 		} else {
@@ -230,7 +244,7 @@ public class Auction {
 			if (args[3].matches("[0-9]+")) {
 				time = Integer.parseInt(args[3]);
 			} else {
-				plugin.sendMessage(AuctionMessage.PARSE_ERROR_INVALID_TIME, owner, this);
+				plugin.sendMessage("parse-error-invalid-time", owner, this);
 				return false;
 			}
 		} else {
@@ -240,6 +254,20 @@ public class Auction {
 	}
 	public int getMinBidIncrement() {
 		return minBidIncrement;
+	}
+	
+	public ItemStack getLotType() {
+		if (lot == null) {
+			return null;
+		}
+		return lot.getTypeStack();
+	}
+	
+	public int getLotQuantity() {
+		if (lot == null) {
+			return 0;
+		}
+		return lot.getQuantity();
 	}
 	public int getStartingBid() {
 		return startingBid;

@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,11 +22,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.flobi.WhatIsIt.WhatIsIt;
+import com.flobi.utility.functions;
 
 public class floAuction extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
@@ -74,24 +81,24 @@ public class floAuction extends JavaPlugin {
 		defTextConfigStream = getResource("language.yml");
         loadConfig();
 		if (getServer().getPluginManager().getPlugin("WhatIsIt") == null) {
-			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("NO_WHATISIT")));
+			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-whatisit")));
             getServer().getPluginManager().disablePlugin(this);
             return;
 		}
 		if (!setupEconomy() ) {
-			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("NO_VAULT")));
+			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-vault")));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
         setupPermissions();
         setupChat();
 		
-		console.sendMessage(chatPrep(textConfig.getString("PLUGIN_ENABLED")));
+		sendMessage("plugin-enabled", console, null);
 		
 		//TODO: Load orphan lots from save file.
 	}
 	public void onDisable() { 
-		console.sendMessage(chatPrep(textConfig.getString("PLUGIN_DISABLED")));
+		sendMessage("plugin-disabled", console, null);
 		
 		//TODO: Save orphan lots from save file.
 	}
@@ -102,12 +109,12 @@ public class floAuction extends JavaPlugin {
 	 * @return String prepared message
 	 */
     private static String chatPrep(String message) {
-    	message = textConfig.getString("CHAT_PREFIX") + message;
+    	message = textConfig.getString("chat-prefix") + message;
     	message = ChatColor.translateAlternateColorCodes('&', message);
     	return message;
     }
     private static String chatPrepClean(String message) {
-    	message = textConfig.getString("CHAT_PREFIX") + message;
+    	message = textConfig.getString("chat-prefix") + message;
     	message = ChatColor.translateAlternateColorCodes('&', message);
     	message = ChatColor.stripColor(message);
     	return message;
@@ -130,9 +137,10 @@ public class floAuction extends JavaPlugin {
     				loadConfig();
     				if (args.length > 1) {
     					if (textConfig.getString(args[1]) != null) {
-		    				sender.sendMessage(chatPrep(textConfig.getString(args[1])));
+		    				sendMessage(args[1], sender, null);
     					}
     				}
+    				return true;
     			} else if (
         				args[0].equalsIgnoreCase("start") ||
         				args[0].equalsIgnoreCase("this") ||
@@ -141,7 +149,7 @@ public class floAuction extends JavaPlugin {
     			) {
     				// Start new auction!
     	    		if (player == null) {
-    	    			sendMessage(AuctionMessage.AUCTION_FAIL_CONSOLE, null, null);
+    	    			sendMessage("auction-fail-console", null, null);
     	    		} else {
         				if (auction == null) {
         					auction = new Auction(this, player, args);
@@ -158,45 +166,52 @@ public class floAuction extends JavaPlugin {
         					}
         				} else {
         					// Already an auction.
-        					sendMessage(AuctionMessage.AUCTION_FAIL_AUCTION_EXISTS, player, auction);
+        					sendMessage("auction-fail-auction-exists", player, auction);
         				}
     	    		}
 					return true;
     			} else if (args[0].equalsIgnoreCase("cancel")) {
     				if (auction == null) {
-    					sendMessage(AuctionMessage.AUCTION_FAIL_NO_AUCTION_EXISTS, player, auction);
+    					sendMessage("auction-fail-no-auction-exists", player, auction);
     				} else {
     					if (player.equals(auction.getOwner())) {
 	    					auction.cancel(player);
 	    					// TODO: Make scope specific
 	    					publicAuction = null;
     					} else {
-        					sendMessage(AuctionMessage.AUCTION_FAIL_NOT_OWNER_CANCEL, player, auction);
+        					sendMessage("auction-fail-not-owner-cancel", player, auction);
     					}
     				}
     				return true;
     			} else if (args[0].equalsIgnoreCase("end")) {
     				if (auction == null) {
-    					sendMessage(AuctionMessage.AUCTION_FAIL_NO_AUCTION_EXISTS, player, auction);
+    					sendMessage("auction-fail-no-auction-exists", player, auction);
     				} else {
     					if (player.equals(auction.getOwner())) {
 	    					auction.end(player);
 	    					// TODO: Make scope specific
 	    					publicAuction = null;
     					} else {
-        					sendMessage(AuctionMessage.AUCTION_FAIL_NOT_OWNER_END, player, auction);
+        					sendMessage("auction-fail-not-owner-end", player, auction);
     					}
+    				}
+    				return true;
+    			} else if (args[0].equalsIgnoreCase("info")) {
+    				if (auction == null) {
+    					sendMessage("auction-info-no-auction", player, auction);
+    				} else {
+    					auction.info(sender);
     				}
     				return true;
     			}
     		}
-			sendMessage(AuctionMessage.AUCTION_HELP, player, auction);
+			sendMessage("auction-help", sender, auction);
     		return true;
     	} else if (cmd.getName().equalsIgnoreCase("bid")) {
     		if (player == null) {
-    			sendMessage(AuctionMessage.BID_FAIL_CONSOLE, null, null);
+    			sendMessage("bid-fail-console", null, null);
     		} else if (auction == null) {
-    			sendMessage(AuctionMessage.BID_FAIL_NO_AUCTION, null, null);
+    			sendMessage("bid-fail-no-auction", null, null);
     		} else {
     			auction.Bid(player, args);
     		}
@@ -205,20 +220,100 @@ public class floAuction extends JavaPlugin {
     	return false;
     }
     
-    public void sendMessage(AuctionMessage messageKey, Player player, Auction scope) {
-    	String message = textConfig.getString(messageKey.toString());
-    	if (message == null) {
-    		message = messageKey.toString();
-    	}
-    		
-    	message = chatPrep(message);
-    	
-/*    	switch (messageKey) {
-    		case Q1:
-    			
-    	}*/
+    public void sendMessage(String messageKey, CommandSender player, Auction auction) {
 
-    	getServer().broadcastMessage(message);
+    	String owner = null;
+    	String quantity = null;
+    	String lotType = null;
+    	String startingBid = null;
+    	String minBidIncrement = null;
+    	String currentBidder = null;
+    	String currentBid = null;
+    	String currentMaxBid = null;
+
+    	if (auction != null) {
+    		
+    		if (auction.getOwner() != null) owner = auction.getOwner().getName();
+    		quantity = econ.format(functions.unsafeMoney(auction.getLotQuantity()));
+    		lotType = WhatIsIt.itemName(auction.getLotType());
+    		if (auction.getStartingBid() == 0) {
+	    		startingBid = econ.format(functions.unsafeMoney(auction.getStartingBid()));
+    		} else {
+	    		startingBid = econ.format(functions.unsafeMoney(auction.getMinBidIncrement()));
+    		}
+    		minBidIncrement = econ.format(functions.unsafeMoney(auction.getMinBidIncrement()));
+			
+	
+			if (auction.getCurrentBid() != null) {
+				currentBidder = auction.getCurrentBid().getBidder().getName();
+				currentBid = Integer.toString(auction.getCurrentBid().getBidAmount());
+				currentMaxBid = Integer.toString(auction.getCurrentBid().getMaxBidAmount());
+			} else {
+				currentBidder = "noone";
+				currentBid = startingBid;
+				currentMaxBid = startingBid;
+			}
+    	} else {
+        	owner = "-";
+        	quantity = "-";
+        	lotType = "-";
+        	startingBid = "-";
+        	minBidIncrement = "-";
+        	currentBidder = "-";
+        	currentBid = "-";
+        	currentMaxBid = "-";
+    	}
+    	
+    	List<String> messageList = textConfig.getStringList(messageKey);
+    	
+    	String originalMessage = null;
+    	if (messageList == null || messageList.size() == 0) {
+    		originalMessage = textConfig.getString(messageKey.toString());
+    		
+    		
+    		if (originalMessage == null || originalMessage.length() == 0) {
+        		messageList = new ArrayList<String>();
+    			messageList.add(messageKey.toString());
+    		} else {
+        		messageList = Arrays.asList(originalMessage.split("(\r?\n|\r)"));
+    		}
+    	}
+    	
+    	for (Iterator<String> i = messageList.iterator(); i.hasNext(); ) {
+    		String messageListItem = i.next();
+	    	originalMessage = chatPrep(messageListItem);
+	    	String message = originalMessage;
+	
+			message = message.replace("%O", owner);
+			message = message.replace("%q", quantity);
+			message = message.replace("%i", lotType);
+			message = message.replace("%s", startingBid);
+			message = message.replace("%n", minBidIncrement);
+			message = message.replace("%b", currentBid);
+			message = message.replace("%B", currentBidder);
+			message = message.replace("%m", currentMaxBid);
+	
+			if (messageKey == "auction-info-enchantment") {
+    			if (auction != null && auction.getLotType() != null) {
+	        		Map<Enchantment, Integer> enchantments = auction.getLotType().getEnchantments();
+	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
+	        			message = message.replace("%E", WhatIsIt.enchantmentName(enchantment));
+		            	if (player == null) {
+		        	    	getServer().broadcastMessage(message);
+		            	} else {
+		        	    	player.sendMessage(message);
+		            	}
+	        		}
+    			}
+			} else {
+		    	if (player == null) {
+			    	getServer().broadcastMessage(message);
+		    	} else {
+			    	player.sendMessage(message);
+		    	}
+			}
+    	}
+    	
     }
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {

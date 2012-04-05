@@ -11,7 +11,7 @@ public class AuctionBid {
 	private Player bidder;
 	private int bidAmount = 0;
 	private int maxBidAmount = 0;
-	private AuctionMessage error;
+	private String error;
 	private String[] args;
 	private double reserve = 0;
 
@@ -29,7 +29,7 @@ public class AuctionBid {
 			reserve = receipt.amount;
 			return true;
 		} else {
-			error = AuctionMessage.BID_FAIL_CANT_ALLOCATE_FUNDS;
+			error = "bid-fail-cant-allocate-funds";
 			return false;
 		}
 	}
@@ -52,7 +52,7 @@ public class AuctionBid {
 	
 	private Boolean validateBidder() {
 		if (bidder == null) {
-			error = AuctionMessage.BID_FAIL_NO_BIDDER;
+			error = "bid-fail-no-bidder";
 			return false;
 		}
 		
@@ -74,7 +74,7 @@ public class AuctionBid {
 			if (args[0].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
 				bidAmount = functions.safeMoney(Double.parseDouble(args[0]));
 			} else {
-				error = AuctionMessage.PARSE_ERROR_INVALID_BID;
+				error = "parse-error-invalid-bid";
 				return false;
 			}
 		} else {
@@ -105,7 +105,7 @@ public class AuctionBid {
 			if (args[1].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
 				maxBidAmount = functions.safeMoney(Double.parseDouble(args[1]));
 			} else {
-				error = AuctionMessage.PARSE_ERROR_INVALID_MAX_BID;
+				error = "parse-error-invalid-max-bid";
 				return false;
 			}
 		} else {
@@ -114,7 +114,7 @@ public class AuctionBid {
 		return true;
 	}
 
-	public AuctionMessage getError() {
+	public String getError() {
 		return error;
 	}
 	public Player getBidder() {
@@ -122,6 +122,9 @@ public class AuctionBid {
 	}
 	public int getBidAmount() {
 		return bidAmount;
+	}
+	public int getMaxBidAmount() {
+		return maxBidAmount;
 	}
 	public Boolean outbid(AuctionBid challenger) {
 		// TODO:

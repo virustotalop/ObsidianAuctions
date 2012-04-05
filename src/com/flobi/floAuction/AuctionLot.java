@@ -15,15 +15,15 @@ public class AuctionLot {
 		lotTypeLock = lotType.clone();
 		owner = lotOwner;
 	}
-	public AuctionMessage AddItems(int addQuantity, boolean removeFromOwner) {
+	public boolean AddItems(int addQuantity, boolean removeFromOwner) {
 		if (removeFromOwner) {
 			if (!items.hasAmount(owner, addQuantity, lotTypeLock)) {
-				return AuctionMessage.AUCTION_FAIL_INSUFFICIENT_SUPPLY;
+				return false;
 			}
 		}
 		quantity += addQuantity;
 		items.remove(owner, addQuantity, lotTypeLock);
-		return null;
+		return true;
 	}
 	
 	public void winLot(Player winner) {
@@ -32,6 +32,7 @@ public class AuctionLot {
 	public void cancelLot() {
 		giveLot(owner);
 	}
+	
 	
 	private void giveLot(Player player) {
 		owner = player;
@@ -66,5 +67,8 @@ public class AuctionLot {
 	}
 	public Player getOwner() {
 		return owner;
+	}
+	public int getQuantity() {
+		return quantity;
 	}
 }
