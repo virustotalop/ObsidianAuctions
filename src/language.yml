@@ -43,7 +43,19 @@ auction-cancel: The auction has been cancelled.
 auction-end-nobids: The auction ended with no bids.
 auction-end: '%B won the auction for %i with %b!'
 auction-start: Attention, an auction is beginning!
-auction-help: Put help here.
+auction-help: 
+- /auction help|? - Returns this
+- /auction start|s (amt) (price) (inc) (time)
+- Starts an auction for (time) seconds with (amt)
+- of item in hand for (price) with an enforced 
+- increase of (inc) between bids.
+- /bid (bid) (maxbid) - Bids on auction.
+- If you set a (maxbid) and the (bid) is greater than the
+- current, you will outbit that bid if it's lower than your maximum.
+- If you omit a (bid) the lowest allowable bid will be used.
+- /auction end|e|stop - Ends current auction
+- /auction cancel|c - Cancels current auction
+- /auction info|i - Returns current auction information. 
 
 auction-info-header: '%o is auctioning %q %i'
 auction-info-header-nobids: '%o is auctioning %q %i'
