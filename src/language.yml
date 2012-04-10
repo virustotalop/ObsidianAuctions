@@ -69,3 +69,6 @@ auction-info-no-auction:
 timer-countdown-notification: Auction has %t remaining.
 time-format-minsec: '%m min, %s sec'
 time-format-seconly: '%s sec'
+
+lot-give: Your items have been given to you.
+lot-drop: Not enough space, your items dropped at your feet.

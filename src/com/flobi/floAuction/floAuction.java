@@ -24,6 +24,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -108,8 +111,13 @@ public class floAuction extends JavaPlugin {
         setupPermissions();
         setupChat();
         
-        new AuctionListener(this);
-		
+        getServer().getPluginManager().registerEvents(new Listener() {
+            @SuppressWarnings("unused")
+			@EventHandler
+            public void playerJoin(PlayerJoinEvent event) {
+        	    floAuction.killOrphan(event.getPlayer());
+            }
+        }, this);		
 		sendMessage("plugin-enabled", console, null);
 		
 		//TODO: Load orphan lots from save file.
@@ -118,6 +126,11 @@ public class floAuction extends JavaPlugin {
 		sendMessage("plugin-disabled", console, null);
 		
 		//TODO: Save orphan lots from save file.
+	}
+	public void detachAuction(Auction auction) {
+		// TODO: make look through auction scopes.  
+		// In the mean time, just null the public as that's the only one right now.
+		publicAuction = null;
 	}
 	/**
 	 * Prepares chat, prepending prefix and processing colors.

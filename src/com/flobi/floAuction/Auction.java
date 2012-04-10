@@ -105,6 +105,8 @@ public class Auction {
 		plugin.sendMessage("auction-end", ender, this);
 		lot.winLot(currentBid.getBidder());
 		currentBid.winBid();
+		
+		plugin.detachAuction(this);
 	}
 	public Boolean isValid() {
 		if (!parseHeldItem()) return false;
@@ -164,7 +166,7 @@ public class Auction {
 			plugin.sendMessage("auction-fail-hand-is-empty", owner, this);
 			return false;
 		}
-		lot = new AuctionLot(heldItem, owner);
+		lot = new AuctionLot(plugin, heldItem, owner);
 		return true;
 	}
 	private Boolean parseArgs() {
