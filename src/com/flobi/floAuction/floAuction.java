@@ -57,13 +57,28 @@ public class floAuction extends JavaPlugin {
 	private static ConsoleCommandSender console;
 	
 	// In case items can't be given for some reason, save them
-	public static ArrayList<AuctionLot> OrphanLots =  new ArrayList<AuctionLot>();
+	public static ArrayList<AuctionLot> OrphanLots = new ArrayList<AuctionLot>();
 	
-	
+	// Eliminate orphan lots (i.e. try to give the items to a player again).
 	public static void killOrphan(Player player) {
-		for(int i = 0; i < OrphanLots.size(); i++) {
-			if (OrphanLots.get(i).getOwner().equals(player)) {
-				OrphanLots.get(i).cancelLot();
+		// List of orphans to potentially kill.
+		ArrayList<AuctionLot> orphanDeathRow = OrphanLots;
+		
+		// New orphanage.
+		OrphanLots = new ArrayList<AuctionLot>();
+		
+		// KILL THEM ALL!
+		for(int i = 0; i < orphanDeathRow.size(); i++) {
+			// Hmm, only if they're actually orphans though.
+			if (orphanDeathRow.get(i) != null) {
+				// And only if they belong to player.
+				if (orphanDeathRow.get(i).getOwner().equals(player)) {
+					orphanDeathRow.get(i).cancelLot();
+					orphanDeathRow.set(i, null);
+				} else {
+					// This one's still alive, put it back in the orphanage.
+					OrphanLots.add(orphanDeathRow.get(i));
+				}
 			}
 		}
 	}
@@ -92,6 +107,8 @@ public class floAuction extends JavaPlugin {
         }
         setupPermissions();
         setupChat();
+        
+        new AuctionListener(this);
 		
 		sendMessage("plugin-enabled", console, null);
 		
@@ -230,11 +247,12 @@ public class floAuction extends JavaPlugin {
     	String currentBidder = null;
     	String currentBid = null;
     	String currentMaxBid = null;
+    	String timeRemaining = null;
 
     	if (auction != null) {
     		
     		if (auction.getOwner() != null) owner = auction.getOwner().getName();
-    		quantity = econ.format(functions.unsafeMoney(auction.getLotQuantity()));
+    		quantity = Integer.toString(auction.getLotQuantity());
     		lotType = WhatIsIt.itemName(auction.getLotType());
     		if (auction.getStartingBid() == 0) {
 	    		startingBid = econ.format(functions.unsafeMoney(auction.getStartingBid()));
@@ -243,6 +261,14 @@ public class floAuction extends JavaPlugin {
     		}
     		minBidIncrement = econ.format(functions.unsafeMoney(auction.getMinBidIncrement()));
 			
+    		if (auction.getRemainingTime() >= 60) {
+    			timeRemaining = textConfig.getString("time-format-minsec");
+    			timeRemaining = timeRemaining.replace("%s", Integer.toString(auction.getRemainingTime() % 60));
+    			timeRemaining = timeRemaining.replace("%m", Integer.toString((auction.getRemainingTime() - (auction.getRemainingTime() % 60)) / 60));
+    		} else {
+    			timeRemaining = textConfig.getString("time-format-seconly");
+    			timeRemaining = timeRemaining.replace("%s", Integer.toString(auction.getRemainingTime()));
+    		}
 	
 			if (auction.getCurrentBid() != null) {
 				currentBidder = auction.getCurrentBid().getBidder().getName();
@@ -262,6 +288,7 @@ public class floAuction extends JavaPlugin {
         	currentBidder = "-";
         	currentBid = "-";
         	currentMaxBid = "-";
+        	timeRemaining = "-";
     	}
     	
     	List<String> messageList = textConfig.getStringList(messageKey);
@@ -291,7 +318,8 @@ public class floAuction extends JavaPlugin {
 			message = message.replace("%n", minBidIncrement);
 			message = message.replace("%b", currentBid);
 			message = message.replace("%B", currentBidder);
-			message = message.replace("%m", currentMaxBid);
+			message = message.replace("%h", currentMaxBid);
+			message = message.replace("%t", timeRemaining);
 	
 			if (messageKey == "auction-info-enchantment") {
     			if (auction != null && auction.getLotType() != null) {

@@ -50,15 +50,28 @@ public class AuctionLot {
 			quantity -= amountToGive;
 		}
 		if (quantity > 0) {
-			// Create orphaned lot to try to give when inventory clears up.
-			AuctionLot orphanLot = new AuctionLot(lotTypeLock, owner);
-			
-			// Move items to orphan lot
-			orphanLot.AddItems(quantity, false);
-			quantity = 0;
-			
-			// Queue for distribution on space availability.
-			floAuction.OrphanLots.add(orphanLot);
+			if (player.isOnline()) {
+				// Drop items at player's feet.
+				ItemStack droppingItems = lotTypeLock.clone();
+				
+				// Move items to drop lot.
+				droppingItems.setAmount(quantity);
+				quantity = 0;
+				
+				// Drop lot.
+				owner.getWorld().dropItemNaturally(owner.getLocation(), droppingItems);
+			} else {
+				// Player is offline, queue lot for give on login.
+				// Create orphaned lot to try to give when inventory clears up.
+				AuctionLot orphanLot = new AuctionLot(lotTypeLock, owner);
+				
+				// Move items to orphan lot
+				orphanLot.AddItems(quantity, false);
+				quantity = 0;
+				
+				// Queue for distribution on space availability.
+				floAuction.OrphanLots.add(orphanLot);
+			}
 		}
 	}
 	public ItemStack getTypeStack() {

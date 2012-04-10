@@ -30,7 +30,7 @@ auction-fail-not-owner-end: You cannot end auctions you did not start.
 bid-success-no-challenger: '%B has bid %b on the %i.'
 bid-success-outbid: '%B raised the bid to %b.'
 bid-success-update-own-bid: '%B raised the bid to %b.'
-BID_SUCCESS_UPDATE_OWN_MAX_BID: You raised your own bid to %m.
+BID_SUCCESS_UPDATE_OWN_MAX_BID: You raised your own bid to %h.
 bid-fail-is-auction-owner: You cannot bid on your own auction.
 bid-fail-already-current-bidder: You (apparently) can't outbid yourself.
 BID_FAIL_NO_PERMISSION: You haven't permission to bid.
@@ -57,8 +57,8 @@ auction-help:
 - /auction cancel|c - Cancels current auction
 - /auction info|i - Returns current auction information. 
 
-auction-info-header: '%o is auctioning %q %i'
-auction-info-header-nobids: '%o is auctioning %q %i'
+auction-info-header: '%O is auctioning %q %i'
+auction-info-header-nobids: '%O is auctioning %q %i'
 auction-info-enchantment: 'Enchantment: %E'
 auction-info-footer: The current bid is %b by %B.
 auction-info-footer-nobids: Bidding starts at %b.
@@ -66,3 +66,6 @@ auction-info-no-auction:
 - Nothing is being auctioned at this time.
 - '&00&11&22&33&44&55&66&77&88&99&aa&bb&cc&dd&ff'
 
+timer-countdown-notification: Auction has %t remaining.
+time-format-minsec: '%m min, %s sec'
+time-format-seconly: '%s sec'

@@ -20,6 +20,12 @@ public class Auction {
 	private AuctionLot lot;
 	private AuctionBid currentBid;
 	
+	// Scheduled timers:
+	private int countdown = 0;
+	private int countdownTimer = 0;
+	
+	
+	
 	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs) {
 		owner = auctionOwner;
 		args = inputArgs;
@@ -42,6 +48,29 @@ public class Auction {
 		active = true;
 		plugin.sendMessage("auction-start", null, this);
 		info(null);
+		
+		// Set timer:
+		final Auction thisAuction = this;
+		countdown = time;
+		
+		countdownTimer = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
+		    public void run() {
+		    	thisAuction.countdown--;
+		    	if (thisAuction.countdown == 0) {
+		    		thisAuction.end(null);
+		    		return;
+		    	}
+		    	if (thisAuction.countdown < 4) {
+			    	plugin.sendMessage("timer-countdown-notification", null, thisAuction);
+			    	return;
+		    	}
+		    	if (thisAuction.time >= 20) {
+		    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
+				    	plugin.sendMessage("timer-countdown-notification", null, thisAuction);
+		    		}
+		    	}
+		    }
+		}, 20L, 20L);
 		return true;
 	}
 	public void info(CommandSender sender) {
@@ -63,8 +92,10 @@ public class Auction {
 		if (currentBid != null) currentBid.cancelBid();
 	}
 	public void end(Player ender) {
+		
 		// TODO: figure out how to clear auction object
 
+		plugin.getServer().getScheduler().cancelTask(countdownTimer);
 		if (currentBid == null || lot == null) {
 			plugin.sendMessage("auction-end-nobids", ender, this);
 			if (lot != null) lot.cancelLot();
@@ -277,5 +308,8 @@ public class Auction {
 	}
 	public Player getOwner() {
 		return owner;
+	}
+	public int getRemainingTime() {
+		return countdown;
 	}
 }
