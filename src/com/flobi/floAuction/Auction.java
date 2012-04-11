@@ -134,10 +134,13 @@ public class Auction {
 		}
 		if (currentBid.getBidder().equals(bidder)) {
 			if (bid.outbid(currentBid)) {
-				// TODO: There is also the message, BID_SUCCESS_UPDATE_OWN_MAX_BID, for increasing that w/o increasing bid. 
 				setNewBid(bid, "bid-success-update-own-bid");
 			} else {
-				failBid(bid, "bid-fail-already-current-bidder");
+				if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
+					setNewBid(bid, "bid-success-update-own-maxbid");
+				} else {
+					failBid(bid, "bid-fail-already-current-bidder");
+				}
 			}
 			return;
 		}

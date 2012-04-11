@@ -24,7 +24,20 @@ public class AuctionBid {
 		if (!reserveBidFunds()) return;
 	}
 	private boolean reserveBidFunds() {
-		EconomyResponse receipt = floAuction.econ.withdrawPlayer(bidder.getName(), functions.unsafeMoney(maxBidAmount));
+		int amountToReserve = 0;
+		AuctionBid currentBid = auction.getCurrentBid(); 
+		if (currentBid.getBidder().equals(bidder)) {
+			// Same bidder: only reserve difference.
+			if (maxBidAmount > currentBid.getMaxBidAmount()) {
+				amountToReserve = currentBid.getMaxBidAmount() - maxBidAmount;
+			} else {
+				// Nothing needing reservation.
+				return true;
+			}
+		} else {
+			amountToReserve = maxBidAmount;
+		}
+		EconomyResponse receipt = floAuction.econ.withdrawPlayer(bidder.getName(), functions.unsafeMoney(amountToReserve));
 		if (receipt.transactionSuccess()) {
 			reserve = receipt.amount;
 			return true;
@@ -55,18 +68,36 @@ public class AuctionBid {
 			error = "bid-fail-no-bidder";
 			return false;
 		}
-		
-		// TODO:
-		// Check if any orphan lots belong to this player, disallow bid while
-		// orphan lots exist to lessen likeliness of using orphan lots as a
-		// storage utility.
-		
-		
 		return true;
 	}
 	private Boolean parseArgs() {
 		if (!parseArgBid()) return false;
 		if (!parseArgMaxBid()) return false;
+		return false;
+	}
+	public Boolean outbid(AuctionBid challenger) {
+		if (bidder.equals(challenger.getBidder())) {
+			// Outbidding oneself happens a little differently than outbidding someone else:
+			// New bid always replaces old bid no matter winner.
+			
+			// Move reserve money here.
+			reserve = reserve + challenger.reserve;
+			challenger.reserve = 0;
+			
+			// Maxbid only updates up.
+			maxBidAmount = Math.max(maxBidAmount, challenger.maxBidAmount);
+
+			if (bidAmount > challenger.bidAmount) {
+				// The bid has been raised.
+				return true;
+			} else {
+				// The bid has not been raised (don't forget, this bid still needs to replace the old one).
+				bidAmount = challenger.bidAmount;
+				return false;
+			}
+		} else {
+			
+		}
 		return false;
 	}
 	private Boolean parseArgBid() {
@@ -126,8 +157,10 @@ public class AuctionBid {
 	public int getMaxBidAmount() {
 		return maxBidAmount;
 	}
-	public Boolean outbid(AuctionBid challenger) {
-		// TODO:
-		return false;
+	public void setReserve(double newReserve) {
+		reserve = newReserve;
+	}
+	public double getReserve() {
+		return reserve;
 	}
 }
