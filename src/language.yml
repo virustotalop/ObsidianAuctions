@@ -57,11 +57,15 @@ auction-help:
 - /auction cancel|c - Cancels current auction
 - /auction info|i - Returns current auction information. 
 
-auction-info-header: '%O is auctioning %q %i'
+auction-info-header: '%O is auctioning %q %i for #t'
 auction-info-header-nobids: '%O is auctioning %q %i'
 auction-info-enchantment: 'Enchantment: %E'
-auction-info-footer: The current bid is %b by %B.
-auction-info-footer-nobids: Bidding starts at %b.
+auction-info-footer: 
+- The current bid is %b by %B.
+- Min bid increment is %n. 
+auction-info-footer-nobids: 
+- Bidding starts at %b.
+- Min bid increment is %n. 
 auction-info-no-auction: 
 - Nothing is being auctioned at this time.
 - '&00&11&22&33&44&55&66&77&88&99&aa&bb&cc&dd&ff'

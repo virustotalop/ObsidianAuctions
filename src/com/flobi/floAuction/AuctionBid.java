@@ -76,7 +76,7 @@ public class AuctionBid {
 		return false;
 	}
 	public Boolean outbid(AuctionBid challenger) {
-		if (bidder.equals(challenger.getBidder())) {
+		if (bidder.equals(challenger.bidder)) {
 			// Outbidding oneself happens a little differently than outbidding someone else:
 			// New bid always replaces old bid no matter winner.
 			
@@ -96,9 +96,15 @@ public class AuctionBid {
 				return false;
 			}
 		} else {
-			
+			// TODO: Make more organic :).
+			if (maxBidAmount > challenger.maxBidAmount) {
+				bidAmount = Math.max(bidAmount, Math.min(challenger.maxBidAmount + auction.getMinBidIncrement(), maxBidAmount));
+				return true;
+			} else {
+				challenger.bidAmount = Math.max(challenger.bidAmount, Math.min(maxBidAmount + auction.getMinBidIncrement(), challenger.maxBidAmount));
+				return false;
+			}
 		}
-		return false;
 	}
 	private Boolean parseArgBid() {
 		if (args.length > 0) {
@@ -139,9 +145,8 @@ public class AuctionBid {
 				error = "parse-error-invalid-max-bid";
 				return false;
 			}
-		} else {
-			maxBidAmount = bidAmount;
 		}
+		maxBidAmount = Math.max(bidAmount, maxBidAmount);
 		return true;
 	}
 

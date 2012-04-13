@@ -47,7 +47,6 @@ public class Auction {
 		}
 		active = true;
 		plugin.sendMessage("auction-start", null, this);
-		info(null);
 		
 		// Set timer:
 		final Auction thisAuction = this;
@@ -71,6 +70,8 @@ public class Auction {
 		    	}
 		    }
 		}, 20L, 20L);
+
+		info(null);
 		return true;
 	}
 	public void info(CommandSender sender) {
@@ -147,12 +148,10 @@ public class Auction {
 		if (currentBid.outbid(bid)) {
 			failBid(bid, "bid-fail-auto-outbid");
 			return;
-		}
-		if (bid.outbid(currentBid)) {
+		} else {
 			setNewBid(bid, "bid-success-outbid");
 			return;
 		}
-		failBid(bid, "bid-fail-outbid-uncertainty");
 	}
 	private void failBid(AuctionBid newBid, String reason) {
 		newBid.cancelBid();
