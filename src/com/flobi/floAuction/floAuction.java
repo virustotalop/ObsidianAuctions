@@ -342,7 +342,7 @@ public class floAuction extends JavaPlugin {
     			if (auction != null && auction.getLotType() != null) {
 	        		Map<Enchantment, Integer> enchantments = auction.getLotType().getEnchantments();
 	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
-	        			message = message.replace("%E", WhatIsIt.enchantmentName(enchantment));
+	        			message = originalMessage.replace("%E", WhatIsIt.enchantmentName(enchantment));
 		            	if (player == null) {
 		        	    	getServer().broadcastMessage(message);
 		            	} else {

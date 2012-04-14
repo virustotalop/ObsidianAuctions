@@ -91,22 +91,20 @@ public class Auction {
 		plugin.sendMessage("auction-cancel", canceller, this);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
+		plugin.detachAuction(this);
 	}
 	public void end(Player ender) {
-		
-		// TODO: figure out how to clear auction object
 
 		plugin.getServer().getScheduler().cancelTask(countdownTimer);
 		if (currentBid == null || lot == null) {
 			plugin.sendMessage("auction-end-nobids", ender, this);
 			if (lot != null) lot.cancelLot();
 			if (currentBid != null) currentBid.cancelBid();
-			return;
+		} else {
+			plugin.sendMessage("auction-end", ender, this);
+			lot.winLot(currentBid.getBidder());
+			currentBid.winBid();
 		}
-		plugin.sendMessage("auction-end", ender, this);
-		lot.winLot(currentBid.getBidder());
-		currentBid.winBid();
-		
 		plugin.detachAuction(this);
 	}
 	public Boolean isValid() {
