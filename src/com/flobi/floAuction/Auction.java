@@ -123,7 +123,7 @@ public class Auction {
 			failBid(bid, bid.getError());
 			return;
 		}
-		if (owner.equals(bidder)) {
+		if (owner.equals(bidder) && !plugin.getConfig().getBoolean("allow-bid-on-own-auction")) {
 			failBid(bid, "bid-fail-is-auction-owner");
 			return;
 		}
