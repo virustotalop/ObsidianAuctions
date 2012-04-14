@@ -75,35 +75,34 @@ public class AuctionBid {
 		if (!parseArgMaxBid()) return false;
 		return false;
 	}
-	public Boolean outbid(AuctionBid challenger) {
-		if (bidder.equals(challenger.bidder)) {
-			// Outbidding oneself happens a little differently than outbidding someone else:
-			// New bid always replaces old bid no matter winner.
-			
+	public Boolean raiseOwnBid(AuctionBid otherBid) {
+		if (bidder.equals(otherBid.bidder)) {
 			// Move reserve money here.
-			reserve = reserve + challenger.reserve;
-			challenger.reserve = 0;
-			
-			// Maxbid only updates up.
-			maxBidAmount = Math.max(maxBidAmount, challenger.maxBidAmount);
+			reserve = reserve + otherBid.reserve;
+			otherBid.reserve = 0;
 
-			if (bidAmount > challenger.bidAmount) {
+			// Maxbid only updates up.
+			maxBidAmount = Math.max(maxBidAmount, otherBid.maxBidAmount);
+
+			if (bidAmount > otherBid.bidAmount) {
 				// The bid has been raised.
 				return true;
 			} else {
 				// The bid has not been raised (don't forget, this bid still needs to replace the old one).
-				bidAmount = challenger.bidAmount;
+				bidAmount = otherBid.bidAmount;
 				return false;
 			}
 		} else {
-			// TODO: Make more organic :).
-			if (maxBidAmount > challenger.maxBidAmount) {
-				bidAmount = Math.max(bidAmount, Math.min(challenger.maxBidAmount + auction.getMinBidIncrement(), maxBidAmount));
-				return true;
-			} else {
-				challenger.bidAmount = Math.max(challenger.bidAmount, Math.min(maxBidAmount + auction.getMinBidIncrement(), challenger.maxBidAmount));
-				return false;
-			}
+			// Don't take reserve unless it's the same person's money.
+			return false;
+		}
+	}
+	public Boolean raiseBid(Integer newBidAmount) {
+		if (newBidAmount <= maxBidAmount && newBidAmount >= bidAmount) {
+			bidAmount = newBidAmount;
+			return true;
+		} else {
+			return false;
 		}
 	}
 	private Boolean parseArgBid() {

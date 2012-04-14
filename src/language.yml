@@ -30,7 +30,7 @@ auction-fail-not-owner-end: You cannot end auctions you did not start.
 bid-success-no-challenger: '%B has bid %b on the %i.'
 bid-success-outbid: '%B raised the bid to %b.'
 bid-success-update-own-bid: '%B raised the bid to %b.'
-BID_SUCCESS_UPDATE_OWN_MAX_BID: You raised your own bid to %h.
+bid-success-update-own-maxbid: You raised your own bid to %h.
 bid-fail-is-auction-owner: You cannot bid on your own auction.
 bid-fail-already-current-bidder: You (apparently) can't outbid yourself.
 BID_FAIL_NO_PERMISSION: You haven't permission to bid.

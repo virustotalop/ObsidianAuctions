@@ -252,6 +252,10 @@ public class floAuction extends JavaPlugin {
     
     public void sendMessage(String messageKey, CommandSender player, Auction auction) {
 
+    	if (messageKey == null) {
+    		return;
+    	}
+    	
     	String owner = null;
     	String quantity = null;
     	String lotType = null;

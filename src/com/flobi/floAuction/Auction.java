@@ -121,6 +121,7 @@ public class Auction {
 	}
 	public void Bid(Player bidder, String[] inputArgs) {
 		AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
+		Integer previousBidAmount = currentBid.getBidAmount();
 		if (bid.getError() != null) {
 			failBid(bid, bid.getError());
 			return;
@@ -134,7 +135,7 @@ public class Auction {
 			return;
 		}
 		if (currentBid.getBidder().equals(bidder)) {
-			if (bid.outbid(currentBid)) {
+			if (bid.raiseOwnBid(currentBid)) {
 				setNewBid(bid, "bid-success-update-own-bid");
 			} else {
 				if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
@@ -145,13 +146,61 @@ public class Auction {
 			}
 			return;
 		}
-		if (currentBid.outbid(bid)) {
-			failBid(bid, "bid-fail-auto-outbid");
-			return;
+		AuctionBid winner = null;
+		AuctionBid looser = null;
+		
+		if (plugin.getConfig().getBoolean("use-old-bid-logic")) {
+			if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
+				winner = bid;
+				looser = currentBid;
+			} else {
+				winner = currentBid;
+				looser = bid;
+			}
+			winner.raiseBid(Math.max(winner.getBidAmount(), Math.min(winner.getMaxBidAmount(), looser.getBidAmount() + minBidIncrement)));
 		} else {
-			setNewBid(bid, "bid-success-outbid");
-			return;
+			// If you follow what this does, congratulations.  
+			Integer baseBid = 0;
+			if (bid.getBidAmount() >= currentBid.getBidAmount() + minBidIncrement) {
+				baseBid = bid.getBidAmount();
+			} else {
+				baseBid = currentBid.getBidAmount() + minBidIncrement;
+			}
+			
+			Integer prevSteps = (int) Math.floor((double)(currentBid.getMaxBidAmount() - baseBid + minBidIncrement) / minBidIncrement / 2);
+			Integer newSteps = (int) Math.floor((double)(bid.getMaxBidAmount() - baseBid) / minBidIncrement / 2);
+
+			if (newSteps >= prevSteps) {
+				winner = bid;
+				winner.raiseBid(baseBid + (Math.max(0, prevSteps) * minBidIncrement * 2));
+				looser = currentBid;
+			} else {
+				winner = currentBid;
+				winner.raiseBid(baseBid + (Math.max(0, newSteps + 1) * minBidIncrement * 2) - minBidIncrement);
+				looser = bid;
+			}
+			
 		}
+
+		if (previousBidAmount <= winner.getBidAmount()) {
+			// Did the new bid win?
+			if (winner.equals(bid)) {
+				setNewBid(bid, "bid-success-outbid");
+			} else {
+				// Did the old bid have to raise the bid to stay winner?
+				if (previousBidAmount < winner.getBidAmount()) {
+					failBid(bid, "bid-fail-auto-outbid");
+				} else {
+					failBid(bid, null);
+				}
+			}
+		} else {
+			// Seriously don't know what could cause this, but might as well take care of it.
+			plugin.sendMessage("bid-fail-too-low", bid.getBidder(), this);
+		}
+		
+		
+		
 	}
 	private void failBid(AuctionBid newBid, String reason) {
 		newBid.cancelBid();
