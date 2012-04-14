@@ -119,7 +119,6 @@ public class Auction {
 	}
 	public void Bid(Player bidder, String[] inputArgs) {
 		AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
-		Integer previousBidAmount = currentBid.getBidAmount();
 		if (bid.getError() != null) {
 			failBid(bid, bid.getError());
 			return;
@@ -132,6 +131,7 @@ public class Auction {
 			setNewBid(bid, "bid-success-no-challenger");
 			return;
 		}
+		Integer previousBidAmount = currentBid.getBidAmount();
 		if (currentBid.getBidder().equals(bidder)) {
 			if (bid.raiseOwnBid(currentBid)) {
 				setNewBid(bid, "bid-success-update-own-bid");
