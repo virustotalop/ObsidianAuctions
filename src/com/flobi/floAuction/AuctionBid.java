@@ -37,11 +37,9 @@ public class AuctionBid {
 		} else {
 			amountToReserve = maxBidAmount;
 		}
-		bidder.sendMessage("Reserving " + floAuction.econ.format(functions.unsafeMoney(amountToReserve)));
 		EconomyResponse receipt = floAuction.econ.withdrawPlayer(bidder.getName(), functions.unsafeMoney(amountToReserve));
 		if (receipt.transactionSuccess()) {
 			reserve = receipt.amount;
-			bidder.sendMessage("Reserved " + floAuction.econ.format(reserve));
 			return true;
 		} else {
 			error = "bid-fail-cant-allocate-funds";

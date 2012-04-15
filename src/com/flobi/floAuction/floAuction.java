@@ -179,7 +179,7 @@ public class floAuction extends JavaPlugin {
     			) {
     				// Start new auction!
     	    		if (player == null) {
-    	    			sendMessage("auction-fail-console", null, null);
+    	    			sendMessage("auction-fail-console", console, null);
     	    		} else {
         				if (auction == null) {
         					auction = new Auction(this, player, args);
@@ -239,9 +239,9 @@ public class floAuction extends JavaPlugin {
     		return true;
     	} else if (cmd.getName().equalsIgnoreCase("bid")) {
     		if (player == null) {
-    			sendMessage("bid-fail-console", null, null);
+    			sendMessage("bid-fail-console", console, null);
     		} else if (auction == null) {
-    			sendMessage("bid-fail-no-auction", null, null);
+    			sendMessage("bid-fail-no-auction", player, null);
     		} else {
     			auction.Bid(player, args);
     		}

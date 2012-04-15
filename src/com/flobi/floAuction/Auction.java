@@ -88,7 +88,7 @@ public class Auction {
 		}
 	}
 	public void cancel(Player canceller) {
-		plugin.sendMessage("auction-cancel", canceller, this);
+		plugin.sendMessage("auction-cancel", null, this);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
 		plugin.detachAuction(this);
@@ -97,11 +97,11 @@ public class Auction {
 
 		plugin.getServer().getScheduler().cancelTask(countdownTimer);
 		if (currentBid == null || lot == null) {
-			plugin.sendMessage("auction-end-nobids", ender, this);
+			plugin.sendMessage("auction-end-nobids", null, this);
 			if (lot != null) lot.cancelLot();
 			if (currentBid != null) currentBid.cancelBid();
 		} else {
-			plugin.sendMessage("auction-end", ender, this);
+			plugin.sendMessage("auction-end", null, this);
 			lot.winLot(currentBid.getBidder());
 			currentBid.winBid();
 		}
@@ -209,7 +209,7 @@ public class Auction {
 			currentBid.cancelBid();
 		}
 		currentBid = newBid;
-		plugin.sendMessage(reason, newBid.getBidder(), this);
+		plugin.sendMessage(reason, null, this);
 	}
 	private Boolean parseHeldItem() {
 		ItemStack heldItem = owner.getItemInHand();
