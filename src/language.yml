@@ -38,6 +38,8 @@ bid-fail-cant-allocate-funds: '&6You cannot afford that bid.'
 bid-fail-no-bidder: '&6A non-player tried to bid on an auction?'
 bid-fail-console: &6Console bidding is prohibited.
 bid-fail-no-auction: '&6There is no auction at this time on which to bid.'
+bid-fail-auto-outbid: '&6You have been automatically outbic.'
+bid-auto-outbid: '&b%B&9 has raised the bid to &6%b&9.'
 
 auction-cancel: The auction has been cancelled.
 auction-end-nobids: The auction ended with no bids.

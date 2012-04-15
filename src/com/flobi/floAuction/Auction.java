@@ -187,6 +187,7 @@ public class Auction {
 			} else {
 				// Did the old bid have to raise the bid to stay winner?
 				if (previousBidAmount < winner.getBidAmount()) {
+					plugin.sendMessage("bid-auto-outbid", null, this);
 					failBid(bid, "bid-fail-auto-outbid");
 				} else {
 					failBid(bid, null);
