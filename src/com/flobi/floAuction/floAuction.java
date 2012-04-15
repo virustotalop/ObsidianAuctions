@@ -289,8 +289,8 @@ public class floAuction extends JavaPlugin {
 	
 			if (auction.getCurrentBid() != null) {
 				currentBidder = auction.getCurrentBid().getBidder().getName();
-				currentBid = Integer.toString(auction.getCurrentBid().getBidAmount());
-				currentMaxBid = Integer.toString(auction.getCurrentBid().getMaxBidAmount());
+				currentBid = econ.format(functions.unsafeMoney(auction.getCurrentBid().getBidAmount()));
+				currentMaxBid = econ.format(functions.unsafeMoney(auction.getCurrentBid().getMaxBidAmount()));
 			} else {
 				currentBidder = "noone";
 				currentBid = startingBid;

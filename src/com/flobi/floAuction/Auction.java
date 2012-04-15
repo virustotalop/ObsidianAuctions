@@ -205,7 +205,9 @@ public class Auction {
 		plugin.sendMessage(reason, newBid.getBidder(), this);
 	}
 	private void setNewBid(AuctionBid newBid, String reason) {
-		currentBid.cancelBid();
+		if (currentBid != null) {
+			currentBid.cancelBid();
+		}
 		currentBid = newBid;
 		plugin.sendMessage(reason, newBid.getBidder(), this);
 	}

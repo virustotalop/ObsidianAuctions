@@ -26,7 +26,7 @@ public class AuctionBid {
 	private boolean reserveBidFunds() {
 		int amountToReserve = 0;
 		AuctionBid currentBid = auction.getCurrentBid(); 
-		if (currentBid.getBidder().equals(bidder)) {
+		if (currentBid != null && currentBid.getBidder().equals(bidder)) {
 			// Same bidder: only reserve difference.
 			if (maxBidAmount > currentBid.getMaxBidAmount()) {
 				amountToReserve = currentBid.getMaxBidAmount() - maxBidAmount;
@@ -37,9 +37,11 @@ public class AuctionBid {
 		} else {
 			amountToReserve = maxBidAmount;
 		}
+		bidder.sendMessage("Reserving " + floAuction.econ.format(functions.unsafeMoney(amountToReserve)));
 		EconomyResponse receipt = floAuction.econ.withdrawPlayer(bidder.getName(), functions.unsafeMoney(amountToReserve));
 		if (receipt.transactionSuccess()) {
 			reserve = receipt.amount;
+			bidder.sendMessage("Reserved " + floAuction.econ.format(reserve));
 			return true;
 		} else {
 			error = "bid-fail-cant-allocate-funds";
@@ -73,7 +75,7 @@ public class AuctionBid {
 	private Boolean parseArgs() {
 		if (!parseArgBid()) return false;
 		if (!parseArgMaxBid()) return false;
-		return false;
+		return true;
 	}
 	public Boolean raiseOwnBid(AuctionBid otherBid) {
 		if (bidder.equals(otherBid.bidder)) {
@@ -119,7 +121,7 @@ public class AuctionBid {
 		}
 		// If the person bids 0, make it automatically the next increment (unless it's the current bidder).
 		if (bidAmount == 0) {
-			AuctionBid currentBid =  auction.getCurrentBid();
+			AuctionBid currentBid = auction.getCurrentBid();
 			if (currentBid == null) {
 				// Use the starting bid if no one has bid yet.
 				bidAmount = auction.getStartingBid();

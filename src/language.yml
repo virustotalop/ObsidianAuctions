@@ -32,7 +32,7 @@ bid-success-outbid: '&b%B&9 raised the bid to &6%b&9.'
 bid-success-update-own-bid: '&b%B&9 raised the bid to &6%b&9.'
 bid-success-update-own-maxbid: You raised your own max bid to &6%h&9.
 bid-fail-is-auction-owner: '&6You cannot bid on your own auction.'
-bid-fail-already-current-bidder: '&6You (apparently) cannot outbid yourself.'
+bid-fail-already-current-bidder: '&6Your bid remains unchanged.'
 BID_FAIL_NO_PERMISSION: '&6You have no permission to bid.'
 bid-fail-cant-allocate-funds: '&6You cannot afford that bid.'
 bid-fail-no-bidder: '&6A non-player tried to bid on an auction?'
@@ -57,7 +57,7 @@ auction-help:
 - /auction cancel|c - Cancels current auction
 - /auction info|i - Returns current auction information. 
 
-auction-info-header: '&b%O&9 is auctioning &f%q &a%i&9 for &c%t&9.'
+auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-nobids: '&b%O&9 is auctioning &f%q %i&9 for &c%t&9.'
 auction-info-enchantment: 'Item contains enchantment: &a%E'
 auction-info-footer: 

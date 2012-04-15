@@ -50,8 +50,8 @@ public class functions {
 	}
 	
 	public static int safeMoney(Double money) {
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        return Integer.valueOf(twoDForm.format(money).replace(".", ""));
+        DecimalFormat twoDForm = new DecimalFormat("#");
+        return Integer.valueOf(twoDForm.format(money * 100));
 	}
 	public static double unsafeMoney(int money) {
 		return (double)money / 100;
