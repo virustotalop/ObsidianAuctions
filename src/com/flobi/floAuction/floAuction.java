@@ -410,6 +410,7 @@ public class floAuction extends JavaPlugin {
 				log.severe("Cannot save config.yml");
 			}
 	    }
+	    configFile = null;
 	    if (textConfigFile == null) {
 	    	textConfigFile = new File(dataFolder, "language.yml");
 	    }
@@ -432,6 +433,7 @@ public class floAuction extends JavaPlugin {
 				log.severe("Cannot save language.yml");
 			}
 	    }
+	    textConfigFile = null;
     }
 }
 
