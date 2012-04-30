@@ -16,10 +16,9 @@ commands:
     usage: Type /<command> for instructions.
   bid:
     description: List how many times you have died by fire.
-    aliases: [burning_deaths, burningDeaths]
     permission: auction.bid
     usage: |
-      /<command> [player]
+      /<command> [bit amount] [max bid]
       Example: /<command> - see how many times you have burned to death
       Example: /<command> CaptainIce - see how many times CaptainIce has burned to death
 
