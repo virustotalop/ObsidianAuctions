@@ -2,9 +2,10 @@ package com.flobi.utility;
 
 import java.text.DecimalFormat;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import com.flobi.floAuction.floAuction;
 
 public class functions {
 
@@ -28,8 +29,8 @@ public class functions {
 		return true;
 	}
 
-	public static boolean hasAmount(Player player, int amount, ItemStack compareItem){
-		int has = getAmount(player, compareItem);
+	public static boolean hasAmount(String playerName, int amount, ItemStack compareItem){
+		int has = getAmount(playerName, compareItem);
 		if (has >= amount) {
 			return true;
 		} else {
@@ -37,8 +38,8 @@ public class functions {
 		}
 	}
 
-	public static int getAmount(Player player, ItemStack compareItem) {
-		PlayerInventory inventory = player.getInventory();
+	public static int getAmount(String playerName, ItemStack compareItem) {
+		PlayerInventory inventory = floAuction.server.getPlayer(playerName).getInventory();
 		ItemStack[] items = inventory.getContents();
 		int has = 0;
 		for (ItemStack item : items) {

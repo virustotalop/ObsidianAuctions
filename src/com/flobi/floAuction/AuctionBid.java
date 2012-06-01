@@ -55,7 +55,7 @@ public class AuctionBid {
 		Double unsafeBidAmount = functions.unsafeMoney(bidAmount);
 		
 		// Apply winnings to auction owner.
-		floAuction.econ.depositPlayer(auction.getOwner().getName(), unsafeBidAmount);
+		floAuction.econ.depositPlayer(auction.getOwner(), unsafeBidAmount);
 
 		// Refund remaining reserve.
 		floAuction.econ.depositPlayer(bidder.getName(), reserve - unsafeBidAmount);

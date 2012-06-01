@@ -19,6 +19,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -62,6 +63,8 @@ public class floAuction extends JavaPlugin {
 	private static YamlConfiguration defTextConfig = null;
 	private static File dataFolder;
 	private static ConsoleCommandSender console;
+	public static Server server;
+	
 	
 	// In case items can't be given for some reason, save them
 	public static ArrayList<AuctionLot> OrphanLots = new ArrayList<AuctionLot>();
@@ -79,12 +82,14 @@ public class floAuction extends JavaPlugin {
 			// Hmm, only if they're actually orphans though.
 			if (orphanDeathRow.get(i) != null) {
 				// And only if they belong to player.
-				if (orphanDeathRow.get(i).getOwner().equals(player)) {
-					orphanDeathRow.get(i).cancelLot();
+				AuctionLot lot = orphanDeathRow.get(i);
+				
+				if (lot.getOwner().equalsIgnoreCase(player.getName())) {
+					lot.cancelLot();
 					orphanDeathRow.set(i, null);
 				} else {
 					// This one's still alive, put it back in the orphanage.
-					OrphanLots.add(orphanDeathRow.get(i));
+					OrphanLots.add(lot);
 				}
 			}
 		}
@@ -97,25 +102,26 @@ public class floAuction extends JavaPlugin {
     public static Chat chat = null;
 
 	public void onEnable() {
-		console = getServer().getConsoleSender();
+		server = getServer();
+		console = server.getConsoleSender();
 		dataFolder = getDataFolder();
 		defConfigStream = getResource("config.yml");
 		defTextConfigStream = getResource("language.yml");
         loadConfig();
-		if (getServer().getPluginManager().getPlugin("WhatIsIt") == null) {
+		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
 			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-whatisit")));
-            getServer().getPluginManager().disablePlugin(this);
+			server.getPluginManager().disablePlugin(this);
             return;
 		}
 		if (!setupEconomy() ) {
 			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-vault")));
-            getServer().getPluginManager().disablePlugin(this);
+			server.getPluginManager().disablePlugin(this);
             return;
         }
         setupPermissions();
         setupChat();
         
-        getServer().getPluginManager().registerEvents(new Listener() {
+        server.getPluginManager().registerEvents(new Listener() {
             @SuppressWarnings("unused")
 			@EventHandler
             public void playerJoin(PlayerJoinEvent event) {
@@ -208,7 +214,7 @@ public class floAuction extends JavaPlugin {
     				if (auction == null) {
     					sendMessage("auction-fail-no-auction-exists", player, auction);
     				} else {
-    					if (player.equals(auction.getOwner())) {
+    					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
 	    					auction.cancel(player);
 	    					// TODO: Make scope specific
 	    					publicAuction = null;
@@ -221,7 +227,7 @@ public class floAuction extends JavaPlugin {
     				if (auction == null) {
     					sendMessage("auction-fail-no-auction-exists", player, auction);
     				} else {
-    					if (player.equals(auction.getOwner())) {
+    					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
 	    					auction.end(player);
 	    					// TODO: Make scope specific
 	    					publicAuction = null;
@@ -254,7 +260,7 @@ public class floAuction extends JavaPlugin {
     	return false;
     }
     
-    public void sendMessage(String messageKey, CommandSender player, Auction auction) {
+    public static void sendMessage(String messageKey, CommandSender player, Auction auction) {
 
     	if (messageKey == null) {
     		return;
@@ -273,7 +279,7 @@ public class floAuction extends JavaPlugin {
 
     	if (auction != null) {
     		
-    		if (auction.getOwner() != null) owner = auction.getOwner().getName();
+    		if (auction.getOwner() != null) owner = auction.getOwner();
     		quantity = Integer.toString(auction.getLotQuantity());
     		lotType = WhatIsIt.itemName(auction.getLotType());
     		if (auction.getStartingBid() == 0) {
@@ -351,7 +357,7 @@ public class floAuction extends JavaPlugin {
 	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
 	        			message = originalMessage.replace("%E", WhatIsIt.enchantmentName(enchantment));
 		            	if (player == null) {
-		        	    	getServer().broadcastMessage(message);
+		            		server.broadcastMessage(message);
 		            	} else {
 		        	    	player.sendMessage(message);
 		            	}
@@ -360,7 +366,7 @@ public class floAuction extends JavaPlugin {
     			}
 			} else {
 		    	if (player == null) {
-			    	getServer().broadcastMessage(message);
+		    		server.broadcastMessage(message);
 		    	} else {
 			    	player.sendMessage(message);
 		    	}
@@ -369,7 +375,7 @@ public class floAuction extends JavaPlugin {
     	}
     	
     }
-    private void log(String scope, CommandSender player, String message) {
+    private static void log(String scope, CommandSender player, String message) {
     	if (logAuctions) {
     		String playerName = null;
     		
@@ -400,10 +406,10 @@ public class floAuction extends JavaPlugin {
 		
 	}
 	private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (server.getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = server.getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }
@@ -412,13 +418,13 @@ public class floAuction extends JavaPlugin {
     }
 
     private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+        RegisteredServiceProvider<Chat> rsp = server.getServicesManager().getRegistration(Chat.class);
         chat = rsp.getProvider();
         return chat != null;
     }
 
     private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        RegisteredServiceProvider<Permission> rsp = server.getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
         return perms != null;
     }
@@ -479,5 +485,13 @@ public class floAuction extends JavaPlugin {
 	    
 	    logAuctions = config.getBoolean("log-auctions");
     }
+	public static void sendMessage(String messageKey, String playerName, Auction auction) {
+		if (playerName == null) {
+			sendMessage(messageKey, (CommandSender) null, auction);
+		} else {
+			sendMessage(messageKey, server.getPlayer(playerName), auction);
+		}
+		
+	}
 }
 

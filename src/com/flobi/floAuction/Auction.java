@@ -9,7 +9,7 @@ import com.flobi.utility.functions;
 public class Auction {
 	protected floAuction plugin;
 	private String[] args;
-	private Player owner;
+	private String ownerName;
 	private String scope;
 
 	private int startingBid = 0;
@@ -30,7 +30,7 @@ public class Auction {
 	}
 	
 	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, String scope) {
-		owner = auctionOwner;
+		ownerName = auctionOwner.getName();
 		args = inputArgs;
 		this.plugin = plugin; 
 		this.scope = scope;
@@ -46,11 +46,11 @@ public class Auction {
 	}
 	public Boolean start() {
 		if (!lot.AddItems(quantity, true)) {
-			plugin.sendMessage("auction-fail-insufficient-supply", owner, this);
+			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, this);
 			return false;
 		}
 		active = true;
-		plugin.sendMessage("auction-start", null, this);
+		floAuction.sendMessage("auction-start", (CommandSender) null, this);
 		
 		// Set timer:
 		final Auction thisAuction = this;
@@ -64,12 +64,12 @@ public class Auction {
 		    		return;
 		    	}
 		    	if (thisAuction.countdown < 4) {
-			    	plugin.sendMessage("timer-countdown-notification", null, thisAuction);
+			    	floAuction.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction);
 			    	return;
 		    	}
 		    	if (thisAuction.time >= 20) {
 		    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
-				    	plugin.sendMessage("timer-countdown-notification", null, thisAuction);
+				    	floAuction.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction);
 		    		}
 		    	}
 		    }
@@ -80,31 +80,31 @@ public class Auction {
 	}
 	public void info(CommandSender sender) {
 		if (!active) {
-			plugin.sendMessage("auction-info-no-auction", sender, this);
+			floAuction.sendMessage("auction-info-no-auction", sender, this);
 		} else if (currentBid == null) {
-			plugin.sendMessage("auction-info-header-nobids", sender, this);
-			plugin.sendMessage("auction-info-enchantment", sender, this);
-			plugin.sendMessage("auction-info-footer-nobids", sender, this);
+			floAuction.sendMessage("auction-info-header-nobids", sender, this);
+			floAuction.sendMessage("auction-info-enchantment", sender, this);
+			floAuction.sendMessage("auction-info-footer-nobids", sender, this);
 		} else {
-			plugin.sendMessage("auction-info-header", sender, this);
-			plugin.sendMessage("auction-info-enchantment", sender, this);
-			plugin.sendMessage("auction-info-footer", sender, this);
+			floAuction.sendMessage("auction-info-header", sender, this);
+			floAuction.sendMessage("auction-info-enchantment", sender, this);
+			floAuction.sendMessage("auction-info-footer", sender, this);
 		}
 	}
 	public void cancel(Player canceller) {
-		plugin.sendMessage("auction-cancel", null, this);
+		floAuction.sendMessage("auction-cancel", (CommandSender) null, this);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
 		dispose();
 	}
 	public void end(Player ender) {
 		if (currentBid == null || lot == null) {
-			plugin.sendMessage("auction-end-nobids", null, this);
+			floAuction.sendMessage("auction-end-nobids", (CommandSender) null, this);
 			if (lot != null) lot.cancelLot();
 			if (currentBid != null) currentBid.cancelBid();
 		} else {
-			plugin.sendMessage("auction-end", null, this);
-			lot.winLot(currentBid.getBidder());
+			floAuction.sendMessage("auction-end", (CommandSender) null, this);
+			lot.winLot(currentBid.getBidder().getName());
 			currentBid.winBid();
 		}
 		dispose();
@@ -129,9 +129,9 @@ public class Auction {
 			failBid(bid, bid.getError());
 			return;
 		}
-		if (owner.equals(bidder) && !plugin.getConfig().getBoolean("allow-bid-on-own-auction")) {
-			failBid(bid, "bid-fail-is-auction-owner");
-			return;
+		if (ownerName.equals(bidder.getName()) && !plugin.getConfig().getBoolean("allow-bid-on-own-auction")) {
+//			failBid(bid, "bid-fail-is-auction-owner");
+//			return;
 		}
 		if (currentBid == null) {
 			setNewBid(bid, "bid-success-no-challenger");
@@ -193,7 +193,7 @@ public class Auction {
 			} else {
 				// Did the old bid have to raise the bid to stay winner?
 				if (previousBidAmount < winner.getBidAmount()) {
-					plugin.sendMessage("bid-auto-outbid", null, this);
+					floAuction.sendMessage("bid-auto-outbid", (CommandSender) null, this);
 					failBid(bid, "bid-fail-auto-outbid");
 				} else {
 					failBid(bid, null);
@@ -201,7 +201,7 @@ public class Auction {
 			}
 		} else {
 			// Seriously don't know what could cause this, but might as well take care of it.
-			plugin.sendMessage("bid-fail-too-low", bid.getBidder(), this);
+			floAuction.sendMessage("bid-fail-too-low", bid.getBidder(), this);
 		}
 		
 		
@@ -209,22 +209,23 @@ public class Auction {
 	}
 	private void failBid(AuctionBid newBid, String reason) {
 		newBid.cancelBid();
-		plugin.sendMessage(reason, newBid.getBidder(), this);
+		floAuction.sendMessage(reason, newBid.getBidder(), this);
 	}
 	private void setNewBid(AuctionBid newBid, String reason) {
 		if (currentBid != null) {
 			currentBid.cancelBid();
 		}
 		currentBid = newBid;
-		plugin.sendMessage(reason, null, this);
+		floAuction.sendMessage(reason, (CommandSender) null, this);
 	}
 	private Boolean parseHeldItem() {
+		Player owner = floAuction.server.getPlayer(ownerName);
 		ItemStack heldItem = owner.getItemInHand();
 		if (heldItem == null || heldItem.getAmount() == 0) {
-			plugin.sendMessage("auction-fail-hand-is-empty", owner, this);
+			floAuction.sendMessage("auction-fail-hand-is-empty", owner, this);
 			return false;
 		}
-		lot = new AuctionLot(plugin, heldItem, owner);
+		lot = new AuctionLot(plugin, heldItem, ownerName);
 		return true;
 	}
 	private Boolean parseArgs() {
@@ -236,51 +237,51 @@ public class Auction {
 		return true;
 	}
 	private Boolean isValidOwner() {
-		if (owner == null) {
-			plugin.sendMessage("auction-fail-invalid-owner", (Player) plugin.getServer().getConsoleSender(), this);
+		if (ownerName == null) {
+			floAuction.sendMessage("auction-fail-invalid-owner", (Player) plugin.getServer().getConsoleSender(), this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidAmount() {
 		if (quantity <= 0) {
-			plugin.sendMessage("auction-fail-quantity-too-low", owner, this);
+			floAuction.sendMessage("auction-fail-quantity-too-low", ownerName, this);
 			return false;
 		}
-		if (!functions.hasAmount(owner, quantity, lot.getTypeStack())) {
-			plugin.sendMessage("auction-fail-insufficient-supply", owner, this);
+		if (!functions.hasAmount(ownerName, quantity, lot.getTypeStack())) {
+			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidStartingBid() {
 		if (startingBid < 0) {
-			plugin.sendMessage("auction-fail-starting-bid-too-low", owner, this);
+			floAuction.sendMessage("auction-fail-starting-bid-too-low", ownerName, this);
 			return false;
 		} else if (startingBid > plugin.maxStartingBid) {
-			plugin.sendMessage("auction-fail-starting-bid-too-high", owner, this);
+			floAuction.sendMessage("auction-fail-starting-bid-too-high", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidIncrement() {
 		if (getMinBidIncrement() < plugin.minIncrement) {
-			plugin.sendMessage("auction-fail-increment-too-low", owner, this);
+			floAuction.sendMessage("auction-fail-increment-too-low", ownerName, this);
 			return false;
 		}
 		if (getMinBidIncrement() > plugin.maxIncrement) {
-			plugin.sendMessage("auction-fail-increment-too-high", owner, this);
+			floAuction.sendMessage("auction-fail-increment-too-high", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidTime() {
 		if (time < plugin.minTime) {
-			plugin.sendMessage("auction-fail-time-too-low", owner, this);
+			floAuction.sendMessage("auction-fail-time-too-low", ownerName, this);
 			return false;
 		}
 		if (time > plugin.maxTime) {
-			plugin.sendMessage("auction-fail-time-too-high", owner, this);
+			floAuction.sendMessage("auction-fail-time-too-high", ownerName, this);
 			return false;
 		}
 		return true;
@@ -291,12 +292,12 @@ public class Auction {
 			if (args[0].equalsIgnoreCase("this")) {
 				quantity = lotType.getAmount();
 			} else if (args[0].equalsIgnoreCase("all")) {
-				quantity = functions.getAmount(owner, lotType);
+				quantity = functions.getAmount(ownerName, lotType);
 			} else if (args[0].matches("[0-9]+")) {
 				quantity = Integer.parseInt(args[0]);
 			} else {
 				plugin.getServer().broadcastMessage(args[0]);
-				plugin.sendMessage("parse-error-invalid-quantity", owner, this);
+				floAuction.sendMessage("parse-error-invalid-quantity", ownerName, this);
 				return false;
 			}
 		} else {
@@ -309,7 +310,7 @@ public class Auction {
 			if (args[1].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
 				startingBid = functions.safeMoney(Double.parseDouble(args[1]));
 			} else {
-				plugin.sendMessage("parse-error-invalid-starting-bid", owner, this);
+				floAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
 				return false;
 			}
 		} else {
@@ -322,7 +323,7 @@ public class Auction {
 			if (args[2].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
 				minBidIncrement = functions.safeMoney(Double.parseDouble(args[2]));
 			} else {
-				plugin.sendMessage("parse-error-invalid-bid-increment", owner, this);
+				floAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
 				return false;
 			}
 		} else {
@@ -335,7 +336,7 @@ public class Auction {
 			if (args[3].matches("[0-9]+")) {
 				time = Integer.parseInt(args[3]);
 			} else {
-				plugin.sendMessage("parse-error-invalid-time", owner, this);
+				floAuction.sendMessage("parse-error-invalid-time", ownerName, this);
 				return false;
 			}
 		} else {
@@ -366,8 +367,8 @@ public class Auction {
 	public AuctionBid getCurrentBid() {
 		return currentBid;
 	}
-	public Player getOwner() {
-		return owner;
+	public String getOwner() {
+		return ownerName;
 	}
 	public int getRemainingTime() {
 		return countdown;

@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.flobi.floAuction.floAuction;
+
 
 public class items {
 	/*
@@ -83,16 +85,16 @@ public class items {
 
 	}
 
-	public static boolean hasAmount(Player player, int amount, ItemStack compareItem){
-		int has = getAmount(player, compareItem);
+	public static boolean hasAmount(String ownerName, int amount, ItemStack compareItem){
+		int has = getAmount(ownerName, compareItem);
 		if (has >= amount) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	public static int getAmount(Player player, ItemStack compareItem) {
-		PlayerInventory inventory = player.getInventory();
+	public static int getAmount(String ownerName, ItemStack compareItem) {
+		PlayerInventory inventory = floAuction.server.getPlayer(ownerName).getInventory();
 		ItemStack[] items = inventory.getContents();
 		int has = 0;
 		for (ItemStack item : items) {
@@ -102,47 +104,50 @@ public class items {
 		}
 		return has;
 	}
-	public static void remove(Player player, int amount, ItemStack compareItem){
-		PlayerInventory inventory = player.getInventory();
-    	
-    	// Remove held item first:
-		if (isSameItem(compareItem, player.getItemInHand())) { 
-	    	int heldAmount = player.getItemInHand().getAmount();
-	    	if (heldAmount <= amount) {
-	    		amount -= heldAmount;
-	    		inventory.clear(inventory.getHeldItemSlot());
-	    	} else {
-	    		player.getItemInHand().setAmount(heldAmount - amount);
-	    		amount = 0;
+	public static void remove(String playerName, int amount, ItemStack compareItem){
+		Player player = floAuction.server.getPlayer(playerName);
+		if (player != null) {
+			PlayerInventory inventory = player.getInventory();
+	    	
+	    	// Remove held item first:
+			if (isSameItem(compareItem, player.getItemInHand())) { 
+		    	int heldAmount = player.getItemInHand().getAmount();
+		    	if (heldAmount <= amount) {
+		    		amount -= heldAmount;
+		    		inventory.clear(inventory.getHeldItemSlot());
+		    	} else {
+		    		player.getItemInHand().setAmount(heldAmount - amount);
+		    		amount = 0;
+		    	}
+			}
+	    	
+	    	int counter = amount;
+	    	int leftover = 0;
+	
+	    	// Remove from other stacks:
+	    	for (int invIndex = 0; invIndex < inventory.getSize(); invIndex++) {
+	    		ItemStack current = inventory.getItem(invIndex);
+	
+	    		if (current == null || current.getAmount() <= 0) 
+	    			continue;
+	    		
+	    		if (!isSameItem(compareItem, current)) 
+	    			continue;
+	
+	    		if (current.getAmount() > counter) {
+	    			leftover = current.getAmount() - counter;
+	    		}
+	
+	    		if (leftover != 0) {
+	    			current.setAmount(leftover);
+	    			counter = 0;
+	    			break;
+	    		} else {
+	    			counter -= current.getAmount();
+	    			inventory.clear(invIndex);
+	    		}
 	    	}
 		}
-    	
-    	int counter = amount;
-    	int leftover = 0;
-
-    	// Remove from other stacks:
-    	for (int invIndex = 0; invIndex < inventory.getSize(); invIndex++) {
-    		ItemStack current = inventory.getItem(invIndex);
-
-    		if (current == null || current.getAmount() <= 0) 
-    			continue;
-    		
-    		if (!isSameItem(compareItem, current)) 
-    			continue;
-
-    		if (current.getAmount() > counter) {
-    			leftover = current.getAmount() - counter;
-    		}
-
-    		if (leftover != 0) {
-    			current.setAmount(leftover);
-    			counter = 0;
-    			break;
-    		} else {
-    			counter -= current.getAmount();
-    			inventory.clear(invIndex);
-    		}
-    	}
 	}
 
 	public static boolean isEnchantable(ItemStack heldItem) {
