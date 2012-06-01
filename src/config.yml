@@ -1,3 +1,14 @@
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
 log-auctions: false
+
+default-starting-bid: 0
+max-starting-bid: 10000
+
+default-bid-increment: 1
+min-bid-increment: 1
+max-bid-increment: 100
+
+default-auction-time: 60
+min-auction-time: 15
+max-auction-time: 120

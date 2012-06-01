@@ -41,14 +41,14 @@ public class floAuction extends JavaPlugin {
 	public Auction publicAuction;
 
 	// Got to figure out a better way to store these:
-	public int defaultStartingBid = 100;
-	public int defaultBidIncrement = 100;
-	public int defaultAuctionTime = 60;
-	public int maxStartingBid = 10000;
-	public int minIncrement = 1;
-	public int maxIncrement = 100;
-	public int maxTime = 60;
-	public int minTime = 15;
+	public static int defaultStartingBid = 0;
+	public static int defaultBidIncrement = 100;
+	public static int defaultAuctionTime = 60;
+	public static int maxStartingBid = 10000;
+	public static int minIncrement = 1;
+	public static int maxIncrement = 100;
+	public static int maxTime = 60;
+	public static int minTime = 15;
 	public static boolean logAuctions = false;
 	private static File auctionLog = null;
 	
@@ -484,6 +484,15 @@ public class floAuction extends JavaPlugin {
 	    textConfigFile = null;
 	    
 	    logAuctions = config.getBoolean("log-auctions");
+	    
+	    defaultStartingBid = functions.safeMoney(config.getDouble("default-starting-bid"));
+		defaultBidIncrement = functions.safeMoney(config.getDouble("default-bid-increment"));
+		defaultAuctionTime = config.getInt("default-auction-time");
+		maxStartingBid = functions.safeMoney(config.getDouble("max-starting-bid"));
+		minIncrement = functions.safeMoney(config.getDouble("min-bid-increment"));
+		maxIncrement = functions.safeMoney(config.getDouble("max-bid-increment"));
+		maxTime = config.getInt("max-auction-time");
+		minTime = config.getInt("min-auction-time");
     }
 	public static void sendMessage(String messageKey, String playerName, Auction auction) {
 		if (playerName == null) {

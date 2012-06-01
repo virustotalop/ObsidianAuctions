@@ -107,7 +107,7 @@ public class AuctionBid {
 	}
 	private Boolean parseArgBid() {
 		if (args.length > 0) {
-			if (args[0].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
+			if (args[0].matches("([0-9]{0,7}(\\.[0-9][0-9]?)?)")) {
 				bidAmount = functions.safeMoney(Double.parseDouble(args[0]));
 			} else {
 				error = "parse-error-invalid-bid";
@@ -134,11 +134,15 @@ public class AuctionBid {
 				bidAmount = currentBid.getBidAmount() + auction.getMinBidIncrement();
 			}
 		}
+		if (bidAmount <= 0) {
+			error = "parse-error-invalid-bid";
+			return false;
+		}
 		return true;
 	}
 	private Boolean parseArgMaxBid() {
 		if (args.length > 1) {
-			if (args[1].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
+			if (args[1].matches("([0-9]{0,7}(\\.[0-9][0-9]?)?)")) {
 				maxBidAmount = functions.safeMoney(Double.parseDouble(args[1]));
 			} else {
 				error = "parse-error-invalid-max-bid";
@@ -146,6 +150,10 @@ public class AuctionBid {
 			}
 		}
 		maxBidAmount = Math.max(bidAmount, maxBidAmount);
+		if (maxBidAmount <= 0) {
+			error = "parse-error-invalid-max-bid";
+			return false;
+		}
 		return true;
 	}
 

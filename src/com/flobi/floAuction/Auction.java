@@ -130,8 +130,8 @@ public class Auction {
 			return;
 		}
 		if (ownerName.equals(bidder.getName()) && !plugin.getConfig().getBoolean("allow-bid-on-own-auction")) {
-//			failBid(bid, "bid-fail-is-auction-owner");
-//			return;
+			failBid(bid, "bid-fail-is-auction-owner");
+			return;
 		}
 		if (currentBid == null) {
 			setNewBid(bid, "bid-success-no-challenger");
@@ -258,29 +258,29 @@ public class Auction {
 		if (startingBid < 0) {
 			floAuction.sendMessage("auction-fail-starting-bid-too-low", ownerName, this);
 			return false;
-		} else if (startingBid > plugin.maxStartingBid) {
+		} else if (startingBid > floAuction.maxStartingBid) {
 			floAuction.sendMessage("auction-fail-starting-bid-too-high", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidIncrement() {
-		if (getMinBidIncrement() < plugin.minIncrement) {
+		if (getMinBidIncrement() < floAuction.minIncrement) {
 			floAuction.sendMessage("auction-fail-increment-too-low", ownerName, this);
 			return false;
 		}
-		if (getMinBidIncrement() > plugin.maxIncrement) {
+		if (getMinBidIncrement() > floAuction.maxIncrement) {
 			floAuction.sendMessage("auction-fail-increment-too-high", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidTime() {
-		if (time < plugin.minTime) {
+		if (time < floAuction.minTime) {
 			floAuction.sendMessage("auction-fail-time-too-low", ownerName, this);
 			return false;
 		}
-		if (time > plugin.maxTime) {
+		if (time > floAuction.maxTime) {
 			floAuction.sendMessage("auction-fail-time-too-high", ownerName, this);
 			return false;
 		}
@@ -293,7 +293,7 @@ public class Auction {
 				quantity = lotType.getAmount();
 			} else if (args[0].equalsIgnoreCase("all")) {
 				quantity = functions.getAmount(ownerName, lotType);
-			} else if (args[0].matches("[0-9]+")) {
+			} else if (args[0].matches("[0-9]{1,7}")) {
 				quantity = Integer.parseInt(args[0]);
 			} else {
 				plugin.getServer().broadcastMessage(args[0]);
@@ -303,44 +303,60 @@ public class Auction {
 		} else {
 			quantity = lotType.getAmount();
 		}
+		if (quantity < 0) {
+			floAuction.sendMessage("parse-error-invalid-quantity", ownerName, this);
+			return false;
+		}
 		return true;
 	}
 	private Boolean parseArgStartingBid() {
 		if (args.length > 1) {
-			if (args[1].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
+			if (args[1].matches("([0-9]{0,7}(\\.[0-9][0-9]?)?)")) {
 				startingBid = functions.safeMoney(Double.parseDouble(args[1]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
 				return false;
 			}
 		} else {
-			startingBid = plugin.defaultStartingBid;
+			startingBid = floAuction.defaultStartingBid;
+		}
+		if (startingBid < 0) {
+			floAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
+			return false;
 		}
 		return true;
 	}
 	private Boolean parseArgIncrement() {
 		if (args.length > 2) {
-			if (args[2].matches("([0-9]*(\\.[0-9][0-9]?)?)")) {
+			if (args[2].matches("([0-9]{0,7}(\\.[0-9][0-9]?)?)")) {
 				minBidIncrement = functions.safeMoney(Double.parseDouble(args[2]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
 				return false;
 			}
 		} else {
-			minBidIncrement = plugin.defaultBidIncrement;
+			minBidIncrement = floAuction.defaultBidIncrement;
+		}
+		if (minBidIncrement < 0) {
+			floAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
+			return false;
 		}
 		return true;
 	}
 	private Boolean parseArgTime() {
 		if (args.length > 3) {
-			if (args[3].matches("[0-9]+")) {
+			if (args[3].matches("[0-9]{1,7}")) {
 				time = Integer.parseInt(args[3]);
 			} else {
 				floAuction.sendMessage("parse-error-invalid-time", ownerName, this);
 				return false;
 			}
 		} else {
-			time = plugin.defaultAuctionTime;
+			time = floAuction.defaultAuctionTime;
+		}
+		if (time < 0) {
+			floAuction.sendMessage("parse-error-invalid-time", ownerName, this);
+			return false;
 		}
 		return true;
 	}
