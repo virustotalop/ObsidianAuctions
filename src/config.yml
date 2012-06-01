@@ -1,2 +1,3 @@
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
+log-auctions: true

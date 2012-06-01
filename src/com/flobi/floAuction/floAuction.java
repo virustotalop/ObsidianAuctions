@@ -1,6 +1,8 @@
 package com.flobi.floAuction;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -46,6 +48,8 @@ public class floAuction extends JavaPlugin {
 	public int maxIncrement = 100;
 	public int maxTime = 60;
 	public int minTime = 15;
+	public static boolean logAuctions = false;
+	private static File auctionLog = null;
 	
 	// Config files info.
 	private static File configFile = null;
@@ -182,7 +186,7 @@ public class floAuction extends JavaPlugin {
     	    			sendMessage("auction-fail-console", console, null);
     	    		} else {
         				if (auction == null) {
-        					auction = new Auction(this, player, args);
+        					auction = new Auction(this, player, args, "public_auction");
         					if (auction.isValid()) {
             					if (auction.start()) {
             						// TODO: assign to respective context
@@ -265,6 +269,7 @@ public class floAuction extends JavaPlugin {
     	String currentBid = null;
     	String currentMaxBid = null;
     	String timeRemaining = null;
+    	String auctionScope = null;
 
     	if (auction != null) {
     		
@@ -296,6 +301,7 @@ public class floAuction extends JavaPlugin {
 				currentBid = startingBid;
 				currentMaxBid = startingBid;
 			}
+			auctionScope = auction.getScope();
     	} else {
         	owner = "-";
         	quantity = "-";
@@ -306,6 +312,7 @@ public class floAuction extends JavaPlugin {
         	currentBid = "-";
         	currentMaxBid = "-";
         	timeRemaining = "-";
+        	auctionScope = "no_auction";
     	}
     	
     	List<String> messageList = textConfig.getStringList(messageKey);
@@ -348,6 +355,7 @@ public class floAuction extends JavaPlugin {
 		            	} else {
 		        	    	player.sendMessage(message);
 		            	}
+		            	log(auctionScope, player, message);
 	        		}
     			}
 			} else {
@@ -356,11 +364,42 @@ public class floAuction extends JavaPlugin {
 		    	} else {
 			    	player.sendMessage(message);
 		    	}
+		    	log(auctionScope, player, message);
 			}
     	}
     	
     }
-    private boolean setupEconomy() {
+    private void log(String scope, CommandSender player, String message) {
+    	if (logAuctions) {
+    		String playerName = null;
+    		
+			BufferedWriter out = null;
+			try {
+		    	if (!auctionLog.exists()) {
+					auctionLog.createNewFile();
+					auctionLog.setWritable(true);
+		    	}
+		    	
+				out = new BufferedWriter(new FileWriter(auctionLog.getAbsolutePath(), true));
+
+				if (player == null) {
+					playerName = "BROADCAST";
+				} else {
+					playerName = player.getName();
+				}
+				
+				out.append(scope + " (" + playerName + "): " + ChatColor.stripColor(message) + "\n");
+				out.close();
+
+			} catch (IOException e) {
+				
+			}
+	    	
+			
+    	}
+		
+	}
+	private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
@@ -391,6 +430,9 @@ public class floAuction extends JavaPlugin {
 		if (configFile == null) {
 	    	configFile = new File(dataFolder, "config.yml");
 	    }
+		if (auctionLog == null) {
+	    	auctionLog = new File(dataFolder, "auctions.log");
+		}
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
@@ -434,6 +476,8 @@ public class floAuction extends JavaPlugin {
 			}
 	    }
 	    textConfigFile = null;
+	    
+	    logAuctions = config.getBoolean("log-auctions");
     }
 }
 

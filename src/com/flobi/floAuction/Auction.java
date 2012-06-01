@@ -10,6 +10,7 @@ public class Auction {
 	protected floAuction plugin;
 	private String[] args;
 	private Player owner;
+	private String scope;
 
 	private int startingBid = 0;
 	private int minBidIncrement = 0;
@@ -24,12 +25,15 @@ public class Auction {
 	private int countdown = 0;
 	private int countdownTimer = 0;
 	
+	public String getScope() {
+		return scope;
+	}
 	
-	
-	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs) {
+	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, String scope) {
 		owner = auctionOwner;
 		args = inputArgs;
 		this.plugin = plugin; 
+		this.scope = scope;
 
 		// Remove the optional "start" arg:
 		if (args.length > 0) {
