@@ -41,12 +41,12 @@ public class floAuction extends JavaPlugin {
 	public Auction publicAuction;
 
 	// Got to figure out a better way to store these:
-	public static int defaultStartingBid = 0;
-	public static int defaultBidIncrement = 100;
+	public static long defaultStartingBid = 0;
+	public static long defaultBidIncrement = 100;
 	public static int defaultAuctionTime = 60;
-	public static int maxStartingBid = 10000;
-	public static int minIncrement = 1;
-	public static int maxIncrement = 100;
+	public static long maxStartingBid = 10000;
+	public static long minIncrement = 1;
+	public static long maxIncrement = 100;
 	public static int maxTime = 60;
 	public static int minTime = 15;
 	public static boolean logAuctions = false;

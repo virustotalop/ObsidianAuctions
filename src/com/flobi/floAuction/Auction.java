@@ -12,8 +12,8 @@ public class Auction {
 	private String ownerName;
 	private String scope;
 
-	private int startingBid = 0;
-	private int minBidIncrement = 0;
+	private long startingBid = 0;
+	private long minBidIncrement = 0;
 	private int quantity = 0;
 	private int time = 0;
 	private boolean active = false;
@@ -137,7 +137,7 @@ public class Auction {
 			setNewBid(bid, "bid-success-no-challenger");
 			return;
 		}
-		Integer previousBidAmount = currentBid.getBidAmount();
+		long previousBidAmount = currentBid.getBidAmount();
 		if (currentBid.getBidder().equals(bidder)) {
 			if (bid.raiseOwnBid(currentBid)) {
 				setNewBid(bid, "bid-success-update-own-bid");
@@ -164,7 +164,7 @@ public class Auction {
 			winner.raiseBid(Math.max(winner.getBidAmount(), Math.min(winner.getMaxBidAmount(), looser.getBidAmount() + minBidIncrement)));
 		} else {
 			// If you follow what this does, congratulations.  
-			Integer baseBid = 0;
+			long baseBid = 0;
 			if (bid.getBidAmount() >= currentBid.getBidAmount() + minBidIncrement) {
 				baseBid = bid.getBidAmount();
 			} else {
@@ -360,7 +360,7 @@ public class Auction {
 		}
 		return true;
 	}
-	public int getMinBidIncrement() {
+	public long getMinBidIncrement() {
 		return minBidIncrement;
 	}
 	
@@ -377,7 +377,7 @@ public class Auction {
 		}
 		return lot.getQuantity();
 	}
-	public int getStartingBid() {
+	public long getStartingBid() {
 		return startingBid;
 	}
 	public AuctionBid getCurrentBid() {

@@ -9,8 +9,8 @@ import com.flobi.utility.functions;
 public class AuctionBid {
 	private Auction auction;
 	private Player bidder;
-	private int bidAmount = 0;
-	private int maxBidAmount = 0;
+	private long bidAmount = 0;
+	private long maxBidAmount = 0;
 	private String error;
 	private String[] args;
 	private double reserve = 0;
@@ -24,7 +24,7 @@ public class AuctionBid {
 		if (!reserveBidFunds()) return;
 	}
 	private boolean reserveBidFunds() {
-		int amountToReserve = 0;
+		long amountToReserve = 0;
 		AuctionBid currentBid = auction.getCurrentBid(); 
 		if (currentBid != null && currentBid.getBidder().equals(bidder)) {
 			// Same bidder: only reserve difference.
@@ -97,7 +97,7 @@ public class AuctionBid {
 			return false;
 		}
 	}
-	public Boolean raiseBid(Integer newBidAmount) {
+	public Boolean raiseBid(Long newBidAmount) {
 		if (newBidAmount <= maxBidAmount && newBidAmount >= bidAmount) {
 			bidAmount = newBidAmount;
 			return true;
@@ -163,10 +163,10 @@ public class AuctionBid {
 	public Player getBidder() {
 		return bidder;
 	}
-	public int getBidAmount() {
+	public long getBidAmount() {
 		return bidAmount;
 	}
-	public int getMaxBidAmount() {
+	public long getMaxBidAmount() {
 		return maxBidAmount;
 	}
 	public void setReserve(double newReserve) {
