@@ -296,9 +296,9 @@ public class floAuction extends JavaPlugin {
     		quantity = Integer.toString(auction.getLotQuantity());
     		lotType = WhatIsIt.itemName(auction.getLotType());
     		if (auction.getStartingBid() == 0) {
-	    		startingBid = econ.format(functions.unsafeMoney(auction.getStartingBid()));
-    		} else {
 	    		startingBid = econ.format(functions.unsafeMoney(auction.getMinBidIncrement()));
+    		} else {
+	    		startingBid = econ.format(functions.unsafeMoney(auction.getStartingBid()));
     		}
     		minBidIncrement = econ.format(functions.unsafeMoney(auction.getMinBidIncrement()));
 			
@@ -462,15 +462,13 @@ public class floAuction extends JavaPlugin {
 	    }
 	    if (defConfig != null) {
 	    	config.setDefaults(defConfig);
-	    	defConfig = null;
 	    }
-	    if (!configFile.exists() && defConfig != null) {
-	    	try {
-	    		defConfig.save(configFile);
-			} catch(IOException ex) {
-				log.severe("Cannot save config.yml");
-			}
-	    }
+    	try {
+    		defConfig.save(configFile);
+		} catch(IOException ex) {
+			log.severe("Cannot save config.yml");
+		}
+    	defConfig = null;
 	    configFile = null;
 	    
 	    if (textConfigFile == null) {
@@ -486,15 +484,13 @@ public class floAuction extends JavaPlugin {
 	    }
 	    if (defTextConfig != null) {
 	        textConfig.setDefaults(defTextConfig);
-	        defTextConfig = null;
 	    }
-	    if (!textConfigFile.exists() && defTextConfig != null) {
-	    	try {
-	    		defTextConfig.save(textConfigFile);
-			} catch(IOException ex) {
-				log.severe("Cannot save language.yml");
-			}
-	    }
+    	try {
+    		defTextConfig.save(textConfigFile);
+		} catch(IOException ex) {
+			log.severe("Cannot save language.yml");
+		}
+        defTextConfig = null;
 	    textConfigFile = null;
 	    
 	    logAuctions = config.getBoolean("log-auctions");
