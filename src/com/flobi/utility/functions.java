@@ -50,9 +50,9 @@ public class functions {
 		return has;
 	}
 	
-	public static int safeMoney(Double money) {
+	public static long safeMoney(Double money) {
         DecimalFormat twoDForm = new DecimalFormat("#");
-        return Integer.valueOf(twoDForm.format(money * 100));
+        return Long.valueOf(twoDForm.format(money * 100));
 	}
 	public static double unsafeMoney(long amountToReserve) {
 		return (double)amountToReserve / 100;

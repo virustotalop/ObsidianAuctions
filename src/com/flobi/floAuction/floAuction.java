@@ -169,7 +169,6 @@ public class floAuction extends JavaPlugin {
 		auction = publicAuction;
     	if (sender instanceof Player) {
     		player = (Player) sender;
-    	} else {
     	}
      
     	if (cmd.getName().equalsIgnoreCase("auction")) {
@@ -220,15 +219,15 @@ public class floAuction extends JavaPlugin {
     			} else if (args[0].equalsIgnoreCase("cancel")) {
     				if (auction == null) {
     					sendMessage("auction-fail-no-auction-exists", sender, auction);
-    				} else {
-    					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) {
-	    					auction.cancel(player);
-	    					// TODO: Make scope specific
-	    					publicAuction = null;
-    					} else {
-        					sendMessage("auction-fail-not-owner-cancel", player, auction);
-    					}
+    					return true;
     				}
+					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) {
+    					auction.cancel(player);
+    					// TODO: Make scope specific
+    					publicAuction = null;
+					} else {
+    					sendMessage("auction-fail-not-owner-cancel", player, auction);
+					}
     				return true;
     			} else if (args[0].equalsIgnoreCase("end")) {
     				if (auction == null) {
@@ -246,9 +245,9 @@ public class floAuction extends JavaPlugin {
     			} else if (args[0].equalsIgnoreCase("info")) {
     				if (auction == null) {
     					sendMessage("auction-info-no-auction", player, auction);
-    				} else {
-    					auction.info(sender);
+    					return true;
     				}
+					auction.info(sender);
     				return true;
     			}
     		}
