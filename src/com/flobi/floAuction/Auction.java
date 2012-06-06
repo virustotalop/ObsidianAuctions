@@ -196,6 +196,7 @@ public class Auction {
 					floAuction.sendMessage("bid-auto-outbid", (CommandSender) null, this);
 					failBid(bid, "bid-fail-auto-outbid");
 				} else {
+					floAuction.sendMessage("bid-fail-too-low", bid.getBidder(), this);
 					failBid(bid, null);
 				}
 			}
