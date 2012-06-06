@@ -129,7 +129,7 @@ public class Auction {
 			failBid(bid, bid.getError());
 			return;
 		}
-		if (ownerName.equals(bidder.getName()) && !plugin.getConfig().getBoolean("allow-bid-on-own-auction")) {
+		if (ownerName.equals(bidder.getName()) && !floAuction.allowBidOnOwn) {
 			failBid(bid, "bid-fail-is-auction-owner");
 			return;
 		}
@@ -153,7 +153,7 @@ public class Auction {
 		AuctionBid winner = null;
 		AuctionBid looser = null;
 		
-		if (plugin.getConfig().getBoolean("use-old-bid-logic")) {
+		if (floAuction.useOldBidLogic) {
 			if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
 				winner = bid;
 				looser = currentBid;

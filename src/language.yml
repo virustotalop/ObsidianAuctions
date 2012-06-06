@@ -3,6 +3,8 @@ plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
 no-whatisit: Disabled due to no WhatIsIt dependency found!
 no-vault: Disabled due to no Vault dependency found!
+plugin-reloaded: '&fconfiguration has been reloaded.'
+no-permission: '&6You do not have permission.'
 
 parse-error-invalid-quantity: '&6The quantity you specified is invalid.'
 parse-error-invalid-starting-bid: '&6The staring bid you specified is invalid.'

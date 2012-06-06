@@ -49,6 +49,8 @@ public class floAuction extends JavaPlugin {
 	public static long maxIncrement = 100;
 	public static int maxTime = 60;
 	public static int minTime = 15;
+	public static boolean allowBidOnOwn = false;
+	public static boolean useOldBidLogic = false;
 	public static boolean logAuctions = false;
 	private static File auctionLog = null;
 	
@@ -173,13 +175,14 @@ public class floAuction extends JavaPlugin {
     	if (cmd.getName().equalsIgnoreCase("auction")) {
     		if (args.length > 0) {
     			if (args[0].equalsIgnoreCase("reload")) {
-    				//TODO: check permissions
-    				loadConfig();
-    				if (args.length > 1) {
-    					if (textConfig.getString(args[1]) != null) {
-		    				sendMessage(args[1], sender, null);
-    					}
+    				if (player != null && !perms.has(player, "auction.admin")) {
+    	    			sendMessage("no-permission", sender, null);
+    	    			return true;
     				}
+    				defConfigStream = getResource("config.yml");
+    				defTextConfigStream = getResource("language.yml");
+    				loadConfig();
+	    			sendMessage("plugin-reloaded", sender, null);
     				return true;
     			} else if (
         				args[0].equalsIgnoreCase("start") ||
@@ -189,32 +192,36 @@ public class floAuction extends JavaPlugin {
     			) {
     				// Start new auction!
     	    		if (player == null) {
-    	    			sendMessage("auction-fail-console", console, null);
-    	    		} else {
-        				if (auction == null) {
-        					auction = new Auction(this, player, args, "public_auction");
-        					if (auction.isValid()) {
-            					if (auction.start()) {
-            						// TODO: assign to respective context
-            						// In the mean time, use public auction
-            						publicAuction = auction;
-            					} else {
-            						auction = null;
-            					}
+    	    			sendMessage("auction-fail-console", sender, null);
+    	    			return true;
+    	    		}
+    				if (!perms.has(player, "auction.start")) {
+    	    			sendMessage("no-permission", sender, null);
+    	    			return true;
+    				}
+    				if (auction == null) {
+    					auction = new Auction(this, player, args, "public_auction");
+    					if (auction.isValid()) {
+        					if (auction.start()) {
+        						// TODO: assign to respective context
+        						// In the mean time, use public auction
+        						publicAuction = auction;
         					} else {
         						auction = null;
         					}
-        				} else {
-        					// Already an auction.
-        					sendMessage("auction-fail-auction-exists", player, auction);
-        				}
-    	    		}
+    					} else {
+    						auction = null;
+    					}
+    				} else {
+    					// Already an auction.
+    					sendMessage("auction-fail-auction-exists", sender, auction);
+    				}
 					return true;
     			} else if (args[0].equalsIgnoreCase("cancel")) {
     				if (auction == null) {
-    					sendMessage("auction-fail-no-auction-exists", player, auction);
+    					sendMessage("auction-fail-no-auction-exists", sender, auction);
     				} else {
-    					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
+    					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) {
 	    					auction.cancel(player);
 	    					// TODO: Make scope specific
 	    					publicAuction = null;
@@ -250,11 +257,17 @@ public class floAuction extends JavaPlugin {
     	} else if (cmd.getName().equalsIgnoreCase("bid")) {
     		if (player == null) {
     			sendMessage("bid-fail-console", console, null);
-    		} else if (auction == null) {
+    			return true;
+    		} 
+			if (!perms.has(player, "auction.start")) {
+    			sendMessage("no-permission", sender, null);
+    			return true;
+			}
+    		if (auction == null) {
     			sendMessage("bid-fail-no-auction", player, null);
-    		} else {
-    			auction.Bid(player, args);
+    			return true;
     		}
+    		auction.Bid(player, args);
     		return true;
     	}
     	return false;
@@ -439,17 +452,17 @@ public class floAuction extends JavaPlugin {
 		if (auctionLog == null) {
 	    	auctionLog = new File(dataFolder, "auctions.log");
 		}
+		config = null;
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
-	    if (defConfig != null) {
-	    	config.setDefaults(defConfig);
-	        defConfigStream = null;
-	    }
 	    if (defConfigStream != null) {
 	        defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-	        config.setDefaults(defConfig);
 	        defConfigStream = null;
+	    }
+	    if (defConfig != null) {
+	    	config.setDefaults(defConfig);
+	    	defConfig = null;
 	    }
 	    if (!configFile.exists() && defConfig != null) {
 	    	try {
@@ -459,20 +472,21 @@ public class floAuction extends JavaPlugin {
 			}
 	    }
 	    configFile = null;
+	    
 	    if (textConfigFile == null) {
 	    	textConfigFile = new File(dataFolder, "language.yml");
 	    }
+	    textConfig = null;
 	    textConfig = YamlConfiguration.loadConfiguration(textConfigFile);
 	 
 	    // Look for defaults in the jar
-	    if (defTextConfig != null) {
-	        textConfig.setDefaults(defTextConfig);
-	        defTextConfigStream = null;
-	    }
 	    if (defTextConfigStream != null) {
 	        defTextConfig = YamlConfiguration.loadConfiguration(defTextConfigStream);
-	        textConfig.setDefaults(defTextConfig);
 	        defTextConfigStream = null;
+	    }
+	    if (defTextConfig != null) {
+	        textConfig.setDefaults(defTextConfig);
+	        defTextConfig = null;
 	    }
 	    if (!textConfigFile.exists() && defTextConfig != null) {
 	    	try {
@@ -493,6 +507,8 @@ public class floAuction extends JavaPlugin {
 		maxIncrement = functions.safeMoney(config.getDouble("max-bid-increment"));
 		maxTime = config.getInt("max-auction-time");
 		minTime = config.getInt("min-auction-time");
+		allowBidOnOwn = config.getBoolean("allow-bid-on-own-auction");
+		useOldBidLogic = config.getBoolean("use-old-bid-logic");
     }
 	public static void sendMessage(String messageKey, String playerName, Auction auction) {
 		if (playerName == null) {
