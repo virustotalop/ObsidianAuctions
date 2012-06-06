@@ -220,6 +220,7 @@ public class Auction {
 		floAuction.sendMessage(reason, (CommandSender) null, this);
 	}
 	private Boolean parseHeldItem() {
+		//TODO: Add check for damage and config option to check if can auction damaged items.
 		Player owner = floAuction.server.getPlayer(ownerName);
 		ItemStack heldItem = owner.getItemInHand();
 		if (heldItem == null || heldItem.getAmount() == 0) {

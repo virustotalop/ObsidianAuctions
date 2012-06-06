@@ -17,10 +17,7 @@ commands:
   bid:
     description: Bid on auctions.
     permission: auction.bid
-    usage: |
-      /<command> [bit amount] [max bid]
-      Example: /<command> - see how many times you have burned to death
-      Example: /<command> CaptainIce - see how many times CaptainIce has burned to death
+    usage: /<command> [bit amount] [max bid]
 
 permissions:
   auction.*:
