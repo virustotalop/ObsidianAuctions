@@ -15,7 +15,7 @@ commands:
     permission: auction.start
     usage: Type /<command> for instructions.
   bid:
-    description: Bid on aucitons.
+    description: Bid on auctions.
     permission: auction.bid
     usage: |
       /<command> [bit amount] [max bid]
