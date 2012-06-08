@@ -40,7 +40,6 @@ bid-success-update-own-maxbid: You raised your own max bid to &6%h&9.
 bid-auto-outbid: '&b%B&9 has raised the bid to &6%b&9.'
 bid-fail-is-auction-owner: '&6You cannot bid on your own auction.'
 bid-fail-already-current-bidder: '&6Your bid remains unchanged.'
-BID_FAIL_NO_PERMISSION: '&6You have no permission to bid.'
 bid-fail-cant-allocate-funds: '&6You cannot afford that bid.'
 bid-fail-no-bidder: '&6A non-player tried to bid on an auction?'
 bid-fail-console: &6Console bidding is prohibited.

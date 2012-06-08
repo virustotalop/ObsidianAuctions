@@ -24,6 +24,7 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -138,6 +139,110 @@ public class floAuction extends JavaPlugin {
 		
 		//TODO: Load orphan lots from save file.
 	}
+    /**
+	 * Loads config.yml and language.yml configuration files.
+	 */
+    private static void loadConfig() {
+		if (configFile == null) {
+	    	configFile = new File(dataFolder, "config.yml");
+	    }
+		if (auctionLog == null) {
+	    	auctionLog = new File(dataFolder, "auctions.log");
+		}
+		config = null;
+	    config = YamlConfiguration.loadConfiguration(configFile);
+	 
+	    // Look for defaults in the jar
+	    if (defConfigStream != null) {
+	        defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+	        defConfigStream = null;
+	    }
+	    if (defConfig != null) {
+	    	config.setDefaults(defConfig);
+	    }
+	    
+	    if (textConfigFile == null) {
+	    	textConfigFile = new File(dataFolder, "language.yml");
+	    }
+	    textConfig = null;
+	    textConfig = YamlConfiguration.loadConfiguration(textConfigFile);
+	 
+	    // Look for defaults in the jar
+	    if (defTextConfigStream != null) {
+	        defTextConfig = YamlConfiguration.loadConfiguration(defTextConfigStream);
+	        defTextConfigStream = null;
+	    }
+	    if (defTextConfig != null) {
+	        textConfig.setDefaults(defTextConfig);
+	    }
+	    
+	    logAuctions = config.getBoolean("log-auctions");
+	    
+	    if (econ == null) {
+	    	useGoldStandard = true;
+	    	config.set("use-gold-standard", true);
+	    } else {
+			useGoldStandard = config.getBoolean("use-gold-standard");
+	    }
+		if (useGoldStandard) {
+			decimalPlaces = 0;
+			config.set("decimal-places", decimalPlaces);
+		} else {
+			decimalPlaces = config.getInt("decimal-places");
+		}
+		if (decimalPlaces < 1) {
+			decimalRegex = "";
+		} else if (decimalPlaces > 1) {
+			decimalRegex = "(\\.[0-9])?";
+		} else {
+			decimalRegex = "(\\.[0-9][0-9]?)?";
+		}
+	    defaultStartingBid = functions.getSafeMoney(config.getDouble("default-starting-bid"));
+		defaultBidIncrement = functions.getSafeMoney(config.getDouble("default-bid-increment"));
+		defaultAuctionTime = config.getInt("default-auction-time");
+		maxStartingBid = functions.getSafeMoney(config.getDouble("max-starting-bid"));
+		minIncrement = functions.getSafeMoney(config.getDouble("min-bid-increment"));
+		maxIncrement = functions.getSafeMoney(config.getDouble("max-bid-increment"));
+		maxTime = config.getInt("max-auction-time");
+		minTime = config.getInt("min-auction-time");
+		allowBidOnOwn = config.getBoolean("allow-bid-on-own-auction");
+		useOldBidLogic = config.getBoolean("use-old-bid-logic");
+		allowEarlyEnd = config.getBoolean("allow-early-end");
+		allowCreativeMode = config.getBoolean("allow-gamemode-creative");
+
+		// Update all values to include defaults which may be new.
+		
+		FileConfiguration cleanConfig = new YamlConfiguration();
+		Map<String, Object> configValues = config.getDefaults().getValues(true);
+		for (Map.Entry<String, Object> configEntry : configValues.entrySet()) {
+			cleanConfig.set(configEntry.getKey(), config.get(configEntry.getKey()));
+		}
+		config = cleanConfig;
+
+    	try {
+    		config.save(configFile);
+		} catch(IOException ex) {
+			log.severe("Cannot save config.yml");
+		}
+    	defConfig = null;
+	    configFile = null;
+
+	    
+		FileConfiguration cleanTextConfig = new YamlConfiguration();
+		Map<String, Object> textConfigValues = textConfig.getDefaults().getValues(true);
+		for (Map.Entry<String, Object> textConfigEntry : textConfigValues.entrySet()) {
+			cleanTextConfig.set(textConfigEntry.getKey(), textConfig.get(textConfigEntry.getKey()));
+		}
+		textConfig = cleanTextConfig;
+
+		try {
+    		textConfig.save(textConfigFile);
+		} catch(IOException ex) {
+			log.severe("Cannot save language.yml");
+		}
+        defTextConfig = null;
+	    textConfigFile = null;
+    }
 	public void onDisable() { 
 		sendMessage("plugin-disabled", console, null);
 		
@@ -524,95 +629,6 @@ public class floAuction extends JavaPlugin {
         return perms != null;
     }
 
-    /**
-	 * Loads config.yml and text.yml configuration files.
-	 */
-    private static void loadConfig() {
-		if (configFile == null) {
-	    	configFile = new File(dataFolder, "config.yml");
-	    }
-		if (auctionLog == null) {
-	    	auctionLog = new File(dataFolder, "auctions.log");
-		}
-		config = null;
-	    config = YamlConfiguration.loadConfiguration(configFile);
-	 
-	    // Look for defaults in the jar
-	    if (defConfigStream != null) {
-	        defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-	        defConfigStream = null;
-	    }
-	    if (defConfig != null) {
-	    	config.setDefaults(defConfig);
-	    }
-	    
-	    if (textConfigFile == null) {
-	    	textConfigFile = new File(dataFolder, "language.yml");
-	    }
-	    textConfig = null;
-	    textConfig = YamlConfiguration.loadConfiguration(textConfigFile);
-	 
-	    // Look for defaults in the jar
-	    if (defTextConfigStream != null) {
-	        defTextConfig = YamlConfiguration.loadConfiguration(defTextConfigStream);
-	        defTextConfigStream = null;
-	    }
-	    if (defTextConfig != null) {
-	        textConfig.setDefaults(defTextConfig);
-	    }
-	    
-	    logAuctions = config.getBoolean("log-auctions");
-	    
-	    if (econ == null) {
-	    	useGoldStandard = true;
-	    	config.set("use-gold-standard", true);
-	    } else {
-			useGoldStandard = config.getBoolean("use-gold-standard");
-	    }
-		if (useGoldStandard) {
-			decimalPlaces = 0;
-			config.set("decimal-places", decimalPlaces);
-		} else {
-			decimalPlaces = config.getInt("decimal-places");
-		}
-		if (decimalPlaces < 1) {
-			decimalRegex = "";
-		} else if (decimalPlaces > 1) {
-			decimalRegex = "(\\.[0-9])?";
-		} else {
-			decimalRegex = "(\\.[0-9][0-9]?)?";
-		}
-	    defaultStartingBid = functions.getSafeMoney(config.getDouble("default-starting-bid"));
-		defaultBidIncrement = functions.getSafeMoney(config.getDouble("default-bid-increment"));
-		defaultAuctionTime = config.getInt("default-auction-time");
-		maxStartingBid = functions.getSafeMoney(config.getDouble("max-starting-bid"));
-		minIncrement = functions.getSafeMoney(config.getDouble("min-bid-increment"));
-		maxIncrement = functions.getSafeMoney(config.getDouble("max-bid-increment"));
-		maxTime = config.getInt("max-auction-time");
-		minTime = config.getInt("min-auction-time");
-		allowBidOnOwn = config.getBoolean("allow-bid-on-own-auction");
-		useOldBidLogic = config.getBoolean("use-old-bid-logic");
-		allowEarlyEnd = config.getBoolean("allow-early-end");
-		allowCreativeMode = config.getBoolean("allow-gamemode-creative");
-
-
-    	try {
-    		config.save(configFile);
-		} catch(IOException ex) {
-			log.severe("Cannot save config.yml");
-		}
-    	defConfig = null;
-	    configFile = null;
-
-	    
-		try {
-    		textConfig.save(textConfigFile);
-		} catch(IOException ex) {
-			log.severe("Cannot save language.yml");
-		}
-        defTextConfig = null;
-	    textConfigFile = null;
-    }
 	public static void sendMessage(String messageKey, String playerName, Auction auction) {
 		if (playerName == null) {
 			sendMessage(messageKey, (CommandSender) null, auction);
