@@ -70,7 +70,7 @@ auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-nobids: '&b%O&9 is auctioning &f%q %i&9 for &c%t&9.'
 auction-info-enchantment: 'Item contains enchantment: &a%E'
 auction-info-footer: 
-- The current bid is &6%9%b&9 by &b%B&9.
+- The current bid is &6%b&9 by &b%B&9.
 - Min bid increment is &6&9%n&9. 
 auction-info-footer-nobids: 
 - Bidding starts at &6%b&9.
