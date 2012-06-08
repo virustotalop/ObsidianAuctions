@@ -9,13 +9,11 @@ public class AuctionLot {
 	private String ownerName;
 	private ItemStack lotTypeLock;
 	private int quantity = 0;
-	private floAuction plugin;
 	
-	public AuctionLot(floAuction plugin, ItemStack lotType, String lotOwner) {
+	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
 		lotTypeLock = lotType.clone();
 		ownerName = lotOwner;
-		this.plugin = plugin;
 	}
 	public boolean AddItems(int addQuantity, boolean removeFromOwner) {
 		if (removeFromOwner) {
@@ -52,7 +50,17 @@ public class AuctionLot {
 				givingItems.setAmount(amountToGive);
 				player.getInventory().addItem(givingItems);
 				quantity -= amountToGive;
-				floAuction.sendMessage("lot-give", player, null);
+				ItemStack typeStack = getTypeStack();
+				if (
+						!floAuction.useGoldStandard || 
+						(
+								!items.isSameItem(typeStack, new ItemStack(371)) &&
+								!items.isSameItem(typeStack, new ItemStack(266)) &&
+								!items.isSameItem(typeStack, new ItemStack(41))
+						)
+				) {
+					floAuction.sendMessage("lot-give", player, null);
+				}
 			}
 			if (quantity > 0) {
 				// Drop items at player's feet.
@@ -69,7 +77,7 @@ public class AuctionLot {
 		} else {
 			// Player is offline, queue lot for give on login.
 			// Create orphaned lot to try to give when inventory clears up.
-			final AuctionLot orphanLot = new AuctionLot(plugin, lotTypeLock, playerName);
+			final AuctionLot orphanLot = new AuctionLot(lotTypeLock, playerName);
 			
 			// Move items to orphan lot
 			orphanLot.AddItems(quantity, false);

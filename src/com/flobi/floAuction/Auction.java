@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.flobi.utility.functions;
+import com.flobi.utility.items;
 
 public class Auction {
 	protected floAuction plugin;
@@ -45,6 +46,17 @@ public class Auction {
 		
 	}
 	public Boolean start() {
+		if (floAuction.useGoldStandard) {
+			ItemStack typeStack = lot.getTypeStack();
+			if (
+					items.isSameItem(typeStack, new ItemStack(371)) ||
+					items.isSameItem(typeStack, new ItemStack(266)) ||
+					items.isSameItem(typeStack, new ItemStack(41))
+			) {
+				floAuction.sendMessage("auction-fail-gold-standard", ownerName, this);
+				return false;
+			}
+		}
 		if (!lot.AddItems(quantity, true)) {
 			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, this);
 			return false;
@@ -227,7 +239,7 @@ public class Auction {
 			floAuction.sendMessage("auction-fail-hand-is-empty", owner, this);
 			return false;
 		}
-		lot = new AuctionLot(plugin, heldItem, ownerName);
+		lot = new AuctionLot(heldItem, ownerName);
 		return true;
 	}
 	private Boolean parseArgs() {
@@ -313,8 +325,8 @@ public class Auction {
 	}
 	private Boolean parseArgStartingBid() {
 		if (args.length > 1) {
-			if (args[1].matches("([0-9]{0,7}(\\.[0-9][0-9]?)?)")) {
-				startingBid = functions.safeMoney(Double.parseDouble(args[1]));
+			if (args[1].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
+				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
 				return false;
@@ -330,8 +342,8 @@ public class Auction {
 	}
 	private Boolean parseArgIncrement() {
 		if (args.length > 2) {
-			if (args[2].matches("([0-9]{0,7}(\\.[0-9][0-9]?)?)")) {
-				minBidIncrement = functions.safeMoney(Double.parseDouble(args[2]));
+			if (args[2].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
+				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args[2]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
 				return false;

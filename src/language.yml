@@ -28,6 +28,9 @@ auction-fail-no-auction-exists: '&6There is no auction at this time.'
 auction-fail-console: '&6Console cannot start auctions.'
 auction-fail-not-owner-cancel: '&6You cannot cancel auctions you did not start.'
 auction-fail-not-owner-end: '&6You cannot end auctions you did not start.'
+auction-fail-gold-standard: '&6You cannot auction gold when it is set as currency.'
+auction-fail-no-early-end: '&6You cannot end auctions early.'
+auction-fail-disabled: '&6Enter &9/auction on&6 to use the auction software.'
 
 bid-success-no-challenger: '&b%B&9 has bid &6%b&9 on the &a%i&9.'
 bid-success-outbid: '&b%B&9 raised the bid to &6%b&9.'
@@ -46,6 +49,8 @@ bid-auto-outbid: '&b%B&9 has raised the bid to &6%b&9.'
 auction-cancel: The auction has been cancelled.
 auction-end-nobids: The auction ended with no bids.
 auction-end: '&b%B&9 won the auction for &a%i&9 with &6%b&9!'
+auction-disabled: '&bAuctioning disabled.'
+auction-enabled: '&bAuctioning enabled.'
 auction-start: '&cAttention, an auction is beginning!'
 auction-help: 
 - /auction help|? - Returns this
@@ -77,6 +82,9 @@ auction-info-no-auction:
 timer-countdown-notification: Auction has &c%t&9 remaining.
 time-format-minsec: '%m min, %s sec'
 time-format-seconly: '%s sec'
+gold-standard-name-singular: '%g Nugget'
+gold-standard-name-plural: '%g Nuggets'
+
 
 lot-give: '&dYour items have been added to your inventory.'
 lot-drop: '&dNot enough space, your items dropped at your feet.'

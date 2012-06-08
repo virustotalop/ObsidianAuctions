@@ -52,24 +52,30 @@ public class floAuction extends JavaPlugin {
 	public static boolean allowBidOnOwn = false;
 	public static boolean useOldBidLogic = false;
 	public static boolean logAuctions = false;
+	public static boolean allowEarlyEnd = false;
+	public static boolean useGoldStandard = false;
+	public static int decimalPlaces = 2;
+	public static String decimalRegex = "(\\.[0-9][0-9]?)?";
 	private static File auctionLog = null;
 	
 	// Config files info.
 	private static File configFile = null;
 	private static InputStream defConfigStream;
-	private static FileConfiguration config = null;
+	public static FileConfiguration config = null;
 	private static File textConfigFile = null;
 	private static InputStream defTextConfigStream;
-	private static FileConfiguration textConfig = null;
+	public static FileConfiguration textConfig = null;
 	private static YamlConfiguration defConfig = null;
 	private static YamlConfiguration defTextConfig = null;
 	private static File dataFolder;
 	private static ConsoleCommandSender console;
 	public static Server server;
 	
+	public static ArrayList<String> disabledUsers = new ArrayList<String>(); 
 	
 	// In case items can't be given for some reason, save them
 	public static ArrayList<AuctionLot> OrphanLots = new ArrayList<AuctionLot>();
+	
 	
 	// Eliminate orphan lots (i.e. try to give the items to a player again).
 	public static void killOrphan(Player player) {
@@ -115,11 +121,7 @@ public class floAuction extends JavaPlugin {
 			server.getPluginManager().disablePlugin(this);
             return;
 		}
-		if (!setupEconomy() ) {
-			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-vault")));
-			server.getPluginManager().disablePlugin(this);
-            return;
-        }
+		setupEconomy();
         setupPermissions();
         setupChat();
         
@@ -167,10 +169,35 @@ public class floAuction extends JavaPlugin {
 		// TODO: Figure out auction for context.
 		// In the mean time, use public auction.
 		auction = publicAuction;
+		String playerName = "";
+
     	if (sender instanceof Player) {
     		player = (Player) sender;
+			playerName = player.getName();
+    	} else {
+			playerName = "*console*";
     	}
+
+		if (
+				cmd.getName().equalsIgnoreCase("auction") &&
+				args.length > 0 &&
+				args[0].equalsIgnoreCase("on")
+		) {
+			int index = disabledUsers.indexOf(playerName);
+			if (index != -1) {
+				disabledUsers.remove(index);
+			}
+			sendMessage("auction-enabled", sender, null);
+			return true;
+		}
      
+    	if (disabledUsers.indexOf(playerName) != -1) {
+    		disabledUsers.remove(disabledUsers.indexOf(playerName));
+			sendMessage("auction-fail-disabled", sender, null);
+			disabledUsers.add(playerName);
+			return true;
+		}
+		
     	if (cmd.getName().equalsIgnoreCase("auction")) {
     		if (args.length > 0) {
     			if (args[0].equalsIgnoreCase("reload")) {
@@ -232,14 +259,30 @@ public class floAuction extends JavaPlugin {
     			} else if (args[0].equalsIgnoreCase("end")) {
     				if (auction == null) {
     					sendMessage("auction-fail-no-auction-exists", player, auction);
-    				} else {
-    					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
-	    					auction.end(player);
-	    					// TODO: Make scope specific
-	    					publicAuction = null;
-    					} else {
-        					sendMessage("auction-fail-not-owner-end", player, auction);
-    					}
+        				return true;
+    				}
+    				if (!allowEarlyEnd) {
+    					sendMessage("auction-fail-no-early-end", player, auction);
+        				return true;
+    				}
+					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
+    					auction.end(player);
+    					// TODO: Make scope specific
+    					publicAuction = null;
+					} else {
+    					sendMessage("auction-fail-not-owner-end", player, auction);
+					}
+    				return true;
+    			} else if (
+        				args[0].equalsIgnoreCase("stfu") ||
+        				args[0].equalsIgnoreCase("quiet") ||
+        				args[0].equalsIgnoreCase("off") ||
+        				args[0].equalsIgnoreCase("silent") ||
+        				args[0].equalsIgnoreCase("silence")
+    			) {
+    				if (disabledUsers.indexOf(playerName) == -1) {
+    					sendMessage("auction-disabled", sender, null);
+    					disabledUsers.add(playerName);
     				}
     				return true;
     			} else if (args[0].equalsIgnoreCase("info")) {
@@ -274,6 +317,21 @@ public class floAuction extends JavaPlugin {
     
     public static void sendMessage(String messageKey, CommandSender player, Auction auction) {
 
+    	if (player != null) {
+	    	if (player instanceof Player) {
+		    	if (disabledUsers.indexOf(player.getName()) != -1) {
+		    		// Don't send this user any messages.
+		    		return;
+				}
+	    	} else {
+		    	if (disabledUsers.indexOf("*console*") != -1) {
+		    		// Don't send console any messages.
+		    		return;
+				}
+	    	}
+    	}
+    	
+
     	if (messageKey == null) {
     		return;
     	}
@@ -295,11 +353,11 @@ public class floAuction extends JavaPlugin {
     		quantity = Integer.toString(auction.getLotQuantity());
     		lotType = WhatIsIt.itemName(auction.getLotType());
     		if (auction.getStartingBid() == 0) {
-	    		startingBid = econ.format(functions.unsafeMoney(auction.getMinBidIncrement()));
+	    		startingBid = functions.formatAmount(auction.getMinBidIncrement());
     		} else {
-	    		startingBid = econ.format(functions.unsafeMoney(auction.getStartingBid()));
+	    		startingBid = functions.formatAmount(auction.getStartingBid());
     		}
-    		minBidIncrement = econ.format(functions.unsafeMoney(auction.getMinBidIncrement()));
+    		minBidIncrement = functions.formatAmount(auction.getMinBidIncrement());
 			
     		if (auction.getRemainingTime() >= 60) {
     			timeRemaining = textConfig.getString("time-format-minsec");
@@ -312,8 +370,8 @@ public class floAuction extends JavaPlugin {
 	
 			if (auction.getCurrentBid() != null) {
 				currentBidder = auction.getCurrentBid().getBidder().getName();
-				currentBid = econ.format(functions.unsafeMoney(auction.getCurrentBid().getBidAmount()));
-				currentMaxBid = econ.format(functions.unsafeMoney(auction.getCurrentBid().getMaxBidAmount()));
+				currentBid = functions.formatAmount(auction.getCurrentBid().getBidAmount());
+				currentMaxBid = functions.formatAmount(auction.getCurrentBid().getMaxBidAmount());
 			} else {
 				currentBidder = "noone";
 				currentBid = startingBid;
@@ -369,7 +427,7 @@ public class floAuction extends JavaPlugin {
 	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
 	        			message = originalMessage.replace("%E", WhatIsIt.enchantmentName(enchantment));
 		            	if (player == null) {
-		            		server.broadcastMessage(message);
+		            		broadcastMessage(message);
 		            	} else {
 		        	    	player.sendMessage(message);
 		            	}
@@ -378,7 +436,7 @@ public class floAuction extends JavaPlugin {
     			}
 			} else {
 		    	if (player == null) {
-		    		server.broadcastMessage(message);
+		    		broadcastMessage(message);
 		    	} else {
 			    	player.sendMessage(message);
 		    	}
@@ -386,6 +444,19 @@ public class floAuction extends JavaPlugin {
 			}
     	}
     	
+    }
+    private static void broadcastMessage(String message) {
+    	Player[] onlinePlayers = server.getOnlinePlayers();
+    	
+    	for (Player player : onlinePlayers) {
+        	if (disabledUsers.indexOf(player.getName()) == -1) {
+        		player.sendMessage(message);
+    		}
+    	}
+    	
+    	if (disabledUsers.indexOf("*console*") == -1) {
+			console.sendMessage(message);
+		}
     }
     private static void log(String scope, CommandSender player, String message) {
     	if (logAuctions) {
@@ -462,13 +533,6 @@ public class floAuction extends JavaPlugin {
 	    if (defConfig != null) {
 	    	config.setDefaults(defConfig);
 	    }
-    	try {
-    		defConfig.save(configFile);
-		} catch(IOException ex) {
-			log.severe("Cannot save config.yml");
-		}
-    	defConfig = null;
-	    configFile = null;
 	    
 	    if (textConfigFile == null) {
 	    	textConfigFile = new File(dataFolder, "language.yml");
@@ -484,26 +548,57 @@ public class floAuction extends JavaPlugin {
 	    if (defTextConfig != null) {
 	        textConfig.setDefaults(defTextConfig);
 	    }
+	    
+	    logAuctions = config.getBoolean("log-auctions");
+	    
+	    if (econ == null) {
+	    	useGoldStandard = true;
+	    	config.set("use-gold-standard", true);
+	    } else {
+			useGoldStandard = config.getBoolean("use-gold-standard");
+	    }
+		if (useGoldStandard) {
+			decimalPlaces = 0;
+			config.set("decimal-places", decimalPlaces);
+		} else {
+			decimalPlaces = config.getInt("decimal-places");
+		}
+		if (decimalPlaces < 1) {
+			decimalRegex = "";
+		} else if (decimalPlaces > 1) {
+			decimalRegex = "(\\.[0-9])?";
+		} else {
+			decimalRegex = "(\\.[0-9][0-9]?)?";
+		}
+	    defaultStartingBid = functions.getSafeMoney(config.getDouble("default-starting-bid"));
+		defaultBidIncrement = functions.getSafeMoney(config.getDouble("default-bid-increment"));
+		defaultAuctionTime = config.getInt("default-auction-time");
+		maxStartingBid = functions.getSafeMoney(config.getDouble("max-starting-bid"));
+		minIncrement = functions.getSafeMoney(config.getDouble("min-bid-increment"));
+		maxIncrement = functions.getSafeMoney(config.getDouble("max-bid-increment"));
+		maxTime = config.getInt("max-auction-time");
+		minTime = config.getInt("min-auction-time");
+		allowBidOnOwn = config.getBoolean("allow-bid-on-own-auction");
+		useOldBidLogic = config.getBoolean("use-old-bid-logic");
+		allowEarlyEnd = config.getBoolean("allow-early-end");
+
+
     	try {
-    		defTextConfig.save(textConfigFile);
+    		config.save(configFile);
+		} catch(IOException ex) {
+			log.severe("Cannot save config.yml");
+		}
+    	defConfig = null;
+	    configFile = null;
+
+	    
+		try {
+    		textConfig.save(textConfigFile);
 		} catch(IOException ex) {
 			log.severe("Cannot save language.yml");
 		}
         defTextConfig = null;
 	    textConfigFile = null;
-	    
-	    logAuctions = config.getBoolean("log-auctions");
-	    
-	    defaultStartingBid = functions.safeMoney(config.getDouble("default-starting-bid"));
-		defaultBidIncrement = functions.safeMoney(config.getDouble("default-bid-increment"));
-		defaultAuctionTime = config.getInt("default-auction-time");
-		maxStartingBid = functions.safeMoney(config.getDouble("max-starting-bid"));
-		minIncrement = functions.safeMoney(config.getDouble("min-bid-increment"));
-		maxIncrement = functions.safeMoney(config.getDouble("max-bid-increment"));
-		maxTime = config.getInt("max-auction-time");
-		minTime = config.getInt("min-auction-time");
-		allowBidOnOwn = config.getBoolean("allow-bid-on-own-auction");
-		useOldBidLogic = config.getBoolean("use-old-bid-logic");
     }
 	public static void sendMessage(String messageKey, String playerName, Auction auction) {
 		if (playerName == null) {

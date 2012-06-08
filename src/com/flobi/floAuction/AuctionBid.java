@@ -1,7 +1,5 @@
 package com.flobi.floAuction;
 
-import net.milkbowl.vault.economy.EconomyResponse;
-
 import org.bukkit.entity.Player;
 
 import com.flobi.utility.functions;
@@ -29,7 +27,7 @@ public class AuctionBid {
 		if (currentBid != null && currentBid.getBidder().equals(bidder)) {
 			// Same bidder: only reserve difference.
 			if (maxBidAmount > currentBid.getMaxBidAmount()) {
-				amountToReserve = currentBid.getMaxBidAmount() - maxBidAmount;
+				amountToReserve = maxBidAmount - currentBid.getMaxBidAmount();
 			} else {
 				// Nothing needing reservation.
 				return true;
@@ -37,9 +35,8 @@ public class AuctionBid {
 		} else {
 			amountToReserve = maxBidAmount;
 		}
-		EconomyResponse receipt = floAuction.econ.withdrawPlayer(bidder.getName(), functions.unsafeMoney(amountToReserve));
-		if (receipt.transactionSuccess()) {
-			reserve = receipt.amount;
+		if (functions.withdrawPlayer(bidder.getName(), amountToReserve)) {
+			reserve = functions.getUnsafeMoney(amountToReserve);
 			return true;
 		} else {
 			error = "bid-fail-cant-allocate-funds";
@@ -48,17 +45,17 @@ public class AuctionBid {
 	}
 	public void cancelBid() {
 		// Refund reserve.
-		floAuction.econ.depositPlayer(bidder.getName(), reserve);
+		functions.depositPlayer(bidder.getName(), reserve);
 		reserve = 0;
 	}
 	public void winBid() {
-		Double unsafeBidAmount = functions.unsafeMoney(bidAmount);
+		Double unsafeBidAmount = functions.getUnsafeMoney(bidAmount);
 		
 		// Apply winnings to auction owner.
-		floAuction.econ.depositPlayer(auction.getOwner(), unsafeBidAmount);
+		functions.depositPlayer(auction.getOwner(), unsafeBidAmount);
 
 		// Refund remaining reserve.
-		floAuction.econ.depositPlayer(bidder.getName(), reserve - unsafeBidAmount);
+		functions.depositPlayer(bidder.getName(), reserve - unsafeBidAmount);
 		
 		reserve = 0;
 	}
@@ -83,13 +80,18 @@ public class AuctionBid {
 
 			// Maxbid only updates up.
 			maxBidAmount = Math.max(maxBidAmount, otherBid.maxBidAmount);
+			otherBid.maxBidAmount = maxBidAmount;
 
 			if (bidAmount > otherBid.bidAmount) {
 				// The bid has been raised.
 				return true;
 			} else {
 				// The bid has not been raised (don't forget, this bid still needs to replace the old one).
-				bidAmount = otherBid.bidAmount;
+
+				// Put the reserve on the other bid because we're cancelling this one.
+				otherBid.reserve = reserve;
+				reserve = 0;
+
 				return false;
 			}
 		} else {
@@ -107,8 +109,8 @@ public class AuctionBid {
 	}
 	private Boolean parseArgBid() {
 		if (args.length > 0) {
-			if (args[0].matches("([0-9]{0,7}(\\.[0-9][0-9]?)?)")) {
-				bidAmount = functions.safeMoney(Double.parseDouble(args[0]));
+			if (args[0].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
+				bidAmount = functions.getSafeMoney(Double.parseDouble(args[0]));
 			} else {
 				error = "parse-error-invalid-bid";
 				return false;
@@ -142,8 +144,8 @@ public class AuctionBid {
 	}
 	private Boolean parseArgMaxBid() {
 		if (args.length > 1) {
-			if (args[1].matches("([0-9]{0,7}(\\.[0-9][0-9]?)?)")) {
-				maxBidAmount = functions.safeMoney(Double.parseDouble(args[1]));
+			if (args[1].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
+				maxBidAmount = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				error = "parse-error-invalid-max-bid";
 				return false;

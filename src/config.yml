@@ -12,3 +12,8 @@ max-bid-increment: 100
 default-auction-time: 60
 min-auction-time: 15
 max-auction-time: 120
+
+use-gold-standard: false
+decimal-places: 2
+
+allow-early-end: false
