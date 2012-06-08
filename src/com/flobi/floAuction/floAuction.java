@@ -211,7 +211,8 @@ public class floAuction extends JavaPlugin {
 	    			sendMessage("plugin-reloaded", sender, null);
     				return true;
     			} else if (
-        				args[0].equalsIgnoreCase("start") ||
+        				args[0].equalsIgnoreCase("start") || 
+        				args[0].equalsIgnoreCase("s") ||
         				args[0].equalsIgnoreCase("this") ||
         				args[0].equalsIgnoreCase("all") ||
         				args[0].matches("[0-9]+")
@@ -243,7 +244,7 @@ public class floAuction extends JavaPlugin {
     					sendMessage("auction-fail-auction-exists", sender, auction);
     				}
 					return true;
-    			} else if (args[0].equalsIgnoreCase("cancel")) {
+    			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
     				if (auction == null) {
     					sendMessage("auction-fail-no-auction-exists", sender, auction);
     					return true;
@@ -256,7 +257,7 @@ public class floAuction extends JavaPlugin {
     					sendMessage("auction-fail-not-owner-cancel", player, auction);
 					}
     				return true;
-    			} else if (args[0].equalsIgnoreCase("end")) {
+    			} else if (args[0].equalsIgnoreCase("end") || args[0].equalsIgnoreCase("e")) {
     				if (auction == null) {
     					sendMessage("auction-fail-no-auction-exists", player, auction);
         				return true;
@@ -285,7 +286,7 @@ public class floAuction extends JavaPlugin {
     					disabledUsers.add(playerName);
     				}
     				return true;
-    			} else if (args[0].equalsIgnoreCase("info")) {
+    			} else if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("i")) {
     				if (auction == null) {
     					sendMessage("auction-info-no-auction", player, auction);
     					return true;
