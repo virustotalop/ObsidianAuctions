@@ -31,11 +31,13 @@ auction-fail-not-owner-end: '&6You cannot end auctions you did not start.'
 auction-fail-gold-standard: '&6You cannot auction gold when it is set as currency.'
 auction-fail-no-early-end: '&6You cannot end auctions early.'
 auction-fail-disabled: '&6Enter &9/auction on&6 to use the auction software.'
+auction-fail-gamemode-creative: '&6You cannot auction while in CREATIVE mode.'
 
 bid-success-no-challenger: '&b%B&9 has bid &6%b&9 on the &a%i&9.'
 bid-success-outbid: '&b%B&9 raised the bid to &6%b&9.'
 bid-success-update-own-bid: '&b%B&9 raised the bid to &6%b&9.'
 bid-success-update-own-maxbid: You raised your own max bid to &6%h&9.
+bid-auto-outbid: '&b%B&9 has raised the bid to &6%b&9.'
 bid-fail-is-auction-owner: '&6You cannot bid on your own auction.'
 bid-fail-already-current-bidder: '&6Your bid remains unchanged.'
 BID_FAIL_NO_PERMISSION: '&6You have no permission to bid.'
@@ -44,7 +46,7 @@ bid-fail-no-bidder: '&6A non-player tried to bid on an auction?'
 bid-fail-console: &6Console bidding is prohibited.
 bid-fail-no-auction: '&6There is no auction at this time on which to bid.'
 bid-fail-auto-outbid: '&6You have been automatically outbid.'
-bid-auto-outbid: '&b%B&9 has raised the bid to &6%b&9.'
+bid-fail-gamemode-creative: '&6You cannot bid while in CREATIVE mode.'
 
 auction-cancel: The auction has been cancelled.
 auction-end-nobids: The auction ended with no bids.

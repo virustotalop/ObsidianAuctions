@@ -19,6 +19,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -56,6 +57,7 @@ public class floAuction extends JavaPlugin {
 	public static boolean useGoldStandard = false;
 	public static int decimalPlaces = 2;
 	public static String decimalRegex = "(\\.[0-9][0-9]?)?";
+	public static boolean allowCreativeMode = false;
 	private static File auctionLog = null;
 	
 	// Config files info.
@@ -222,6 +224,11 @@ public class floAuction extends JavaPlugin {
     	    			sendMessage("auction-fail-console", sender, null);
     	    			return true;
     	    		}
+    	    		if (!allowCreativeMode && player.getGameMode() == GameMode.CREATIVE) {
+    	    			sendMessage("auction-fail-gamemode-creative", sender, null);
+    	    			return true;
+    	    		}
+    	    			
     				if (!perms.has(player, "auction.start")) {
     	    			sendMessage("no-permission", sender, null);
     	    			return true;
@@ -302,6 +309,10 @@ public class floAuction extends JavaPlugin {
     			sendMessage("bid-fail-console", console, null);
     			return true;
     		} 
+    		if (!allowCreativeMode && player.getGameMode() == GameMode.CREATIVE) {
+    			sendMessage("bid-fail-gamemode-creative", sender, null);
+    			return true;
+    		}
 			if (!perms.has(player, "auction.start")) {
     			sendMessage("no-permission", sender, null);
     			return true;
@@ -582,6 +593,7 @@ public class floAuction extends JavaPlugin {
 		allowBidOnOwn = config.getBoolean("allow-bid-on-own-auction");
 		useOldBidLogic = config.getBoolean("use-old-bid-logic");
 		allowEarlyEnd = config.getBoolean("allow-early-end");
+		allowCreativeMode = config.getBoolean("allow-gamemode-creative");
 
 
     	try {

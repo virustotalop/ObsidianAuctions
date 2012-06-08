@@ -17,3 +17,4 @@ use-gold-standard: false
 decimal-places: 2
 
 allow-early-end: false
+allow-gamemode-creative: false
