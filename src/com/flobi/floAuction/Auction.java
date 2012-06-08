@@ -38,8 +38,8 @@ public class Auction {
 
 		// Remove the optional "start" arg:
 		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("start")) {
-				args = new String[0];
+			if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("s")) {
+				args = new String[inputArgs.length - 1];
 				System.arraycopy(inputArgs, 1, args, 0, inputArgs.length - 1);
 			}
 		}
