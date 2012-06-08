@@ -309,7 +309,7 @@ public class floAuction extends JavaPlugin {
     			sendMessage("bid-fail-console", console, null);
     			return true;
     		} 
-    		if (!allowCreativeMode && player.getGameMode() == GameMode.CREATIVE) {
+    		if (!allowCreativeMode && player.getGameMode().equals(GameMode.CREATIVE)) {
     			sendMessage("bid-fail-gamemode-creative", sender, null);
     			return true;
     		}
