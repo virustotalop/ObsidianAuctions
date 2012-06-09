@@ -37,6 +37,7 @@ public class AuctionLot {
 	private void giveLot(String playerName) {
 		ownerName = playerName;
 		Player player = floAuction.server.getPlayer(playerName);
+		int maxStackSize = lotTypeLock.getType().getMaxStackSize();
 		if (player != null && player.isOnline()) {
 			int amountToGive = 0;
 			if (items.hasSpace(player, quantity, lotTypeLock)) {
@@ -45,12 +46,8 @@ public class AuctionLot {
 				amountToGive = items.getSpaceForItem(player, lotTypeLock);
 			}
 			// Give whatever items space permits at this time.
+			ItemStack typeStack = getTypeStack();
 			if (amountToGive > 0) {
-				ItemStack givingItems = lotTypeLock.clone();
-				givingItems.setAmount(amountToGive);
-				player.getInventory().addItem(givingItems);
-				quantity -= amountToGive;
-				ItemStack typeStack = getTypeStack();
 				if (
 						!floAuction.useGoldStandard || 
 						(
@@ -62,16 +59,22 @@ public class AuctionLot {
 					floAuction.sendMessage("lot-give", player, null);
 				}
 			}
+			while (amountToGive > 0) {
+				ItemStack givingItems = lotTypeLock.clone();
+				givingItems.setAmount(Math.min(maxStackSize, amountToGive));
+				quantity -= givingItems.getAmount();
+				player.getInventory().addItem(givingItems);
+				amountToGive -= maxStackSize;
+			}
 			if (quantity > 0) {
 				// Drop items at player's feet.
-				ItemStack droppingItems = lotTypeLock.clone();
 				
 				// Move items to drop lot.
-				droppingItems.setAmount(quantity);
+				typeStack.setAmount(quantity);
 				quantity = 0;
 				
 				// Drop lot.
-				player.getWorld().dropItemNaturally(player.getLocation(), droppingItems);
+				player.getWorld().dropItemNaturally(player.getLocation(), typeStack);
 				floAuction.sendMessage("lot-drop", player, null);
 			}
 		} else {
