@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -24,7 +25,6 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -59,6 +60,7 @@ public class floAuction extends JavaPlugin {
 	public static int decimalPlaces = 2;
 	public static String decimalRegex = "(\\.[0-9][0-9]?)?";
 	public static boolean allowCreativeMode = false;
+	public static boolean allowDamagedItems = false;
 	private static File auctionLog = null;
 	
 	// Config files info.
@@ -209,6 +211,7 @@ public class floAuction extends JavaPlugin {
 		useOldBidLogic = config.getBoolean("use-old-bid-logic");
 		allowEarlyEnd = config.getBoolean("allow-early-end");
 		allowCreativeMode = config.getBoolean("allow-gamemode-creative");
+		allowDamagedItems = config.getBoolean("allow-damaged-items");
 
 		// Update all values to include defaults which may be new.
 		
@@ -463,12 +466,14 @@ public class floAuction extends JavaPlugin {
     	String currentMaxBid = null;
     	String timeRemaining = null;
     	String auctionScope = null;
+    	String durabilityRemaining = null;
 
     	if (auction != null) {
+    		ItemStack typeLot = auction.getLotType();
     		
     		if (auction.getOwner() != null) owner = auction.getOwner();
     		quantity = Integer.toString(auction.getLotQuantity());
-    		lotType = WhatIsIt.itemName(auction.getLotType());
+    		lotType = WhatIsIt.itemName(typeLot);
     		if (auction.getStartingBid() == 0) {
 	    		startingBid = functions.formatAmount(auction.getMinBidIncrement());
     		} else {
@@ -495,6 +500,13 @@ public class floAuction extends JavaPlugin {
 				currentMaxBid = startingBid;
 			}
 			auctionScope = auction.getScope();
+        	durabilityRemaining = "-";
+			if (typeLot != null) {
+				if (typeLot.getType().getMaxDurability() > 0) {
+			        DecimalFormat decimalFormat = new DecimalFormat("#%");
+			        durabilityRemaining = decimalFormat.format((1 - ((double) typeLot.getDurability() / (double) typeLot.getType().getMaxDurability())));
+				}
+			}
     	} else {
         	owner = "-";
         	quantity = "-";
@@ -506,6 +518,7 @@ public class floAuction extends JavaPlugin {
         	currentMaxBid = "-";
         	timeRemaining = "-";
         	auctionScope = "no_auction";
+        	durabilityRemaining = "-";
     	}
     	
     	List<String> messageList = textConfig.getStringList(messageKey);
@@ -537,6 +550,7 @@ public class floAuction extends JavaPlugin {
 			message = message.replace("%B", currentBidder);
 			message = message.replace("%h", currentMaxBid);
 			message = message.replace("%t", timeRemaining);
+			message = message.replace("%D", durabilityRemaining);
 	
 			if (messageKey == "auction-info-enchantment") {
     			if (auction != null && auction.getLotType() != null) {

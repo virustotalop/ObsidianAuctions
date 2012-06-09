@@ -18,3 +18,4 @@ decimal-places: 2
 
 allow-early-end: false
 allow-gamemode-creative: false
+allow-damaged-items: false

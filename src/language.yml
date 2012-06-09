@@ -32,6 +32,7 @@ auction-fail-gold-standard: '&6You cannot auction gold when it is set as currenc
 auction-fail-no-early-end: '&6You cannot end auctions early.'
 auction-fail-disabled: '&6Enter &9/auction on&6 to use the auction software.'
 auction-fail-gamemode-creative: '&6You cannot auction while in CREATIVE mode.'
+auction-fail-damaged-item: '&6You cannot auction damaged items.'
 
 bid-success-no-challenger: '&b%B&9 has bid &6%b&9 on the &a%i&9.'
 bid-success-outbid: '&b%B&9 raised the bid to &6%b&9.'
@@ -70,6 +71,7 @@ auction-help:
 auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-nobids: '&b%O&9 is auctioning &f%q %i&9 for &c%t&9.'
 auction-info-enchantment: 'Item contains enchantment: &a%E'
+auction-info-damage: 'Item damaged: &6%D &aremaining.'
 auction-info-footer: 
 - The current bid is &6%b&9 by &b%B&9.
 - Min bid increment is &6&9%n&9. 

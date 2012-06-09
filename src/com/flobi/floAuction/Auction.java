@@ -91,15 +91,24 @@ public class Auction {
 		return true;
 	}
 	public void info(CommandSender sender) {
+		ItemStack itemType = this.getLotType();
+		short maxDurability = itemType.getType().getMaxDurability();
+		short currentDurability = itemType.getDurability();
 		if (!active) {
 			floAuction.sendMessage("auction-info-no-auction", sender, this);
 		} else if (currentBid == null) {
 			floAuction.sendMessage("auction-info-header-nobids", sender, this);
 			floAuction.sendMessage("auction-info-enchantment", sender, this);
+			if (maxDurability > 0 && currentDurability > 0) {
+				floAuction.sendMessage("auction-info-damage", sender, this);
+			}
 			floAuction.sendMessage("auction-info-footer-nobids", sender, this);
 		} else {
 			floAuction.sendMessage("auction-info-header", sender, this);
 			floAuction.sendMessage("auction-info-enchantment", sender, this);
+			if (maxDurability > 0 && currentDurability > 0) {
+				floAuction.sendMessage("auction-info-damage", sender, this);
+			}
 			floAuction.sendMessage("auction-info-footer", sender, this);
 		}
 	}
@@ -240,6 +249,18 @@ public class Auction {
 			return false;
 		}
 		lot = new AuctionLot(heldItem, ownerName);
+		
+		ItemStack itemType = lot.getTypeStack();
+		
+		if (
+				!floAuction.allowDamagedItems &&
+				itemType.getType().getMaxDurability() > 0 &&
+				itemType.getDurability() > 0
+		) {
+			floAuction.sendMessage("auction-fail-damaged-item", owner, this);
+			return false;
+		}
+		
 		return true;
 	}
 	private Boolean parseArgs() {
