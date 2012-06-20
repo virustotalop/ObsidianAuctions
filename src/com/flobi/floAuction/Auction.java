@@ -155,6 +155,10 @@ public class Auction {
 			return;
 		}
 		if (currentBid == null) {
+			if (bid.getBidAmount() < getStartingBid()) {
+				failBid(bid, "bid-fail-under-starting-bid");
+				return;
+			}
 			setNewBid(bid, "bid-success-no-challenger");
 			return;
 		}
@@ -413,7 +417,11 @@ public class Auction {
 		return lot.getQuantity();
 	}
 	public long getStartingBid() {
-		return startingBid;
+		long effectiveStartingBid = startingBid;
+		if (effectiveStartingBid == 0) {
+			effectiveStartingBid = minBidIncrement; 
+		}
+		return effectiveStartingBid;
 	}
 	public AuctionBid getCurrentBid() {
 		return currentBid;

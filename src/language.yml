@@ -47,6 +47,7 @@ bid-fail-console: &6Console bidding is prohibited.
 bid-fail-no-auction: '&6There is no auction at this time on which to bid.'
 bid-fail-auto-outbid: '&6You have been automatically outbid.'
 bid-fail-gamemode-creative: '&6You cannot bid while in CREATIVE mode.'
+bid-fail-under-starting-bid: '&6The bidding must start at %s.'
 
 auction-cancel: The auction has been cancelled.
 auction-end-nobids: The auction ended with no bids.
