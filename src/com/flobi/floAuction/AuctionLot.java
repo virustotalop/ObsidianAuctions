@@ -1,26 +1,36 @@
 package com.flobi.floAuction;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.flobi.utility.items;
 
-public class AuctionLot {
+public class AuctionLot implements java.io.Serializable {
+	private static final long serialVersionUID = -1764290458703647129L;
 	private String ownerName;
-	private ItemStack lotTypeLock;
 	private int quantity = 0;
+	private int lotTypeId;
+	private byte lotDataData;
+	private short lotDurability;
+	private Map<Integer, Integer> lotEnchantments;
 	
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
-		lotTypeLock = lotType.clone();
 		ownerName = lotOwner;
+		setLotType(lotType);
 	}
 	public boolean AddItems(int addQuantity, boolean removeFromOwner) {
 		if (removeFromOwner) {
-			if (!items.hasAmount(ownerName, addQuantity, lotTypeLock)) {
+			if (!items.hasAmount(ownerName, addQuantity, getTypeStack())) {
 				return false;
 			}
-			items.remove(ownerName, addQuantity, lotTypeLock);
+			items.remove(ownerName, addQuantity, getTypeStack());
 		}
 		quantity += addQuantity;
 		return true;
@@ -36,7 +46,10 @@ public class AuctionLot {
 	
 	private void giveLot(String playerName) {
 		ownerName = playerName;
+		if (quantity == 0) return;
+		ItemStack lotTypeLock = getTypeStack();
 		Player player = floAuction.server.getPlayer(playerName);
+		
 		int maxStackSize = lotTypeLock.getType().getMaxStackSize();
 		if (player != null && player.isOnline()) {
 			int amountToGive = 0;
@@ -87,12 +100,26 @@ public class AuctionLot {
 			quantity = 0;
 			
 			// Queue for distribution on space availability.
-			floAuction.OrphanLots.add(orphanLot);
+			floAuction.orphanLots.add(orphanLot);
+			floAuction.saveObject(floAuction.orphanLots, "orphanLots.ser");
 		}
 	}
 	public ItemStack getTypeStack() {
-		// Return clone so the caller can't change type.
-		return lotTypeLock.clone();
+		ItemStack lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability, lotDataData);
+		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
+			lotTypeLock.addEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
+		}
+		return lotTypeLock;
+	}
+	private void setLotType(ItemStack lotType) {
+		lotTypeId = lotType.getTypeId();
+		lotDataData = lotType.getData().getData();
+		lotDurability = lotType.getDurability();
+		lotEnchantments = new HashMap<Integer, Integer>();
+		Map<Enchantment, Integer> enchantmentList = lotType.getEnchantments();
+		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
+			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
+		}
 	}
 	public String getOwner() {
 		return ownerName;

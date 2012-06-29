@@ -245,8 +245,10 @@ public class Auction {
 		floAuction.sendMessage(reason, (CommandSender) null, this);
 	}
 	private Boolean parseHeldItem() {
-		//TODO: Add check for damage and config option to check if can auction damaged items.
 		Player owner = floAuction.server.getPlayer(ownerName);
+		if (lot != null) {
+			return true;
+		}
 		ItemStack heldItem = owner.getItemInHand();
 		if (heldItem == null || heldItem.getAmount() == 0) {
 			floAuction.sendMessage("auction-fail-hand-is-empty", owner, this);
@@ -262,6 +264,7 @@ public class Auction {
 				itemType.getDurability() > 0
 		) {
 			floAuction.sendMessage("auction-fail-damaged-item", owner, this);
+			lot = null;
 			return false;
 		}
 		
@@ -326,6 +329,8 @@ public class Auction {
 		return true;
 	}
 	private Boolean parseArgAmount() {
+		if (quantity > 0) return true;
+
 		ItemStack lotType = lot.getTypeStack();
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("this")) {
@@ -349,6 +354,8 @@ public class Auction {
 		return true;
 	}
 	private Boolean parseArgStartingBid() {
+		if (startingBid > 0) return true;
+		
 		if (args.length > 1) {
 			if (args[1].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
 				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
@@ -366,6 +373,8 @@ public class Auction {
 		return true;
 	}
 	private Boolean parseArgIncrement() {
+		if (minBidIncrement > 0) return true;
+
 		if (args.length > 2) {
 			if (args[2].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
 				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args[2]));
@@ -383,6 +392,8 @@ public class Auction {
 		return true;
 	}
 	private Boolean parseArgTime() {
+		if (time > 0) return true;
+
 		if (args.length > 3) {
 			if (args[3].matches("[0-9]{1,7}")) {
 				time = Integer.parseInt(args[3]);

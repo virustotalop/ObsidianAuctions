@@ -5,6 +5,16 @@ no-whatisit: Disabled due to no WhatIsIt dependency found!
 no-vault: Disabled due to no Vault dependency found!
 plugin-reloaded: '&fconfiguration has been reloaded.'
 no-permission: '&6You do not have permission.'
+suspension-user: '&6Your auction access has been suspended.'
+suspension-user-success: 'The user has been suspended.'
+suspension-user-fail-already-suspended: '&6That user is already suspended.'
+suspension-user-fail-is-admin: '&6You cannot suspend auction admins.'
+suspension-user-fail-is-offline: '&6You cannot suspend offline users.'
+unsuspension-user: 'You may now participate in auctions again.'
+unsuspension-user-success: 'The user has been unsuspended.'
+unsuspension-user-fail-not-suspended: 'That user was not suspended.'
+suspension-global: '&6All auctioning has been suspended.'
+unsuspension-global: 'Auctioning has been resumed.'
 
 parse-error-invalid-quantity: '&6The quantity you specified is invalid.'
 parse-error-invalid-starting-bid: '&6The staring bid you specified is invalid.'
@@ -48,6 +58,11 @@ bid-fail-no-auction: '&6There is no auction at this time on which to bid.'
 bid-fail-auto-outbid: '&6You have been automatically outbid.'
 bid-fail-gamemode-creative: '&6You cannot bid while in CREATIVE mode.'
 bid-fail-under-starting-bid: '&6The bidding must start at %s.'
+
+auction-queue-enter: Your auction has been queued. 
+auction-queue-fail-full: '&6The auction queue is full, try again later.'
+auction-queue-fail-in-queue: '&6You already have an auction queued.'
+auction-queue-fail-current-auction: '&6ou are already running an auction.'
 
 auction-cancel: The auction has been cancelled.
 auction-end-nobids: The auction ended with no bids.

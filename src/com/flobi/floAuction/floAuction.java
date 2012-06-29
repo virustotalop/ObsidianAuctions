@@ -1,10 +1,19 @@
 package com.flobi.floAuction;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +61,8 @@ public class floAuction extends JavaPlugin {
 	public static long maxIncrement = 100;
 	public static int maxTime = 60;
 	public static int minTime = 15;
+	public static int maxAuctionQueueLength = 2;
+	public static int minAuctionIntervalSecs = 10;
 	public static boolean allowBidOnOwn = false;
 	public static boolean useOldBidLogic = false;
 	public static boolean logAuctions = false;
@@ -62,6 +73,8 @@ public class floAuction extends JavaPlugin {
 	public static boolean allowCreativeMode = false;
 	public static boolean allowDamagedItems = false;
 	private static File auctionLog = null;
+	private static long lastAuctionDestroyTime = 0;
+	private static boolean suspendAllAuctions = false;
 	
 	// Config files info.
 	private static File configFile = null;
@@ -75,20 +88,84 @@ public class floAuction extends JavaPlugin {
 	private static File dataFolder;
 	private static ConsoleCommandSender console;
 	public static Server server;
+	public static int queueTimer;
+	public static ArrayList<Auction> auctionQueue = new ArrayList<Auction>(); 
 	
-	public static ArrayList<String> disabledUsers = new ArrayList<String>(); 
+	// TODO: Save these items when updated so we don't loose info when restarting.
+	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();;
+	public static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();;
+	public static ArrayList<String> suspendedUsers = new ArrayList<String>();
 	
-	// In case items can't be given for some reason, save them
-	public static ArrayList<AuctionLot> OrphanLots = new ArrayList<AuctionLot>();
+	
+	public static void saveObject(Object arraylist, String filename) {
+    	File saveFile = new File(dataFolder, filename);
+    	
+    	try {
+			//use buffering
+    		if (saveFile.exists()) saveFile.delete();
+			OutputStream file = new FileOutputStream(saveFile.getAbsolutePath());
+			OutputStream buffer = new BufferedOutputStream(file);
+			ObjectOutput output = new ObjectOutputStream(buffer);
+			try {
+				output.writeObject(arraylist);
+			}
+			finally {
+				output.close();
+			}
+  	    }  
+  	    catch(IOException ex){
+    		return;
+  	    }
+	}
+	@SuppressWarnings({ "unchecked", "finally" })
+	private static ArrayList<String> loadArrayListString(String filename) {
+    	File saveFile = new File(dataFolder, filename);
+    	ArrayList<String> importedObjects = new ArrayList<String>();
+    	try {
+			//use buffering
+			InputStream file = new FileInputStream(saveFile.getAbsolutePath());
+			InputStream buffer = new BufferedInputStream(file);
+			ObjectInput input = new ObjectInputStream (buffer);
+			importedObjects = (ArrayList<String>) input.readObject();
+			input.close();
+  	    }  
+		finally {
+  	    	return importedObjects;
+		}
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private static ArrayList<AuctionLot> loadArrayListAuctionLot(String filename) {
+    	File saveFile = new File(dataFolder, filename);
+    	ArrayList<AuctionLot> importedObjects = new ArrayList<AuctionLot>();
+    	try {
+			//use buffering
+			InputStream file = new FileInputStream(saveFile.getAbsolutePath());
+			InputStream buffer = new BufferedInputStream(file);
+			ObjectInput input = new ObjectInputStream (buffer);
+			importedObjects = (ArrayList<AuctionLot>) input.readObject();
+			input.close();
+  	    } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		finally {
+		}
+    	return importedObjects;
+	}
 	
 	
 	// Eliminate orphan lots (i.e. try to give the items to a player again).
 	public static void killOrphan(Player player) {
 		// List of orphans to potentially kill.
-		ArrayList<AuctionLot> orphanDeathRow = OrphanLots;
+		ArrayList<AuctionLot> orphanDeathRow = orphanLots;
 		
 		// New orphanage.
-		OrphanLots = new ArrayList<AuctionLot>();
+		orphanLots = new ArrayList<AuctionLot>();
 		
 		// KILL THEM ALL!
 		for(int i = 0; i < orphanDeathRow.size(); i++) {
@@ -102,10 +179,11 @@ public class floAuction extends JavaPlugin {
 					orphanDeathRow.set(i, null);
 				} else {
 					// This one's still alive, put it back in the orphanage.
-					OrphanLots.add(lot);
+					orphanLots.add(lot);
 				}
 			}
 		}
+		saveObject(orphanLots, "orphanLots.ser");
 	}
 	
 
@@ -139,6 +217,16 @@ public class floAuction extends JavaPlugin {
         }, this);		
 		sendMessage("plugin-enabled", console, null);
 		
+		queueTimer = getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+		    public void run() {
+		    	checkAuctionQueue();
+		    }
+		}, 20L, 20L);
+		
+		orphanLots = loadArrayListAuctionLot("orphanLots.ser");
+		voluntarilyDisabledUsers = loadArrayListString("voluntarilyDisabledUsers.ser");
+		suspendedUsers = loadArrayListString("suspendedUsers.ser");
+
 		//TODO: Load orphan lots from save file.
 	}
     /**
@@ -207,6 +295,8 @@ public class floAuction extends JavaPlugin {
 		maxIncrement = functions.getSafeMoney(config.getDouble("max-bid-increment"));
 		maxTime = config.getInt("max-auction-time");
 		minTime = config.getInt("min-auction-time");
+		maxAuctionQueueLength = config.getInt("max-auction-queue-length");
+		minAuctionIntervalSecs = config.getInt("min-auction-interval-secs");
 		allowBidOnOwn = config.getBoolean("allow-bid-on-own-auction");
 		useOldBidLogic = config.getBoolean("use-old-bid-logic");
 		allowEarlyEnd = config.getBoolean("allow-early-end");
@@ -247,14 +337,15 @@ public class floAuction extends JavaPlugin {
 	    textConfigFile = null;
     }
 	public void onDisable() { 
+		getServer().getScheduler().cancelTask(queueTimer);
 		sendMessage("plugin-disabled", console, null);
 		
 		//TODO: Save orphan lots from save file.
 	}
 	public void detachAuction(Auction auction) {
-		// TODO: make look through auction scopes.  
-		// In the mean time, just null the public as that's the only one right now.
 		publicAuction = null;
+		lastAuctionDestroyTime = System.currentTimeMillis();
+		checkAuctionQueue();
 	}
 	/**
 	 * Prepares chat, prepending prefix and processing colors.
@@ -273,12 +364,77 @@ public class floAuction extends JavaPlugin {
     	message = ChatColor.stripColor(message);
     	return message;
     }
+    
+    public void queueAuction(Auction auctionToQueue, Player player, Auction currentAuction) {
+		String playerName = player.getName();
+
+		if (currentAuction == null) {
+			// Queuing because of interval not yet timed out.
+			// Allow a queue of 1 to override if 0 for this condition.
+	    	if (Math.max(maxAuctionQueueLength, 1) <= auctionQueue.size()) {
+				sendMessage("auction-queue-fail-full", player, currentAuction);
+				return;
+			}
+		} else {
+	    	if (maxAuctionQueueLength <= 0) {
+				sendMessage("auction-fail-auction-exists", player, currentAuction);
+				return;
+			}
+			if (currentAuction.getOwner().equalsIgnoreCase(playerName)) {
+				sendMessage("auction-queue-fail-current-auction", player, currentAuction);
+				return;
+			}
+			if (maxAuctionQueueLength <= auctionQueue.size()) {
+				sendMessage("auction-queue-fail-full", player, currentAuction);
+				return;
+			}
+		}
+		for(int i = 0; i < auctionQueue.size(); i++) {
+			if (auctionQueue.get(i) != null) {
+				Auction queuedAuction = auctionQueue.get(i);
+				if (queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
+					sendMessage("auction-queue-fail-in-queue", player, currentAuction);
+					return;
+				}
+			}
+		}
+		if (auctionToQueue.isValid()) {
+			auctionQueue.add(auctionToQueue);
+			checkAuctionQueue();
+			if (auctionQueue.contains(auctionToQueue)) {
+				sendMessage("auction-queue-enter", player, currentAuction);
+			}
+		}
+    }
+	private void checkAuctionQueue() {
+		if (publicAuction != null) {
+			return;
+		}
+		if (System.currentTimeMillis() - lastAuctionDestroyTime < minAuctionIntervalSecs * 1000) {
+			return;
+		}
+		if (auctionQueue.size() == 0) {
+			return;
+		}
+		Auction auction = auctionQueue.remove(0);
+		if (auction == null) {
+			return;
+		}
+		if (!auction.isValid()) {
+			return;
+		}
+		if (auction.start()) {
+			publicAuction = auction;
+		}
+	}
+    
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     	Player player = null;
     	Auction auction = null;
 		// TODO: Figure out auction for context.
 		// In the mean time, use public auction.
 		auction = publicAuction;
+		String userScope = "public_auction";
 		String playerName = "";
 
     	if (sender instanceof Player) {
@@ -293,21 +449,43 @@ public class floAuction extends JavaPlugin {
 				args.length > 0 &&
 				args[0].equalsIgnoreCase("on")
 		) {
-			int index = disabledUsers.indexOf(playerName);
+			int index = voluntarilyDisabledUsers.indexOf(playerName);
 			if (index != -1) {
-				disabledUsers.remove(index);
+				voluntarilyDisabledUsers.remove(index);
 			}
 			sendMessage("auction-enabled", sender, null);
+			saveObject(voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
 			return true;
 		}
      
-    	if (disabledUsers.indexOf(playerName) != -1) {
-    		disabledUsers.remove(disabledUsers.indexOf(playerName));
+    	if (voluntarilyDisabledUsers.contains(playerName)) {
+    		voluntarilyDisabledUsers.remove(voluntarilyDisabledUsers.indexOf(playerName));
 			sendMessage("auction-fail-disabled", sender, null);
-			disabledUsers.add(playerName);
+			voluntarilyDisabledUsers.add(playerName);
+			saveObject(voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
 			return true;
 		}
-		
+    	
+    	if (suspendAllAuctions) {
+	    	if (args.length == 1 && args[0].equalsIgnoreCase("resume")) {
+				if (player != null && !perms.has(player, "auction.admin")) {
+	    			sendMessage("no-permission", sender, null);
+	    			return true;
+				}
+				// Suspend globally:
+				suspendAllAuctions = false;
+    			sendMessage("unsuspension-global", (Player) null, null);
+				return true;
+			}
+			sendMessage("suspension-global", sender, null);
+    		return true;
+    	}
+    	
+    	if (player != null && suspendedUsers.contains(playerName.toLowerCase())) {
+			sendMessage("suspension-user", player, null);
+			return true;
+    	}
+
     	if (cmd.getName().equalsIgnoreCase("auction")) {
     		if (args.length > 0) {
     			if (args[0].equalsIgnoreCase("reload")) {
@@ -320,6 +498,80 @@ public class floAuction extends JavaPlugin {
     				loadConfig();
 	    			sendMessage("plugin-reloaded", sender, null);
     				return true;
+    			} else if (args[0].equalsIgnoreCase("orphans")) {
+    				if (player != null && !perms.has(player, "auction.admin")) {
+    	    			sendMessage("no-permission", sender, null);
+    	    			return true;
+    				}
+    				
+    				for(int i = 0; i < orphanLots.size(); i++) {
+    					if (orphanLots.get(i) != null) {
+    						AuctionLot lot = orphanLots.get(i);
+    		    			sendMessage(lot.getOwner() + ": " + lot.getQuantity() + " " + WhatIsIt.itemName(lot.getTypeStack()), sender, null);
+    					}
+    				}
+
+    				return true;
+    			} else if (args[0].equalsIgnoreCase("resume")) {
+    				if (player != null && !perms.has(player, "auction.admin")) {
+    	    			sendMessage("no-permission", sender, null);
+    	    			return true;
+    				}
+
+					if (!suspendedUsers.contains(args[1].toLowerCase())) {
+		    			sendMessage("unsuspension-user-fail-not-suspended", sender, null);
+		    			return true;
+					}
+
+					suspendedUsers.remove(args[1].toLowerCase());
+					saveObject(suspendedUsers, "suspendedUsers.ser");
+	    			sendMessage("unsuspension-user", getServer().getPlayer(args[1]), null);
+	    			sendMessage("unsuspension-user-success", sender, null);
+    				
+    				return true;
+    			} else if (args[0].equalsIgnoreCase("suspend")) {
+    				if (player != null && !perms.has(player, "auction.admin")) {
+    	    			sendMessage("no-permission", sender, null);
+    	    			return true;
+    				}
+    				if (args.length > 1) {
+    					// Suspend a player:
+    					if (suspendedUsers.contains(args[1].toLowerCase())) {
+    		    			sendMessage("suspension-user-fail-already-suspended", sender, null);
+    		    			return true;
+    					}
+    					
+    					Player playerToSuspend = getServer().getPlayer(args[1]);
+    					
+    					if (playerToSuspend == null || !playerToSuspend.isOnline()) {
+    		    			sendMessage("suspension-user-fail-is-offline", sender, null);
+    		    			return true;
+    					}
+    					
+    					if (perms.has(playerToSuspend, "auction.admin")) {
+    		    			sendMessage("suspension-user-fail-is-admin", sender, null);
+    		    			return true;
+    					}
+    					
+    					suspendedUsers.add(args[1].toLowerCase());
+    					saveObject(suspendedUsers, "suspendedUsers.ser");
+		    			sendMessage("suspension-user", playerToSuspend, null);
+		    			sendMessage("suspension-user-success", sender, null);
+    					
+    					return true;
+    				}
+    				// Suspend globally:
+    				suspendAllAuctions = true;
+    				
+    				// Clear queued auctions first.
+    				auctionQueue.clear();
+    				
+    				// Loop through all scopes when they come around.
+    				publicAuction.cancel(player);    				
+
+	    			sendMessage("suspension-global", (Player) null, null);
+
+	    			return true;
     			} else if (
         				args[0].equalsIgnoreCase("start") || 
         				args[0].equalsIgnoreCase("s") ||
@@ -341,23 +593,8 @@ public class floAuction extends JavaPlugin {
     	    			sendMessage("no-permission", sender, null);
     	    			return true;
     				}
-    				if (auction == null) {
-    					auction = new Auction(this, player, args, "public_auction");
-    					if (auction.isValid()) {
-        					if (auction.start()) {
-        						// TODO: assign to respective context
-        						// In the mean time, use public auction
-        						publicAuction = auction;
-        					} else {
-        						auction = null;
-        					}
-    					} else {
-    						auction = null;
-    					}
-    				} else {
-    					// Already an auction.
-    					sendMessage("auction-fail-auction-exists", sender, auction);
-    				}
+					queueAuction(new Auction(this, player, args, userScope), player, auction);
+					
 					return true;
     			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
     				if (auction == null) {
@@ -366,7 +603,6 @@ public class floAuction extends JavaPlugin {
     				}
 					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) {
     					auction.cancel(player);
-    					// TODO: Make scope specific
     					publicAuction = null;
 					} else {
     					sendMessage("auction-fail-not-owner-cancel", player, auction);
@@ -383,7 +619,6 @@ public class floAuction extends JavaPlugin {
     				}
 					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
     					auction.end(player);
-    					// TODO: Make scope specific
     					publicAuction = null;
 					} else {
     					sendMessage("auction-fail-not-owner-end", player, auction);
@@ -396,9 +631,10 @@ public class floAuction extends JavaPlugin {
         				args[0].equalsIgnoreCase("silent") ||
         				args[0].equalsIgnoreCase("silence")
     			) {
-    				if (disabledUsers.indexOf(playerName) == -1) {
+    				if (voluntarilyDisabledUsers.indexOf(playerName) == -1) {
     					sendMessage("auction-disabled", sender, null);
-    					disabledUsers.add(playerName);
+    					voluntarilyDisabledUsers.add(playerName);
+    					saveObject(voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
     				}
     				return true;
     			} else if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("i")) {
@@ -439,12 +675,12 @@ public class floAuction extends JavaPlugin {
 
     	if (player != null) {
 	    	if (player instanceof Player) {
-		    	if (disabledUsers.indexOf(player.getName()) != -1) {
+		    	if (voluntarilyDisabledUsers.indexOf(player.getName()) != -1) {
 		    		// Don't send this user any messages.
 		    		return;
 				}
 	    	} else {
-		    	if (disabledUsers.indexOf("*console*") != -1) {
+		    	if (voluntarilyDisabledUsers.indexOf("*console*") != -1) {
 		    		// Don't send console any messages.
 		    		return;
 				}
@@ -580,12 +816,12 @@ public class floAuction extends JavaPlugin {
     	Player[] onlinePlayers = server.getOnlinePlayers();
     	
     	for (Player player : onlinePlayers) {
-        	if (disabledUsers.indexOf(player.getName()) == -1) {
+        	if (voluntarilyDisabledUsers.indexOf(player.getName()) == -1) {
         		player.sendMessage(message);
     		}
     	}
     	
-    	if (disabledUsers.indexOf("*console*") == -1) {
+    	if (voluntarilyDisabledUsers.indexOf("*console*") == -1) {
 			console.sendMessage(message);
 		}
     }

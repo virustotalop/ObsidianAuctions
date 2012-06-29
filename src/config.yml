@@ -19,3 +19,7 @@ decimal-places: 2
 allow-early-end: false
 allow-gamemode-creative: false
 allow-damaged-items: false
+
+max-auction-queue-length: 2
+min-auction-interval-secs: 10
+
