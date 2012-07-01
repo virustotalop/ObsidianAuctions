@@ -198,15 +198,17 @@ public class floAuction extends JavaPlugin {
 		dataFolder = getDataFolder();
 		defConfigStream = getResource("config.yml");
 		defTextConfigStream = getResource("language.yml");
-        loadConfig();
+
+		setupEconomy();
+        setupPermissions();
+        setupChat();
+
 		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
 			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-whatisit")));
 			server.getPluginManager().disablePlugin(this);
             return;
 		}
-		setupEconomy();
-        setupPermissions();
-        setupChat();
+        loadConfig();
         
         server.getPluginManager().registerEvents(new Listener() {
             @SuppressWarnings("unused")
