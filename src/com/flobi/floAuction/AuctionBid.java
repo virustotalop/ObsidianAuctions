@@ -143,6 +143,11 @@ public class AuctionBid {
 		return true;
 	}
 	private Boolean parseArgMaxBid() {
+		if (!floAuction.allowMaxBids) {
+			// Just ignore it.
+			maxBidAmount = bidAmount;
+			return true;
+		}
 		if (args.length > 1) {
 			if (args[1].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
 				maxBidAmount = functions.getSafeMoney(Double.parseDouble(args[1]));

@@ -75,6 +75,7 @@ public class floAuction extends JavaPlugin {
 	private static File auctionLog = null;
 	private static long lastAuctionDestroyTime = 0;
 	private static boolean suspendAllAuctions = false;
+	public static boolean allowMaxBids = true;
 	
 	// Config files info.
 	private static File configFile = null;

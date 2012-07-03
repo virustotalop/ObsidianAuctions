@@ -16,6 +16,7 @@ max-auction-time: 120
 use-gold-standard: false
 decimal-places: 2
 
+allow-max-bids: true
 allow-early-end: false
 allow-gamemode-creative: false
 allow-damaged-items: false
