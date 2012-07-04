@@ -311,6 +311,7 @@ public class floAuction extends JavaPlugin {
 		bannedItems = config.getStringList("banned-items");
 		taxPerAuction = config.getDouble("auction-start-tax");
 		taxPercentage = config.getDouble("auction-end-tax-percent");
+		allowMaxBids = config.getBoolean("allow-max-bids");
 		
 
 		// Update all values to include defaults which may be new.
