@@ -24,3 +24,10 @@ allow-damaged-items: false
 max-auction-queue-length: 2
 min-auction-interval-secs: 10
 
+auction-start-tax: 0
+auction-end-tax-percent: 0
+
+banned-items: 
+  - 7
+  - 383;63
+  

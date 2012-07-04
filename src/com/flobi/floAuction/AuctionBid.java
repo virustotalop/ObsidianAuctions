@@ -51,11 +51,19 @@ public class AuctionBid {
 	public void winBid() {
 		Double unsafeBidAmount = functions.getUnsafeMoney(bidAmount);
 		
+		// Extract taxes:
+		Double taxes = 0D;
+		if (floAuction.taxPercentage > 0D) {
+			taxes = unsafeBidAmount * (floAuction.taxPercentage / 100D);
+			floAuction.sendMessage("auction-end-tax", auction.getOwner(), auction);
+			unsafeBidAmount -= taxes;
+		}
+		
 		// Apply winnings to auction owner.
 		functions.depositPlayer(auction.getOwner(), unsafeBidAmount);
 
 		// Refund remaining reserve.
-		functions.depositPlayer(bidder.getName(), reserve - unsafeBidAmount);
+		functions.depositPlayer(bidder.getName(), reserve - unsafeBidAmount - taxes);
 		
 		reserve = 0;
 	}

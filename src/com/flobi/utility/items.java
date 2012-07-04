@@ -1,6 +1,7 @@
 package com.flobi.utility;
 
 import java.util.ArrayList;
+
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,10 +11,33 @@ import com.flobi.floAuction.floAuction;
 
 
 public class items {
-	/*
-	 * Formats a string such as 17:2 or 17;2
-	 */
-	
+	// Some of this was taken from Vault's item classes.
+	public static boolean isSameItem(ItemStack item, String searchString) {
+		
+        if (searchString.matches("\\d+;\\d+")) {
+            // Match on integer:short to get typeId and subTypeId
+
+            // Retrieve/parse data
+            String[] params = searchString.split(";");
+            int typeId = Integer.parseInt(params[0]);
+            short subTypeId = Short.parseShort(params[1]);
+            
+            if (item.getTypeId() == typeId && item.getDurability() == subTypeId) {
+            	return true;
+            }
+
+        } else if (searchString.matches("\\d+")) {
+            // Match an integer only, assume subTypeId = 0
+
+            // Retrieve/parse data
+            int typeId = Integer.parseInt(searchString);
+
+            if (item.getTypeId() == typeId) {
+            	return true;
+            }
+        }
+		return false;
+	}
 	public static boolean isSameItem(ItemStack item1, ItemStack item2) {
 		// Is it even an item?
 		if (item1 == null) return false;

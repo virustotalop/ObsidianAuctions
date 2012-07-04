@@ -19,6 +19,7 @@ public class AuctionLot implements java.io.Serializable {
 	private byte lotDataData;
 	private short lotDurability;
 	private Map<Integer, Integer> lotEnchantments;
+	private int sourceStackQuantity = 0;
 	
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
@@ -109,12 +110,14 @@ public class AuctionLot implements java.io.Serializable {
 		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
 			lotTypeLock.addEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
+		lotTypeLock.setAmount(sourceStackQuantity);
 		return lotTypeLock;
 	}
 	private void setLotType(ItemStack lotType) {
 		lotTypeId = lotType.getTypeId();
 		lotDataData = lotType.getData().getData();
 		lotDurability = lotType.getDurability();
+		sourceStackQuantity = lotType.getAmount();
 		lotEnchantments = new HashMap<Integer, Integer>();
 		Map<Enchantment, Integer> enchantmentList = lotType.getEnchantments();
 		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {

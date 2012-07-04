@@ -46,8 +46,28 @@ public class Auction {
 		
 	}
 	public Boolean start() {
+		
+		if (floAuction.taxPerAuction > 0D) {
+			if (floAuction.econ.has(ownerName, floAuction.taxPerAuction)) {
+				floAuction.sendMessage("auction-start-tax", getOwner(), this);
+				floAuction.econ.withdrawPlayer(ownerName, floAuction.taxPerAuction);
+			} else {
+				floAuction.sendMessage("auction-fail-start-tax", ownerName, this);
+				return false;
+			}
+		}
+		
+		ItemStack typeStack = lot.getTypeStack();
+		
+		// Check banned items:
+		for (int i = 0; i < floAuction.bannedItems.size(); i++) {
+			if (items.isSameItem(typeStack, floAuction.bannedItems.get(i))) {
+				floAuction.sendMessage("auction-fail-banned", ownerName, this);
+				return false;
+			}
+		}
+		
 		if (floAuction.useGoldStandard) {
-			ItemStack typeStack = lot.getTypeStack();
 			if (
 					items.isSameItem(typeStack, new ItemStack(371)) ||
 					items.isSameItem(typeStack, new ItemStack(266)) ||

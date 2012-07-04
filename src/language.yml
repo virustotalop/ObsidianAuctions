@@ -23,6 +23,8 @@ parse-error-invalid-time: '&6The time you specified is invalid.'
 parse-error-invalid-bid: '&6The bid amount you specified is invalid.'
 parse-error-invalid-max-bid: '&6The max bid amount you specified is invalid.'
 
+auction-fail-banned: '&6You cannot auction this.'
+auction-fail-start-tax: '&6You cannot afford to start an auction.'
 auction-fail-hand-is-empty: '&6Hold something to auction.'
 auction-fail-quantity-too-low: '&6You must offer more than that.'
 auction-fail-insufficient-supply: '&6You do not have enough of this item.'
@@ -83,6 +85,9 @@ auction-help:
 - /auction end|e|stop - Ends current auction
 - /auction cancel|c - Cancels current auction
 - /auction info|i - Returns current auction information. 
+
+auction-start-tax: You have been charged an auction tax of %x.
+auction-end-tax: An auction tax of %X has been extracted from your winnings.
 
 auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-nobids: '&b%O&9 is auctioning &f%q %i&9 for &c%t&9.'

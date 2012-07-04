@@ -76,6 +76,9 @@ public class floAuction extends JavaPlugin {
 	private static long lastAuctionDestroyTime = 0;
 	private static boolean suspendAllAuctions = false;
 	public static boolean allowMaxBids = true;
+	public static List<String> bannedItems = new ArrayList<String>();
+	public static double taxPerAuction = 0;
+	public static double taxPercentage = 0;
 	
 	// Config files info.
 	private static File configFile = null;
@@ -305,6 +308,10 @@ public class floAuction extends JavaPlugin {
 		allowEarlyEnd = config.getBoolean("allow-early-end");
 		allowCreativeMode = config.getBoolean("allow-gamemode-creative");
 		allowDamagedItems = config.getBoolean("allow-damaged-items");
+		bannedItems = config.getStringList("banned-items");
+		taxPerAuction = config.getDouble("auction-start-tax");
+		taxPercentage = config.getDouble("auction-end-tax-percent");
+		
 
 		// Update all values to include defaults which may be new.
 		
@@ -706,6 +713,8 @@ public class floAuction extends JavaPlugin {
     	String timeRemaining = null;
     	String auctionScope = null;
     	String durabilityRemaining = null;
+    	String endAuctionTax = null;
+    	String startAucitonTax = econ.format(taxPerAuction);
 
     	if (auction != null) {
     		ItemStack typeLot = auction.getLotType();
@@ -733,10 +742,12 @@ public class floAuction extends JavaPlugin {
 				currentBidder = auction.getCurrentBid().getBidder().getName();
 				currentBid = functions.formatAmount(auction.getCurrentBid().getBidAmount());
 				currentMaxBid = functions.formatAmount(auction.getCurrentBid().getMaxBidAmount());
+				endAuctionTax = econ.format(auction.getCurrentBid().getMaxBidAmount() * (floAuction.taxPercentage / 100D));
 			} else {
 				currentBidder = "noone";
 				currentBid = startingBid;
 				currentMaxBid = startingBid;
+				endAuctionTax = "-";
 			}
 			auctionScope = auction.getScope();
         	durabilityRemaining = "-";
@@ -758,6 +769,7 @@ public class floAuction extends JavaPlugin {
         	timeRemaining = "-";
         	auctionScope = "no_auction";
         	durabilityRemaining = "-";
+        	endAuctionTax = "-";
     	}
     	
     	List<String> messageList = textConfig.getStringList(messageKey);
@@ -790,6 +802,8 @@ public class floAuction extends JavaPlugin {
 			message = message.replace("%h", currentMaxBid);
 			message = message.replace("%t", timeRemaining);
 			message = message.replace("%D", durabilityRemaining);
+			message = message.replace("%x", startAucitonTax);
+			message = message.replace("%X", endAuctionTax);
 	
 			if (messageKey == "auction-info-enchantment") {
     			if (auction != null && auction.getLotType() != null) {
