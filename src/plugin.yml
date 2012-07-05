@@ -7,7 +7,6 @@ depend: [WhatIsIt, Vault]
 
 main: com.flobi.floAuction.floAuction
 database: false
-depend: [Vault, WhatIsIt]
 
 commands:
   auction:
