@@ -221,7 +221,6 @@ public class floAuction extends JavaPlugin {
         	    floAuction.killOrphan(event.getPlayer());
             }
         }, this);		
-		sendMessage("plugin-enabled", console, null);
 		
 		queueTimer = getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 		    public void run() {
@@ -233,6 +232,15 @@ public class floAuction extends JavaPlugin {
 		voluntarilyDisabledUsers = loadArrayListString("voluntarilyDisabledUsers.ser");
 		suspendedUsers = loadArrayListString("suspendedUsers.ser");
 
+        // Load up the Plugin metrics
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        } catch (IOException e) {
+            // Failed to submit the stats :-(
+        }
+		sendMessage("plugin-enabled", console, null);
+		
 		//TODO: Load orphan lots from save file.
 	}
     /**
