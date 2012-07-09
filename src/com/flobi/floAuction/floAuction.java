@@ -676,7 +676,7 @@ public class floAuction extends JavaPlugin {
     			sendMessage("bid-fail-gamemode-creative", sender, null);
     			return true;
     		}
-			if (!perms.has(player, "auction.start")) {
+			if (!perms.has(player, "auction.bid")) {
     			sendMessage("no-permission", sender, null);
     			return true;
 			}
