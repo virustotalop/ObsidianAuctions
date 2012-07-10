@@ -3,6 +3,7 @@ plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
 no-whatisit: Disabled due to no WhatIsIt dependency found!
 no-vault: Disabled due to no Vault dependency found!
+no-economy: Disabled due to no Economy found!
 plugin-reloaded: '&fconfiguration has been reloaded.'
 no-permission: '&6You do not have permission.'
 suspension-user: '&6Your auction access has been suspended.'

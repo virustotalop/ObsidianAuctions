@@ -57,13 +57,14 @@ public class AuctionBid {
 			taxes = unsafeBidAmount * (floAuction.taxPercentage / 100D);
 			floAuction.sendMessage("auction-end-tax", auction.getOwner(), auction);
 			unsafeBidAmount -= taxes;
+			if (!floAuction.taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(floAuction.taxDestinationUser, taxes);
 		}
 		
 		// Apply winnings to auction owner.
-		functions.depositPlayer(auction.getOwner(), unsafeBidAmount);
+		floAuction.econ.depositPlayer(auction.getOwner(), unsafeBidAmount);
 
 		// Refund remaining reserve.
-		functions.depositPlayer(bidder.getName(), reserve - unsafeBidAmount - taxes);
+		floAuction.econ.depositPlayer(bidder.getName(), reserve - unsafeBidAmount - taxes);
 		
 		reserve = 0;
 	}
@@ -117,7 +118,7 @@ public class AuctionBid {
 	}
 	private Boolean parseArgBid() {
 		if (args.length > 0) {
-			if (args[0].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
+			if (args[0].matches(floAuction.decimalRegex)) {
 				bidAmount = functions.getSafeMoney(Double.parseDouble(args[0]));
 			} else {
 				error = "parse-error-invalid-bid";
@@ -157,7 +158,7 @@ public class AuctionBid {
 			return true;
 		}
 		if (args.length > 1) {
-			if (args[1].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
+			if (args[1].matches(floAuction.decimalRegex)) {
 				maxBidAmount = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				error = "parse-error-invalid-max-bid";

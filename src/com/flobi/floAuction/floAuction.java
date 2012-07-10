@@ -67,9 +67,8 @@ public class floAuction extends JavaPlugin {
 	public static boolean useOldBidLogic = false;
 	public static boolean logAuctions = false;
 	public static boolean allowEarlyEnd = false;
-	public static boolean useGoldStandard = false;
 	public static int decimalPlaces = 2;
-	public static String decimalRegex = "(\\.[0-9][0-9]?)?";
+	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
 	public static boolean allowCreativeMode = false;
 	public static boolean allowDamagedItems = false;
 	private static File auctionLog = null;
@@ -79,6 +78,7 @@ public class floAuction extends JavaPlugin {
 	public static List<String> bannedItems = new ArrayList<String>();
 	public static double taxPerAuction = 0;
 	public static double taxPercentage = 0;
+	public static String taxDestinationUser = "";
 	
 	// Config files info.
 	private static File configFile = null;
@@ -213,6 +213,11 @@ public class floAuction extends JavaPlugin {
             return;
 		}
         loadConfig();
+		if (econ == null) {
+			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-economy")));
+			server.getPluginManager().disablePlugin(this);
+            return;
+		}
         
         server.getPluginManager().registerEvents(new Listener() {
             @SuppressWarnings("unused")
@@ -282,24 +287,14 @@ public class floAuction extends JavaPlugin {
 	    
 	    logAuctions = config.getBoolean("log-auctions");
 	    
-	    if (econ == null) {
-	    	useGoldStandard = true;
-	    	config.set("use-gold-standard", true);
-	    } else {
-			useGoldStandard = config.getBoolean("use-gold-standard");
-	    }
-		if (useGoldStandard) {
-			decimalPlaces = 0;
-			config.set("decimal-places", decimalPlaces);
-		} else {
-			decimalPlaces = config.getInt("decimal-places");
-		}
+		decimalPlaces = Math.min(Math.max(config.getInt("decimal-places"), 0), 5);
+		config.set("decimal-places", decimalPlaces);
 		if (decimalPlaces < 1) {
-			decimalRegex = "";
-		} else if (decimalPlaces > 1) {
-			decimalRegex = "(\\.[0-9])?";
+			decimalRegex = "^[0-9]{1,13}$";
+		} else if (decimalPlaces == 1) {
+			decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
 		} else {
-			decimalRegex = "(\\.[0-9][0-9]?)?";
+			decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
 		}
 	    defaultStartingBid = functions.getSafeMoney(config.getDouble("default-starting-bid"));
 		defaultBidIncrement = functions.getSafeMoney(config.getDouble("default-bid-increment"));
@@ -320,6 +315,7 @@ public class floAuction extends JavaPlugin {
 		taxPerAuction = config.getDouble("auction-start-tax");
 		taxPercentage = config.getDouble("auction-end-tax-percent");
 		allowMaxBids = config.getBoolean("allow-max-bids");
+		taxDestinationUser = config.getString("deposit-tax-to-user");
 		
 
 		// Update all values to include defaults which may be new.
@@ -354,6 +350,10 @@ public class floAuction extends JavaPlugin {
 		}
         defTextConfig = null;
 	    textConfigFile = null;
+	    
+	    if (maxStartingBid == 0) {
+	    	maxStartingBid = 100000000000000000L;
+	    }
     }
 	public void onDisable() { 
 		getServer().getScheduler().cancelTask(queueTimer);
@@ -723,7 +723,7 @@ public class floAuction extends JavaPlugin {
     	String auctionScope = null;
     	String durabilityRemaining = null;
     	String endAuctionTax = null;
-    	String startAucitonTax = econ.format(taxPerAuction);
+    	String startAucitonTax = functions.formatAmount(taxPerAuction);
 
     	if (auction != null) {
     		ItemStack typeLot = auction.getLotType();
@@ -751,7 +751,7 @@ public class floAuction extends JavaPlugin {
 				currentBidder = auction.getCurrentBid().getBidder().getName();
 				currentBid = functions.formatAmount(auction.getCurrentBid().getBidAmount());
 				currentMaxBid = functions.formatAmount(auction.getCurrentBid().getMaxBidAmount());
-				endAuctionTax = econ.format(auction.getCurrentBid().getMaxBidAmount() * (floAuction.taxPercentage / 100D));
+				endAuctionTax = functions.formatAmount((long) Math.floor(auction.getCurrentBid().getMaxBidAmount() * (floAuction.taxPercentage / 100D)));
 			} else {
 				currentBidder = "noone";
 				currentBid = startingBid;

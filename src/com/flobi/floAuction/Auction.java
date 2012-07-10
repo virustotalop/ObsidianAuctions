@@ -47,16 +47,6 @@ public class Auction {
 	}
 	public Boolean start() {
 		
-		if (floAuction.taxPerAuction > 0D) {
-			if (floAuction.econ.has(ownerName, floAuction.taxPerAuction)) {
-				floAuction.sendMessage("auction-start-tax", getOwner(), this);
-				floAuction.econ.withdrawPlayer(ownerName, floAuction.taxPerAuction);
-			} else {
-				floAuction.sendMessage("auction-fail-start-tax", ownerName, this);
-				return false;
-			}
-		}
-		
 		ItemStack typeStack = lot.getTypeStack();
 		
 		// Check banned items:
@@ -67,20 +57,22 @@ public class Auction {
 			}
 		}
 		
-		if (floAuction.useGoldStandard) {
-			if (
-					items.isSameItem(typeStack, new ItemStack(371)) ||
-					items.isSameItem(typeStack, new ItemStack(266)) ||
-					items.isSameItem(typeStack, new ItemStack(41))
-			) {
-				floAuction.sendMessage("auction-fail-gold-standard", ownerName, this);
-				return false;
-			}
-		}
 		if (!lot.AddItems(quantity, true)) {
 			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, this);
 			return false;
 		}
+
+		if (floAuction.taxPerAuction > 0D) {
+			if (floAuction.econ.has(ownerName, floAuction.taxPerAuction)) {
+				floAuction.sendMessage("auction-start-tax", getOwner(), this);
+				floAuction.econ.withdrawPlayer(ownerName, floAuction.taxPerAuction);
+				if (!floAuction.taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(floAuction.taxDestinationUser, floAuction.taxPerAuction);
+			} else {
+				floAuction.sendMessage("auction-fail-start-tax", ownerName, this);
+				return false;
+			}
+		}
+		
 		active = true;
 		floAuction.sendMessage("auction-start", (CommandSender) null, this);
 		
@@ -360,7 +352,6 @@ public class Auction {
 			} else if (args[0].matches("[0-9]{1,7}")) {
 				quantity = Integer.parseInt(args[0]);
 			} else {
-				plugin.getServer().broadcastMessage(args[0]);
 				floAuction.sendMessage("parse-error-invalid-quantity", ownerName, this);
 				return false;
 			}
@@ -377,7 +368,7 @@ public class Auction {
 		if (startingBid > 0) return true;
 		
 		if (args.length > 1) {
-			if (args[1].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
+			if (args[1].matches(floAuction.decimalRegex)) {
 				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
@@ -396,7 +387,7 @@ public class Auction {
 		if (minBidIncrement > 0) return true;
 
 		if (args.length > 2) {
-			if (args[2].matches("([0-9]{0,7}" + floAuction.decimalRegex + ")")) {
+			if (args[2].matches(floAuction.decimalRegex)) {
 				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args[2]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, this);

@@ -13,7 +13,6 @@ default-auction-time: 60
 min-auction-time: 15
 max-auction-time: 120
 
-use-gold-standard: false
 decimal-places: 2
 
 allow-max-bids: true
@@ -26,6 +25,7 @@ min-auction-interval-secs: 10
 
 auction-start-tax: 0
 auction-end-tax-percent: 0
+deposit-tax-to-user: ''
 
 banned-items: 
   - 7

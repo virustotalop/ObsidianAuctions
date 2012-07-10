@@ -4,11 +4,9 @@ import java.text.DecimalFormat;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.flobi.floAuction.AuctionLot;
 import com.flobi.floAuction.floAuction;
 
 public class functions {
@@ -57,17 +55,8 @@ public class functions {
 	}
 	
 	public static String formatAmount(double unsafeMoney) {
-		if (!floAuction.useGoldStandard) {
-			return floAuction.econ.format(unsafeMoney);
-		}
-		String amountText = "";
-		if (unsafeMoney == 1) {
-			amountText = floAuction.textConfig.getString("gold-standard-name-singular"); 
-		} else {
-			amountText = floAuction.textConfig.getString("gold-standard-name-plural"); 
-		}
-		long nuggets = getSafeMoney(unsafeMoney);
-		return amountText.replaceAll("%g", Long.toString(nuggets));
+		if (floAuction.econ == null) return "-";
+		return floAuction.econ.format(unsafeMoney);
 	}
 	
 	public static boolean withdrawPlayer(String playerName, long safeMoney) {
@@ -75,20 +64,13 @@ public class functions {
 	}
 	
 	public static boolean withdrawPlayer(String playerName, double unsafeMoney) {
-		if (!floAuction.useGoldStandard) {
-			EconomyResponse receipt = floAuction.econ.withdrawPlayer(playerName, unsafeMoney);
-			return receipt.transactionSuccess();
-		}
-		return updateGold(playerName, 0 - getSafeMoney(unsafeMoney));
+		EconomyResponse receipt = floAuction.econ.withdrawPlayer(playerName, unsafeMoney);
+		return receipt.transactionSuccess();
 	}
 	
-	public static void depositPlayer(String playerName, double unsafeMoney) {
-		if (!floAuction.useGoldStandard) {
-			floAuction.econ.depositPlayer(playerName, unsafeMoney);
-			return;
-		}
-		updateGold(playerName, getSafeMoney(unsafeMoney));
-		
+	public static boolean depositPlayer(String playerName, double unsafeMoney) {
+		EconomyResponse receipt = floAuction.econ.depositPlayer(playerName, unsafeMoney);
+		return receipt.transactionSuccess();
 	}
 	
 	public static long getSafeMoney(Double money) {
@@ -98,97 +80,6 @@ public class functions {
 	
 	public static double getUnsafeMoney(long money) {
 		return (double)money / Math.pow(10, floAuction.decimalPlaces);
-	}
-	
-	private static boolean updateGold(String playerName, long nuggetAdjustment) {
-		Player player = floAuction.server.getPlayer(playerName);
-		if (nuggetAdjustment < 0) {
-			if (player == null || !player.isOnline()) return false;
-		}
-		if (player == null || !player.isOnline()) {
-			// Add as cancelled lots if adding and player isn't online.
-			long nuggets = nuggetAdjustment;
-			long ingots = (long) Math.floor((double) nuggets / 9);
-			long blocks = (long) Math.floor((double) ingots / 9);
-			nuggets -= (ingots * 9);
-			ingots -= (blocks * 9);
-
-			ItemStack nugget = new ItemStack(371);
-			ItemStack ingot = new ItemStack(266);
-			ItemStack block = new ItemStack(41);
-
-			AuctionLot nuggetLot = new AuctionLot(nugget, playerName);
-			nuggetLot.AddItems((int) nuggets, false);
-			nuggetLot.cancelLot();
-			AuctionLot ingotLot = new AuctionLot(ingot, playerName);
-			ingotLot.AddItems((int) ingots, false);
-			ingotLot.cancelLot();
-			AuctionLot blockLot = new AuctionLot(block, playerName);
-			blockLot.AddItems((int) blocks, false);
-			blockLot.cancelLot();
-			return true;
-		}
-		long nuggets = nuggetAdjustment;
-		ItemStack nugget = new ItemStack(371);
-		ItemStack ingot = new ItemStack(266);
-		ItemStack block = new ItemStack(41);
-		
-		ItemStack[] items = player.getInventory().getContents();
-		for (ItemStack current : items) {
-			if (current == null) {
-				continue;
-			}
-			if (isSameItem(nugget, current)) {
-				nuggets += current.getAmount();
-			}
-			if (isSameItem(ingot, current)) {
-				nuggets += current.getAmount() * 9;
-			}
-			if (isSameItem(block, current)) {
-				nuggets += current.getAmount() * 81;
-			}
-		}
-		return setGoldAmount(player, nuggets);
-	}
-	
-	private static boolean setGoldAmount(Player player, long nuggets) {
-		if (nuggets < 0) return false;
-
-		ItemStack nugget = new ItemStack(371);
-		ItemStack ingot = new ItemStack(266);
-		ItemStack block = new ItemStack(41);
-
-		// Clear all gold in the inventory first.
-		ItemStack[] inventoryItems = player.getInventory().getContents();
-		for (ItemStack current : inventoryItems) {
-			if (current == null) {
-				continue;
-			}
-			if (
-					isSameItem(nugget, current) ||
-					isSameItem(ingot, current) ||
-					isSameItem(block, current)
-			) {
-				player.getInventory().remove(current);
-			}
-		}
-
-		long ingots = (long) Math.floor((double) nuggets / 9);
-		long blocks = (long) Math.floor((double) ingots / 9);
-		nuggets -= (ingots * 9);
-		ingots -= (blocks * 9);
-		
-		AuctionLot nuggetLot = new AuctionLot(nugget, player.getName());
-		nuggetLot.AddItems((int) nuggets, false);
-		nuggetLot.cancelLot();
-		AuctionLot ingotLot = new AuctionLot(ingot, player.getName());
-		ingotLot.AddItems((int) ingots, false);
-		ingotLot.cancelLot();
-		AuctionLot blockLot = new AuctionLot(block, player.getName());
-		blockLot.AddItems((int) blocks, false);
-		blockLot.cancelLot();
-		
-		return true;
 	}
 
 }

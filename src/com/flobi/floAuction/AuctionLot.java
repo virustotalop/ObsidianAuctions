@@ -62,16 +62,7 @@ public class AuctionLot implements java.io.Serializable {
 			// Give whatever items space permits at this time.
 			ItemStack typeStack = getTypeStack();
 			if (amountToGive > 0) {
-				if (
-						!floAuction.useGoldStandard || 
-						(
-								!items.isSameItem(typeStack, new ItemStack(371)) &&
-								!items.isSameItem(typeStack, new ItemStack(266)) &&
-								!items.isSameItem(typeStack, new ItemStack(41))
-						)
-				) {
-					floAuction.sendMessage("lot-give", player, null);
-				}
+				floAuction.sendMessage("lot-give", player, null);
 			}
 			while (amountToGive > 0) {
 				ItemStack givingItems = lotTypeLock.clone();
