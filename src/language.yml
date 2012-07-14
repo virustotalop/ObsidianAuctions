@@ -110,6 +110,10 @@ time-format-seconly: '%s sec'
 gold-standard-name-singular: '%g Nugget'
 gold-standard-name-plural: '%g Nuggets'
 
+worldchange-fail-auction-owner: '&6You cannot change worlds while auctioning.'
+worldchange-fail-auction-bidder: '&6You cannot change worlds while bidding.'
+gamemodechange-fail-auction-owner: '&6You cannot change gamemode while auctioning.'
+gamemodechange-fail-auction-bidder: '&6You cannot change gamemode while bidding.'
 
 lot-give: '&dYour items have been added to your inventory.'
 lot-drop: '&dNot enough space, your items dropped at your feet.'

@@ -57,6 +57,13 @@ public class Auction {
 			}
 		}
 		
+		if (floAuction.taxPerAuction > 0D) {
+			if (!floAuction.econ.has(ownerName, floAuction.taxPerAuction)) {
+				floAuction.sendMessage("auction-fail-start-tax", ownerName, this);
+				return false;
+			}
+		}
+		
 		if (!lot.AddItems(quantity, true)) {
 			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, this);
 			return false;
@@ -67,13 +74,12 @@ public class Auction {
 				floAuction.sendMessage("auction-start-tax", getOwner(), this);
 				floAuction.econ.withdrawPlayer(ownerName, floAuction.taxPerAuction);
 				if (!floAuction.taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(floAuction.taxDestinationUser, floAuction.taxPerAuction);
-			} else {
-				floAuction.sendMessage("auction-fail-start-tax", ownerName, this);
-				return false;
 			}
 		}
-		
+
 		active = true;
+		floAuction.currentAuctionOwnerLocation = floAuction.server.getPlayer(ownerName).getLocation().clone();
+		floAuction.currentAuctionOwnerGamemode = floAuction.server.getPlayer(ownerName).getGameMode();
 		floAuction.sendMessage("auction-start", (CommandSender) null, this);
 		
 		// Set timer:
@@ -137,7 +143,7 @@ public class Auction {
 			if (currentBid != null) currentBid.cancelBid();
 		} else {
 			floAuction.sendMessage("auction-end", (CommandSender) null, this);
-			lot.winLot(currentBid.getBidder().getName());
+			lot.winLot(currentBid.getBidder());
 			currentBid.winBid();
 		}
 		dispose();
@@ -254,6 +260,8 @@ public class Auction {
 			currentBid.cancelBid();
 		}
 		currentBid = newBid;
+		floAuction.currentBidPlayerLocation = floAuction.server.getPlayer(newBid.getBidder()).getLocation().clone();
+		floAuction.currentBidPlayerGamemode = floAuction.server.getPlayer(newBid.getBidder()).getGameMode();
 		floAuction.sendMessage(reason, (CommandSender) null, this);
 	}
 	private Boolean parseHeldItem() {

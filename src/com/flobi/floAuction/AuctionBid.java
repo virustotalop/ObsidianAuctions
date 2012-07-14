@@ -6,7 +6,7 @@ import com.flobi.utility.functions;
 
 public class AuctionBid {
 	private Auction auction;
-	private Player bidder;
+	private String bidderName;
 	private long bidAmount = 0;
 	private long maxBidAmount = 0;
 	private String error;
@@ -15,7 +15,7 @@ public class AuctionBid {
 
 	public AuctionBid(Auction theAuction, Player player, String[] inputArgs) {
 		auction = theAuction;
-		bidder = player;
+		bidderName = player.getName();
 		args = inputArgs;
 		if (!validateBidder()) return;
 		if (!parseArgs()) return;
@@ -24,7 +24,7 @@ public class AuctionBid {
 	private boolean reserveBidFunds() {
 		long amountToReserve = 0;
 		AuctionBid currentBid = auction.getCurrentBid(); 
-		if (currentBid != null && currentBid.getBidder().equals(bidder)) {
+		if (currentBid != null && currentBid.getBidder().equalsIgnoreCase(bidderName)) {
 			// Same bidder: only reserve difference.
 			if (maxBidAmount > currentBid.getMaxBidAmount()) {
 				amountToReserve = maxBidAmount - currentBid.getMaxBidAmount();
@@ -35,7 +35,7 @@ public class AuctionBid {
 		} else {
 			amountToReserve = maxBidAmount;
 		}
-		if (functions.withdrawPlayer(bidder.getName(), amountToReserve)) {
+		if (functions.withdrawPlayer(bidderName, amountToReserve)) {
 			reserve = functions.getUnsafeMoney(amountToReserve);
 			return true;
 		} else {
@@ -45,7 +45,7 @@ public class AuctionBid {
 	}
 	public void cancelBid() {
 		// Refund reserve.
-		functions.depositPlayer(bidder.getName(), reserve);
+		functions.depositPlayer(bidderName, reserve);
 		reserve = 0;
 	}
 	public void winBid() {
@@ -64,13 +64,13 @@ public class AuctionBid {
 		floAuction.econ.depositPlayer(auction.getOwner(), unsafeBidAmount);
 
 		// Refund remaining reserve.
-		floAuction.econ.depositPlayer(bidder.getName(), reserve - unsafeBidAmount - taxes);
+		floAuction.econ.depositPlayer(bidderName, reserve - unsafeBidAmount - taxes);
 		
 		reserve = 0;
 	}
 	
 	private Boolean validateBidder() {
-		if (bidder == null) {
+		if (bidderName == null) {
 			error = "bid-fail-no-bidder";
 			return false;
 		}
@@ -82,7 +82,7 @@ public class AuctionBid {
 		return true;
 	}
 	public Boolean raiseOwnBid(AuctionBid otherBid) {
-		if (bidder.equals(otherBid.bidder)) {
+		if (bidderName.equalsIgnoreCase(otherBid.bidderName)) {
 			// Move reserve money here.
 			reserve = reserve + otherBid.reserve;
 			otherBid.reserve = 0;
@@ -138,7 +138,7 @@ public class AuctionBid {
 					// Unless the starting bid is 0, then use the minimum bid increment.
 					bidAmount = auction.getMinBidIncrement();
 				}
-			} else if (currentBid.getBidder().equals(bidder)) {
+			} else if (currentBid.getBidder().equalsIgnoreCase(bidderName)) {
 				// We are the current bidder, so use previous.  Don't auto-up our own bid.
 				bidAmount = currentBid.bidAmount;
 			} else {
@@ -176,8 +176,8 @@ public class AuctionBid {
 	public String getError() {
 		return error;
 	}
-	public Player getBidder() {
-		return bidder;
+	public String getBidder() {
+		return bidderName;
 	}
 	public long getBidAmount() {
 		return bidAmount;

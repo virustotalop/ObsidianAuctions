@@ -30,6 +30,7 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -39,8 +40,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -79,6 +84,10 @@ public class floAuction extends JavaPlugin {
 	public static double taxPerAuction = 0;
 	public static double taxPercentage = 0;
 	public static String taxDestinationUser = "";
+	public static Location currentBidPlayerLocation;
+	public static GameMode currentBidPlayerGamemode;
+	public static Location currentAuctionOwnerLocation;
+	public static GameMode currentAuctionOwnerGamemode;
 	
 	// Config files info.
 	private static File configFile = null;
@@ -225,7 +234,33 @@ public class floAuction extends JavaPlugin {
             public void playerJoin(PlayerJoinEvent event) {
         	    floAuction.killOrphan(event.getPlayer());
             }
-        }, this);		
+            @SuppressWarnings("unused")
+			@EventHandler(priority = EventPriority.HIGHEST)
+            public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
+                // Get player objects
+                Player player = event.getPlayer();
+                if (publicAuction.getOwner().equalsIgnoreCase(player.getName())) {
+                	player.teleport(currentAuctionOwnerLocation, TeleportCause.PLUGIN);
+                	sendMessage("worldchange-fail-auction-owner", player, publicAuction);
+                } else if (publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
+                	player.teleport(currentBidPlayerLocation, TeleportCause.PLUGIN);
+                	sendMessage("worldchange-fail-auction-bidder", player, publicAuction);
+                }
+            }
+            @SuppressWarnings("unused")
+			@EventHandler(priority = EventPriority.HIGHEST)
+            public void onPlayerChangedWorld(PlayerGameModeChangeEvent event){
+                // Get player objects
+                Player player = event.getPlayer();
+                if (publicAuction.getOwner().equalsIgnoreCase(player.getName())) {
+                	event.setCancelled(true);
+                	sendMessage("gamemodechange-fail-auction-owner", player, publicAuction);
+                } else if (publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
+                	event.setCancelled(true);
+                	sendMessage("gamemodechange-fail-auction-bidder", player, publicAuction);
+                }
+            }
+        }, this);
 		
 		queueTimer = getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 		    public void run() {
@@ -748,7 +783,7 @@ public class floAuction extends JavaPlugin {
     		}
 	
 			if (auction.getCurrentBid() != null) {
-				currentBidder = auction.getCurrentBid().getBidder().getName();
+				currentBidder = auction.getCurrentBid().getBidder();
 				currentBid = functions.formatAmount(auction.getCurrentBid().getBidAmount());
 				currentMaxBid = functions.formatAmount(auction.getCurrentBid().getMaxBidAmount());
 				endAuctionTax = functions.formatAmount((long) Math.floor(auction.getCurrentBid().getMaxBidAmount() * (floAuction.taxPercentage / 100D)));
