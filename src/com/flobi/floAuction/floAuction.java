@@ -40,7 +40,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -235,27 +234,32 @@ public class floAuction extends JavaPlugin {
         	    floAuction.killOrphan(event.getPlayer());
             }
             @SuppressWarnings("unused")
-			@EventHandler(priority = EventPriority.HIGHEST)
+			@EventHandler
             public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
+            	if (publicAuction == null) return;
+            	
                 // Get player objects
                 Player player = event.getPlayer();
                 if (publicAuction.getOwner().equalsIgnoreCase(player.getName())) {
                 	player.teleport(currentAuctionOwnerLocation, TeleportCause.PLUGIN);
                 	sendMessage("worldchange-fail-auction-owner", player, publicAuction);
-                } else if (publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
+                } else if (publicAuction.getCurrentBid() != null && publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
                 	player.teleport(currentBidPlayerLocation, TeleportCause.PLUGIN);
                 	sendMessage("worldchange-fail-auction-bidder", player, publicAuction);
                 }
             }
             @SuppressWarnings("unused")
-			@EventHandler(priority = EventPriority.HIGHEST)
+			@EventHandler
             public void onPlayerChangedWorld(PlayerGameModeChangeEvent event){
+            	if (publicAuction == null) return;
+            	
                 // Get player objects
                 Player player = event.getPlayer();
+                
                 if (publicAuction.getOwner().equalsIgnoreCase(player.getName())) {
                 	event.setCancelled(true);
                 	sendMessage("gamemodechange-fail-auction-owner", player, publicAuction);
-                } else if (publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
+                } else if (publicAuction.getCurrentBid() != null && publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
                 	event.setCancelled(true);
                 	sendMessage("gamemodechange-fail-auction-bidder", player, publicAuction);
                 }
