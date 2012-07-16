@@ -79,6 +79,8 @@ public class floAuction extends JavaPlugin {
 	private static long lastAuctionDestroyTime = 0;
 	private static boolean suspendAllAuctions = false;
 	public static boolean allowMaxBids = true;
+	public static boolean allowGamemodeChange = false;
+	public static boolean allowWorldChange = false;
 	public static List<String> bannedItems = new ArrayList<String>();
 	public static double taxPerAuction = 0;
 	public static double taxPercentage = 0;
@@ -87,6 +89,8 @@ public class floAuction extends JavaPlugin {
 	public static GameMode currentBidPlayerGamemode;
 	public static Location currentAuctionOwnerLocation;
 	public static GameMode currentAuctionOwnerGamemode;
+	public static int cancelPreventionSeconds = 15;
+	public static double cancelPreventionPercent = 50;
 	
 	// Config files info.
 	private static File configFile = null;
@@ -236,7 +240,7 @@ public class floAuction extends JavaPlugin {
             @SuppressWarnings("unused")
 			@EventHandler
             public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
-            	if (publicAuction == null) return;
+            	if (allowWorldChange || publicAuction == null) return;
             	
                 // Get player objects
                 Player player = event.getPlayer();
@@ -251,7 +255,7 @@ public class floAuction extends JavaPlugin {
             @SuppressWarnings("unused")
 			@EventHandler
             public void onPlayerChangedWorld(PlayerGameModeChangeEvent event){
-            	if (publicAuction == null) return;
+            	if (allowGamemodeChange || publicAuction == null) return;
             	
                 // Get player objects
                 Player player = event.getPlayer();
@@ -354,7 +358,11 @@ public class floAuction extends JavaPlugin {
 		taxPerAuction = config.getDouble("auction-start-tax");
 		taxPercentage = config.getDouble("auction-end-tax-percent");
 		allowMaxBids = config.getBoolean("allow-max-bids");
+		allowGamemodeChange = config.getBoolean("allow-gamemode-change");
+		allowWorldChange = config.getBoolean("allow-world-change");
 		taxDestinationUser = config.getString("deposit-tax-to-user");
+		cancelPreventionSeconds = config.getInt("cancel-prevention-seconds");
+		cancelPreventionPercent = config.getDouble("cancel-prevention-percent");
 		
 
 		// Update all values to include defaults which may be new.
@@ -660,8 +668,12 @@ public class floAuction extends JavaPlugin {
     					return true;
     				}
 					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) {
-    					auction.cancel(player);
-    					publicAuction = null;
+						if (cancelPreventionSeconds > auction.getRemainingTime() || cancelPreventionPercent > (double)auction.getRemainingTime() / (double)auction.getTotalTime() * 100D) {
+	    					sendMessage("auction-fail-cancel-prevention", player, auction);
+						} else {
+	    					auction.cancel(player);
+	    					publicAuction = null;
+						}
 					} else {
     					sendMessage("auction-fail-not-owner-cancel", player, auction);
 					}

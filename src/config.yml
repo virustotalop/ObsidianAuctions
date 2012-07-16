@@ -19,6 +19,8 @@ allow-max-bids: true
 allow-early-end: false
 allow-gamemode-creative: false
 allow-damaged-items: false
+allow-gamemode-change: false
+allow-world-change: false
 
 max-auction-queue-length: 2
 min-auction-interval-secs: 10
@@ -26,6 +28,9 @@ min-auction-interval-secs: 10
 auction-start-tax: 0
 auction-end-tax-percent: 0
 deposit-tax-to-user: ''
+
+cancel-prevention-seconds: 15
+cancel-prevention-percent: 50
 
 banned-items: 
   - 7

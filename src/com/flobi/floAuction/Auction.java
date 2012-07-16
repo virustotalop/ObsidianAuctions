@@ -462,4 +462,7 @@ public class Auction {
 	public int getRemainingTime() {
 		return countdown;
 	}
+	public int getTotalTime() {
+		return time;
+	}
 }
