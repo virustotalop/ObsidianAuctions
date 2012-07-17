@@ -46,6 +46,7 @@ import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -214,6 +215,7 @@ public class floAuction extends JavaPlugin {
 		dataFolder = getDataFolder();
 		defConfigStream = getResource("config.yml");
 		defTextConfigStream = getResource("language.yml");
+		final Plugin plugin = this;
 
 		setupEconomy();
         setupPermissions();
@@ -243,12 +245,28 @@ public class floAuction extends JavaPlugin {
             	if (allowWorldChange || publicAuction == null) return;
             	
                 // Get player objects
-                Player player = event.getPlayer();
-                if (publicAuction.getOwner().equalsIgnoreCase(player.getName())) {
-                	player.teleport(currentAuctionOwnerLocation, TeleportCause.PLUGIN);
+                final Player player = event.getPlayer();
+                if (publicAuction.getOwner().equalsIgnoreCase(player.getName()) && !player.getLocation().getWorld().equals(currentAuctionOwnerLocation.getWorld())) {
+                	// This is running as a timer because MultiInv is using HIGHEST priority and 
+                	// there's no way to send a cancel to it, so we have to go after the fact and
+                	// remove the user.
+                	getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+                		public void run() {
+    	                	player.teleport(currentAuctionOwnerLocation, TeleportCause.PLUGIN);
+                		}
+                	}, 1L);
                 	sendMessage("worldchange-fail-auction-owner", player, publicAuction);
-                } else if (publicAuction.getCurrentBid() != null && publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
-                	player.teleport(currentBidPlayerLocation, TeleportCause.PLUGIN);
+                } else if (publicAuction.getCurrentBid() != null && publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())
+                		 && !player.getLocation().getWorld().equals(currentBidPlayerLocation.getWorld())
+                		) {
+                	// This is running as a timer because MultiInv is using HIGHEST priority and 
+                	// there's no way to send a cancel to it, so we have to go after the fact and
+                	// remove the user.
+                	getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+                		public void run() {
+                        	player.teleport(currentBidPlayerLocation, TeleportCause.PLUGIN);
+                		}
+                	}, 1L);
                 	sendMessage("worldchange-fail-auction-bidder", player, publicAuction);
                 }
             }
