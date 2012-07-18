@@ -651,7 +651,9 @@ public class floAuction extends JavaPlugin {
     				auctionQueue.clear();
     				
     				// Loop through all scopes when they come around.
-    				publicAuction.cancel(player);    				
+    				if (publicAuction != null) {
+    					publicAuction.cancel(player);
+    				}
 
 	    			sendMessage("suspension-global", (Player) null, null);
 
