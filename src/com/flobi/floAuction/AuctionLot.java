@@ -16,6 +16,7 @@ public class AuctionLot implements java.io.Serializable {
 	private String ownerName;
 	private int quantity = 0;
 	private int lotTypeId;
+	@SuppressWarnings("unused") // Will be necessary later when Bukkit gets fixed.
 	private byte lotDataData;
 	private short lotDurability;
 	private Map<Integer, Integer> lotEnchantments;
