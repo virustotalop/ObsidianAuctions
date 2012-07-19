@@ -97,7 +97,7 @@ public class AuctionLot implements java.io.Serializable {
 		}
 	}
 	public ItemStack getTypeStack() {
-		ItemStack lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability, lotDataData);
+		ItemStack lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability);
 		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
 			lotTypeLock.addEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}

@@ -310,8 +310,8 @@ public class Auction {
 			floAuction.sendMessage("auction-fail-quantity-too-low", ownerName, this);
 			return false;
 		}
-		if (!functions.hasAmount(ownerName, quantity, lot.getTypeStack())) {
-			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, this);
+		if (!items.hasAmount(ownerName, quantity, lot.getTypeStack())) {
+			floAuction.sendMessage("auction-fail-insufficient-supply2", ownerName, this);
 			return false;
 		}
 		return true;
@@ -356,7 +356,7 @@ public class Auction {
 			if (args[0].equalsIgnoreCase("this")) {
 				quantity = lotType.getAmount();
 			} else if (args[0].equalsIgnoreCase("all")) {
-				quantity = functions.getAmount(ownerName, lotType);
+				quantity = items.getAmount(ownerName, lotType);
 			} else if (args[0].matches("[0-9]{1,7}")) {
 				quantity = Integer.parseInt(args[0]);
 			} else {
