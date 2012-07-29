@@ -234,13 +234,11 @@ public class floAuction extends JavaPlugin {
 		}
         
         server.getPluginManager().registerEvents(new Listener() {
-            @SuppressWarnings("unused")
-			@EventHandler
+            @EventHandler
             public void playerJoin(PlayerJoinEvent event) {
         	    floAuction.killOrphan(event.getPlayer());
             }
-            @SuppressWarnings("unused")
-			@EventHandler
+            @EventHandler
             public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
             	if (allowWorldChange || publicAuction == null) return;
             	
@@ -270,8 +268,7 @@ public class floAuction extends JavaPlugin {
                 	sendMessage("worldchange-fail-auction-bidder", player, publicAuction);
                 }
             }
-            @SuppressWarnings("unused")
-			@EventHandler
+            @EventHandler
             public void onPlayerChangedWorld(PlayerGameModeChangeEvent event){
             	if (allowGamemodeChange || publicAuction == null) return;
             	

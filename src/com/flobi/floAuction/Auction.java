@@ -181,12 +181,13 @@ public class Auction {
 			return;
 		}
 		long previousBidAmount = currentBid.getBidAmount();
-		if (currentBid.getBidder().equals(bidder)) {
+		long previousMaxBidAmount = currentBid.getMaxBidAmount();
+		if (currentBid.getBidder().equals(bidder.getName())) {
 			if (bid.raiseOwnBid(currentBid)) {
 				setNewBid(bid, "bid-success-update-own-bid");
 			} else {
-				if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
-					setNewBid(bid, "bid-success-update-own-maxbid");
+				if (previousMaxBidAmount < currentBid.getMaxBidAmount()) {
+					failBid(bid, "bid-success-update-own-maxbid");
 				} else {
 					failBid(bid, "bid-fail-already-current-bidder");
 				}

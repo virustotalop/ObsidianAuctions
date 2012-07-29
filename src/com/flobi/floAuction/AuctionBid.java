@@ -95,8 +95,6 @@ public class AuctionBid {
 				// The bid has been raised.
 				return true;
 			} else {
-				// The bid has not been raised (don't forget, this bid still needs to replace the old one).
-
 				// Put the reserve on the other bid because we're cancelling this one.
 				otherBid.reserve = reserve;
 				reserve = 0;
