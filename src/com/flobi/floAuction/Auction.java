@@ -195,17 +195,17 @@ public class Auction {
 			return;
 		}
 		AuctionBid winner = null;
-		AuctionBid looser = null;
+		AuctionBid loser = null;
 		
 		if (floAuction.useOldBidLogic) {
 			if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
 				winner = bid;
-				looser = currentBid;
+				loser = currentBid;
 			} else {
 				winner = currentBid;
-				looser = bid;
+				loser = bid;
 			}
-			winner.raiseBid(Math.max(winner.getBidAmount(), Math.min(winner.getMaxBidAmount(), looser.getBidAmount() + minBidIncrement)));
+			winner.raiseBid(Math.max(winner.getBidAmount(), Math.min(winner.getMaxBidAmount(), loser.getBidAmount() + minBidIncrement)));
 		} else {
 			// If you follow what this does, congratulations.  
 			long baseBid = 0;
@@ -221,11 +221,11 @@ public class Auction {
 			if (newSteps >= prevSteps) {
 				winner = bid;
 				winner.raiseBid(baseBid + (Math.max(0, prevSteps) * minBidIncrement * 2));
-				looser = currentBid;
+				loser = currentBid;
 			} else {
 				winner = currentBid;
 				winner.raiseBid(baseBid + (Math.max(0, newSteps + 1) * minBidIncrement * 2) - minBidIncrement);
-				looser = bid;
+				loser = bid;
 			}
 			
 		}
@@ -466,4 +466,9 @@ public class Auction {
 	public int getTotalTime() {
 		return time;
 	}
+
+        public int addToRemainingTime(int i) {
+                countdown += i;
+                return countdown;
+        }
 }

@@ -118,3 +118,5 @@ gamemodechange-fail-auction-bidder: '&6You cannot change gamemode while bidding.
 
 lot-give: '&dYour items have been added to your inventory.'
 lot-drop: '&dNot enough space, your items dropped at your feet.'
+
+anti-snipe-time-added: 'ANTI-SNIPE! More time added to auction!'

@@ -31,6 +31,7 @@ deposit-tax-to-user: ''
 
 cancel-prevention-seconds: 15
 cancel-prevention-percent: 50
+anti-snipe: false
 
 banned-items: 
   - 7

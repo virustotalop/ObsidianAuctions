@@ -109,6 +109,11 @@ public class AuctionBid {
 	public Boolean raiseBid(Long newBidAmount) {
 		if (newBidAmount <= maxBidAmount && newBidAmount >= bidAmount) {
 			bidAmount = newBidAmount;
+                        // see if antisnipe is enabled...
+                        if (floAuction.antiSnipe == true && auction.getRemainingTime() < 15) {
+ 		            auction.addToRemainingTime(15);
+ 	 	            floAuction.broadcastMessage(floAuction.textConfig.getString("anti-snipe-time-added"));
+                        }
 			return true;
 		} else {
 			return false;
