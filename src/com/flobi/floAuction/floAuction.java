@@ -92,6 +92,7 @@ public class floAuction extends JavaPlugin {
 	public static GameMode currentAuctionOwnerGamemode;
 	public static int cancelPreventionSeconds = 15;
 	public static double cancelPreventionPercent = 50;
+        public static boolean antiSnipe = false;
 	
 	// Config files info.
 	private static File configFile = null;
@@ -378,6 +379,7 @@ public class floAuction extends JavaPlugin {
 		taxDestinationUser = config.getString("deposit-tax-to-user");
 		cancelPreventionSeconds = config.getInt("cancel-prevention-seconds");
 		cancelPreventionPercent = config.getDouble("cancel-prevention-percent");
+                antiSnipe = config.getBoolean("anti-snipe");
 		
 
 		// Update all values to include defaults which may be new.
@@ -906,7 +908,7 @@ public class floAuction extends JavaPlugin {
     	}
     	
     }
-    private static void broadcastMessage(String message) {
+    public static void broadcastMessage(String message) {
     	Player[] onlinePlayers = server.getOnlinePlayers();
     	
     	for (Player player : onlinePlayers) {
