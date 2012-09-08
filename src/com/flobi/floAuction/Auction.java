@@ -86,7 +86,7 @@ public class Auction {
 		final Auction thisAuction = this;
 		countdown = time;
 		
-		countdownTimer = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
+		countdownTimer = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 		    public void run() {
 		    	thisAuction.countdown--;
 		    	if (thisAuction.countdown == 0) {

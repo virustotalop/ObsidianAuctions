@@ -249,7 +249,7 @@ public class floAuction extends JavaPlugin {
                 	// This is running as a timer because MultiInv is using HIGHEST priority and 
                 	// there's no way to send a cancel to it, so we have to go after the fact and
                 	// remove the user.
-                	getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+                	getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 		public void run() {
     	                	player.teleport(currentAuctionOwnerLocation, TeleportCause.PLUGIN);
                 		}
@@ -261,7 +261,7 @@ public class floAuction extends JavaPlugin {
                 	// This is running as a timer because MultiInv is using HIGHEST priority and 
                 	// there's no way to send a cancel to it, so we have to go after the fact and
                 	// remove the user.
-                	getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+                	getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 		public void run() {
                         	player.teleport(currentBidPlayerLocation, TeleportCause.PLUGIN);
                 		}
@@ -286,7 +286,7 @@ public class floAuction extends JavaPlugin {
             }
         }, this);
 		
-		queueTimer = getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+		queueTimer = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 		    public void run() {
 		    	checkAuctionQueue();
 		    }
