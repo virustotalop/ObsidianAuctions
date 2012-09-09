@@ -467,8 +467,8 @@ public class Auction {
 		return time;
 	}
 
-        public int addToRemainingTime(int i) {
-                countdown += i;
-                return countdown;
-        }
+    public int addToRemainingTime(int i) {
+            countdown += i;
+            return countdown;
+    }
 }
