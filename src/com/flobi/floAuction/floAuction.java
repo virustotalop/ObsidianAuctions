@@ -718,7 +718,8 @@ public class floAuction extends JavaPlugin {
 					}
     				return true;
     			} else if (
-        				args[0].equalsIgnoreCase("stfu") ||
+    					args[0].equalsIgnoreCase("stfu") ||
+    					args[0].equalsIgnoreCase("ignore") ||
         				args[0].equalsIgnoreCase("quiet") ||
         				args[0].equalsIgnoreCase("off") ||
         				args[0].equalsIgnoreCase("silent") ||
