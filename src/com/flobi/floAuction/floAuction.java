@@ -167,11 +167,11 @@ public class floAuction extends JavaPlugin {
 			importedObjects = (ArrayList<AuctionLot>) input.readObject();
 			input.close();
   	    } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// This is okay, send a blank file.
+//			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// This is okay, send a blank file.
+//			e.printStackTrace();
 		}  
 		finally {
 		}
