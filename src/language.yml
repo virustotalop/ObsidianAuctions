@@ -94,6 +94,8 @@ auction-end-tax: An auction tax of %X has been extracted from your winnings.
 auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-nobids: '&b%O&9 is auctioning &f%q %i&9 for &c%t&9.'
 auction-info-enchantment: 'Item contains enchantment: &a%E'
+auction-info-book-title: 'Book is titled: &a%Y'
+auction-info-book-author: 'Book signed by: &a%y'
 auction-info-damage: 'Item damaged: &6%D &aremaining.'
 auction-info-footer: 
 - The current bid is &6%b&9 by &b%B&9.

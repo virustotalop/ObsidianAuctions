@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
@@ -21,6 +22,9 @@ public class AuctionLot implements java.io.Serializable {
 	private short lotDurability;
 	private Map<Integer, Integer> lotEnchantments;
 	private int sourceStackQuantity = 0;
+	private String bookAuthor = "";
+	private String bookTitle = "";
+	private String[] bookPages = null;
 	
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
@@ -98,11 +102,14 @@ public class AuctionLot implements java.io.Serializable {
 		}
 	}
 	public ItemStack getTypeStack() {
-		ItemStack lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability);
+		CraftItemStack lotTypeLock = new CraftItemStack(lotTypeId, 1, lotDurability);
 		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
 			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
 		lotTypeLock.setAmount(sourceStackQuantity);
+		items.setBookAuthor(lotTypeLock, bookAuthor);
+		items.setBookTitle(lotTypeLock, bookTitle);
+		items.setBookPages(lotTypeLock, bookPages);
 		return lotTypeLock;
 	}
 	private void setLotType(ItemStack lotType) {
@@ -115,6 +122,9 @@ public class AuctionLot implements java.io.Serializable {
 		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
 			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
 		}
+		bookAuthor = items.getBookAuthor((CraftItemStack)lotType);
+		bookTitle = items.getBookTitle((CraftItemStack)lotType);
+		bookPages = items.getBookPages((CraftItemStack)lotType);
 	}
 	public String getOwner() {
 		return ownerName;

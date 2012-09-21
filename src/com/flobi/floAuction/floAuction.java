@@ -37,6 +37,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,6 +53,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.flobi.WhatIsIt.WhatIsIt;
 import com.flobi.utility.functions;
+import com.flobi.utility.items;
 
 public class floAuction extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
@@ -799,6 +801,8 @@ public class floAuction extends JavaPlugin {
     	String durabilityRemaining = null;
     	String endAuctionTax = null;
     	String startAucitonTax = functions.formatAmount(taxPerAuction);
+    	String bookAuthor = null;
+    	String bookTitle = null;
 
     	if (auction != null) {
     		ItemStack typeLot = auction.getLotType();
@@ -841,6 +845,8 @@ public class floAuction extends JavaPlugin {
 			        durabilityRemaining = decimalFormat.format((1 - ((double) typeLot.getDurability() / (double) typeLot.getType().getMaxDurability())));
 				}
 			}
+        	bookAuthor = items.getBookAuthor((CraftItemStack)typeLot);
+        	bookTitle = items.getBookTitle((CraftItemStack)typeLot);
     	} else {
         	owner = "-";
         	quantity = "-";
@@ -854,6 +860,8 @@ public class floAuction extends JavaPlugin {
         	auctionScope = "no_auction";
         	durabilityRemaining = "-";
         	endAuctionTax = "-";
+        	bookAuthor = "-";
+        	bookTitle = "-";
     	}
     	
     	List<String> messageList = textConfig.getStringList(messageKey);
@@ -888,6 +896,8 @@ public class floAuction extends JavaPlugin {
 			message = message.replace("%D", durabilityRemaining);
 			message = message.replace("%x", startAucitonTax);
 			message = message.replace("%X", endAuctionTax);
+			message = message.replace("%y", bookAuthor);
+			message = message.replace("%Y", bookTitle);
 	
 			if (messageKey == "auction-info-enchantment") {
     			if (auction != null && auction.getLotType() != null) {

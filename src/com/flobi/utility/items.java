@@ -2,6 +2,12 @@ package com.flobi.utility;
 
 import java.util.ArrayList;
 
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagList;
+import net.minecraft.server.NBTTagString;
+
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,6 +17,61 @@ import com.flobi.floAuction.floAuction;
 
 
 public class items {
+	
+	public static String getBookAuthor(CraftItemStack book) {
+		if (!(book.getType() == Material.WRITTEN_BOOK)) return "";
+		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
+		if (!book.getHandle().getTag().hasKey("author")) return "";
+		return book.getHandle().getTag().getString("author");
+	}
+	
+	public static void setBookAuthor(CraftItemStack book, String author) {
+		if (!(book.getType() == Material.WRITTEN_BOOK)) return;
+		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
+		book.getHandle().getTag().setString("author", author);
+	}
+	
+	public static String getBookTitle(CraftItemStack book) {
+		if (!(book.getType() == Material.WRITTEN_BOOK)) return "";
+		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
+		if (!book.getHandle().getTag().hasKey("title")) return "";
+		return book.getHandle().getTag().getString("title");
+	}
+	
+	public static void setBookTitle(CraftItemStack book, String title) {
+		if (!(book.getType() == Material.WRITTEN_BOOK)) return;
+		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
+		book.getHandle().getTag().setString("title", title);
+	}
+	
+	public static String[] getBookPages(CraftItemStack book) {
+		if (!(book.getType() == Material.WRITTEN_BOOK || book.getType() == Material.BOOK_AND_QUILL)) return null;
+		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
+		if (!book.getHandle().getTag().hasKey("pages")) return null;
+		
+		NBTTagList tagList = book.getHandle().getTag().getList("pages");
+		
+		String[] pages = new String[tagList.size()];
+		for(int i = 0; i < tagList.size(); i++){
+			pages[i] = ((NBTTagString)tagList.get(i)).data;
+		}
+		
+		return pages;
+	}
+	
+	public static void setBookPages(CraftItemStack book, String[] pages) {
+		if (!(book.getType() == Material.WRITTEN_BOOK || book.getType() == Material.BOOK_AND_QUILL)) return;
+		if (pages == null) return;
+		
+		NBTTagList nPages = new NBTTagList();
+		
+        for (int i = 0; i < pages.length; i++) {
+            nPages.add(new NBTTagString(pages[i],pages[i]));
+        }
+		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
+        book.getHandle().getTag().set("pages", nPages);
+    }
+	
 	// Some of this was taken from Vault's item classes.
 	public static boolean isSameItem(ItemStack item, String searchString) {
 		
@@ -55,6 +116,19 @@ public class items {
 		// Enchantments must be the same:
 		if (!item1.getEnchantments().equals(item2.getEnchantments())) return false;
 		
+		// Book author, title and contents must be identical.
+		if (!getBookAuthor((CraftItemStack)item1).equals(getBookAuthor((CraftItemStack)item2))) return false;
+		if (!getBookTitle((CraftItemStack)item1).equals(getBookTitle((CraftItemStack)item2))) return false;
+		String[] pages1 = getBookPages((CraftItemStack)item1);
+		String[] pages2 = getBookPages((CraftItemStack)item2);
+		if ((pages1 == null) ^ (pages2 == null)) return false;
+		if (pages1 != null) {
+			if (pages1.length != pages2.length) return false;
+			for (int i = 0; i < pages1.length; i++) {
+	            if (!pages1[i].equals(pages2[i])) return false;
+	        }
+		}
+
 		return true;
 	}
 	

@@ -1,6 +1,7 @@
 package com.flobi.floAuction;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -116,17 +117,17 @@ public class Auction {
 			floAuction.sendMessage("auction-info-no-auction", sender, this);
 		} else if (currentBid == null) {
 			floAuction.sendMessage("auction-info-header-nobids", sender, this);
+			if (!items.getBookTitle((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this);
+			if (!items.getBookAuthor((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this);
 			floAuction.sendMessage("auction-info-enchantment", sender, this);
-			if (maxDurability > 0 && currentDurability > 0) {
-				floAuction.sendMessage("auction-info-damage", sender, this);
-			}
+			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this);
 			floAuction.sendMessage("auction-info-footer-nobids", sender, this);
 		} else {
 			floAuction.sendMessage("auction-info-header", sender, this);
+			if (!items.getBookTitle((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this);
+			if (!items.getBookAuthor((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this);
 			floAuction.sendMessage("auction-info-enchantment", sender, this);
-			if (maxDurability > 0 && currentDurability > 0) {
-				floAuction.sendMessage("auction-info-damage", sender, this);
-			}
+			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this);
 			floAuction.sendMessage("auction-info-footer", sender, this);
 		}
 	}
