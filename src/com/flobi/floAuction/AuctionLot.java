@@ -67,7 +67,7 @@ public class AuctionLot implements java.io.Serializable {
 			// Give whatever items space permits at this time.
 			ItemStack typeStack = getTypeStack();
 			if (amountToGive > 0) {
-				floAuction.sendMessage("lot-give", player, null);
+				floAuction.sendMessage("lot-give", player, null, false);
 			}
 			while (amountToGive > 0) {
 				ItemStack givingItems = lotTypeLock.clone();
@@ -85,7 +85,7 @@ public class AuctionLot implements java.io.Serializable {
 				
 				// Drop lot.
 				player.getWorld().dropItemNaturally(player.getLocation(), typeStack);
-				floAuction.sendMessage("lot-drop", player, null);
+				floAuction.sendMessage("lot-drop", player, null, false);
 			}
 		} else {
 			// Player is offline, queue lot for give on login.
