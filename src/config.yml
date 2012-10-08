@@ -13,8 +13,6 @@ default-auction-time: 60
 min-auction-time: 15
 max-auction-time: 120
 
-decimal-places: 2
-
 allow-max-bids: true
 allow-early-end: false
 allow-gamemode-creative: false
@@ -35,6 +33,14 @@ cancel-prevention-percent: 50
 anti-snipe: false
 anti-snipe-prevention-seconds: 15
 anti-snipe-extension-seconds: 10
+
+allow-sealed-auctions: true
+allow-unsealed-auctions: true
+
+broadcast-bid-udpates: true
+allow-auto-bid: true
+
+suppress-countdown: false
 
 banned-items: 
   - 7

@@ -13,6 +13,18 @@ commands:
     description: General auction command.
     permission: auction.start
     usage: Type /<command> for instructions.
+  sealedauction:
+    description: General auction command.
+    permission: auction.start
+    usage: Type /<command> for instructions.
+  auc:
+    description: General auction command.
+    permission: auction.start
+    usage: Type /<command> for instructions.
+  sauc:
+    description: General auction command.
+    permission: auction.start
+    usage: Type /<command> for instructions.
   bid:
     description: Bid on auctions.
     permission: auction.bid

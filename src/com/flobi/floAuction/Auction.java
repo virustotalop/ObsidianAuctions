@@ -1,5 +1,7 @@
 package com.flobi.floAuction;
 
+import java.util.ArrayList;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -22,6 +24,9 @@ public class Auction {
 	
 	private AuctionLot lot;
 	private AuctionBid currentBid;
+	public ArrayList<AuctionBid> sealedBids = new ArrayList<AuctionBid>(); 
+	
+	public boolean sealed = false;
 	
 	// Scheduled timers:
 	private int countdown = 0;
@@ -31,11 +36,12 @@ public class Auction {
 		return scope;
 	}
 	
-	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, String scope) {
+	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, String scope, boolean sealed) {
 		ownerName = auctionOwner.getName();
 		args = inputArgs;
 		this.plugin = plugin; 
 		this.scope = scope;
+		this.sealed = sealed;
 
 		// Remove the optional "start" arg:
 		if (args.length > 0) {
@@ -94,14 +100,16 @@ public class Auction {
 		    		thisAuction.end(null);
 		    		return;
 		    	}
-		    	if (thisAuction.countdown < 4) {
-			    	floAuction.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction, true);
-			    	return;
-		    	}
-		    	if (thisAuction.time >= 20) {
-		    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
+		    	if (!floAuction.suppressCountdown){
+			    	if (thisAuction.countdown < 4) {
 				    	floAuction.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction, true);
-		    		}
+				    	return;
+			    	}
+			    	if (thisAuction.time >= 20) {
+			    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
+					    	floAuction.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction, true);
+			    		}
+			    	}
 		    	}
 		    }
 		}, 20L, 20L);
@@ -115,6 +123,13 @@ public class Auction {
 		short currentDurability = itemType.getDurability();
 		if (!active) {
 			floAuction.sendMessage("auction-info-no-auction", sender, this, fullBroadcast);
+		} else if (sealed) {
+			floAuction.sendMessage("auction-info-header-sealed", sender, this, fullBroadcast);
+			if (!items.getBookTitle((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
+			if (!items.getBookAuthor((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
+			floAuction.sendMessage("auction-info-enchantment", sender, this, fullBroadcast);
+			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this, fullBroadcast);
+			floAuction.sendMessage("auction-info-footer-sealed", sender, this, fullBroadcast);
 		} else if (currentBid == null) {
 			floAuction.sendMessage("auction-info-header-nobids", sender, this, fullBroadcast);
 			if (!items.getBookTitle((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
@@ -151,6 +166,12 @@ public class Auction {
 	}
 	private void dispose() {
 		plugin.getServer().getScheduler().cancelTask(countdownTimer);
+
+		sealed = false;
+		for(int i = 0; i < sealedBids.size(); i++) {
+			sealedBids.get(i).cancelBid();
+		}
+		
 		plugin.detachAuction(this);
 	}
 	public Boolean isValid() {
@@ -167,10 +188,6 @@ public class Auction {
 		AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
 		if (bid.getError() != null) {
 			failBid(bid, bid.getError());
-			return;
-		}
-		if (ownerName.equals(bidder.getName()) && !floAuction.allowBidOnOwn) {
-			failBid(bid, "bid-fail-is-auction-owner");
 			return;
 		}
 		if (currentBid == null) {
@@ -238,10 +255,10 @@ public class Auction {
 			} else {
 				// Did the old bid have to raise the bid to stay winner?
 				if (previousBidAmount < winner.getBidAmount()) {
-					floAuction.sendMessage("bid-auto-outbid", (CommandSender) null, this, true);
+					if (!this.sealed && !floAuction.broadCastBidUpdates) floAuction.sendMessage("bid-auto-outbid", (CommandSender) null, this, true);
 					failBid(bid, "bid-fail-auto-outbid");
 				} else {
-					floAuction.sendMessage("bid-fail-too-low", bid.getBidder(), this);
+					if (!this.sealed) floAuction.sendMessage("bid-fail-too-low", bid.getBidder(), this);
 					failBid(bid, null);
 				}
 			}
@@ -255,16 +272,31 @@ public class Auction {
 	}
 	private void failBid(AuctionBid newBid, String reason) {
 		newBid.cancelBid();
-		floAuction.sendMessage(reason, newBid.getBidder(), this);
+		if (this.sealed && (newBid.getError() == null || newBid.getError().isEmpty())) {
+			floAuction.sendMessage("bid-success-sealed", newBid.getBidder(), this);
+		} else {
+			floAuction.sendMessage(reason, newBid.getBidder(), this);
+		}
 	}
 	private void setNewBid(AuctionBid newBid, String reason) {
+		AuctionBid prevBid = currentBid;
+		
 		if (currentBid != null) {
 			currentBid.cancelBid();
 		}
 		currentBid = newBid;
 		floAuction.currentBidPlayerLocation = floAuction.server.getPlayer(newBid.getBidder()).getLocation().clone();
 		floAuction.currentBidPlayerGamemode = floAuction.server.getPlayer(newBid.getBidder()).getGameMode();
-		floAuction.sendMessage(reason, (CommandSender) null, this, true);
+		if (this.sealed) {
+			floAuction.sendMessage("bid-success-sealed", newBid.getBidder(), this);
+		} else if (floAuction.broadCastBidUpdates) {
+			floAuction.sendMessage(reason, (CommandSender) null, this, true);
+		} else {
+			floAuction.sendMessage(reason, newBid.getBidder(), this);
+			if (prevBid != null && newBid.getBidder().equalsIgnoreCase(prevBid.getBidder())) {
+				floAuction.sendMessage(reason, prevBid.getBidder(), this);
+			}
+		}
 	}
 	private Boolean parseHeldItem() {
 		Player owner = floAuction.server.getPlayer(ownerName);

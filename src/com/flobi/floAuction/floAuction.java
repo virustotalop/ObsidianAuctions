@@ -98,6 +98,12 @@ public class floAuction extends JavaPlugin {
 	public static int antiSnipePreventionSeconds = 15;
 	public static int antiSnipeExtensionSeconds = 15;
 	
+	public static boolean allowSealedAuctions = true;
+	public static boolean allowUnsealedAuctions = true;
+	public static boolean broadCastBidUpdates = true;
+	public static boolean allowAutoBid = true;
+	public static boolean suppressCountdown = true;
+	
 	// Config files info.
 	private static File configFile = null;
 	private static InputStream defConfigStream;
@@ -350,7 +356,7 @@ public class floAuction extends JavaPlugin {
 	    
 	    logAuctions = config.getBoolean("log-auctions");
 	    
-		decimalPlaces = Math.min(Math.max(config.getInt("decimal-places"), 0), 5);
+		decimalPlaces = econ.fractionalDigits();
 		config.set("decimal-places", decimalPlaces);
 		if (decimalPlaces < 1) {
 			decimalRegex = "^[0-9]{1,13}$";
@@ -387,7 +393,17 @@ public class floAuction extends JavaPlugin {
         antiSnipePreventionSeconds = config.getInt("anti-snipe-prevention-seconds");
         antiSnipeExtensionSeconds = config.getInt("anti-snipe-extension-seconds");
 		
-
+        allowSealedAuctions = config.getBoolean("allow-sealed-auctions");
+        if (allowSealedAuctions) {
+        	allowUnsealedAuctions = config.getBoolean("allow-unsealed-auctions");
+        } else {
+        	allowUnsealedAuctions = true;
+        }
+        
+        broadCastBidUpdates = config.getBoolean("broadcast-bid-udpates");
+        allowAutoBid = config.getBoolean("allow-auto-bid");
+        suppressCountdown = config.getBoolean("suppress-countdown");
+        
 		// Update all values to include defaults which may be new.
 		
 		FileConfiguration cleanConfig = new YamlConfiguration();
@@ -575,7 +591,12 @@ public class floAuction extends JavaPlugin {
 			return true;
     	}
 
-    	if (cmd.getName().equalsIgnoreCase("auction")) {
+    	if (
+    		cmd.getName().equalsIgnoreCase("auc") ||
+    		cmd.getName().equalsIgnoreCase("auction") ||
+    		cmd.getName().equalsIgnoreCase("sauc") ||
+    		cmd.getName().equalsIgnoreCase("sealedauction")
+    	) {
     		if (args.length > 0) {
     			if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
@@ -684,8 +705,21 @@ public class floAuction extends JavaPlugin {
     	    			sendMessage("no-permission", sender, null, false);
     	    			return true;
     				}
-					queueAuction(new Auction(this, player, args, userScope), player, auction);
-					
+    				
+    				if (cmd.getName().equalsIgnoreCase("sealedauction") || cmd.getName().equalsIgnoreCase("sauc")) {
+    					if (allowSealedAuctions) {
+    						queueAuction(new Auction(this, player, args, userScope, true), player, auction);
+    					} else {
+    						sendMessage("auction-fail-no-sealed-auctions", sender, auction, false);
+    					}
+    				} else {
+    					if (allowUnsealedAuctions) {
+    						queueAuction(new Auction(this, player, args, userScope, false), player, auction);
+    					} else {
+    						queueAuction(new Auction(this, player, args, userScope, true), player, auction);
+    					}
+    				}
+    				
 					return true;
     			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
     				if (auction == null) {

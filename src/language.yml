@@ -47,26 +47,29 @@ auction-fail-no-early-end: '&6You cannot end auctions early.'
 auction-fail-disabled: '&6Enter &9/auction on&6 to use the auction software.'
 auction-fail-gamemode-creative: '&6You cannot auction while in CREATIVE mode.'
 auction-fail-damaged-item: '&6You cannot auction damaged items.'
+auction-fail-no-sealed-auctions: '&6Sealed auctions are disabled.'
 
 bid-success-no-challenger: '&b%B&9 has bid &6%b&9 on the &a%i&9.'
 bid-success-outbid: '&b%B&9 raised the bid to &6%b&9.'
 bid-success-update-own-bid: '&b%B&9 raised the bid to &6%b&9.'
 bid-success-update-own-maxbid: You raised your own max bid to &6%h&9.
+bid-success-sealed: '&bYour bid has been placed.'
 bid-auto-outbid: '&b%B&9 has raised the bid to &6%b&9.'
 bid-fail-is-auction-owner: '&6You cannot bid on your own auction.'
 bid-fail-already-current-bidder: '&6Your bid remains unchanged.'
 bid-fail-cant-allocate-funds: '&6You cannot afford that bid.'
 bid-fail-no-bidder: '&6A non-player tried to bid on an auction?'
-bid-fail-console: &6Console bidding is prohibited.
+bid-fail-console: '&6Console bidding is prohibited.'
 bid-fail-no-auction: '&6There is no auction at this time on which to bid.'
 bid-fail-auto-outbid: '&6You have been automatically outbid.'
 bid-fail-gamemode-creative: '&6You cannot bid while in CREATIVE mode.'
 bid-fail-under-starting-bid: '&6The bidding must start at %s.'
+bid-fail-bid-required: '&6You must enter a bid amount.'
 
 auction-queue-enter: Your auction has been queued. 
 auction-queue-fail-full: '&6The auction queue is full, try again later.'
 auction-queue-fail-in-queue: '&6You already have an auction queued.'
-auction-queue-fail-current-auction: '&6ou are already running an auction.'
+auction-queue-fail-current-auction: '&6You are already running an auction.'
 
 auction-cancel: The auction has been cancelled.
 auction-end-nobids: The auction ended with no bids.
@@ -93,6 +96,9 @@ auction-end-tax: An auction tax of %X has been extracted from your winnings.
 
 auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-nobids: '&b%O&9 is auctioning &f%q %i&9 for &c%t&9.'
+auction-info-header-sealed: 
+- '&b%O&9 is auctioning &f%q %i&9 for &c%t&9.'
+- 'This is a SEALED auction.'
 auction-info-enchantment: 'Item contains enchantment: &a%E'
 auction-info-book-title: 'Book is titled: &a%Y'
 auction-info-book-author: 'Book signed by: &a%y'
@@ -101,11 +107,13 @@ auction-info-footer:
 - The current bid is &6%b&9 by &b%B&9.
 - Min bid increment is &6&9%n&9. 
 auction-info-footer-nobids: 
-- Bidding starts at &6%b&9.
+- Bidding starts at &6%s&9.
+- Min bid increment is &6%n&9. 
+auction-info-footer-sealed: 
+- Bidding starts at &6%s&9.  
 - Min bid increment is &6%n&9. 
 auction-info-no-auction: 
 - Nothing is being auctioned at this time.
-- '&00&11&22&33&44&55&66&77&88&99&aa&bb&cc&dd&ff'
 
 timer-countdown-notification: Auction has &c%t&9 remaining.
 time-format-minsec: '%m min, %s sec'

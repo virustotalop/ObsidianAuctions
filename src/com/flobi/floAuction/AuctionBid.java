@@ -23,11 +23,21 @@ public class AuctionBid {
 	}
 	private boolean reserveBidFunds() {
 		long amountToReserve = 0;
-		AuctionBid currentBid = auction.getCurrentBid(); 
+		long previousSealedReserve = 0;
+		AuctionBid currentBid = auction.getCurrentBid();
+		
+		for(int i = 0; i < auction.sealedBids.size(); i++) {
+			if (auction.sealedBids.get(i).getBidder().equalsIgnoreCase(this.getBidder())) {
+				previousSealedReserve += auction.sealedBids.get(i).getBidAmount();
+				auction.sealedBids.remove(i);
+				i--;
+			}
+		}
+		
 		if (currentBid != null && currentBid.getBidder().equalsIgnoreCase(bidderName)) {
 			// Same bidder: only reserve difference.
-			if (maxBidAmount > currentBid.getMaxBidAmount()) {
-				amountToReserve = maxBidAmount - currentBid.getMaxBidAmount();
+			if (maxBidAmount > currentBid.getMaxBidAmount() + previousSealedReserve) {
+				amountToReserve = maxBidAmount - currentBid.getMaxBidAmount() - previousSealedReserve;
 			} else {
 				// Nothing needing reservation.
 				return true;
@@ -44,9 +54,15 @@ public class AuctionBid {
 		}
 	}
 	public void cancelBid() {
-		// Refund reserve.
-		functions.depositPlayer(bidderName, reserve);
-		reserve = 0;
+		if (auction.sealed) {
+			// Queue reserve refund.
+			auction.sealedBids.add(this);
+		} else {
+			// Refund reserve.
+			functions.depositPlayer(bidderName, reserve);
+			reserve = 0;
+		}
+		
 	}
 	public void winBid() {
 		Double unsafeBidAmount = functions.getUnsafeMoney(bidAmount);
@@ -72,6 +88,10 @@ public class AuctionBid {
 	private Boolean validateBidder() {
 		if (bidderName == null) {
 			error = "bid-fail-no-bidder";
+			return false;
+		}
+		if (bidderName.equalsIgnoreCase(auction.getOwner()) && !floAuction.allowBidOnOwn) {
+			error = "bid-fail-is-auction-owner";
 			return false;
 		}
 		return true;
@@ -110,7 +130,7 @@ public class AuctionBid {
 		if (newBidAmount <= maxBidAmount && newBidAmount >= bidAmount) {
 			bidAmount = newBidAmount;
             // see if antisnipe is enabled...
-            if (floAuction.antiSnipe == true && auction.getRemainingTime() <= floAuction.antiSnipePreventionSeconds) {
+            if (!auction.sealed && floAuction.antiSnipe == true && auction.getRemainingTime() <= floAuction.antiSnipePreventionSeconds) {
 	            auction.addToRemainingTime((floAuction.antiSnipeExtensionSeconds));
  	            floAuction.broadcastMessage(floAuction.textConfig.getString("anti-snipe-time-added"));
             }
@@ -128,8 +148,13 @@ public class AuctionBid {
 				return false;
 			}
 		} else {
-			// Leaving it up to automatic:
-			bidAmount = 0;
+			if (auction.sealed || !floAuction.allowAutoBid) {
+				error = "bid-fail-bid-required";
+				return false;
+			} else {
+				// Leaving it up to automatic:
+				bidAmount = 0;
+			}
 		}
 		// If the person bids 0, make it automatically the next increment (unless it's the current bidder).
 		if (bidAmount == 0) {
@@ -155,7 +180,7 @@ public class AuctionBid {
 		return true;
 	}
 	private Boolean parseArgMaxBid() {
-		if (!floAuction.allowMaxBids) {
+		if (!floAuction.allowMaxBids || auction.sealed) {
 			// Just ignore it.
 			maxBidAmount = bidAmount;
 			return true;
