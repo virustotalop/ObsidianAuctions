@@ -74,7 +74,7 @@ public class floAuction extends JavaPlugin {
 	public static boolean useOldBidLogic = false;
 	public static boolean logAuctions = false;
 	public static boolean allowEarlyEnd = false;
-	public static int decimalPlaces = 2;
+	public static int decimalPlaces = -1;
 	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
 	public static boolean allowCreativeMode = false;
 	public static boolean allowDamagedItems = false;
@@ -356,15 +356,17 @@ public class floAuction extends JavaPlugin {
 	    
 	    logAuctions = config.getBoolean("log-auctions");
 	    
-		decimalPlaces = econ.fractionalDigits();
-		config.set("decimal-places", decimalPlaces);
-		if (decimalPlaces < 1) {
-			decimalRegex = "^[0-9]{1,13}$";
-		} else if (decimalPlaces == 1) {
-			decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
-		} else {
-			decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
-		}
+	    if (econ != null) {
+			decimalPlaces = econ.fractionalDigits();
+			config.set("decimal-places", decimalPlaces);
+			if (decimalPlaces < 1) {
+				decimalRegex = "^[0-9]{1,13}$";
+			} else if (decimalPlaces == 1) {
+				decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
+			} else {
+				decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
+			}
+	    }
 	    defaultStartingBid = functions.getSafeMoney(config.getDouble("default-starting-bid"));
 		defaultBidIncrement = functions.getSafeMoney(config.getDouble("default-bid-increment"));
 		defaultAuctionTime = config.getInt("default-auction-time");
@@ -534,6 +536,21 @@ public class floAuction extends JavaPlugin {
 	}
     
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+    	// Make sure the decimalPlaces loaded correctly.
+    	// Sometimes the econ loads after floAuction.
+	    if (decimalPlaces == -1) {
+			decimalPlaces = econ.fractionalDigits();
+			config.set("decimal-places", decimalPlaces);
+			if (decimalPlaces < 1) {
+				decimalRegex = "^[0-9]{1,13}$";
+			} else if (decimalPlaces == 1) {
+				decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
+			} else {
+				decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
+			}
+	    }
+    	
     	Player player = null;
     	Auction auction = null;
 		// TODO: Figure out auction for context.
