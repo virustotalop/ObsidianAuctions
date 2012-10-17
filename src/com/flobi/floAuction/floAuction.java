@@ -356,7 +356,7 @@ public class floAuction extends JavaPlugin {
 	    
 	    logAuctions = config.getBoolean("log-auctions");
 	    
-	    if (econ != null) {
+	    if (econ.isEnabled()) {
 			decimalPlaces = econ.fractionalDigits();
 			config.set("decimal-places", decimalPlaces);
 			if (decimalPlaces < 1) {
@@ -539,7 +539,7 @@ public class floAuction extends JavaPlugin {
 
     	// Make sure the decimalPlaces loaded correctly.
     	// Sometimes the econ loads after floAuction.
-	    if (decimalPlaces == -1) {
+	    if (decimalPlaces == -1 && econ.isEnabled()) {
 			decimalPlaces = econ.fractionalDigits();
 			config.set("decimal-places", decimalPlaces);
 			if (decimalPlaces < 1) {
