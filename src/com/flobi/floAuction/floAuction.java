@@ -74,8 +74,9 @@ public class floAuction extends JavaPlugin {
 	public static boolean useOldBidLogic = false;
 	public static boolean logAuctions = false;
 	public static boolean allowEarlyEnd = false;
-	public static int decimalPlaces = -1;
+	public static int decimalPlaces = 2;
 	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
+	public static boolean loadedDecimalFromVault = false;
 	public static boolean allowCreativeMode = false;
 	public static boolean allowDamagedItems = false;
 	private static File auctionLog = null;
@@ -119,7 +120,6 @@ public class floAuction extends JavaPlugin {
 	public static int queueTimer;
 	public static ArrayList<Auction> auctionQueue = new ArrayList<Auction>(); 
 	
-	// TODO: Save these items when updated so we don't loose info when restarting.
 	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();;
 	public static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();;
 	public static ArrayList<String> suspendedUsers = new ArrayList<String>();
@@ -315,7 +315,6 @@ public class floAuction extends JavaPlugin {
         }
 		sendMessage("plugin-enabled", console, null, false);
 		
-		//TODO: Load orphan lots from save file.
 	}
     /**
 	 * Loads config.yml and language.yml configuration files.
@@ -356,18 +355,23 @@ public class floAuction extends JavaPlugin {
 	    
 	    logAuctions = config.getBoolean("log-auctions");
 	    
+	    defaultAuctionTime = config.getInt("decimal-places");
 	    if (econ.isEnabled()) {
-			decimalPlaces = econ.fractionalDigits();
-			config.set("decimal-places", decimalPlaces);
-			if (decimalPlaces < 1) {
-				decimalRegex = "^[0-9]{1,13}$";
-			} else if (decimalPlaces == 1) {
-				decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
-			} else {
-				decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
-			}
+	    	if (econ.fractionalDigits() >= 0) {
+				decimalPlaces = econ.fractionalDigits();
+	    	}
+	    	loadedDecimalFromVault = true;
 	    }
-	    defaultStartingBid = functions.getSafeMoney(config.getDouble("default-starting-bid"));
+		config.set("decimal-places", decimalPlaces);
+		if (decimalPlaces < 1) {
+			decimalRegex = "^[0-9]{1,13}$";
+		} else if (decimalPlaces == 1) {
+			decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
+		} else {
+			decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
+		}
+
+		defaultStartingBid = functions.getSafeMoney(config.getDouble("default-starting-bid"));
 		defaultBidIncrement = functions.getSafeMoney(config.getDouble("default-bid-increment"));
 		defaultAuctionTime = config.getInt("default-auction-time");
 		maxStartingBid = functions.getSafeMoney(config.getDouble("max-starting-bid"));
@@ -446,8 +450,6 @@ public class floAuction extends JavaPlugin {
 	public void onDisable() { 
 		getServer().getScheduler().cancelTask(queueTimer);
 		sendMessage("plugin-disabled", console, null, false);
-		
-		//TODO: Save orphan lots from save file.
 	}
 	public void detachAuction(Auction auction) {
 		publicAuction = null;
@@ -539,7 +541,8 @@ public class floAuction extends JavaPlugin {
 
     	// Make sure the decimalPlaces loaded correctly.
     	// Sometimes the econ loads after floAuction.
-	    if (decimalPlaces == -1 && econ.isEnabled()) {
+	    if (!loadedDecimalFromVault && econ.isEnabled()) {
+	    	loadedDecimalFromVault = true;
 			decimalPlaces = econ.fractionalDigits();
 			config.set("decimal-places", decimalPlaces);
 			if (decimalPlaces < 1) {
@@ -553,7 +556,7 @@ public class floAuction extends JavaPlugin {
     	
     	Player player = null;
     	Auction auction = null;
-		// TODO: Figure out auction for context.
+
 		// In the mean time, use public auction.
 		auction = publicAuction;
 		String userScope = "public_auction";

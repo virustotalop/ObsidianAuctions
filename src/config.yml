@@ -13,6 +13,8 @@ default-auction-time: 60
 min-auction-time: 15
 max-auction-time: 120
 
+decimal-places: 2
+
 allow-max-bids: true
 allow-early-end: false
 allow-gamemode-creative: false
