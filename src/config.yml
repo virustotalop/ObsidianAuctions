@@ -39,7 +39,7 @@ anti-snipe-extension-seconds: 10
 allow-sealed-auctions: true
 allow-unsealed-auctions: true
 
-broadcast-bid-udpates: true
+broadcast-bid-updates: true
 allow-auto-bid: true
 
 suppress-countdown: false
