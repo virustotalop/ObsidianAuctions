@@ -198,6 +198,7 @@ public class items {
 		}
 	}
 	public static int getAmount(String ownerName, ItemStack compareItem) {
+		if (floAuction.server.getPlayer(ownerName) == null) return 0;
 		PlayerInventory inventory = floAuction.server.getPlayer(ownerName).getInventory();
 		ItemStack[] items = inventory.getContents();
 		int has = 0;
