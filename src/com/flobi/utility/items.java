@@ -19,6 +19,7 @@ import com.flobi.floAuction.floAuction;
 public class items {
 	
 	public static String getBookAuthor(CraftItemStack book) {
+		if (book == null) return "";
 		if (!(book.getType() == Material.WRITTEN_BOOK)) return "";
 		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
 		if (!book.getHandle().getTag().hasKey("author")) return "";
@@ -26,12 +27,14 @@ public class items {
 	}
 	
 	public static void setBookAuthor(CraftItemStack book, String author) {
+		if (book == null) return;
 		if (!(book.getType() == Material.WRITTEN_BOOK)) return;
 		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
 		book.getHandle().getTag().setString("author", author);
 	}
 	
 	public static String getBookTitle(CraftItemStack book) {
+		if (book == null) return "";
 		if (!(book.getType() == Material.WRITTEN_BOOK)) return "";
 		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
 		if (!book.getHandle().getTag().hasKey("title")) return "";
@@ -39,12 +42,14 @@ public class items {
 	}
 	
 	public static void setBookTitle(CraftItemStack book, String title) {
+		if (book == null) return;
 		if (!(book.getType() == Material.WRITTEN_BOOK)) return;
 		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
 		book.getHandle().getTag().setString("title", title);
 	}
 	
 	public static String[] getBookPages(CraftItemStack book) {
+		if (book == null) return new String[0];
 		if (!(book.getType() == Material.WRITTEN_BOOK || book.getType() == Material.BOOK_AND_QUILL)) return null;
 		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
 		if (!book.getHandle().getTag().hasKey("pages")) return null;
@@ -60,6 +65,7 @@ public class items {
 	}
 	
 	public static void setBookPages(CraftItemStack book, String[] pages) {
+		if (book == null) return;
 		if (!(book.getType() == Material.WRITTEN_BOOK || book.getType() == Material.BOOK_AND_QUILL)) return;
 		if (pages == null) return;
 		
