@@ -406,7 +406,7 @@ public class floAuction extends JavaPlugin {
         	allowUnsealedAuctions = true;
         }
         
-        broadCastBidUpdates = config.getBoolean("broadcast-bid-udpates");
+        broadCastBidUpdates = config.getBoolean("broadcast-bid-updates");
         allowAutoBid = config.getBoolean("allow-auto-bid");
         suppressCountdown = config.getBoolean("suppress-countdown");
         
