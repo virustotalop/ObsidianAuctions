@@ -345,7 +345,7 @@ public class Auction {
 			return false;
 		}
 		if (!items.hasAmount(ownerName, quantity, lot.getTypeStack())) {
-			floAuction.sendMessage("auction-fail-insufficient-supply2", ownerName, this);
+			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, this);
 			return false;
 		}
 		return true;
