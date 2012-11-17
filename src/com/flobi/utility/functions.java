@@ -15,6 +15,7 @@ public class functions {
 	
 	public static String formatAmount(double unsafeMoney) {
 		if (floAuction.econ == null) return "-";
+		if (!floAuction.econ.isEnabled()) return "-";
 		return floAuction.econ.format(unsafeMoney);
 	}
 	
