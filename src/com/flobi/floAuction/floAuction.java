@@ -922,12 +922,11 @@ public class floAuction extends JavaPlugin {
     	
     	String originalMessage = null;
     	if (messageList == null || messageList.size() == 0) {
-    		originalMessage = textConfig.getString(messageKey.toString());
+    		originalMessage = textConfig.getString(messageKey);
     		
     		
     		if (originalMessage == null || originalMessage.length() == 0) {
-        		messageList = new ArrayList<String>();
-    			messageList.add(messageKey.toString());
+        		return;
     		} else {
         		messageList = Arrays.asList(originalMessage.split("(\r?\n|\r)"));
     		}
