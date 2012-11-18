@@ -1,6 +1,7 @@
 package com.flobi.floAuction;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -27,6 +28,8 @@ public class Auction {
 	public ArrayList<AuctionBid> sealedBids = new ArrayList<AuctionBid>(); 
 	
 	public boolean sealed = false;
+	
+	public Date prevTickTime = null;
 	
 	// Scheduled timers:
 	private int countdown = 0;
@@ -95,6 +98,9 @@ public class Auction {
 		
 		countdownTimer = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 		    public void run() {
+		    	if (thisAuction.prevTickTime.getTime() + 1000 > (new Date()).getTime()) return;
+		    	thisAuction.prevTickTime = new Date(thisAuction.prevTickTime.getTime() + 1000);
+		    	
 		    	thisAuction.countdown--;
 		    	if (thisAuction.countdown == 0) {
 		    		thisAuction.end(null);
@@ -112,7 +118,8 @@ public class Auction {
 			    	}
 		    	}
 		    }
-		}, 20L, 20L);
+		}, 1L, 1L);
+		prevTickTime = new Date();
 
 		info(null, true);
 		return true;

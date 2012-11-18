@@ -14,7 +14,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-//import java.sql.Date;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -991,7 +990,6 @@ public class floAuction extends JavaPlugin {
     private static void log(CommandSender player, String message) {
     	if (logAuctions) {
     		String playerName = null;
-    		Date date = new Date();
     		
 			BufferedWriter out = null;
 			try {
@@ -1008,7 +1006,7 @@ public class floAuction extends JavaPlugin {
 					playerName = player.getName();
 				}
 				
-				out.append(date.toString() + " (" + playerName + "): " + ChatColor.stripColor(message) + "\n");
+				out.append((new Date()).toString() + " (" + playerName + "): " + ChatColor.stripColor(message) + "\n");
 				out.close();
 
 			} catch (IOException e) {
