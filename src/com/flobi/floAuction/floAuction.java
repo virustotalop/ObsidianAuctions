@@ -448,7 +448,8 @@ public class floAuction extends JavaPlugin {
 	    	maxStartingBid = 100000000000000000L;
 	    }
     }
-	public void onDisable() { 
+	public void onDisable() {
+		if (publicAuction != null) publicAuction.cancel();
 		getServer().getScheduler().cancelTask(queueTimer);
 		sendMessage("plugin-disabled", console, null, false);
 	}
@@ -699,7 +700,7 @@ public class floAuction extends JavaPlugin {
     				
     				// Loop through all scopes when they come around.
     				if (publicAuction != null) {
-    					publicAuction.cancel(player);
+    					publicAuction.cancel();
     				}
 
 	    			sendMessage("suspension-global", (Player) null, null, true);
@@ -751,7 +752,7 @@ public class floAuction extends JavaPlugin {
 						if (cancelPreventionSeconds > auction.getRemainingTime() || cancelPreventionPercent > (double)auction.getRemainingTime() / (double)auction.getTotalTime() * 100D) {
 	    					sendMessage("auction-fail-cancel-prevention", player, auction, false);
 						} else {
-	    					auction.cancel(player);
+	    					auction.cancel();
 	    					publicAuction = null;
 						}
 					} else {

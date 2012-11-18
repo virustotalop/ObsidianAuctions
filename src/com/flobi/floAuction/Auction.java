@@ -1,8 +1,6 @@
 package com.flobi.floAuction;
 
 import java.util.ArrayList;
-import java.util.Date;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -29,7 +27,7 @@ public class Auction {
 	
 	public boolean sealed = false;
 	
-	public Date prevTickTime = null;
+	public long prevTickTime = 0;
 	
 	// Scheduled timers:
 	private int countdown = 0;
@@ -98,8 +96,8 @@ public class Auction {
 		
 		countdownTimer = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 		    public void run() {
-		    	if (thisAuction.prevTickTime.getTime() + 1000 > (new Date()).getTime()) return;
-		    	thisAuction.prevTickTime = new Date(thisAuction.prevTickTime.getTime() + 1000);
+		    	if (thisAuction.prevTickTime + 1000 > System.currentTimeMillis()) return;
+		    	thisAuction.prevTickTime = thisAuction.prevTickTime + 1000;
 		    	
 		    	thisAuction.countdown--;
 		    	if (thisAuction.countdown == 0) {
@@ -119,7 +117,7 @@ public class Auction {
 		    	}
 		    }
 		}, 1L, 1L);
-		prevTickTime = new Date();
+		prevTickTime = System.currentTimeMillis();
 
 		info(null, true);
 		return true;
@@ -153,7 +151,7 @@ public class Auction {
 			floAuction.sendMessage("auction-info-footer", sender, this, fullBroadcast);
 		}
 	}
-	public void cancel(Player canceller) {
+	public void cancel() {
 		floAuction.sendMessage("auction-cancel", (CommandSender) null, this, true);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
