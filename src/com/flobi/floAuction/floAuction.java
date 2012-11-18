@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+//import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-
+//import net.minecraft.server.NBTBase;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -620,6 +621,23 @@ public class floAuction extends JavaPlugin {
     		cmd.getName().equalsIgnoreCase("sealedauction")
     	) {
     		if (args.length > 0) {
+/*    			if (args[0].equalsIgnoreCase("nbt")) {
+					if (player == null) return true;
+					if (player.getItemInHand() == null) return true;
+					if (((CraftItemStack)player.getItemInHand()).getHandle() == null) return true;
+					if (((CraftItemStack)player.getItemInHand()).getHandle().getTag() == null) return true;
+					if (((CraftItemStack)player.getItemInHand()).getHandle().getTag().c() == null) return true;
+					
+					Collection<NBTBase> collection = ((CraftItemStack)player.getItemInHand()).getHandle().getTag().c();
+					Iterator<NBTBase> i = collection.iterator();
+					String s;
+					while (i.hasNext()) {
+						NBTBase item = (NBTBase) i.next();
+						player.sendMessage(item.getName());
+					}
+					
+    				return true;
+    			}*/
     			if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
     	    			sendMessage("no-permission", sender, null, false);
@@ -858,6 +876,7 @@ public class floAuction extends JavaPlugin {
     	String startAucitonTax = functions.formatAmount(taxPerAuction);
     	String bookAuthor = null;
     	String bookTitle = null;
+    	String displayName = null;
 
     	if (auction != null) {
     		ItemStack typeLot = auction.getLotType();
@@ -901,6 +920,7 @@ public class floAuction extends JavaPlugin {
 			}
         	bookAuthor = items.getBookAuthor((CraftItemStack)typeLot);
         	bookTitle = items.getBookTitle((CraftItemStack)typeLot);
+        	displayName = items.getDisplayName((CraftItemStack)typeLot);
     	} else {
         	owner = "-";
         	quantity = "-";
@@ -915,6 +935,7 @@ public class floAuction extends JavaPlugin {
         	endAuctionTax = "-";
         	bookAuthor = "-";
         	bookTitle = "-";
+        	displayName = "-";
     	}
     	
     	List<String> messageList = textConfig.getStringList(messageKey);
@@ -950,6 +971,7 @@ public class floAuction extends JavaPlugin {
 			message = message.replace("%X", endAuctionTax);
 			message = message.replace("%y", bookAuthor);
 			message = message.replace("%Y", bookTitle);
+			message = message.replace("%d", displayName);
 	
 			if (messageKey == "auction-info-enchantment") {
     			if (auction != null && auction.getLotType() != null) {

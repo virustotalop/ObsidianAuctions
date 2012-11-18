@@ -100,6 +100,7 @@ auction-info-header-sealed:
 - '&b%O&9 is auctioning &f%q %i&9 for &c%t&9.'
 - 'This is a SEALED auction.'
 auction-info-enchantment: 'Item contains enchantment: &a%E'
+auction-info-display-name: 'Item renamed to: &a%d'
 auction-info-book-title: 'Book is titled: &a%Y'
 auction-info-book-author: 'Book signed by: &a%y'
 auction-info-damage: 'Item damaged: &6%D &aremaining.'

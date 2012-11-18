@@ -17,11 +17,10 @@ public class AuctionLot implements java.io.Serializable {
 	private String ownerName;
 	private int quantity = 0;
 	private int lotTypeId;
-	@SuppressWarnings("unused") // Will be necessary later when Bukkit gets fixed.
-	private byte lotDataData;
 	private short lotDurability;
 	private Map<Integer, Integer> lotEnchantments;
 	private int sourceStackQuantity = 0;
+	private String displayName = "";
 	private String bookAuthor = "";
 	private String bookTitle = "";
 	private String[] bookPages = null;
@@ -107,6 +106,7 @@ public class AuctionLot implements java.io.Serializable {
 			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
 		lotTypeLock.setAmount(sourceStackQuantity);
+		items.setDisplayName(lotTypeLock, displayName);
 		items.setBookAuthor(lotTypeLock, bookAuthor);
 		items.setBookTitle(lotTypeLock, bookTitle);
 		items.setBookPages(lotTypeLock, bookPages);
@@ -114,7 +114,6 @@ public class AuctionLot implements java.io.Serializable {
 	}
 	private void setLotType(ItemStack lotType) {
 		lotTypeId = lotType.getTypeId();
-		lotDataData = lotType.getData().getData();
 		lotDurability = lotType.getDurability();
 		sourceStackQuantity = lotType.getAmount();
 		lotEnchantments = new HashMap<Integer, Integer>();
@@ -122,6 +121,7 @@ public class AuctionLot implements java.io.Serializable {
 		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
 			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
 		}
+		displayName = items.getDisplayName((CraftItemStack)lotType);
 		bookAuthor = items.getBookAuthor((CraftItemStack)lotType);
 		bookTitle = items.getBookTitle((CraftItemStack)lotType);
 		bookPages = items.getBookPages((CraftItemStack)lotType);

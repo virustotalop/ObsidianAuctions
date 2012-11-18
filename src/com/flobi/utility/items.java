@@ -18,10 +18,25 @@ import com.flobi.floAuction.floAuction;
 
 public class items {
 	
+	public static String getDisplayName(CraftItemStack item) {
+		if (item == null) return "";
+		if (item.getHandle().getTag() == null) return "";
+		if (!item.getHandle().getTag().hasKey("display")) return "";
+		if (!item.getHandle().getTag().getCompound("display").hasKey("Name")) return "";
+		return item.getHandle().getTag().getCompound("display").getString("Name");
+	}
+	
+	public static void setDisplayName(CraftItemStack item, String name) {
+		if (item == null) return;
+		if (item.getHandle().getTag() == null) item.getHandle().setTag(new NBTTagCompound());
+		if (!item.getHandle().getTag().hasKey("display")) item.getHandle().getTag().setCompound("display", new NBTTagCompound());
+		item.getHandle().getTag().getCompound("display").setString("Name", name);
+	}
+	
 	public static String getBookAuthor(CraftItemStack book) {
 		if (book == null) return "";
 		if (!(book.getType() == Material.WRITTEN_BOOK)) return "";
-		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
+		if (book.getHandle().getTag() == null) return "";
 		if (!book.getHandle().getTag().hasKey("author")) return "";
 		return book.getHandle().getTag().getString("author");
 	}
@@ -123,6 +138,7 @@ public class items {
 		if (!item1.getEnchantments().equals(item2.getEnchantments())) return false;
 		
 		// Book author, title and contents must be identical.
+		if (!getDisplayName((CraftItemStack)item1).equals(getDisplayName((CraftItemStack)item2))) return false;
 		if (!getBookAuthor((CraftItemStack)item1).equals(getBookAuthor((CraftItemStack)item2))) return false;
 		if (!getBookTitle((CraftItemStack)item1).equals(getBookTitle((CraftItemStack)item2))) return false;
 		String[] pages1 = getBookPages((CraftItemStack)item1);
