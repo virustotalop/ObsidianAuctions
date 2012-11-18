@@ -14,9 +14,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+//import java.sql.Date;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -851,7 +853,6 @@ public class floAuction extends JavaPlugin {
     	String currentBid = null;
     	String currentMaxBid = null;
     	String timeRemaining = null;
-    	String auctionScope = null;
     	String durabilityRemaining = null;
     	String endAuctionTax = null;
     	String startAucitonTax = functions.formatAmount(taxPerAuction);
@@ -891,7 +892,6 @@ public class floAuction extends JavaPlugin {
 				currentMaxBid = startingBid;
 				endAuctionTax = "-";
 			}
-			auctionScope = auction.getScope();
         	durabilityRemaining = "-";
 			if (typeLot != null) {
 				if (typeLot.getType().getMaxDurability() > 0) {
@@ -911,7 +911,6 @@ public class floAuction extends JavaPlugin {
         	currentBid = "-";
         	currentMaxBid = "-";
         	timeRemaining = "-";
-        	auctionScope = "no_auction";
         	durabilityRemaining = "-";
         	endAuctionTax = "-";
         	bookAuthor = "-";
@@ -962,7 +961,7 @@ public class floAuction extends JavaPlugin {
 		            	} else {
 		        	    	player.sendMessage(message);
 		            	}
-		            	log(auctionScope, player, message);
+		            	log(player, message);
 	        		}
     			}
 			} else {
@@ -971,7 +970,7 @@ public class floAuction extends JavaPlugin {
 		    	} else if (player != null) {
 			    	player.sendMessage(message);
 		    	}
-		    	log(auctionScope, player, message);
+		    	log(player, message);
 			}
     	}
     	
@@ -989,9 +988,10 @@ public class floAuction extends JavaPlugin {
 			console.sendMessage(message);
 		}
     }
-    private static void log(String scope, CommandSender player, String message) {
+    private static void log(CommandSender player, String message) {
     	if (logAuctions) {
     		String playerName = null;
+    		Date date = new Date();
     		
 			BufferedWriter out = null;
 			try {
@@ -1008,7 +1008,7 @@ public class floAuction extends JavaPlugin {
 					playerName = player.getName();
 				}
 				
-				out.append(scope + " (" + playerName + "): " + ChatColor.stripColor(message) + "\n");
+				out.append(date.toString() + " (" + playerName + "): " + ChatColor.stripColor(message) + "\n");
 				out.close();
 
 			} catch (IOException e) {
