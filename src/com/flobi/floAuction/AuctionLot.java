@@ -24,6 +24,7 @@ public class AuctionLot implements java.io.Serializable {
 	private String bookAuthor = "";
 	private String bookTitle = "";
 	private String[] bookPages = null;
+	private Integer repairCost = null;
 	
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
@@ -110,6 +111,7 @@ public class AuctionLot implements java.io.Serializable {
 		items.setBookAuthor(lotTypeLock, bookAuthor);
 		items.setBookTitle(lotTypeLock, bookTitle);
 		items.setBookPages(lotTypeLock, bookPages);
+		items.setRepairCost(lotTypeLock, repairCost);
 		return lotTypeLock;
 	}
 	private void setLotType(ItemStack lotType) {
@@ -125,6 +127,7 @@ public class AuctionLot implements java.io.Serializable {
 		bookAuthor = items.getBookAuthor((CraftItemStack)lotType);
 		bookTitle = items.getBookTitle((CraftItemStack)lotType);
 		bookPages = items.getBookPages((CraftItemStack)lotType);
+		repairCost = items.getRepairCost((CraftItemStack)lotType);
 	}
 	public String getOwner() {
 		return ownerName;

@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-//import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +28,6 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-//import net.minecraft.server.NBTBase;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -621,6 +619,7 @@ public class floAuction extends JavaPlugin {
     		cmd.getName().equalsIgnoreCase("sealedauction")
     	) {
     		if (args.length > 0) {
+    			// This code will remain commented in releases, but I use it to list any new NBT tags when I need them. 
 /*    			if (args[0].equalsIgnoreCase("nbt")) {
 					if (player == null) return true;
 					if (player.getItemInHand() == null) return true;
@@ -921,6 +920,13 @@ public class floAuction extends JavaPlugin {
         	bookAuthor = items.getBookAuthor((CraftItemStack)typeLot);
         	bookTitle = items.getBookTitle((CraftItemStack)typeLot);
         	displayName = items.getDisplayName((CraftItemStack)typeLot);
+        	
+        	if (displayName.isEmpty()) {
+        		displayName = lotType;
+        	} else {
+        		displayName = ChatColor.translateAlternateColorCodes('&', textConfig.getString("display-name-prefix")) + displayName + ChatColor.translateAlternateColorCodes('&', "&r");
+        	}
+        	
     	} else {
         	owner = "-";
         	quantity = "-";
@@ -959,7 +965,7 @@ public class floAuction extends JavaPlugin {
 	
 			message = message.replace("%O", owner);
 			message = message.replace("%q", quantity);
-			message = message.replace("%i", lotType);
+			message = message.replace("%i", displayName);
 			message = message.replace("%s", startingBid);
 			message = message.replace("%n", minBidIncrement);
 			message = message.replace("%b", currentBid);
@@ -971,7 +977,7 @@ public class floAuction extends JavaPlugin {
 			message = message.replace("%X", endAuctionTax);
 			message = message.replace("%y", bookAuthor);
 			message = message.replace("%Y", bookTitle);
-			message = message.replace("%d", displayName);
+			message = message.replace("%d", lotType);
 	
 			if (messageKey == "auction-info-enchantment") {
     			if (auction != null && auction.getLotType() != null) {
