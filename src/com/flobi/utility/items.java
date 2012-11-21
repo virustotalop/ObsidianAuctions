@@ -18,6 +18,24 @@ import com.flobi.floAuction.floAuction;
 
 public class items {
 	
+	public static String getHeadOwner(CraftItemStack item) {
+		if (item == null) return null;
+		if (item.getHandle().getTag() == null) return null;
+		if (!item.getHandle().getTag().hasKey("SkullOwner")) return null;
+		return item.getHandle().getTag().getString("SkullOwner");
+	}
+	
+	public static void setHeadOwner(CraftItemStack item, String headName) {
+		if (item == null) return;
+		if (headName == null || headName.isEmpty()) {
+			if (item.getHandle().getTag() == null) return;
+			item.getHandle().getTag().remove("SkullOwner");
+		} else {
+			if (item.getHandle().getTag() == null) item.getHandle().setTag(new NBTTagCompound());
+			item.getHandle().getTag().setString("SkullOwner", headName);
+		}
+	}
+	
 	public static Integer getRepairCost(CraftItemStack item) {
 		if (item == null) return null;
 		if (item.getHandle().getTag() == null) return null;
@@ -37,18 +55,24 @@ public class items {
 	}
 	
 	public static String getDisplayName(CraftItemStack item) {
-		if (item == null) return "";
-		if (item.getHandle().getTag() == null) return "";
-		if (!item.getHandle().getTag().hasKey("display")) return "";
-		if (!item.getHandle().getTag().getCompound("display").hasKey("Name")) return "";
+		if (item == null) return null;
+		if (item.getHandle().getTag() == null) return null;
+		if (!item.getHandle().getTag().hasKey("display")) return null;
+		if (!item.getHandle().getTag().getCompound("display").hasKey("Name")) return null;
 		return item.getHandle().getTag().getCompound("display").getString("Name");
 	}
 	
 	public static void setDisplayName(CraftItemStack item, String name) {
 		if (item == null) return;
-		if (item.getHandle().getTag() == null) item.getHandle().setTag(new NBTTagCompound());
-		if (!item.getHandle().getTag().hasKey("display")) item.getHandle().getTag().setCompound("display", new NBTTagCompound());
-		item.getHandle().getTag().getCompound("display").setString("Name", name);
+		if (name == null) {
+			if (item.getHandle().getTag() == null) return;
+			if (!item.getHandle().getTag().hasKey("display")) return;
+			item.getHandle().getTag().getCompound("display").remove("Name");
+		} else {
+			if (item.getHandle().getTag() == null) item.getHandle().setTag(new NBTTagCompound());
+			if (!item.getHandle().getTag().hasKey("display")) item.getHandle().getTag().setCompound("display", new NBTTagCompound());
+			item.getHandle().getTag().getCompound("display").setString("Name", name);
+		}
 	}
 	
 	public static String getBookAuthor(CraftItemStack book) {
@@ -156,8 +180,9 @@ public class items {
 		if (!item1.getEnchantments().equals(item2.getEnchantments())) return false;
 		
 		// These were added in 1.4.
-		if (getRepairCost((CraftItemStack)item1) != getRepairCost((CraftItemStack)item2)) return false;
-		if (!getDisplayName((CraftItemStack)item1).equals(getDisplayName((CraftItemStack)item2))) return false;
+		if (!isSame(getHeadOwner((CraftItemStack)item1), getHeadOwner((CraftItemStack)item2))) return false;
+		if (!isSame(getRepairCost((CraftItemStack)item1), getRepairCost((CraftItemStack)item2))) return false;
+		if (!isSame(getDisplayName((CraftItemStack)item1), getDisplayName((CraftItemStack)item2))) return false;
 
 		// Book author, title and contents must be identical.
 		if (!getBookAuthor((CraftItemStack)item1).equals(getBookAuthor((CraftItemStack)item2))) return false;
@@ -173,6 +198,16 @@ public class items {
 		}
 
 		return true;
+	}
+	private static boolean isSame(String str1, String str2) {
+		if (str1 == null && str2 == null) return true;
+		if (str1 == null) return false;
+		return str1.equals(str2); 
+	}
+	private static boolean isSame(Integer int1, Integer int2) {
+		if (int1 == null && int2 == null) return true;
+		if (int1 == null) return false;
+		return int1.equals(int2); 
 	}
 	
 	public static int getMaxStackSize(ItemStack item) {

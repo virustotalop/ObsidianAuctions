@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,6 +26,7 @@ public class AuctionLot implements java.io.Serializable {
 	private String bookTitle = "";
 	private String[] bookPages = null;
 	private Integer repairCost = null;
+	private String headOwner = null;
 	
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
@@ -84,7 +86,8 @@ public class AuctionLot implements java.io.Serializable {
 				quantity = 0;
 				
 				// Drop lot.
-				player.getWorld().dropItemNaturally(player.getLocation(), typeStack);
+				Item drop = player.getWorld().dropItemNaturally(player.getLocation(), typeStack);
+				drop.setItemStack(typeStack);
 				floAuction.sendMessage("lot-drop", player, null, false);
 			}
 		} else {
@@ -102,7 +105,7 @@ public class AuctionLot implements java.io.Serializable {
 		}
 	}
 	public ItemStack getTypeStack() {
-		CraftItemStack lotTypeLock = new CraftItemStack(lotTypeId, 1, lotDurability);
+		CraftItemStack lotTypeLock = new CraftItemStack(new ItemStack(lotTypeId, 1, lotDurability));
 		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
 			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
@@ -112,6 +115,7 @@ public class AuctionLot implements java.io.Serializable {
 		items.setBookTitle(lotTypeLock, bookTitle);
 		items.setBookPages(lotTypeLock, bookPages);
 		items.setRepairCost(lotTypeLock, repairCost);
+		items.setHeadOwner(lotTypeLock, headOwner);
 		return lotTypeLock;
 	}
 	private void setLotType(ItemStack lotType) {
@@ -128,6 +132,7 @@ public class AuctionLot implements java.io.Serializable {
 		bookTitle = items.getBookTitle((CraftItemStack)lotType);
 		bookPages = items.getBookPages((CraftItemStack)lotType);
 		repairCost = items.getRepairCost((CraftItemStack)lotType);
+		headOwner = items.getHeadOwner((CraftItemStack)lotType);
 	}
 	public String getOwner() {
 		return ownerName;
