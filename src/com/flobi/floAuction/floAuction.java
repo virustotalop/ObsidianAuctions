@@ -232,12 +232,12 @@ public class floAuction extends JavaPlugin {
         setupPermissions();
         setupChat();
 
+        loadConfig();
 		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
 			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-whatisit")));
 			server.getPluginManager().disablePlugin(this);
             return;
 		}
-        loadConfig();
 		if (econ == null) {
 			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-economy")));
 			server.getPluginManager().disablePlugin(this);
@@ -356,7 +356,7 @@ public class floAuction extends JavaPlugin {
 	    logAuctions = config.getBoolean("log-auctions");
 	    
 	    defaultAuctionTime = config.getInt("decimal-places");
-	    if (econ.isEnabled()) {
+	    if (econ != null && econ.isEnabled()) {
 	    	if (econ.fractionalDigits() >= 0) {
 				decimalPlaces = econ.fractionalDigits();
 	    	}
