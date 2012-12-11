@@ -44,6 +44,8 @@ allow-auto-bid: true
 
 suppress-countdown: false
 
+allow-inferior-item-name-logic: false
+
 banned-items: 
   - 7
   - 383;63

@@ -3,6 +3,7 @@ display-name-prefix: '&o'
 plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
 no-whatisit: Disabled due to no WhatIsIt dependency found!
+whatisit-recommended: WhatIsIt plugin highly recommended for full item information!
 no-vault: Disabled due to no Vault dependency found!
 no-economy: Disabled due to no Economy found!
 plugin-reloaded: '&fconfiguration has been reloaded.'

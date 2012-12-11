@@ -51,7 +51,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.flobi.WhatIsIt.WhatIsIt;
 import com.flobi.utility.functions;
 import com.flobi.utility.items;
 
@@ -98,6 +97,7 @@ public class floAuction extends JavaPlugin {
     public static boolean antiSnipe = false;
 	public static int antiSnipePreventionSeconds = 15;
 	public static int antiSnipeExtensionSeconds = 15;
+	public static boolean useWhatIsIt = true;
 	
 	public static boolean allowSealedAuctions = true;
 	public static boolean allowUnsealedAuctions = true;
@@ -234,9 +234,16 @@ public class floAuction extends JavaPlugin {
 
         loadConfig();
 		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
-			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-whatisit")));
-			server.getPluginManager().disablePlugin(this);
-            return;
+			if (config.getBoolean("allow-inferior-item-name-logic")) {
+				log.log(Level.SEVERE, chatPrepClean(textConfig.getString("whatisit-recommended")));
+				useWhatIsIt = false;
+			} else {
+				log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-whatisit")));
+				server.getPluginManager().disablePlugin(this);
+	            return;
+			}
+		} else {
+			useWhatIsIt = true;
 		}
 		if (econ == null) {
 			log.log(Level.SEVERE, chatPrepClean(textConfig.getString("no-economy")));
@@ -665,7 +672,7 @@ public class floAuction extends JavaPlugin {
     				for(int i = 0; i < orphanLots.size(); i++) {
     					if (orphanLots.get(i) != null) {
     						AuctionLot lot = orphanLots.get(i);
-    		    			sendMessage(lot.getOwner() + ": " + lot.getQuantity() + " " + WhatIsIt.itemName(lot.getTypeStack()), sender, null, false);
+    		    			sendMessage(lot.getOwner() + ": " + lot.getQuantity() + " " + items.getItemName(lot.getTypeStack()), sender, null, false);
     					}
     				}
 
@@ -891,7 +898,7 @@ public class floAuction extends JavaPlugin {
     		
     		if (auction.getOwner() != null) owner = auction.getOwner();
     		quantity = Integer.toString(auction.getLotQuantity());
-    		lotType = WhatIsIt.itemName(typeLot);
+    		lotType = items.getItemName(typeLot);
     		if (auction.getStartingBid() == 0) {
 	    		startingBid = functions.formatAmount(auction.getMinBidIncrement());
     		} else {
@@ -993,7 +1000,7 @@ public class floAuction extends JavaPlugin {
     			if (auction != null && auction.getLotType() != null) {
 	        		Map<Enchantment, Integer> enchantments = auction.getLotType().getEnchantments();
 	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
-	        			message = originalMessage.replace("%E", WhatIsIt.enchantmentName(enchantment));
+	        			message = originalMessage.replace("%E", items.getEnchantmentName(enchantment));
 		            	if (player == null) {
 		            		broadcastMessage(message);
 		            	} else {
