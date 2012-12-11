@@ -26,6 +26,85 @@ public class items {
 	private static Map<Integer, String> enchantmentNames = null;
 	private static Map<Integer, String> enchantmentLevels = null;
 	
+	
+    private static int firstPartial(ItemStack item, ItemStack[] inventory) {
+        ItemStack filteredItem = new CraftItemStack(item);
+        if (item == null) {
+            return -1;
+        }
+        for (int i = 0; i < inventory.length; i++) {
+            ItemStack cItem = inventory[i];
+            if (cItem != null && cItem.getAmount() < cItem.getMaxStackSize() && isSameItem(filteredItem, cItem)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static int firstEmpty(ItemStack[] inventory) {
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Most of this function was copied from CraftBukkit.  The above functions too.
+    public static void saferItemGive(PlayerInventory playerInventory, ItemStack item) {
+    	// After bukkit is fixed:
+    	// player.getInventory().addItem(givingItems);
+		
+        while (true) {
+            // Do we already have a stack of it?
+            int firstPartial = firstPartial(item, (ItemStack[])playerInventory.getContents());
+
+            // Drat! no partial stack
+            if (firstPartial == -1) {
+                // Find a free spot!
+                int firstFree = firstEmpty((ItemStack[])playerInventory.getContents());
+
+                if (firstFree == -1) {
+                    // No space at all!
+                    // Bukkit returns unplaced items, but floAuction only calls this after checking for space.
+                    break;
+                } else {
+                	// Again, floAuction checks for this elsewhere before calling this...technically this would never occur, no reason to code for it.
+                	
+                    // More than a single stack!
+/*                    if (item.getAmount() > getMaxStackSize(item)) {
+                        CraftItemStack stack = new CraftItemStack(item.getTypeId(), getMaxStackSize(item), item.getDurability());
+                        stack.addUnsafeEnchantments(item.getEnchantments());
+                        playerInventory.setItem(firstFree, stack);
+                        item.setAmount(item.getAmount() - getMaxStackSize(item));
+                    } else {*/
+                        // Just store it
+                    	playerInventory.setItem(firstFree, item);
+                        break;
+//                    }
+                }
+            } else {
+                // So, apparently it might only partially fit, well lets do just that
+                ItemStack partialItem = playerInventory.getItem(firstPartial);
+
+                int amount = item.getAmount();
+                int partialAmount = partialItem.getAmount();
+                int maxAmount = partialItem.getMaxStackSize();
+
+                // Check if it fully fits
+                if (amount + partialAmount <= maxAmount) {
+                    partialItem.setAmount(amount + partialAmount);
+                    break;
+                }
+
+                // It fits partially
+                partialItem.setAmount(maxAmount);
+                item.setAmount(amount + partialAmount - maxAmount);
+            }
+        }		
+		
+	}
+	
 	public static String getHeadOwner(CraftItemStack item) {
 		if (item == null) return null;
 		if (item.getHandle().getTag() == null) return null;

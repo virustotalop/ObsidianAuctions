@@ -75,7 +75,10 @@ public class AuctionLot implements java.io.Serializable {
 				ItemStack givingItems = lotTypeLock.clone();
 				givingItems.setAmount(Math.min(maxStackSize, amountToGive));
 				quantity -= givingItems.getAmount();
-				player.getInventory().addItem(givingItems);
+				
+//				player.getInventory().addItem();
+				items.saferItemGive(player.getInventory(), givingItems);
+				
 				amountToGive -= maxStackSize;
 			}
 			if (quantity > 0) {
