@@ -85,12 +85,15 @@ public class AuctionLot implements java.io.Serializable {
 				// Drop items at player's feet.
 				
 				// Move items to drop lot.
-				typeStack.setAmount(quantity);
-				quantity = 0;
-				
-				// Drop lot.
-				Item drop = player.getWorld().dropItemNaturally(player.getLocation(), typeStack);
-				drop.setItemStack(typeStack);
+				while (quantity > 0) {
+					ItemStack cloneStack = typeStack.clone();
+					cloneStack.setAmount(Math.min(quantity, items.getMaxStackSize(typeStack)));
+					quantity -= cloneStack.getAmount();
+					
+					// Drop lot.
+					Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
+					drop.setItemStack(cloneStack);
+				}
 				floAuction.sendMessage("lot-drop", player, null, false);
 			}
 		} else {
