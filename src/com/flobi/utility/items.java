@@ -2,21 +2,21 @@ package com.flobi.utility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
 
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import com.flobi.WhatIsIt.WhatIsIt;
 import com.flobi.floAuction.floAuction;
@@ -28,13 +28,12 @@ public class items {
 	
 	
     private static int firstPartial(ItemStack item, ItemStack[] inventory) {
-        ItemStack filteredItem = new CraftItemStack(item);
         if (item == null) {
             return -1;
         }
         for (int i = 0; i < inventory.length; i++) {
             ItemStack cItem = inventory[i];
-            if (cItem != null && cItem.getAmount() < cItem.getMaxStackSize() && isSameItem(filteredItem, cItem)) {
+            if (cItem != null && cItem.getAmount() < cItem.getMaxStackSize() && isSameItem(item, cItem)) {
                 return i;
             }
         }
@@ -105,121 +104,138 @@ public class items {
 		
 	}
 	
-	public static String getHeadOwner(CraftItemStack item) {
+	public static String getHeadOwner(ItemStack item) {
 		if (item == null) return null;
-		if (item.getHandle().getTag() == null) return null;
-		if (!item.getHandle().getTag().hasKey("SkullOwner")) return null;
-		return item.getHandle().getTag().getString("SkullOwner");
-	}
-	
-	public static void setHeadOwner(CraftItemStack item, String headName) {
-		if (item == null) return;
-		if (headName == null || headName.isEmpty()) {
-			if (item.getHandle().getTag() == null) return;
-			item.getHandle().getTag().remove("SkullOwner");
-		} else {
-			if (item.getHandle().getTag() == null) item.getHandle().setTag(new NBTTagCompound());
-			item.getHandle().getTag().setString("SkullOwner", headName);
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return null;
+		if (itemMeta instanceof SkullMeta) {
+			return ((SkullMeta)itemMeta).getOwner();
 		}
+		return null;
 	}
 	
-	public static Integer getRepairCost(CraftItemStack item) {
+	public static void setHeadOwner(ItemStack item, String headName) {
+		if (item == null) return;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return;
+		if (itemMeta instanceof SkullMeta) {
+			SkullMeta skullMeta = ((SkullMeta)itemMeta);
+			skullMeta.setOwner(headName);
+			item.setItemMeta((ItemMeta)skullMeta);
+		}
+		return;
+	}
+	
+	public static Integer getRepairCost(ItemStack item) {
 		if (item == null) return null;
-		if (item.getHandle().getTag() == null) return null;
-		if (!item.getHandle().getTag().hasKey("RepairCost")) return null;
-		return (Integer)item.getHandle().getTag().getInt("RepairCost");
-	}
-	
-	public static void setRepairCost(CraftItemStack item, Integer repairCost) {
-		if (item == null) return;
-		if (repairCost == null) {
-			if (item.getHandle().getTag() == null) return;
-			item.getHandle().getTag().remove("RepairCost");
-		} else {
-			if (item.getHandle().getTag() == null) item.getHandle().setTag(new NBTTagCompound());
-			item.getHandle().getTag().setInt("RepairCost", repairCost);
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return null;
+		if (itemMeta instanceof Repairable) {
+			return ((Repairable)itemMeta).getRepairCost();
 		}
+		return null;
 	}
 	
-	public static String getDisplayName(CraftItemStack item) {
+	public static void setRepairCost(ItemStack item, Integer repairCost) {
+		if (item == null) return;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return;
+		if (itemMeta instanceof Repairable) {
+			Repairable repairable = ((Repairable)itemMeta);
+			repairable.setRepairCost(repairCost);
+			item.setItemMeta((ItemMeta)repairable);
+		}
+		return;
+	}
+	
+	public static String getDisplayName(ItemStack item) {
 		if (item == null) return null;
-		if (item.getHandle().getTag() == null) return null;
-		if (!item.getHandle().getTag().hasKey("display")) return null;
-		if (!item.getHandle().getTag().getCompound("display").hasKey("Name")) return null;
-		return item.getHandle().getTag().getCompound("display").getString("Name");
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return null;
+		return itemMeta.getDisplayName();
 	}
 	
-	public static void setDisplayName(CraftItemStack item, String name) {
+	public static void setDisplayName(ItemStack item, String name) {
 		if (item == null) return;
-		if (name == null) {
-			if (item.getHandle().getTag() == null) return;
-			if (!item.getHandle().getTag().hasKey("display")) return;
-			item.getHandle().getTag().getCompound("display").remove("Name");
-		} else {
-			if (item.getHandle().getTag() == null) item.getHandle().setTag(new NBTTagCompound());
-			if (!item.getHandle().getTag().hasKey("display")) item.getHandle().getTag().setCompound("display", new NBTTagCompound());
-			item.getHandle().getTag().getCompound("display").setString("Name", name);
+		if (name == null) return;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return;
+		itemMeta.setDisplayName(name);
+		item.setItemMeta(itemMeta);
+	}
+	
+	public static String getBookAuthor(ItemStack book) {
+		if (book == null) return null;
+		ItemMeta itemMeta = book.getItemMeta();
+		if (itemMeta == null) return null;
+		if (itemMeta instanceof BookMeta) {
+			return ((BookMeta)itemMeta).getAuthor();
 		}
+		return null;
 	}
 	
-	public static String getBookAuthor(CraftItemStack book) {
-		if (book == null) return "";
-		if (!(book.getType() == Material.WRITTEN_BOOK)) return "";
-		if (book.getHandle().getTag() == null) return "";
-		if (!book.getHandle().getTag().hasKey("author")) return "";
-		return book.getHandle().getTag().getString("author");
-	}
-	
-	public static void setBookAuthor(CraftItemStack book, String author) {
+	public static void setBookAuthor(ItemStack book, String author) {
 		if (book == null) return;
-		if (!(book.getType() == Material.WRITTEN_BOOK)) return;
-		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
-		book.getHandle().getTag().setString("author", author);
-	}
-	
-	public static String getBookTitle(CraftItemStack book) {
-		if (book == null) return "";
-		if (!(book.getType() == Material.WRITTEN_BOOK)) return "";
-		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
-		if (!book.getHandle().getTag().hasKey("title")) return "";
-		return book.getHandle().getTag().getString("title");
-	}
-	
-	public static void setBookTitle(CraftItemStack book, String title) {
-		if (book == null) return;
-		if (!(book.getType() == Material.WRITTEN_BOOK)) return;
-		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
-		book.getHandle().getTag().setString("title", title);
-	}
-	
-	public static String[] getBookPages(CraftItemStack book) {
-		if (book == null) return new String[0];
-		if (!(book.getType() == Material.WRITTEN_BOOK || book.getType() == Material.BOOK_AND_QUILL)) return null;
-		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
-		if (!book.getHandle().getTag().hasKey("pages")) return null;
-		
-		NBTTagList tagList = book.getHandle().getTag().getList("pages");
-		
-		String[] pages = new String[tagList.size()];
-		for(int i = 0; i < tagList.size(); i++){
-			pages[i] = ((NBTTagString)tagList.get(i)).data;
+		ItemMeta itemMeta = book.getItemMeta();
+		if (itemMeta == null) return;
+		if (itemMeta instanceof BookMeta) {
+			BookMeta bookMeta = ((BookMeta)itemMeta);
+			bookMeta.setAuthor(author);
+			book.setItemMeta((ItemMeta)itemMeta);
 		}
-		
-		return pages;
+		return;
 	}
 	
-	public static void setBookPages(CraftItemStack book, String[] pages) {
+	public static String getBookTitle(ItemStack book) {
+		if (book == null) return null;
+		ItemMeta itemMeta = book.getItemMeta();
+		if (itemMeta == null) return null;
+		if (itemMeta instanceof BookMeta) {
+			return ((BookMeta)itemMeta).getTitle();
+		}
+		return null;
+	}
+	
+	public static void setBookTitle(ItemStack book, String title) {
 		if (book == null) return;
-		if (!(book.getType() == Material.WRITTEN_BOOK || book.getType() == Material.BOOK_AND_QUILL)) return;
-		if (pages == null) return;
-		
-		NBTTagList nPages = new NBTTagList();
-		
-        for (int i = 0; i < pages.length; i++) {
-            nPages.add(new NBTTagString(pages[i],pages[i]));
-        }
-		if (book.getHandle().getTag() == null) book.getHandle().setTag(new NBTTagCompound());
-        book.getHandle().getTag().set("pages", nPages);
+		ItemMeta itemMeta = book.getItemMeta();
+		if (itemMeta == null) return;
+		if (itemMeta instanceof BookMeta) {
+			BookMeta bookMeta = ((BookMeta)itemMeta);
+			bookMeta.setTitle(title);
+			book.setItemMeta((ItemMeta)itemMeta);
+		}
+		return;
+	}
+	
+	public static String[] getBookPages(ItemStack book) {
+		if (book == null) return null;
+		ItemMeta itemMeta = book.getItemMeta();
+		if (itemMeta == null) return null;
+		if (itemMeta instanceof BookMeta) {
+			List<String> pageList = ((BookMeta)itemMeta).getPages();
+			String[] pages = new String[pageList.size()];
+			for(int i = 0; i < pageList.size(); i++){
+				pages[i] = pageList.get(i);
+			}
+			return pages;
+		}
+		return null;
+	}
+	
+	public static void setBookPages(ItemStack book, String[] pages) {
+		if (book == null || pages == null) return;
+		ItemMeta itemMeta = book.getItemMeta();
+		if (itemMeta == null) return;
+		if (itemMeta instanceof BookMeta) {
+			List<String> pageList = new ArrayList<String>();
+			for(int i = 0; i < pageList.size(); i++){
+				pageList.add(pages[i]);
+			}
+			BookMeta bookMeta = ((BookMeta)itemMeta);
+			bookMeta.setPages(pages);
+			book.setItemMeta((ItemMeta)itemMeta);
+		}
     }
 	
 	// Some of this was taken from Vault's item classes.
@@ -267,15 +283,15 @@ public class items {
 		if (!item1.getEnchantments().equals(item2.getEnchantments())) return false;
 		
 		// These were added in 1.4.
-		if (!isSame(getHeadOwner((CraftItemStack)item1), getHeadOwner((CraftItemStack)item2))) return false;
-		if (!isSame(getRepairCost((CraftItemStack)item1), getRepairCost((CraftItemStack)item2))) return false;
-		if (!isSame(getDisplayName((CraftItemStack)item1), getDisplayName((CraftItemStack)item2))) return false;
+		if (!isSame(getHeadOwner(item1), getHeadOwner(item2))) return false;
+		if (!isSame(getRepairCost(item1), getRepairCost(item2))) return false;
+		if (!isSame(getDisplayName(item1), getDisplayName(item2))) return false;
 
 		// Book author, title and contents must be identical.
-		if (!getBookAuthor((CraftItemStack)item1).equals(getBookAuthor((CraftItemStack)item2))) return false;
-		if (!getBookTitle((CraftItemStack)item1).equals(getBookTitle((CraftItemStack)item2))) return false;
-		String[] pages1 = getBookPages((CraftItemStack)item1);
-		String[] pages2 = getBookPages((CraftItemStack)item2);
+		if (!isSame(getBookAuthor(item1), getBookAuthor(item2))) return false;
+		if (!isSame(getBookTitle(item1), getBookTitle(item2))) return false;
+		String[] pages1 = getBookPages(item1);
+		String[] pages2 = getBookPages(item2);
 		if ((pages1 == null) ^ (pages2 == null)) return false;
 		if (pages1 != null) {
 			if (pages1.length != pages2.length) return false;

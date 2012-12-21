@@ -37,7 +37,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -626,33 +625,6 @@ public class floAuction extends JavaPlugin {
     		cmd.getName().equalsIgnoreCase("sealedauction")
     	) {
     		if (args.length > 0) {
-    			// This code will remain commented in releases, but I use it to list any new NBT tags when I need them. 
-/*    			if (args[0].equalsIgnoreCase("nbt")) {
-    				
-    				if (args.length > 2 && args[1].equalsIgnoreCase("head")) {
-    					ItemStack typeStack = new CraftItemStack(new ItemStack(Material.SKULL_ITEM, 1, (byte) 3));
-    					items.setHeadOwner((CraftItemStack) typeStack, args[2]);
-    					Item drop = player.getWorld().dropItemNaturally(player.getLocation(), typeStack);
-    					drop.setItemStack(typeStack);
-						return true;
-    				}
-    				
-					if (player == null) return true;
-					if (player.getItemInHand() == null) return true;
-					if (((CraftItemStack)player.getItemInHand()).getHandle() == null) return true;
-					if (((CraftItemStack)player.getItemInHand()).getHandle().getTag() == null) return true;
-					if (((CraftItemStack)player.getItemInHand()).getHandle().getTag().c() == null) return true;
-					
-					@SuppressWarnings("unchecked")
-					Collection<NBTBase> collection = ((CraftItemStack)player.getItemInHand()).getHandle().getTag().c();
-					Iterator<NBTBase> i = collection.iterator();
-					while (i.hasNext()) {
-						NBTBase item = (NBTBase) i.next();
-						player.sendMessage(item.getName());
-					}
-					
-    				return true;
-    			}*/
     			if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
     	    			sendMessage("no-permission", sender, null, false);
@@ -933,9 +905,11 @@ public class floAuction extends JavaPlugin {
 			        durabilityRemaining = decimalFormat.format((1 - ((double) typeLot.getDurability() / (double) typeLot.getType().getMaxDurability())));
 				}
 			}
-        	bookAuthor = items.getBookAuthor((CraftItemStack)typeLot);
-        	bookTitle = items.getBookTitle((CraftItemStack)typeLot);
-        	displayName = items.getDisplayName((CraftItemStack)typeLot);
+        	bookAuthor = items.getBookAuthor(typeLot);
+        	if (bookAuthor == null) bookAuthor = "";
+        	bookTitle = items.getBookTitle(typeLot);
+        	if (bookTitle == null) bookTitle = "";
+        	displayName = items.getDisplayName(typeLot);
         	if (displayName == null) displayName = "";
         	
         	if (displayName.isEmpty()) {

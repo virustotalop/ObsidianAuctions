@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Item;
@@ -111,7 +110,7 @@ public class AuctionLot implements java.io.Serializable {
 		}
 	}
 	public ItemStack getTypeStack() {
-		CraftItemStack lotTypeLock = new CraftItemStack(new ItemStack(lotTypeId, 1, lotDurability));
+		ItemStack lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability);
 		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
 			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
@@ -133,12 +132,12 @@ public class AuctionLot implements java.io.Serializable {
 		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
 			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
 		}
-		displayName = items.getDisplayName((CraftItemStack)lotType);
-		bookAuthor = items.getBookAuthor((CraftItemStack)lotType);
-		bookTitle = items.getBookTitle((CraftItemStack)lotType);
-		bookPages = items.getBookPages((CraftItemStack)lotType);
-		repairCost = items.getRepairCost((CraftItemStack)lotType);
-		headOwner = items.getHeadOwner((CraftItemStack)lotType);
+		displayName = items.getDisplayName(lotType);
+		bookAuthor = items.getBookAuthor(lotType);
+		bookTitle = items.getBookTitle(lotType);
+		bookPages = items.getBookPages(lotType);
+		repairCost = items.getRepairCost(lotType);
+		headOwner = items.getHeadOwner(lotType);
 	}
 	public String getOwner() {
 		return ownerName;

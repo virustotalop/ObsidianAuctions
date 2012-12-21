@@ -2,7 +2,6 @@ package com.flobi.floAuction;
 
 import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -130,25 +129,25 @@ public class Auction {
 			floAuction.sendMessage("auction-info-no-auction", sender, this, fullBroadcast);
 		} else if (sealed) {
 			floAuction.sendMessage("auction-info-header-sealed", sender, this, fullBroadcast);
-			if (items.getDisplayName((CraftItemStack)itemType) != null && !items.getDisplayName((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
-			if (!items.getBookTitle((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
-			if (!items.getBookAuthor((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
+			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
+			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
+			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
 			floAuction.sendMessage("auction-info-enchantment", sender, this, fullBroadcast);
 			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this, fullBroadcast);
 			floAuction.sendMessage("auction-info-footer-sealed", sender, this, fullBroadcast);
 		} else if (currentBid == null) {
 			floAuction.sendMessage("auction-info-header-nobids", sender, this, fullBroadcast);
-			if (items.getDisplayName((CraftItemStack)itemType) != null && !items.getDisplayName((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
-			if (!items.getBookTitle((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
-			if (!items.getBookAuthor((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
+			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
+			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
+			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
 			floAuction.sendMessage("auction-info-enchantment", sender, this, fullBroadcast);
 			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this, fullBroadcast);
 			floAuction.sendMessage("auction-info-footer-nobids", sender, this, fullBroadcast);
 		} else {
 			floAuction.sendMessage("auction-info-header", sender, this, fullBroadcast);
-			if (items.getDisplayName((CraftItemStack)itemType) != null && !items.getDisplayName((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
-			if (!items.getBookTitle((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
-			if (!items.getBookAuthor((CraftItemStack)itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
+			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
+			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
+			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
 			floAuction.sendMessage("auction-info-enchantment", sender, this, fullBroadcast);
 			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this, fullBroadcast);
 			floAuction.sendMessage("auction-info-footer", sender, this, fullBroadcast);
