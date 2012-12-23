@@ -114,7 +114,7 @@ public class items {
 		return null;
 	}
 	
-	public static void setHeadOwner(ItemStack item, String headName) {
+/*	public static void setHeadOwner(ItemStack item, String headName) {
 		if (item == null) return;
 		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta == null) return;
@@ -124,7 +124,7 @@ public class items {
 			item.setItemMeta((ItemMeta)skullMeta);
 		}
 		return;
-	}
+	}*/
 	
 	public static Integer getRepairCost(ItemStack item) {
 		if (item == null) return null;
