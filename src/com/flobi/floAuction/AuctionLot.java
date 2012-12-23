@@ -1,5 +1,12 @@
 package com.flobi.floAuction;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.bukkit.FireworkEffect;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +17,18 @@ public class AuctionLot implements java.io.Serializable {
 	private static final long serialVersionUID = -1764290458703647129L;
 	private String ownerName;
 	private int quantity = 0;
-	private ItemStack typeStack;
+	private int lotTypeId;
+	private short lotDurability;
+	private Map<Integer, Integer> lotEnchantments;
+	private int sourceStackQuantity = 0;
+	private String displayName = "";
+	private String bookAuthor = "";
+	private String bookTitle = "";
+	private String[] bookPages = null;
+	private Integer repairCost = null;
+	private String headOwner = null;
+	private Integer power = 0;
+	private FireworkEffect[] effects = null;
 	
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
@@ -95,10 +113,38 @@ public class AuctionLot implements java.io.Serializable {
 		}
 	}
 	public ItemStack getTypeStack() {
-		return typeStack.clone();
+		ItemStack lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability);
+		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
+			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
+		}
+		lotTypeLock.setAmount(sourceStackQuantity);
+		items.setDisplayName(lotTypeLock, displayName);
+		items.setBookAuthor(lotTypeLock, bookAuthor);
+		items.setBookTitle(lotTypeLock, bookTitle);
+		items.setBookPages(lotTypeLock, bookPages);
+		items.setRepairCost(lotTypeLock, repairCost);
+		items.setHeadOwner(lotTypeLock, headOwner);
+		items.setFireworkPower(lotTypeLock, power);
+		items.setFireworkEffects(lotTypeLock, effects);
+		return lotTypeLock;
 	}
 	private void setLotType(ItemStack lotType) {
-		typeStack = lotType.clone();
+		lotTypeId = lotType.getTypeId();
+		lotDurability = lotType.getDurability();
+		sourceStackQuantity = lotType.getAmount();
+		lotEnchantments = new HashMap<Integer, Integer>();
+		Map<Enchantment, Integer> enchantmentList = lotType.getEnchantments();
+		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
+			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
+		}
+		displayName = items.getDisplayName(lotType);
+		bookAuthor = items.getBookAuthor(lotType);
+		bookTitle = items.getBookTitle(lotType);
+		bookPages = items.getBookPages(lotType);
+		repairCost = items.getRepairCost(lotType);
+		headOwner = items.getHeadOwner(lotType);
+		power = items.getFireworkPower(lotType);
+		effects = items.getFireworkEffects(lotType);
 	}
 	public String getOwner() {
 		return ownerName;

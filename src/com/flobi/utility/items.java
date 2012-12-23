@@ -9,11 +9,13 @@ import java.util.Map.Entry;
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
 
+import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -104,6 +106,54 @@ public class items {
 		
 	}
 	
+	public static Integer getFireworkPower(ItemStack item) {
+		if (item == null) return null;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return null;
+		if (itemMeta instanceof FireworkMeta) {
+			return ((FireworkMeta)itemMeta).getPower();
+		}
+		return null;
+	}
+	
+	public static void setFireworkPower(ItemStack item, Integer power) {
+		if (item == null) return;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return;
+		if (itemMeta instanceof FireworkMeta) {
+			FireworkMeta fireworkMeta = ((FireworkMeta)itemMeta);
+			fireworkMeta.setPower(power);
+			item.setItemMeta((ItemMeta)fireworkMeta);
+		}
+		return;
+	}
+	
+	public static FireworkEffect[] getFireworkEffects(ItemStack book) {
+		if (book == null) return null;
+		ItemMeta itemMeta = book.getItemMeta();
+		if (itemMeta == null) return null;
+		if (itemMeta instanceof FireworkMeta) {
+			List<FireworkEffect> effectList = ((FireworkMeta)itemMeta).getEffects();
+			FireworkEffect[] effects = new FireworkEffect[effectList.size()];
+			for(int i = 0; i < effectList.size(); i++){
+				effects[i] = effectList.get(i);
+			}
+			return effects;
+		}
+		return null;
+	}
+	
+	public static void setFireworkEffects(ItemStack item, FireworkEffect[] effects) {
+		if (item == null || effects == null) return;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return;
+		if (itemMeta instanceof FireworkMeta) {
+			FireworkMeta fireworkMeta = ((FireworkMeta)itemMeta);
+			fireworkMeta.addEffects(effects);
+			item.setItemMeta((ItemMeta)fireworkMeta);
+		}
+    }
+
 	public static String getHeadOwner(ItemStack item) {
 		if (item == null) return null;
 		ItemMeta itemMeta = item.getItemMeta();
@@ -114,7 +164,7 @@ public class items {
 		return null;
 	}
 	
-/*	public static void setHeadOwner(ItemStack item, String headName) {
+	public static void setHeadOwner(ItemStack item, String headName) {
 		if (item == null) return;
 		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta == null) return;
@@ -124,7 +174,7 @@ public class items {
 			item.setItemMeta((ItemMeta)skullMeta);
 		}
 		return;
-	}*/
+	}
 	
 	public static Integer getRepairCost(ItemStack item) {
 		if (item == null) return null;
@@ -181,7 +231,7 @@ public class items {
 		if (itemMeta instanceof BookMeta) {
 			BookMeta bookMeta = ((BookMeta)itemMeta);
 			bookMeta.setAuthor(author);
-			book.setItemMeta((ItemMeta)itemMeta);
+			book.setItemMeta((ItemMeta)bookMeta);
 		}
 		return;
 	}
@@ -203,7 +253,7 @@ public class items {
 		if (itemMeta instanceof BookMeta) {
 			BookMeta bookMeta = ((BookMeta)itemMeta);
 			bookMeta.setTitle(title);
-			book.setItemMeta((ItemMeta)itemMeta);
+			book.setItemMeta((ItemMeta)bookMeta);
 		}
 		return;
 	}
@@ -229,12 +279,12 @@ public class items {
 		if (itemMeta == null) return;
 		if (itemMeta instanceof BookMeta) {
 			List<String> pageList = new ArrayList<String>();
-			for(int i = 0; i < pageList.size(); i++){
+			for(int i = 0; i < pages.length; i++){
 				pageList.add(pages[i]);
 			}
 			BookMeta bookMeta = ((BookMeta)itemMeta);
 			bookMeta.setPages(pages);
-			book.setItemMeta((ItemMeta)itemMeta);
+			book.setItemMeta((ItemMeta)bookMeta);
 		}
     }
 	

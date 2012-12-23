@@ -175,13 +175,11 @@ public class floAuction extends JavaPlugin {
 			input.close();
   	    } catch (IOException e) {
 			// This is okay, send a blank file.
-			e.printStackTrace();
+//			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// This is okay, send a blank file.
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//			e.printStackTrace();
+		}  
 		finally {
 		}
     	return importedObjects;
