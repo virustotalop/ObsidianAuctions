@@ -11,10 +11,12 @@ import net.milkbowl.vault.item.Items;
 
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
@@ -106,6 +108,28 @@ public class items {
 		
 	}
 	
+    public static Map<Enchantment, Integer> getStoredEnchantments(ItemStack item) {
+		if (item == null) return null;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return null;
+		if (itemMeta instanceof EnchantmentStorageMeta) {
+			return ((EnchantmentStorageMeta)itemMeta).getStoredEnchants();
+		}
+		return null;
+    }
+    
+    public static void addStoredEnchantment(ItemStack item, Integer enchantment, Integer level, boolean ignoreLevelRestriction) {
+		if (item == null) return;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return;
+		if (itemMeta instanceof EnchantmentStorageMeta) {
+			EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta)itemMeta; 
+			storageMeta.addStoredEnchant(new EnchantmentWrapper(enchantment), level, ignoreLevelRestriction);
+			item.setItemMeta(storageMeta);
+		}
+		return;
+    }
+    
 	public static Integer getFireworkPower(ItemStack item) {
 		if (item == null) return null;
 		ItemMeta itemMeta = item.getItemMeta();
@@ -123,14 +147,14 @@ public class items {
 		if (itemMeta instanceof FireworkMeta) {
 			FireworkMeta fireworkMeta = ((FireworkMeta)itemMeta);
 			fireworkMeta.setPower(power);
-			item.setItemMeta((ItemMeta)fireworkMeta);
+			item.setItemMeta(fireworkMeta);
 		}
 		return;
 	}
 	
-	public static FireworkEffect[] getFireworkEffects(ItemStack book) {
-		if (book == null) return null;
-		ItemMeta itemMeta = book.getItemMeta();
+	public static FireworkEffect[] getFireworkEffects(ItemStack item) {
+		if (item == null) return null;
+		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta == null) return null;
 		if (itemMeta instanceof FireworkMeta) {
 			List<FireworkEffect> effectList = ((FireworkMeta)itemMeta).getEffects();
@@ -150,7 +174,7 @@ public class items {
 		if (itemMeta instanceof FireworkMeta) {
 			FireworkMeta fireworkMeta = ((FireworkMeta)itemMeta);
 			fireworkMeta.addEffects(effects);
-			item.setItemMeta((ItemMeta)fireworkMeta);
+			item.setItemMeta(fireworkMeta);
 		}
     }
 
@@ -171,7 +195,7 @@ public class items {
 		if (itemMeta instanceof SkullMeta) {
 			SkullMeta skullMeta = ((SkullMeta)itemMeta);
 			skullMeta.setOwner(headName);
-			item.setItemMeta((ItemMeta)skullMeta);
+			item.setItemMeta(skullMeta);
 		}
 		return;
 	}
@@ -231,7 +255,7 @@ public class items {
 		if (itemMeta instanceof BookMeta) {
 			BookMeta bookMeta = ((BookMeta)itemMeta);
 			bookMeta.setAuthor(author);
-			book.setItemMeta((ItemMeta)bookMeta);
+			book.setItemMeta(bookMeta);
 		}
 		return;
 	}
@@ -253,7 +277,7 @@ public class items {
 		if (itemMeta instanceof BookMeta) {
 			BookMeta bookMeta = ((BookMeta)itemMeta);
 			bookMeta.setTitle(title);
-			book.setItemMeta((ItemMeta)bookMeta);
+			book.setItemMeta(bookMeta);
 		}
 		return;
 	}
@@ -284,7 +308,7 @@ public class items {
 			}
 			BookMeta bookMeta = ((BookMeta)itemMeta);
 			bookMeta.setPages(pages);
-			book.setItemMeta((ItemMeta)bookMeta);
+			book.setItemMeta(bookMeta);
 		}
     }
 	

@@ -20,6 +20,7 @@ public class AuctionLot implements java.io.Serializable {
 	private int lotTypeId;
 	private short lotDurability;
 	private Map<Integer, Integer> lotEnchantments;
+	private Map<Integer, Integer> storedEnchantments;
 	private int sourceStackQuantity = 0;
 	private String displayName = "";
 	private String bookAuthor = "";
@@ -117,6 +118,9 @@ public class AuctionLot implements java.io.Serializable {
 		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
 			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
+		for (Entry<Integer, Integer> enchantment : storedEnchantments.entrySet()) {
+			items.addStoredEnchantment(lotTypeLock, enchantment.getKey(), enchantment.getValue(), true);
+		}
 		lotTypeLock.setAmount(sourceStackQuantity);
 		items.setDisplayName(lotTypeLock, displayName);
 		items.setBookAuthor(lotTypeLock, bookAuthor);
@@ -133,9 +137,14 @@ public class AuctionLot implements java.io.Serializable {
 		lotDurability = lotType.getDurability();
 		sourceStackQuantity = lotType.getAmount();
 		lotEnchantments = new HashMap<Integer, Integer>();
+		storedEnchantments = new HashMap<Integer, Integer>();
 		Map<Enchantment, Integer> enchantmentList = lotType.getEnchantments();
 		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
 			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
+		}
+		enchantmentList = items.getStoredEnchantments(lotType);
+		if (enchantmentList != null) for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
+			storedEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
 		}
 		displayName = items.getDisplayName(lotType);
 		bookAuthor = items.getBookAuthor(lotType);
