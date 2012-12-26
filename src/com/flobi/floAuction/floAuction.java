@@ -29,6 +29,9 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -103,6 +106,7 @@ public class floAuction extends JavaPlugin {
 	public static boolean broadCastBidUpdates = true;
 	public static boolean allowAutoBid = true;
 	public static boolean suppressCountdown = true;
+	public static boolean suppressAuctionStartInfo = true;
 	
 	// Config files info.
 	private static File configFile = null;
@@ -415,6 +419,7 @@ public class floAuction extends JavaPlugin {
         broadCastBidUpdates = config.getBoolean("broadcast-bid-updates");
         allowAutoBid = config.getBoolean("allow-auto-bid");
         suppressCountdown = config.getBoolean("suppress-countdown");
+        suppressAuctionStartInfo = config.getBoolean("suppress-auction-start-info");
         
 		// Update all values to include defaults which may be new.
 		
@@ -829,6 +834,10 @@ public class floAuction extends JavaPlugin {
     }
     
     public static void sendMessage(String messageKey, CommandSender player, Auction auction, boolean fullBroadcast) {
+    	sendMessage(messageKey, player, auction, fullBroadcast, "-");
+    }
+
+    public static void sendMessage(String messageKey, CommandSender player, Auction auction, boolean fullBroadcast, String fireworkAspect) {
 
     	if (player != null) {
 	    	if (player instanceof Player) {
@@ -864,9 +873,11 @@ public class floAuction extends JavaPlugin {
     	String bookAuthor = null;
     	String bookTitle = null;
     	String displayName = null;
+    	String rocketPower = null;
+    	ItemStack typeLot = null;
 
     	if (auction != null) {
-    		ItemStack typeLot = auction.getLotType();
+    		typeLot = auction.getLotType();
     		
     		if (auction.getOwner() != null) owner = auction.getOwner();
     		quantity = Integer.toString(auction.getLotQuantity());
@@ -918,6 +929,13 @@ public class floAuction extends JavaPlugin {
         		displayName = ChatColor.translateAlternateColorCodes('&', textConfig.getString("display-name-prefix")) + displayName + ChatColor.translateAlternateColorCodes('&', "&r");
         	}
         	
+			if (typeLot.getTypeId() == 401) {
+				Integer power = items.getFireworkPower(typeLot);
+				if (power != null) {
+					rocketPower = power.toString();
+				}
+			}
+			if (rocketPower == null) rocketPower = "-";
     	} else {
         	owner = "-";
         	quantity = "-";
@@ -933,6 +951,7 @@ public class floAuction extends JavaPlugin {
         	bookAuthor = "-";
         	bookTitle = "-";
         	displayName = "-";
+        	rocketPower = "-";
     	}
     	
     	List<String> messageList = textConfig.getStringList(messageKey);
@@ -951,8 +970,7 @@ public class floAuction extends JavaPlugin {
     	
     	for (Iterator<String> i = messageList.iterator(); i.hasNext(); ) {
     		String messageListItem = i.next();
-	    	originalMessage = chatPrep(messageListItem);
-	    	String message = originalMessage;
+    		String message = chatPrep(messageListItem);
 	
 			message = message.replace("%O", owner);
 			message = message.replace("%q", quantity);
@@ -969,13 +987,96 @@ public class floAuction extends JavaPlugin {
 			message = message.replace("%y", bookAuthor);
 			message = message.replace("%Y", bookTitle);
 			message = message.replace("%d", lotType);
-	
-			if (messageKey == "auction-info-enchantment") {
-    			if (auction != null && auction.getLotType() != null) {
-	        		Map<Enchantment, Integer> enchantments = auction.getLotType().getEnchantments();
+			message = message.replace("%r", rocketPower);
+			originalMessage = message;
+			
+			// Firework charges:
+			if (originalMessage.contains("%A")) {
+				if (auction != null) {
+					FireworkEffect[] payloads = items.getFireworkEffects(typeLot);
+					if (payloads != null && payloads.length > 0) {
+						for (int j = 0; j < payloads.length; j++) {
+							FireworkEffect payload = payloads[j];
+							// %A lists all aspects of the payload
+							
+							String payloadAspects = "";
+							String payloadSeparator = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-payload-separator"));
+							
+							Type type = payload.getType();
+							if (type != null) {
+								if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+								if (textConfig.getString("firework-shapes." + type.toString()) == null) {
+									payloadAspects += type.toString();
+								} else {
+									payloadAspects += textConfig.getString("firework-shapes." + type.toString());
+								}
+							}
+							List<Color> colors = payload.getColors();
+							for (int k = 0; k < colors.size(); k++) {
+								if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+								Color color = colors.get(k);
+								String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
+								if (textConfig.getString("firework-colors." + colorRGB) == null) {
+									payloadAspects += "#" + colorRGB;
+								} else {
+									payloadAspects += textConfig.getString("firework-colors." + colorRGB);
+								}
+							}
+							if (payload.hasFlicker()) {
+								if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+								payloadAspects += textConfig.getString("firework-twinkle");
+							}
+							if (payload.hasTrail()) {
+								if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+								payloadAspects += textConfig.getString("firework-trail");
+							}
+							message = originalMessage.replace("%A", payloadAspects);
+			            	if (fullBroadcast) {
+			            		broadcastMessage(message);
+			            	} else {
+			        	    	player.sendMessage(message);
+			            	}
+			            	log(player, message);
+						}
+						return;
+					} else {
+						message = message.replace("%A", "-");
+					}
+				} else {
+					message = message.replace("%A", "-");
+				}
+			}
+			
+			
+			// Enchantments:
+			if (originalMessage.contains("%F")) {
+				if (auction != null) {
+	        		Map<Enchantment, Integer> enchantments = typeLot.getEnchantments();
+	        		if (enchantments == null || enchantments.size() == 0) {
+	        			enchantments = items.getStoredEnchantments(typeLot);
+	        		}
+					String enchantmentList = "";
+					String enchantmentSeparator = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-enchantment-separator"));
+	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
+	        			if (!enchantmentList.isEmpty()) enchantmentList += enchantmentSeparator;
+	        			enchantmentList += items.getEnchantmentName(enchantment);
+	        		}
+	        		if (enchantmentList.isEmpty()) enchantmentList = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-enchantment-none"));
+	        		message = message.replace("%F", enchantmentList);
+				} else {
+	        		message = message.replace("%F", "-");
+				}
+			}
+			if (originalMessage.contains("%E")) {
+    			if (auction != null) {
+	        		Map<Enchantment, Integer> enchantments = typeLot.getEnchantments();
+	        		if (enchantments == null || enchantments.size() == 0) {
+	        			enchantments = items.getStoredEnchantments(typeLot);
+	        		}
 	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
 	        			message = originalMessage.replace("%E", items.getEnchantmentName(enchantment));
-		            	if (player == null) {
+	        			
+		            	if (fullBroadcast) {
 		            		broadcastMessage(message);
 		            	} else {
 		        	    	player.sendMessage(message);
@@ -983,14 +1084,14 @@ public class floAuction extends JavaPlugin {
 		            	log(player, message);
 	        		}
     			}
-			} else {
-		    	if (fullBroadcast) {
-		    		broadcastMessage(message);
-		    	} else if (player != null) {
-			    	player.sendMessage(message);
-		    	}
-		    	log(player, message);
+    			return;
 			}
+	    	if (fullBroadcast) {
+	    		broadcastMessage(message);
+	    	} else if (player != null) {
+		    	player.sendMessage(message);
+	    	}
+	    	log(player, message);
     	}
     	
     }

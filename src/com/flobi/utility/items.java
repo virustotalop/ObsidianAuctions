@@ -15,12 +15,7 @@ import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.Repairable;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.*;
 
 import com.flobi.WhatIsIt.WhatIsIt;
 import com.flobi.floAuction.floAuction;
@@ -163,6 +158,10 @@ public class items {
 				effects[i] = effectList.get(i);
 			}
 			return effects;
+		} else if (itemMeta instanceof FireworkEffectMeta) {
+			FireworkEffect[] effects = new FireworkEffect[1];
+			effects[0] = ((FireworkEffectMeta)itemMeta).getEffect();
+			return effects;
 		}
 		return null;
 	}
@@ -175,6 +174,12 @@ public class items {
 			FireworkMeta fireworkMeta = ((FireworkMeta)itemMeta);
 			fireworkMeta.addEffects(effects);
 			item.setItemMeta(fireworkMeta);
+		} else if (itemMeta instanceof FireworkEffectMeta) {
+			if (effects.length > 0) {
+				FireworkEffectMeta fireworkEffectMeta = ((FireworkEffectMeta)itemMeta);
+				fireworkEffectMeta.setEffect(effects[0]);
+				item.setItemMeta(fireworkEffectMeta);
+			}
 		}
     }
 
@@ -360,6 +365,11 @@ public class items {
 		if (!isSame(getHeadOwner(item1), getHeadOwner(item2))) return false;
 		if (!isSame(getRepairCost(item1), getRepairCost(item2))) return false;
 		if (!isSame(getDisplayName(item1), getDisplayName(item2))) return false;
+		
+		// These were added in 1.4.6.
+		if (!isSame(getFireworkPower(item1), getFireworkPower(item2))) return false;
+		if (!isSame(getFireworkEffects(item1), getFireworkEffects(item2))) return false;
+		if (!isSame(getStoredEnchantments(item1), getStoredEnchantments(item2))) return false;
 
 		// Book author, title and contents must be identical.
 		if (!isSame(getBookAuthor(item1), getBookAuthor(item2))) return false;
@@ -376,6 +386,12 @@ public class items {
 
 		return true;
 	}
+	
+	private static boolean isSame(Map<Enchantment, Integer> storedEnchantments1, Map<Enchantment, Integer> storedEnchantments2) {
+		if (storedEnchantments1 == null && storedEnchantments2 == null) return true;
+		if (storedEnchantments1 == null) return false;
+		return storedEnchantments1.equals(storedEnchantments2); 
+	}
 	private static boolean isSame(String str1, String str2) {
 		if (str1 == null && str2 == null) return true;
 		if (str1 == null) return false;
@@ -385,6 +401,15 @@ public class items {
 		if (int1 == null && int2 == null) return true;
 		if (int1 == null) return false;
 		return int1.equals(int2); 
+	}
+	private static boolean isSame(FireworkEffect[] effects1, FireworkEffect[] effects2) {
+		if (effects1 == null && effects2 == null) return true;
+		if (effects1 == null) return false;
+		if (effects1.length != effects2.length) return false;
+		for (int i = 0; i < effects1.length; i++) {
+			if (!isSame(effects1[i].hashCode(), effects2[i].hashCode())) return false;
+		}
+		return true;
 	}
 	
 	public static int getMaxStackSize(ItemStack item) {

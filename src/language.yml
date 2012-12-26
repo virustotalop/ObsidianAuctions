@@ -80,32 +80,36 @@ auction-disabled: '&bAuctioning disabled.'
 auction-enabled: '&bAuctioning enabled.'
 auction-start: '&cAttention, an auction is beginning!'
 auction-help: 
-- /auction help|? - Returns this
-- /auction start|s (amt) (price) (inc) (time)
-- Starts an auction for (time) seconds with (amt)
-- of item in hand for (price) with an enforced 
-- increase of (inc) between bids.
-- /bid (bid) (maxbid) - Bids on auction.
-- If you set a (maxbid) and the (bid) is greater than the
-- current, you will outbit that bid if it's lower than your maximum.
-- If you omit a (bid) the lowest allowable bid will be used.
-- /auction end|e|stop - Ends current auction
-- /auction cancel|c - Cancels current auction
-- /auction info|i - Returns current auction information. 
+- '&b/auction&4|&bauc start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced increase of &6[INC]&9 between bids. &a("&4|&a" means "or" meaning you can any option in &4|&a lists)'
+- '&b/auction&4|&bauc end&4|&be&4|&bstop&9 - Ends current auction'
+- '&b/auction&4|&bauc cancel&4|&bc&9 - Cancels current auction'
+- '&b/auction&4|&bauc info&4|&bi&9 - Returns current auction info.'
+- '&b/bid &6[BID] [MAXBID]&9 - Bids on auction. If you set a &6[MAXBID]&9 and the &6[BID]&9 is greater than the current, you will outbit that bid if it''s lower than your maximum. If you omit a &6[BID]&9 the lowest allowable bid will be used.'
+- '&b/sauction&4|&bsauc start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction. '
+- '&b/auction&4|&bauc stfu&4|&bignore&4|&bquiet&4|&boff&4|&bsilent&4|&bsilence&9 - Opt out of auction participation and announcements.'
 
 auction-start-tax: You have been charged an auction tax of %x.
 auction-end-tax: An auction tax of %X has been extracted from your winnings.
 
+auction-info-suppressed-alt: 
+- '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
+- 'Type &a/auction info&9 for full details.'
 auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-nobids: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-sealed: 
 - '&b%O&9 is auctioning &f%q %i&9&a for &c%t&9.'
 - 'This is a SEALED auction.'
-auction-info-enchantment: 'Item contains enchantment: &a%E'
+auction-info-enchantment: 'Enchantments: &a%F'
+auction-info-enchantment-separator: '&9, &a'
+auction-info-enchantment-none: 'No Enchantments'
 auction-info-display-name: 'Actual Item Type: &a%d'
 auction-info-book-title: 'Book is titled: &a%Y'
 auction-info-book-author: 'Book signed by: &a%y'
 auction-info-damage: 'Item damaged: &6%D &aremaining.'
+auction-info-payload: 'Firework payload: &a%A'
+auction-info-payload-separator: '&9, &a'
+auction-info-payload-power: 'Firework Flight Duration: &a%r'
+
 auction-info-footer: 
 - The current bid is &6%b&9 by &b%B&9.
 - Min bid increment is &6&9%n&9. 
@@ -117,6 +121,7 @@ auction-info-footer-sealed:
 - Min bid increment is &6%n&9. 
 auction-info-no-auction: 
 - Nothing is being auctioned at this time.
+
 
 timer-countdown-notification: Auction has &c%t&9 remaining.
 time-format-minsec: '%m min, %s sec'
@@ -133,3 +138,29 @@ lot-give: '&dYour items have been added to your inventory.'
 lot-drop: '&dNot enough space, your items dropped at your feet.'
 
 anti-snipe-time-added: 'ANTI-SNIPE! More time added to auction!'
+
+firework-shapes:
+  BALL: Ball
+  BALL_LARGE: Large Ball
+  STAR: Star
+  BURST: Burst
+  CREEPER: Creeper
+firework-colors:
+  1E1B1B: Black
+  B3312C: Red
+  3B511A: Green
+  51301A: Brown
+  253192: Blue
+  7B2FBE: Purple
+  287697: Cyan
+  ABABAB: Light Gray
+  434343: Gray
+  D88198: Pink
+  41CD34: Lime
+  DECF2A: Yellow
+  6689D3: Light Blue
+  C354CD: Magenta
+  EB8844: Orange
+  F0F0F0: White
+firework-twinkle: Twinkle
+firework-trail: Trail

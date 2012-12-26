@@ -43,6 +43,7 @@ broadcast-bid-updates: true
 allow-auto-bid: true
 
 suppress-countdown: false
+suppress-auction-start-info: true
 
 allow-inferior-item-name-logic: false
 
