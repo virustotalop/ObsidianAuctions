@@ -630,6 +630,21 @@ public class floAuction extends JavaPlugin {
     		cmd.getName().equalsIgnoreCase("sealedauction")
     	) {
     		if (args.length > 0) {
+/*    			if (args[0].equalsIgnoreCase("addlore")) {
+    				if (player == null || !perms.has(player, "auction.admin")) {
+    	    			sendMessage("no-permission", sender, null, false);
+    	    			return true;
+    				}
+    				ItemStack heldItem = player.getItemInHand();
+    				if (heldItem == null) return true;
+    				String[] lore = new String[4];
+    				lore[0] = "Flobi's Lore";
+    				lore[1] = "Crazy shit goes here!";
+    				lore[2] = "More lore!";
+    				lore[3] = "Last line of lore.";
+    				items.setLore(heldItem, lore);
+    				return true;
+    			} */
     			if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
     	    			sendMessage("no-permission", sender, null, false);
@@ -720,6 +735,7 @@ public class floAuction extends JavaPlugin {
         				args[0].equalsIgnoreCase("start") || 
         				args[0].equalsIgnoreCase("s") ||
         				args[0].equalsIgnoreCase("this") ||
+        				args[0].equalsIgnoreCase("hand") ||
         				args[0].equalsIgnoreCase("all") ||
         				args[0].matches("[0-9]+")
     			) {
@@ -754,10 +770,19 @@ public class floAuction extends JavaPlugin {
     				
 					return true;
     			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
-    				if (auction == null) {
+    				if (auction == null && auctionQueue.size() == 0) {
     					sendMessage("auction-fail-no-auction-exists", sender, auction, false);
     					return true;
     				}
+    				
+    				for(int i = 0; i < auctionQueue.size(); i++){
+    					if (auctionQueue.get(i).getOwner().equalsIgnoreCase(playerName)) {
+    						auctionQueue.remove(i);
+    						sendMessage("auction-cancel-queued", player, auction, false);
+    						return true;
+    					}
+    				}
+    				
 					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) {
 						if (cancelPreventionSeconds > auction.getRemainingTime() || cancelPreventionPercent > (double)auction.getRemainingTime() / (double)auction.getTotalTime() * 100D) {
 	    					sendMessage("auction-fail-cancel-prevention", player, auction, false);
@@ -806,6 +831,20 @@ public class floAuction extends JavaPlugin {
     				}
 					auction.info(sender, false);
     				return true;
+    			} else if (args[0].equalsIgnoreCase("queue") || args[0].equalsIgnoreCase("q")) {
+    				if (auctionQueue.isEmpty()) {
+    					sendMessage("auction-queue-status-not-in-queue", player, auction, false);
+    					return true;
+    				}
+    				for(int i = 0; i < auctionQueue.size(); i++){
+    					if (auctionQueue.get(i).getOwner().equalsIgnoreCase(playerName)) {
+        					sendMessage("auction-queue-status-in-queue", player, auction, false);
+    						return true;
+    					}
+    				}
+
+					sendMessage("auction-queue-status-not-in-queue", player, auction, false);
+    				return true;
     			}
     		}
 			sendMessage("auction-help", sender, auction, false);
@@ -839,17 +878,20 @@ public class floAuction extends JavaPlugin {
 
     public static void sendMessage(String messageKey, CommandSender player, Auction auction, boolean fullBroadcast, String fireworkAspect) {
 
+    	String playerName = null;
     	if (player != null) {
 	    	if (player instanceof Player) {
 		    	if (voluntarilyDisabledUsers.indexOf(player.getName()) != -1) {
 		    		// Don't send this user any messages.
 		    		return;
 				}
+		    	playerName = player.getName();
 	    	} else {
 		    	if (voluntarilyDisabledUsers.indexOf("*console*") != -1) {
 		    		// Don't send console any messages.
 		    		return;
 				}
+		    	playerName = "*console*";
 	    	}
     	}
     	
@@ -875,6 +917,14 @@ public class floAuction extends JavaPlugin {
     	String displayName = null;
     	String rocketPower = null;
     	ItemStack typeLot = null;
+    	String queuePostition = "-";
+
+		for(int i = 0; i < auctionQueue.size(); i++){
+			if (auctionQueue.get(i).getOwner().equalsIgnoreCase(playerName)) {
+				queuePostition = Integer.toString(i + 1);
+			}
+		}
+
 
     	if (auction != null) {
     		typeLot = auction.getLotType();
@@ -929,7 +979,7 @@ public class floAuction extends JavaPlugin {
         		displayName = ChatColor.translateAlternateColorCodes('&', textConfig.getString("display-name-prefix")) + displayName + ChatColor.translateAlternateColorCodes('&', "&r");
         	}
         	
-			if (typeLot.getTypeId() == 401) {
+			if (typeLot != null && typeLot.getTypeId() == 401) {
 				Integer power = items.getFireworkPower(typeLot);
 				if (power != null) {
 					rocketPower = power.toString();
@@ -988,6 +1038,9 @@ public class floAuction extends JavaPlugin {
 			message = message.replace("%Y", bookTitle);
 			message = message.replace("%d", lotType);
 			message = message.replace("%r", rocketPower);
+			message = message.replace("%k", Integer.toString(auctionQueue.size()));
+			message = message.replace("%Q", queuePostition);
+			
 			originalMessage = message;
 			
 			// Firework charges:
@@ -1086,7 +1139,25 @@ public class floAuction extends JavaPlugin {
     			}
     			return;
 			}
-	    	if (fullBroadcast) {
+			
+			if (originalMessage.contains("%L")) {
+    			if (auction != null) {
+    				String[] lore = items.getLore(typeLot);
+	        		for (int j = 0; j < lore.length; j++) {
+	        			message = originalMessage.replace("%L", lore[j]);
+	        			
+		            	if (fullBroadcast) {
+		            		broadcastMessage(message);
+		            	} else {
+		        	    	player.sendMessage(message);
+		            	}
+		            	log(player, message);
+	        		}
+    			}
+    			return;
+			}
+
+			if (fullBroadcast) {
 	    		broadcastMessage(message);
 	    	} else if (player != null) {
 		    	player.sendMessage(message);

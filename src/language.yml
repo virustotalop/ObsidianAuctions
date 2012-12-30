@@ -68,12 +68,15 @@ bid-fail-gamemode-creative: '&6You cannot bid while in CREATIVE mode.'
 bid-fail-under-starting-bid: '&6The bidding must start at %s.'
 bid-fail-bid-required: '&6You must enter a bid amount.'
 
-auction-queue-enter: Your auction has been queued. 
+auction-queue-enter: Your auction has been queued (number %Q in line). 
 auction-queue-fail-full: '&6The auction queue is full, try again later.'
-auction-queue-fail-in-queue: '&6You already have an auction queued.'
+auction-queue-fail-in-queue: '&6You already have an auction queued (number %Q in line).'
 auction-queue-fail-current-auction: '&6You are already running an auction.'
+auction-queue-status-in-queue: 'You are number %Q of %k in the auction queue.'
+auction-queue-status-not-in-queue: 'There are %k auctions queued, none belong to you.'
 
 auction-cancel: The auction has been cancelled.
+auction-cancel-queued: Your auction has been removed from the queue.
 auction-end-nobids: The auction ended with no bids.
 auction-end: '&b%B&9 won the auction for &a%i&9 with &6%b&9!'
 auction-disabled: '&bAuctioning disabled.'
@@ -122,6 +125,9 @@ auction-info-footer-sealed:
 auction-info-no-auction: 
 - Nothing is being auctioned at this time.
 
+auction-info-lore-header: '--&1LORE&9--------------------'
+auction-info-lore-detail: '|  &5&o%L'
+auction-info-lore-footer: '--------------------&1LORE&9--'
 
 timer-countdown-notification: Auction has &c%t&9 remaining.
 time-format-minsec: '%m min, %s sec'

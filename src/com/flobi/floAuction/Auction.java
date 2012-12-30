@@ -151,6 +151,12 @@ public class Auction {
 			if (itemType.getTypeId() == 401) {
 				floAuction.sendMessage("auction-info-payload-power", sender, this, fullBroadcast);
 			}
+			String[] lore = items.getLore(itemType);
+			if (lore != null && lore.length > 0) {
+				floAuction.sendMessage("auction-info-lore-header", sender, this, false);
+				floAuction.sendMessage("auction-info-lore-detail", sender, this, false);
+				floAuction.sendMessage("auction-info-lore-footer", sender, this, false);
+			}
 
 			floAuction.sendMessage("auction-info-footer-sealed", sender, this, fullBroadcast);
 		} else if (currentBid == null) {
@@ -171,6 +177,12 @@ public class Auction {
 			if (itemType.getTypeId() == 401) {
 				floAuction.sendMessage("auction-info-payload-power", sender, this, fullBroadcast);
 			}
+			String[] lore = items.getLore(itemType);
+			if (lore != null && lore.length > 0) {
+				floAuction.sendMessage("auction-info-lore-header", sender, this, false);
+				floAuction.sendMessage("auction-info-lore-detail", sender, this, false);
+				floAuction.sendMessage("auction-info-lore-footer", sender, this, false);
+			}
 		} else {
 			floAuction.sendMessage("auction-info-header", sender, this, fullBroadcast);
 			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
@@ -187,6 +199,12 @@ public class Auction {
 			}
 			if (itemType.getTypeId() == 401) {
 				floAuction.sendMessage("auction-info-payload-power", sender, this, false);
+			}
+			String[] lore = items.getLore(itemType);
+			if (lore != null && lore.length > 0) {
+				floAuction.sendMessage("auction-info-lore-header", sender, this, false);
+				floAuction.sendMessage("auction-info-lore-detail", sender, this, false);
+				floAuction.sendMessage("auction-info-lore-footer", sender, this, false);
 			}
 		}
 	}
@@ -431,7 +449,7 @@ public class Auction {
 
 		ItemStack lotType = lot.getTypeStack();
 		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("this")) {
+			if (args[0].equalsIgnoreCase("this") || args[0].equalsIgnoreCase("hand")) {
 				quantity = lotType.getAmount();
 			} else if (args[0].equalsIgnoreCase("all")) {
 				quantity = items.getAmount(ownerName, lotType);

@@ -30,6 +30,7 @@ public class AuctionLot implements java.io.Serializable {
 	private String headOwner = null;
 	private Integer power = 0;
 	private FireworkEffect[] effects = null;
+	private String[] lore = null;
 	
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
@@ -130,6 +131,7 @@ public class AuctionLot implements java.io.Serializable {
 		items.setHeadOwner(lotTypeLock, headOwner);
 		items.setFireworkPower(lotTypeLock, power);
 		items.setFireworkEffects(lotTypeLock, effects);
+		items.setLore(lotTypeLock, lore);
 		return lotTypeLock;
 	}
 	private void setLotType(ItemStack lotType) {
@@ -154,6 +156,7 @@ public class AuctionLot implements java.io.Serializable {
 		headOwner = items.getHeadOwner(lotType);
 		power = items.getFireworkPower(lotType);
 		effects = items.getFireworkEffects(lotType);
+		lore = items.getLore(lotType);
 	}
 	public String getOwner() {
 		return ownerName;
@@ -164,4 +167,27 @@ public class AuctionLot implements java.io.Serializable {
 	public int getQuantity() {
 		return quantity;
 	}
+
+/* Working on getting this serializable. 
+ * 
+  	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> serialized = new HashMap<String, Object>();
+		serialized.put("lotType", getTypeStack());
+		serialized.put("owner", getOwner());
+		serialized.put("quantity", (Integer)getQuantity());
+		return serialized;
+	}
+	
+	public static AuctionLot deserialize(Map<String, Object> map) {
+		if (map == null) return null;
+		if (!(map.get("lotType") instanceof ItemStack)) return null;
+		if (!(map.get("owner") instanceof String)) return null;
+		if (!(map.get("quantity") instanceof Integer)) return null;
+		
+		AuctionLot auctionLot = new AuctionLot((ItemStack)map.get("lotType"), (String)map.get("owner"));
+		auctionLot.AddItems((Integer) map.get("quantity"), false);
+		
+		return auctionLot;
+	}*/
 }

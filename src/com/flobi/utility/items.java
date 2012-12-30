@@ -102,7 +102,32 @@ public class items {
         }		
 		
 	}
+    
+	public static String[] getLore(ItemStack item) {
+		if (item == null) return null;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return null;
+		List<String> pageList = itemMeta.getLore();
+		if (pageList == null) return null;
+		String[] pages = new String[pageList.size()];
+		for(int i = 0; i < pageList.size(); i++){
+			pages[i] = pageList.get(i);
+		}
+		return pages;
+	}
 	
+	public static void setLore(ItemStack item, String[] pages) {
+		if (item == null || pages == null) return;
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) return;
+		List<String> pageList = new ArrayList<String>();
+		for(int i = 0; i < pages.length; i++){
+			pageList.add(pages[i]);
+		}
+		itemMeta.setLore(pageList);
+		item.setItemMeta(itemMeta);
+    }
+
     public static Map<Enchantment, Integer> getStoredEnchantments(ItemStack item) {
 		if (item == null) return null;
 		ItemMeta itemMeta = item.getItemMeta();
@@ -307,10 +332,6 @@ public class items {
 		ItemMeta itemMeta = book.getItemMeta();
 		if (itemMeta == null) return;
 		if (itemMeta instanceof BookMeta) {
-			List<String> pageList = new ArrayList<String>();
-			for(int i = 0; i < pages.length; i++){
-				pageList.add(pages[i]);
-			}
 			BookMeta bookMeta = ((BookMeta)itemMeta);
 			bookMeta.setPages(pages);
 			book.setItemMeta(bookMeta);
