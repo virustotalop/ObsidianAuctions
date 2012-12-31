@@ -132,7 +132,7 @@ public class AuctionBid {
             // see if antisnipe is enabled...
             if (!auction.sealed && floAuction.antiSnipe == true && auction.getRemainingTime() <= floAuction.antiSnipePreventionSeconds) {
 	            auction.addToRemainingTime((floAuction.antiSnipeExtensionSeconds));
- 	            floAuction.broadcastMessage(floAuction.textConfig.getString("anti-snipe-time-added"));
+ 	            floAuction.sendMessage("anti-snipe-time-added", null, auction, true);
             }
 			return true;
 		} else {
