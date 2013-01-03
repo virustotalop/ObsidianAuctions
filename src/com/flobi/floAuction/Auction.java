@@ -30,7 +30,7 @@ public class Auction {
 	
 	public boolean sealed = false;
 	
-	public long prevTickTime = 0;
+	public long nextTickTime = 0;
 	
 	// Scheduled timers:
 	private int countdown = 0;
@@ -99,8 +99,8 @@ public class Auction {
 		
 		countdownTimer = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 		    public void run() {
-		    	if (thisAuction.prevTickTime + 1000 > System.currentTimeMillis()) return;
-		    	thisAuction.prevTickTime = thisAuction.prevTickTime + 1000;
+		    	if (thisAuction.nextTickTime > System.currentTimeMillis()) return;
+		    	thisAuction.nextTickTime = thisAuction.nextTickTime + 1000;
 		    	
 		    	thisAuction.countdown--;
 		    	if (thisAuction.countdown == 0) {
@@ -120,7 +120,7 @@ public class Auction {
 		    	}
 		    }
 		}, 1L, 1L);
-		prevTickTime = System.currentTimeMillis();
+		nextTickTime = System.currentTimeMillis() + 1000;
 
 		info(null, true);
 		return true;
