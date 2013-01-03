@@ -391,6 +391,7 @@ public class items {
 		if (!isSame(getFireworkPower(item1), getFireworkPower(item2))) return false;
 		if (!isSame(getFireworkEffects(item1), getFireworkEffects(item2))) return false;
 		if (!isSame(getStoredEnchantments(item1), getStoredEnchantments(item2))) return false;
+		if (!isSame(getLore(item1), getLore(item2))) return false;
 
 		// Book author, title and contents must be identical.
 		if (!isSame(getBookAuthor(item1), getBookAuthor(item2))) return false;
@@ -408,6 +409,16 @@ public class items {
 		return true;
 	}
 	
+	private static boolean isSame(String[] strings1, String[] strings2) {
+		if (strings1 == null && strings2 == null) return true;
+		if (strings1 == null) return false;
+		if (strings1.length != strings2.length) return false;
+		for (int i = 0; i < strings1.length; i++) {
+			if (!isSame(strings1[i], strings2[i])) return false;
+		}
+		return true;
+	}
+
 	private static boolean isSame(Map<Enchantment, Integer> storedEnchantments1, Map<Enchantment, Integer> storedEnchantments2) {
 		if (storedEnchantments1 == null && storedEnchantments2 == null) return true;
 		if (storedEnchantments1 == null) return false;
