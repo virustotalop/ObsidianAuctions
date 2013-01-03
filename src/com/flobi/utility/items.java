@@ -411,7 +411,7 @@ public class items {
 	
 	private static boolean isSame(String[] strings1, String[] strings2) {
 		if (strings1 == null && strings2 == null) return true;
-		if (strings1 == null) return false;
+		if (strings1 == null || strings2 == null) return false;
 		if (strings1.length != strings2.length) return false;
 		for (int i = 0; i < strings1.length; i++) {
 			if (!isSame(strings1[i], strings2[i])) return false;
@@ -421,22 +421,22 @@ public class items {
 
 	private static boolean isSame(Map<Enchantment, Integer> storedEnchantments1, Map<Enchantment, Integer> storedEnchantments2) {
 		if (storedEnchantments1 == null && storedEnchantments2 == null) return true;
-		if (storedEnchantments1 == null) return false;
+		if (storedEnchantments1 == null || storedEnchantments2 == null) return false;
 		return storedEnchantments1.equals(storedEnchantments2); 
 	}
 	private static boolean isSame(String str1, String str2) {
 		if (str1 == null && str2 == null) return true;
-		if (str1 == null) return false;
+		if (str1 == null || str2 == null) return false;
 		return str1.equals(str2); 
 	}
 	private static boolean isSame(Integer int1, Integer int2) {
 		if (int1 == null && int2 == null) return true;
-		if (int1 == null) return false;
+		if (int1 == null || int2 == null) return false;
 		return int1.equals(int2); 
 	}
 	private static boolean isSame(FireworkEffect[] effects1, FireworkEffect[] effects2) {
 		if (effects1 == null && effects2 == null) return true;
-		if (effects1 == null) return false;
+		if (effects1 == null || effects2 == null) return false;
 		if (effects1.length != effects2.length) return false;
 		for (int i = 0; i < effects1.length; i++) {
 			if (!isSame(effects1[i].hashCode(), effects2[i].hashCode())) return false;
