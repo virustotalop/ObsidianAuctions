@@ -519,7 +519,7 @@ public class floAuction extends JavaPlugin {
 				}
 			}
 		}
-		if (auctionQueue.size() == 0 || auctionToQueue.isValid()) {
+		if ((auctionQueue.size() == 0 && System.currentTimeMillis() - lastAuctionDestroyTime >= minAuctionIntervalSecs * 1000) || auctionToQueue.isValid()) {
 			auctionQueue.add(auctionToQueue);
 			checkAuctionQueue();
 			if (auctionQueue.contains(auctionToQueue)) {
@@ -644,7 +644,7 @@ public class floAuction extends JavaPlugin {
     				lore[3] = "Last line of lore.";
     				items.setLore(heldItem, lore);
     				return true;
-    			} */
+    			}*/
     			if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
     	    			sendMessage("no-permission", sender, null, false);
