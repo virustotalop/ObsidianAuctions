@@ -519,7 +519,7 @@ public class floAuction extends JavaPlugin {
 				}
 			}
 		}
-		if (auctionToQueue.isValid()) {
+		if (auctionQueue.size() == 0 || auctionToQueue.isValid()) {
 			auctionQueue.add(auctionToQueue);
 			checkAuctionQueue();
 			if (auctionQueue.contains(auctionToQueue)) {
@@ -655,7 +655,7 @@ public class floAuction extends JavaPlugin {
     				loadConfig();
 	    			sendMessage("plugin-reloaded", sender, null, false);
     				return true;
-    			} else if (args[0].equalsIgnoreCase("orphans")) {
+/*    			} else if (args[0].equalsIgnoreCase("orphans")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
     	    			sendMessage("no-permission", sender, null, false);
     	    			return true;
@@ -668,7 +668,7 @@ public class floAuction extends JavaPlugin {
     					}
     				}
 
-    				return true;
+    				return true;*/
     			} else if (args[0].equalsIgnoreCase("resume")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
     	    			sendMessage("no-permission", sender, null, false);
