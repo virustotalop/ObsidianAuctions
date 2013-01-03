@@ -873,10 +873,22 @@ public class floAuction extends JavaPlugin {
     }
     
     public static void sendMessage(String messageKey, CommandSender player, Auction auction, boolean fullBroadcast) {
-    	sendMessage(messageKey, player, auction, fullBroadcast, "-");
+    	List<String> messageKeys = new ArrayList<String>();
+    	messageKeys.add(messageKey);
+    	sendMessage(messageKeys, player, auction, fullBroadcast, "-");
+    }
+
+    public static void sendMessage(List<String> messageKeys, CommandSender player, Auction auction, boolean fullBroadcast) {
+    	sendMessage(messageKeys, player, auction, fullBroadcast, "-");
     }
 
     public static void sendMessage(String messageKey, CommandSender player, Auction auction, boolean fullBroadcast, String fireworkAspect) {
+    	List<String> messageKeys = new ArrayList<String>();
+    	messageKeys.add(messageKey);
+    	sendMessage(messageKeys, player, auction, fullBroadcast, fireworkAspect);
+    }
+
+    public static void sendMessage(List<String> messageKeys, CommandSender player, Auction auction, boolean fullBroadcast, String fireworkAspect) {
 
     	String playerName = null;
     	if (player != null) {
@@ -896,7 +908,7 @@ public class floAuction extends JavaPlugin {
     	}
     	
 
-    	if (messageKey == null) {
+    	if (messageKeys == null || messageKeys.size() == 0) {
     		return;
     	}
     	
@@ -1004,165 +1016,168 @@ public class floAuction extends JavaPlugin {
         	rocketPower = "-";
     	}
     	
-    	List<String> messageList = textConfig.getStringList(messageKey);
-    	
-    	String originalMessage = null;
-    	if (messageList == null || messageList.size() == 0) {
-    		originalMessage = textConfig.getString(messageKey);
+    	for (int l = 0; l < messageKeys.size(); l++) {
+    		String messageKey = messageKeys.get(l);
     		
-    		
-    		if (originalMessage == null || originalMessage.length() == 0) {
-        		return;
-    		} else {
-        		messageList = Arrays.asList(originalMessage.split("(\r?\n|\r)"));
-    		}
-    	}
-    	
-    	for (Iterator<String> i = messageList.iterator(); i.hasNext(); ) {
-    		String messageListItem = i.next();
-    		String message = chatPrep(messageListItem);
-	
-			message = message.replace("%O", owner);
-			message = message.replace("%q", quantity);
-			message = message.replace("%i", displayName);
-			message = message.replace("%s", startingBid);
-			message = message.replace("%n", minBidIncrement);
-			message = message.replace("%b", currentBid);
-			message = message.replace("%B", currentBidder);
-			message = message.replace("%h", currentMaxBid);
-			message = message.replace("%t", timeRemaining);
-			message = message.replace("%D", durabilityRemaining);
-			message = message.replace("%x", startAucitonTax);
-			message = message.replace("%X", endAuctionTax);
-			message = message.replace("%y", bookAuthor);
-			message = message.replace("%Y", bookTitle);
-			message = message.replace("%d", lotType);
-			message = message.replace("%r", rocketPower);
-			message = message.replace("%k", Integer.toString(auctionQueue.size()));
-			message = message.replace("%Q", queuePostition);
-			
-			originalMessage = message;
-			
-			// Firework charges:
-			if (originalMessage.contains("%A")) {
-				if (auction != null) {
-					FireworkEffect[] payloads = items.getFireworkEffects(typeLot);
-					if (payloads != null && payloads.length > 0) {
-						for (int j = 0; j < payloads.length; j++) {
-							FireworkEffect payload = payloads[j];
-							// %A lists all aspects of the payload
-							
-							String payloadAspects = "";
-							String payloadSeparator = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-payload-separator"));
-							
-							Type type = payload.getType();
-							if (type != null) {
-								if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
-								if (textConfig.getString("firework-shapes." + type.toString()) == null) {
-									payloadAspects += type.toString();
-								} else {
-									payloadAspects += textConfig.getString("firework-shapes." + type.toString());
+	    	List<String> messageList = textConfig.getStringList(messageKey);
+	    	
+	    	String originalMessage = null;
+	    	if (messageList == null || messageList.size() == 0) {
+	    		originalMessage = textConfig.getString(messageKey);
+	    		
+	    		if (originalMessage == null || originalMessage.length() == 0) {
+	        		continue;
+	    		} else {
+	        		messageList = Arrays.asList(originalMessage.split("(\r?\n|\r)"));
+	    		}
+	    	}
+	    	
+	    	for (Iterator<String> i = messageList.iterator(); i.hasNext(); ) {
+	    		String messageListItem = i.next();
+	    		String message = chatPrep(messageListItem);
+		
+				message = message.replace("%O", owner);
+				message = message.replace("%q", quantity);
+				message = message.replace("%i", displayName);
+				message = message.replace("%s", startingBid);
+				message = message.replace("%n", minBidIncrement);
+				message = message.replace("%b", currentBid);
+				message = message.replace("%B", currentBidder);
+				message = message.replace("%h", currentMaxBid);
+				message = message.replace("%t", timeRemaining);
+				message = message.replace("%D", durabilityRemaining);
+				message = message.replace("%x", startAucitonTax);
+				message = message.replace("%X", endAuctionTax);
+				message = message.replace("%y", bookAuthor);
+				message = message.replace("%Y", bookTitle);
+				message = message.replace("%d", lotType);
+				message = message.replace("%r", rocketPower);
+				message = message.replace("%k", Integer.toString(auctionQueue.size()));
+				message = message.replace("%Q", queuePostition);
+				
+				originalMessage = message;
+				
+				// Firework charges:
+				if (originalMessage.contains("%A")) {
+					if (auction != null) {
+						FireworkEffect[] payloads = items.getFireworkEffects(typeLot);
+						if (payloads != null && payloads.length > 0) {
+							for (int j = 0; j < payloads.length; j++) {
+								FireworkEffect payload = payloads[j];
+								// %A lists all aspects of the payload
+								
+								String payloadAspects = "";
+								String payloadSeparator = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-payload-separator"));
+								
+								Type type = payload.getType();
+								if (type != null) {
+									if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+									if (textConfig.getString("firework-shapes." + type.toString()) == null) {
+										payloadAspects += type.toString();
+									} else {
+										payloadAspects += textConfig.getString("firework-shapes." + type.toString());
+									}
 								}
-							}
-							List<Color> colors = payload.getColors();
-							for (int k = 0; k < colors.size(); k++) {
-								if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
-								Color color = colors.get(k);
-								String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
-								if (textConfig.getString("firework-colors." + colorRGB) == null) {
-									payloadAspects += "#" + colorRGB;
-								} else {
-									payloadAspects += textConfig.getString("firework-colors." + colorRGB);
+								List<Color> colors = payload.getColors();
+								for (int k = 0; k < colors.size(); k++) {
+									if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+									Color color = colors.get(k);
+									String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
+									if (textConfig.getString("firework-colors." + colorRGB) == null) {
+										payloadAspects += "#" + colorRGB;
+									} else {
+										payloadAspects += textConfig.getString("firework-colors." + colorRGB);
+									}
 								}
+								if (payload.hasFlicker()) {
+									if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+									payloadAspects += textConfig.getString("firework-twinkle");
+								}
+								if (payload.hasTrail()) {
+									if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+									payloadAspects += textConfig.getString("firework-trail");
+								}
+								message = originalMessage.replace("%A", payloadAspects);
+				            	if (fullBroadcast) {
+				            		broadcastMessage(message);
+				            	} else {
+				        	    	player.sendMessage(message);
+				            	}
+				            	log(player, message);
 							}
-							if (payload.hasFlicker()) {
-								if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
-								payloadAspects += textConfig.getString("firework-twinkle");
-							}
-							if (payload.hasTrail()) {
-								if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
-								payloadAspects += textConfig.getString("firework-trail");
-							}
-							message = originalMessage.replace("%A", payloadAspects);
+							continue;
+						} else {
+							message = message.replace("%A", "-");
+						}
+					} else {
+						message = message.replace("%A", "-");
+					}
+				}
+				
+				
+				// Enchantments:
+				if (originalMessage.contains("%F")) {
+					if (auction != null) {
+		        		Map<Enchantment, Integer> enchantments = typeLot.getEnchantments();
+		        		if (enchantments == null || enchantments.size() == 0) {
+		        			enchantments = items.getStoredEnchantments(typeLot);
+		        		}
+						String enchantmentList = "";
+						String enchantmentSeparator = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-enchantment-separator"));
+		        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
+		        			if (!enchantmentList.isEmpty()) enchantmentList += enchantmentSeparator;
+		        			enchantmentList += items.getEnchantmentName(enchantment);
+		        		}
+		        		if (enchantmentList.isEmpty()) enchantmentList = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-enchantment-none"));
+		        		message = message.replace("%F", enchantmentList);
+					} else {
+		        		message = message.replace("%F", "-");
+					}
+				}
+				if (originalMessage.contains("%E")) {
+	    			if (auction != null) {
+		        		Map<Enchantment, Integer> enchantments = typeLot.getEnchantments();
+		        		if (enchantments == null || enchantments.size() == 0) {
+		        			enchantments = items.getStoredEnchantments(typeLot);
+		        		}
+		        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
+		        			message = originalMessage.replace("%E", items.getEnchantmentName(enchantment));
+		        			
 			            	if (fullBroadcast) {
 			            		broadcastMessage(message);
 			            	} else {
 			        	    	player.sendMessage(message);
 			            	}
 			            	log(player, message);
-						}
-						return;
-					} else {
-						message = message.replace("%A", "-");
-					}
-				} else {
-					message = message.replace("%A", "-");
+		        		}
+	    			}
+	    			return;
 				}
-			}
-			
-			
-			// Enchantments:
-			if (originalMessage.contains("%F")) {
-				if (auction != null) {
-	        		Map<Enchantment, Integer> enchantments = typeLot.getEnchantments();
-	        		if (enchantments == null || enchantments.size() == 0) {
-	        			enchantments = items.getStoredEnchantments(typeLot);
-	        		}
-					String enchantmentList = "";
-					String enchantmentSeparator = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-enchantment-separator"));
-	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
-	        			if (!enchantmentList.isEmpty()) enchantmentList += enchantmentSeparator;
-	        			enchantmentList += items.getEnchantmentName(enchantment);
-	        		}
-	        		if (enchantmentList.isEmpty()) enchantmentList = ChatColor.translateAlternateColorCodes('&', textConfig.getString("auction-info-enchantment-none"));
-	        		message = message.replace("%F", enchantmentList);
-				} else {
-	        		message = message.replace("%F", "-");
+				
+				if (originalMessage.contains("%L")) {
+	    			if (auction != null) {
+	    				String[] lore = items.getLore(typeLot);
+		        		for (int j = 0; j < lore.length; j++) {
+		        			message = originalMessage.replace("%L", lore[j]);
+		        			
+			            	if (fullBroadcast) {
+			            		broadcastMessage(message);
+			            	} else {
+			        	    	player.sendMessage(message);
+			            	}
+			            	log(player, message);
+		        		}
+	    			}
+	    			continue;
 				}
-			}
-			if (originalMessage.contains("%E")) {
-    			if (auction != null) {
-	        		Map<Enchantment, Integer> enchantments = typeLot.getEnchantments();
-	        		if (enchantments == null || enchantments.size() == 0) {
-	        			enchantments = items.getStoredEnchantments(typeLot);
-	        		}
-	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
-	        			message = originalMessage.replace("%E", items.getEnchantmentName(enchantment));
-	        			
-		            	if (fullBroadcast) {
-		            		broadcastMessage(message);
-		            	} else {
-		        	    	player.sendMessage(message);
-		            	}
-		            	log(player, message);
-	        		}
-    			}
-    			return;
-			}
-			
-			if (originalMessage.contains("%L")) {
-    			if (auction != null) {
-    				String[] lore = items.getLore(typeLot);
-	        		for (int j = 0; j < lore.length; j++) {
-	        			message = originalMessage.replace("%L", lore[j]);
-	        			
-		            	if (fullBroadcast) {
-		            		broadcastMessage(message);
-		            	} else {
-		        	    	player.sendMessage(message);
-		            	}
-		            	log(player, message);
-	        		}
-    			}
-    			return;
-			}
-
-			if (fullBroadcast) {
-	    		broadcastMessage(message);
-	    	} else if (player != null) {
-		    	player.sendMessage(message);
+	
+				if (fullBroadcast) {
+		    		broadcastMessage(message);
+		    	} else if (player != null) {
+			    	player.sendMessage(message);
+		    	}
+		    	log(player, message);
 	    	}
-	    	log(player, message);
     	}
     	
     }

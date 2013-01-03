@@ -1,6 +1,7 @@
 package com.flobi.floAuction;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.FireworkEffect;
@@ -126,6 +127,8 @@ public class Auction {
 		return true;
 	}
 	public void info(CommandSender sender, boolean fullBroadcast) {
+		List<String> messageKeys = new ArrayList<String>();
+		
 		ItemStack itemType = this.getLotType();
 		short maxDurability = itemType.getType().getMaxDurability();
 		short currentDurability = itemType.getDurability();
@@ -133,80 +136,80 @@ public class Auction {
 		if (enchantments == null || enchantments.size() == 0) enchantments = items.getStoredEnchantments(itemType);
 		if (!active) {
 			floAuction.sendMessage("auction-info-no-auction", sender, this, fullBroadcast);
+			return;
 		} else if (fullBroadcast && floAuction.suppressAuctionStartInfo) {
 			floAuction.sendMessage("auction-info-suppressed-alt", sender, this, fullBroadcast);
+			return;
 		} else if (sealed) {
-			floAuction.sendMessage("auction-info-header-sealed", sender, this, fullBroadcast);
-			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
-			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
-			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
-			if (enchantments != null && enchantments.size() > 0) floAuction.sendMessage("auction-info-enchantment", sender, this, fullBroadcast);
-			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this, fullBroadcast);
+			messageKeys.add("auction-info-header-sealed");
+			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) messageKeys.add("auction-info-display-name");
+			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) messageKeys.add("auction-info-book-title");
+			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) messageKeys.add("auction-info-book-author");
+			if (enchantments != null && enchantments.size() > 0) messageKeys.add("auction-info-enchantment");
+			if (maxDurability > 0 && currentDurability > 0) messageKeys.add("auction-info-damage");
 
 			// Firework data
 			FireworkEffect[] payload = items.getFireworkEffects(itemType);
 			if (payload != null && payload.length > 0) {
-				floAuction.sendMessage("auction-info-payload", sender, this, fullBroadcast);
+				messageKeys.add("auction-info-payload");
 			}
 			if (itemType.getTypeId() == 401) {
-				floAuction.sendMessage("auction-info-payload-power", sender, this, fullBroadcast);
+				messageKeys.add("auction-info-payload-power");
 			}
 			String[] lore = items.getLore(itemType);
 			if (lore != null && lore.length > 0) {
-				floAuction.sendMessage("auction-info-lore-header", sender, this, false);
-				floAuction.sendMessage("auction-info-lore-detail", sender, this, false);
-				floAuction.sendMessage("auction-info-lore-footer", sender, this, false);
+				messageKeys.add("auction-info-lore-header");
+				messageKeys.add("auction-info-lore-detail");
+				messageKeys.add("auction-info-lore-footer");
 			}
 
-			floAuction.sendMessage("auction-info-footer-sealed", sender, this, fullBroadcast);
+			messageKeys.add("auction-info-footer-sealed");
 		} else if (currentBid == null) {
-			floAuction.sendMessage("auction-info-header-nobids", sender, this, fullBroadcast);
-			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
-			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
-			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
-			if (enchantments != null && enchantments.size() > 0) floAuction.sendMessage("auction-info-enchantment", sender, this, fullBroadcast);
-			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this, fullBroadcast);
-			floAuction.sendMessage("auction-info-footer-nobids", sender, this, fullBroadcast);
-			if (items.getFireworkEffects(itemType) != null && items.getFireworkEffects(itemType).length > 0) floAuction.sendMessage("auction-info-firework-notice", sender, this, fullBroadcast);
+			messageKeys.add("auction-info-header-nobids");
+			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) messageKeys.add("auction-info-display-name");
+			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) messageKeys.add("auction-info-book-title");
+			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) messageKeys.add("auction-info-book-author");
+			if (enchantments != null && enchantments.size() > 0) messageKeys.add("auction-info-enchantment");
+			if (maxDurability > 0 && currentDurability > 0) messageKeys.add("auction-info-damage");
 
 			// Firework data
 			FireworkEffect[] payload = items.getFireworkEffects(itemType);
 			if (payload != null && payload.length > 0) {
-				floAuction.sendMessage("auction-info-payload", sender, this, fullBroadcast);
+				messageKeys.add("auction-info-payload");
 			}
 			if (itemType.getTypeId() == 401) {
-				floAuction.sendMessage("auction-info-payload-power", sender, this, fullBroadcast);
+				messageKeys.add("auction-info-payload-power");
 			}
 			String[] lore = items.getLore(itemType);
 			if (lore != null && lore.length > 0) {
-				floAuction.sendMessage("auction-info-lore-header", sender, this, false);
-				floAuction.sendMessage("auction-info-lore-detail", sender, this, false);
-				floAuction.sendMessage("auction-info-lore-footer", sender, this, false);
+				messageKeys.add("auction-info-lore-header");
+				messageKeys.add("auction-info-lore-detail");
+				messageKeys.add("auction-info-lore-footer");
 			}
 		} else {
-			floAuction.sendMessage("auction-info-header", sender, this, fullBroadcast);
-			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) floAuction.sendMessage("auction-info-display-name", sender, this, fullBroadcast);
-			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-title", sender, this, fullBroadcast);
-			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) floAuction.sendMessage("auction-info-book-author", sender, this, fullBroadcast);
-			if (enchantments != null && enchantments.size() > 0) floAuction.sendMessage("auction-info-enchantment", sender, this, fullBroadcast);
-			if (maxDurability > 0 && currentDurability > 0) floAuction.sendMessage("auction-info-damage", sender, this, fullBroadcast);
-			floAuction.sendMessage("auction-info-footer", sender, this, fullBroadcast);
+			messageKeys.add("auction-info-header");
+			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) messageKeys.add("auction-info-display-name");
+			if (items.getBookTitle(itemType) != null && !items.getBookTitle(itemType).isEmpty()) messageKeys.add("auction-info-book-title");
+			if (items.getBookAuthor(itemType) != null && !items.getBookAuthor(itemType).isEmpty()) messageKeys.add("auction-info-book-author");
+			if (enchantments != null && enchantments.size() > 0) messageKeys.add("auction-info-enchantment");
+			if (maxDurability > 0 && currentDurability > 0) messageKeys.add("auction-info-damage");
 
 			// Firework data
 			FireworkEffect[] payload = items.getFireworkEffects(itemType);
 			if (payload != null && payload.length > 0) {
-				floAuction.sendMessage("auction-info-payload", sender, this, false);
+				messageKeys.add("auction-info-payload");
 			}
 			if (itemType.getTypeId() == 401) {
-				floAuction.sendMessage("auction-info-payload-power", sender, this, false);
+				messageKeys.add("auction-info-payload-power");
 			}
 			String[] lore = items.getLore(itemType);
 			if (lore != null && lore.length > 0) {
-				floAuction.sendMessage("auction-info-lore-header", sender, this, false);
-				floAuction.sendMessage("auction-info-lore-detail", sender, this, false);
-				floAuction.sendMessage("auction-info-lore-footer", sender, this, false);
+				messageKeys.add("auction-info-lore-header");
+				messageKeys.add("auction-info-lore-detail");
+				messageKeys.add("auction-info-lore-footer");
 			}
 		}
+		floAuction.sendMessage(messageKeys, sender, this, fullBroadcast);
 	}
 	public void cancel() {
 		floAuction.sendMessage("auction-cancel", (CommandSender) null, this, true);
