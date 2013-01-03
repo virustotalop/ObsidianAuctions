@@ -893,13 +893,13 @@ public class floAuction extends JavaPlugin {
     	String playerName = null;
     	if (player != null) {
 	    	if (player instanceof Player) {
-		    	if (voluntarilyDisabledUsers.indexOf(player.getName()) != -1) {
+		    	if (!fullBroadcast && voluntarilyDisabledUsers.indexOf(player.getName()) != -1) {
 		    		// Don't send this user any messages.
 		    		return;
 				}
 		    	playerName = player.getName();
 	    	} else {
-		    	if (voluntarilyDisabledUsers.indexOf("*console*") != -1) {
+		    	if (!fullBroadcast && voluntarilyDisabledUsers.indexOf("*console*") != -1) {
 		    		// Don't send console any messages.
 		    		return;
 				}
@@ -1151,7 +1151,7 @@ public class floAuction extends JavaPlugin {
 			            	log(player, message);
 		        		}
 	    			}
-	    			return;
+	    			continue;
 				}
 				
 				if (originalMessage.contains("%L")) {

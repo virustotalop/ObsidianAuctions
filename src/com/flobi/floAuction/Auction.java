@@ -186,6 +186,8 @@ public class Auction {
 				messageKeys.add("auction-info-lore-detail");
 				messageKeys.add("auction-info-lore-footer");
 			}
+			
+			messageKeys.add("auction-info-footer-nobids");
 		} else {
 			messageKeys.add("auction-info-header");
 			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) messageKeys.add("auction-info-display-name");
@@ -208,6 +210,8 @@ public class Auction {
 				messageKeys.add("auction-info-lore-detail");
 				messageKeys.add("auction-info-lore-footer");
 			}
+			
+			messageKeys.add("auction-info-footer");
 		}
 		floAuction.sendMessage(messageKeys, sender, this, fullBroadcast);
 	}
