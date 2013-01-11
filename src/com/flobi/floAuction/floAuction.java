@@ -541,6 +541,17 @@ public class floAuction extends JavaPlugin {
 		if (auction == null) {
 			return;
 		}
+		
+		Player player = getServer().getPlayer(auction.getOwner());
+		if (!allowCreativeMode && player.getGameMode() == GameMode.CREATIVE) {
+			sendMessage("auction-fail-gamemode-creative", player, null, false);
+			return;
+		}
+			
+		if (!perms.has(player, "auction.start")) {
+			sendMessage("no-permission", player, null, false);
+			return;
+		}
 		if (!auction.isValid()) {
 			return;
 		}
