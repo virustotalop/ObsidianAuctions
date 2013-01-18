@@ -95,7 +95,6 @@ auction-start-tax: You have been charged an auction tax of %x.
 auction-end-tax: An auction tax of %X has been extracted from your winnings.
 
 auction-info-suppressed-alt: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9. Starting bid: &6%s&9. Bid increment: &6%n&9. Type &a/auction info&9 for full details.'
-- 'Type &a/auction info&9 for full details.'
 auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-nobids: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
 auction-info-header-sealed: 

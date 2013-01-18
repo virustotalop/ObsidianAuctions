@@ -884,6 +884,9 @@ public class floAuction extends JavaPlugin {
     }
     
     public static void sendMessage(String messageKey, CommandSender player, Auction auction, boolean fullBroadcast) {
+    	if (messageKey == null) {
+    		return;
+    	}
     	List<String> messageKeys = new ArrayList<String>();
     	messageKeys.add(messageKey);
     	sendMessage(messageKeys, player, auction, fullBroadcast, "-");
@@ -894,6 +897,9 @@ public class floAuction extends JavaPlugin {
     }
 
     public static void sendMessage(String messageKey, CommandSender player, Auction auction, boolean fullBroadcast, String fireworkAspect) {
+    	if (messageKey == null) {
+    		return;
+    	}
     	List<String> messageKeys = new ArrayList<String>();
     	messageKeys.add(messageKey);
     	sendMessage(messageKeys, player, auction, fullBroadcast, fireworkAspect);
@@ -1029,6 +1035,9 @@ public class floAuction extends JavaPlugin {
     	
     	for (int l = 0; l < messageKeys.size(); l++) {
     		String messageKey = messageKeys.get(l);
+        	if (messageKey == null) {
+        		continue;
+        	}
     		
 	    	List<String> messageList = textConfig.getStringList(messageKey);
 	    	
