@@ -141,7 +141,7 @@ public class AuctionBid {
 	}
 	private Boolean parseArgBid() {
 		if (args.length > 0) {
-			if (args[0].matches(floAuction.decimalRegex)) {
+			if (!args[0].isEmpty() && args[0].matches(floAuction.decimalRegex)) {
 				bidAmount = functions.getSafeMoney(Double.parseDouble(args[0]));
 			} else {
 				error = "parse-error-invalid-bid";
@@ -186,7 +186,7 @@ public class AuctionBid {
 			return true;
 		}
 		if (args.length > 1) {
-			if (args[1].matches(floAuction.decimalRegex)) {
+			if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
 				maxBidAmount = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				error = "parse-error-invalid-max-bid";

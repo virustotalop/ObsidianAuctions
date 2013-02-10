@@ -479,7 +479,7 @@ public class Auction {
 		if (startingBid > 0) return true;
 		
 		if (args.length > 1) {
-			if (args[1].matches(floAuction.decimalRegex)) {
+			if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
 				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
@@ -498,7 +498,7 @@ public class Auction {
 		if (minBidIncrement > 0) return true;
 
 		if (args.length > 2) {
-			if (args[2].matches(floAuction.decimalRegex)) {
+			if (!args[2].isEmpty() && args[2].matches(floAuction.decimalRegex)) {
 				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args[2]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
