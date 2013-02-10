@@ -543,6 +543,9 @@ public class floAuction extends JavaPlugin {
 		}
 		
 		Player player = getServer().getPlayer(auction.getOwner());
+		if (player == null || !player.isOnline()) {
+			return;
+		}
 		if (!allowCreativeMode && player.getGameMode() == GameMode.CREATIVE) {
 			sendMessage("auction-fail-gamemode-creative", player, null, false);
 			return;
