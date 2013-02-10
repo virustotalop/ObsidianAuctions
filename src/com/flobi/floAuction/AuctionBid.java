@@ -1,8 +1,12 @@
 package com.flobi.floAuction;
 
+import java.util.Map;
+
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.flobi.utility.functions;
+import com.flobi.utility.items;
 
 public class AuctionBid {
 	private Auction auction;
@@ -69,10 +73,32 @@ public class AuctionBid {
 		
 		// Extract taxes:
 		Double taxes = 0D;
-		if (floAuction.taxPercentage > 0D) {
-			taxes = unsafeBidAmount * (floAuction.taxPercentage / 100D);
+		double taxPercent = floAuction.taxPercentage; 
+		ItemStack typeStack = auction.getLotType();
+
+		for (Map.Entry<String, String> entry : floAuction.taxedItems.entrySet()) {
+			if (items.isSameItem(typeStack, entry.getKey())) {
+				if (entry.getValue().endsWith("%")) {
+					try {
+						taxPercent = Double.valueOf(entry.getValue().substring(0, entry.getValue().length() - 1));
+					} catch (Exception e) {
+						// Clearly this isn't a valid number, just forget about it.
+						taxPercent = floAuction.taxPercentage;
+					}
+				}
+				break;
+			}
+		}
+		
+		
+		if (taxPercent > 0D) {
+			taxes = unsafeBidAmount * (taxPercent / 100D);
+			
+			auction.extractedPostTax = taxes;
+			
 			floAuction.sendMessage("auction-end-tax", auction.getOwner(), auction);
 			unsafeBidAmount -= taxes;
+			
 			if (!floAuction.taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(floAuction.taxDestinationUser, taxes);
 		}
 		

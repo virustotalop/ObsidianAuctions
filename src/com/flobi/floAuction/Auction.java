@@ -18,6 +18,9 @@ public class Auction {
 	private String[] args;
 	private String ownerName;
 	private String scope;
+	
+	public double extractedPreTax = 0;
+	public double extractedPostTax = 0;
 
 	private long startingBid = 0;
 	private long minBidIncrement = 0;
@@ -60,6 +63,7 @@ public class Auction {
 	public Boolean start() {
 		
 		ItemStack typeStack = lot.getTypeStack();
+		double preAuctionTax = floAuction.taxPerAuction;
 		
 		// Check banned items:
 		for (int i = 0; i < floAuction.bannedItems.size(); i++) {
@@ -69,8 +73,32 @@ public class Auction {
 			}
 		}
 		
-		if (floAuction.taxPerAuction > 0D) {
-			if (!floAuction.econ.has(ownerName, floAuction.taxPerAuction)) {
+		for (Map.Entry<String, String> entry : floAuction.taxedItems.entrySet()) {
+			if (items.isSameItem(typeStack, entry.getKey())) {
+				String itemTax = entry.getValue();
+				
+				if (itemTax.endsWith("a")) {
+					try {
+						preAuctionTax = Double.valueOf(itemTax.substring(0, itemTax.length() - 1));
+					} catch (Exception e) {
+						// Clearly this isn't a valid number, just forget about it.
+						preAuctionTax = floAuction.taxPerAuction;
+					}
+				} else if (!itemTax.endsWith("%")) {
+					try {
+						preAuctionTax = Double.valueOf(itemTax);
+						preAuctionTax *= quantity;
+					} catch (Exception e) {
+						// Clearly this isn't a valid number, just forget about it.
+						preAuctionTax = floAuction.taxPerAuction;
+					}
+				}
+				break;
+			}
+		}		
+		
+		if (preAuctionTax > 0D) {
+			if (!floAuction.econ.has(ownerName, preAuctionTax)) {
 				floAuction.sendMessage("auction-fail-start-tax", ownerName, this);
 				return false;
 			}
@@ -81,11 +109,12 @@ public class Auction {
 			return false;
 		}
 
-		if (floAuction.taxPerAuction > 0D) {
-			if (floAuction.econ.has(ownerName, floAuction.taxPerAuction)) {
+		if (preAuctionTax > 0D) {
+			if (floAuction.econ.has(ownerName, preAuctionTax)) {
+				floAuction.econ.withdrawPlayer(ownerName, preAuctionTax);
+				extractedPreTax = preAuctionTax;
 				floAuction.sendMessage("auction-start-tax", getOwner(), this);
-				floAuction.econ.withdrawPlayer(ownerName, floAuction.taxPerAuction);
-				if (!floAuction.taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(floAuction.taxDestinationUser, floAuction.taxPerAuction);
+				if (!floAuction.taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(floAuction.taxDestinationUser, preAuctionTax);
 			}
 		}
 

@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -87,6 +89,7 @@ public class floAuction extends JavaPlugin {
 	public static boolean allowGamemodeChange = false;
 	public static boolean allowWorldChange = false;
 	public static List<String> bannedItems = new ArrayList<String>();
+	public static Map<String, String> taxedItems = new HashMap<String, String>();
 	public static double taxPerAuction = 0;
 	public static double taxPercentage = 0;
 	public static String taxDestinationUser = "";
@@ -329,7 +332,8 @@ public class floAuction extends JavaPlugin {
     /**
 	 * Loads config.yml and language.yml configuration files.
 	 */
-    private static void loadConfig() {
+    @SuppressWarnings("unchecked")
+	private static void loadConfig() {
 		if (configFile == null) {
 	    	configFile = new File(dataFolder, "config.yml");
 	    }
@@ -421,7 +425,16 @@ public class floAuction extends JavaPlugin {
         suppressCountdown = config.getBoolean("suppress-countdown");
         suppressAuctionStartInfo = config.getBoolean("suppress-auction-start-info");
         
-		// Update all values to include defaults which may be new.
+
+		ConfigurationSection taxedItemsSection = config.getConfigurationSection("taxed-items");
+		taxedItems = new HashMap<String, String>();
+		if (taxedItemsSection != null) {
+			for (String itemCode : taxedItemsSection.getKeys(false)) {
+				taxedItems.put(itemCode, taxedItemsSection.getString(itemCode));
+			}
+		}
+        
+        // Update all values to include defaults which may be new.
 		
 		FileConfiguration cleanConfig = new YamlConfiguration();
 		Map<String, Object> configValues = config.getDefaults().getValues(true);
@@ -440,7 +453,7 @@ public class floAuction extends JavaPlugin {
 
 	    
 		FileConfiguration cleanTextConfig = new YamlConfiguration();
-		Map<String, Object> textConfigValues = textConfig.getDefaults().getValues(true);
+		Map<String, Object> textConfigValues = textConfig.getDefaults().getValues(false);
 		for (Map.Entry<String, Object> textConfigEntry : textConfigValues.entrySet()) {
 			cleanTextConfig.set(textConfigEntry.getKey(), textConfig.get(textConfigEntry.getKey()));
 		}
@@ -943,7 +956,7 @@ public class floAuction extends JavaPlugin {
     	String timeRemaining = null;
     	String durabilityRemaining = null;
     	String endAuctionTax = null;
-    	String startAucitonTax = functions.formatAmount(taxPerAuction);
+    	String startAuctionTax = null;
     	String bookAuthor = null;
     	String bookTitle = null;
     	String displayName = null;
@@ -979,17 +992,16 @@ public class floAuction extends JavaPlugin {
     			timeRemaining = textConfig.getString("time-format-seconly");
     			timeRemaining = timeRemaining.replace("%s", Integer.toString(auction.getRemainingTime()));
     		}
-	
+    		startAuctionTax = functions.formatAmount(auction.extractedPreTax);
+			endAuctionTax = functions.formatAmount(auction.extractedPostTax);
 			if (auction.getCurrentBid() != null) {
 				currentBidder = auction.getCurrentBid().getBidder();
 				currentBid = functions.formatAmount(auction.getCurrentBid().getBidAmount());
 				currentMaxBid = functions.formatAmount(auction.getCurrentBid().getMaxBidAmount());
-				endAuctionTax = functions.formatAmount((long) Math.floor(auction.getCurrentBid().getMaxBidAmount() * (floAuction.taxPercentage / 100D)));
 			} else {
 				currentBidder = "noone";
 				currentBid = startingBid;
 				currentMaxBid = startingBid;
-				endAuctionTax = "-";
 			}
         	durabilityRemaining = "-";
 			if (typeLot != null) {
@@ -1029,6 +1041,7 @@ public class floAuction extends JavaPlugin {
         	currentMaxBid = "-";
         	timeRemaining = "-";
         	durabilityRemaining = "-";
+    		startAuctionTax = "-";
         	endAuctionTax = "-";
         	bookAuthor = "-";
         	bookTitle = "-";
@@ -1069,7 +1082,7 @@ public class floAuction extends JavaPlugin {
 				message = message.replace("%h", currentMaxBid);
 				message = message.replace("%t", timeRemaining);
 				message = message.replace("%D", durabilityRemaining);
-				message = message.replace("%x", startAucitonTax);
+				message = message.replace("%x", startAuctionTax);
 				message = message.replace("%X", endAuctionTax);
 				message = message.replace("%y", bookAuthor);
 				message = message.replace("%Y", bookTitle);
