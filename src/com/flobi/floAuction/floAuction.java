@@ -332,8 +332,7 @@ public class floAuction extends JavaPlugin {
     /**
 	 * Loads config.yml and language.yml configuration files.
 	 */
-    @SuppressWarnings("unchecked")
-	private static void loadConfig() {
+    private static void loadConfig() {
 		if (configFile == null) {
 	    	configFile = new File(dataFolder, "config.yml");
 	    }
