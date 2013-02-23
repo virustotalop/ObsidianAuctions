@@ -50,6 +50,7 @@ auction-fail-disabled: '&6Enter &9/auction on&6 to use the auction software.'
 auction-fail-gamemode-creative: '&6You cannot auction while in CREATIVE mode.'
 auction-fail-damaged-item: '&6You cannot auction damaged items.'
 auction-fail-no-sealed-auctions: '&6Sealed auctions are disabled.'
+auction-fail-renamed-item: '&6You cannot auction renamed items.'
 
 bid-success-no-challenger: '&b%B&9 has bid &6%b&9 on the &a%i&9.'
 bid-success-outbid: '&b%B&9 raised the bid to &6%b&9.'

@@ -425,6 +425,15 @@ public class Auction {
 			return false;
 		}
 		
+    	String displayName = items.getDisplayName(itemType);
+    	if (displayName == null) displayName = "";
+    	
+		if (!displayName.isEmpty() && !floAuction.allowRenamedItems) {
+			floAuction.sendMessage("auction-fail-renamed-item", owner, this, false);
+			lot = null;
+			return false;
+		}
+		
 		return true;
 	}
 	private Boolean parseArgs() {

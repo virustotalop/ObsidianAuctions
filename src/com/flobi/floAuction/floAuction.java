@@ -110,6 +110,7 @@ public class floAuction extends JavaPlugin {
 	public static boolean allowAutoBid = true;
 	public static boolean suppressCountdown = true;
 	public static boolean suppressAuctionStartInfo = true;
+	public static boolean allowRenamedItems = true;
 	
 	// Config files info.
 	private static File configFile = null;
@@ -419,6 +420,8 @@ public class floAuction extends JavaPlugin {
         	allowUnsealedAuctions = true;
         }
         
+        allowRenamedItems = config.getBoolean("allow-renamed-items");
+
         broadCastBidUpdates = config.getBoolean("broadcast-bid-updates");
         allowAutoBid = config.getBoolean("allow-auto-bid");
         suppressCountdown = config.getBoolean("suppress-countdown");
