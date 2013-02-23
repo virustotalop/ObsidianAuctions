@@ -395,6 +395,11 @@ public class Auction {
 				floAuction.sendMessage(reason, prevBid.getBidder(), this);
 			}
 		}
+        // see if antisnipe is enabled...
+        if (!this.sealed && floAuction.antiSnipe == true && this.getRemainingTime() <= floAuction.antiSnipePreventionSeconds) {
+        	this.addToRemainingTime((floAuction.antiSnipeExtensionSeconds));
+	        floAuction.sendMessage("anti-snipe-time-added", null, this, true);
+        }
 	}
 	private Boolean parseHeldItem() {
 		Player owner = floAuction.server.getPlayer(ownerName);
