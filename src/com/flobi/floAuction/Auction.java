@@ -395,6 +395,8 @@ public class Auction {
 				floAuction.sendMessage(reason, prevBid.getBidder(), this);
 			}
 		}
+		Participant.addParticipant(newBid.getBidder());
+		
         // see if antisnipe is enabled...
         if (!this.sealed && floAuction.antiSnipe == true && this.getRemainingTime() <= floAuction.antiSnipePreventionSeconds) {
         	this.addToRemainingTime((floAuction.antiSnipeExtensionSeconds));

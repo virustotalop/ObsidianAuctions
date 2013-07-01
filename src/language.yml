@@ -8,6 +8,7 @@ no-vault: Disabled due to no Vault dependency found!
 no-economy: Disabled due to no Economy found!
 plugin-reloaded: '&fconfiguration has been reloaded.'
 no-permission: '&6You do not have permission.'
+disabled-command: '&6You cannot do that while participating in an auction.'
 suspension-user: '&6Your auction access has been suspended.'
 suspension-user-success: 'The user has been suspended.'
 suspension-user-fail-already-suspended: '&6That user is already suspended.'

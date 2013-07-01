@@ -61,6 +61,7 @@ public class AuctionBid {
 		if (auction.sealed) {
 			// Queue reserve refund.
 			auction.sealedBids.add(this);
+			Participant.addParticipant(getBidder());
 		} else {
 			// Refund reserve.
 			functions.depositPlayer(bidderName, reserve);

@@ -29,6 +29,8 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -45,8 +47,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -60,7 +64,7 @@ import com.flobi.utility.items;
 
 public class floAuction extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
-	public Auction publicAuction;
+	public static Auction publicAuction;
 
 	// Got to figure out a better way to store these:
 	public static long defaultStartingBid = 0;
@@ -111,6 +115,9 @@ public class floAuction extends JavaPlugin {
 	public static boolean suppressCountdown = true;
 	public static boolean suppressAuctionStartInfo = true;
 	public static boolean allowRenamedItems = true;
+	public static List<String> disabledCommands = new ArrayList<String>();
+	
+	public static List<Participant> auctionParticipants = new ArrayList<Participant>();
 	
 	// Config files info.
 	private static File configFile = null;
@@ -308,6 +315,28 @@ public class floAuction extends JavaPlugin {
                 	sendMessage("gamemodechange-fail-auction-bidder", player, publicAuction, false);
                 }
             }
+            @EventHandler(priority = EventPriority.LOWEST)
+            public void onPlayerPreprocessCommand(PlayerCommandPreprocessEvent event){
+            	if (event.isCancelled()) return;
+            	if (publicAuction == null && auctionQueue.size() == 0) return;
+            	if (event.getPlayer() == null) return;
+            	
+            	boolean isDisabledCommand = false;
+        		for (int i = 0; i < floAuction.disabledCommands.size(); i++) {
+        			String disabledCommand = floAuction.disabledCommands.get(i);
+        			if (event.getMessage().toLowerCase().startsWith(disabledCommand.toLowerCase())) {
+        				isDisabledCommand = true;
+        				break;
+        			}
+        		}
+        		if (!isDisabledCommand) return;
+
+    			if (Participant.isParticipating(event.getPlayer().getName())) {
+	            	event.setCancelled(true);
+	            	sendMessage("disabled-command", event.getPlayer(), publicAuction, false);
+    				return;
+    			}
+            }
         }, this);
 		
 		queueTimer = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -412,6 +441,7 @@ public class floAuction extends JavaPlugin {
         antiSnipe = config.getBoolean("anti-snipe");
         antiSnipePreventionSeconds = config.getInt("anti-snipe-prevention-seconds");
         antiSnipeExtensionSeconds = config.getInt("anti-snipe-extension-seconds");
+		disabledCommands = config.getStringList("disabled-commands");
 		
         allowSealedAuctions = config.getBoolean("allow-sealed-auctions");
         if (allowSealedAuctions) {
@@ -536,6 +566,7 @@ public class floAuction extends JavaPlugin {
 		}
 		if ((auctionQueue.size() == 0 && System.currentTimeMillis() - lastAuctionDestroyTime >= minAuctionIntervalSecs * 1000) || auctionToQueue.isValid()) {
 			auctionQueue.add(auctionToQueue);
+			Participant.addParticipant(playerName);
 			checkAuctionQueue();
 			if (auctionQueue.contains(auctionToQueue)) {
 				sendMessage("auction-queue-enter", player, currentAuction, false);
@@ -796,7 +827,7 @@ public class floAuction extends JavaPlugin {
     						queueAuction(new Auction(this, player, args, userScope, true), player, auction);
     					}
     				}
-    				
+
 					return true;
     			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
     				if (auction == null && auctionQueue.size() == 0) {

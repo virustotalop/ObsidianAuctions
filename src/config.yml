@@ -54,3 +54,7 @@ banned-items:
   
 taxed-items: 
   0: 100%
+
+disabled-commands:
+  - '/ma join'
+  - '/mobarena join'
