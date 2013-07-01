@@ -30,7 +30,6 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -53,6 +52,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -118,6 +118,7 @@ public class floAuction extends JavaPlugin {
 	public static List<String> disabledCommands = new ArrayList<String>();
 	
 	public static List<Participant> auctionParticipants = new ArrayList<Participant>();
+	public static List<String> bannedLore = new ArrayList<String>();
 	
 	// Config files info.
 	private static File configFile = null;
@@ -301,7 +302,8 @@ public class floAuction extends JavaPlugin {
                 }
             }
             @EventHandler
-            public void onPlayerChangedWorld(PlayerGameModeChangeEvent event){
+            public void onPlayerChangedGameMode(PlayerGameModeChangeEvent event){
+            	if (event.isCancelled()) return;
             	if (allowGamemodeChange || publicAuction == null) return;
             	
                 // Get player objects
@@ -320,10 +322,12 @@ public class floAuction extends JavaPlugin {
             	if (event.isCancelled()) return;
             	if (publicAuction == null && auctionQueue.size() == 0) return;
             	if (event.getPlayer() == null) return;
+            	if (event.getMessage().isEmpty()) return;
             	
             	boolean isDisabledCommand = false;
         		for (int i = 0; i < floAuction.disabledCommands.size(); i++) {
         			String disabledCommand = floAuction.disabledCommands.get(i);
+        			if (disabledCommand.isEmpty()) continue;
         			if (event.getMessage().toLowerCase().startsWith(disabledCommand.toLowerCase())) {
         				isDisabledCommand = true;
         				break;
@@ -337,6 +341,11 @@ public class floAuction extends JavaPlugin {
     				return;
     			}
             }
+        	@EventHandler()
+        	public void onPlayerMove(PlayerMoveEvent event) {
+        		if (event.isCancelled()) return;
+        		Participant.forceLocation(event.getPlayer().getName());
+        	}
         }, this);
 		
 		queueTimer = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -465,7 +474,18 @@ public class floAuction extends JavaPlugin {
 				taxedItems.put(itemCode, taxedItemsSection.getString(itemCode));
 			}
 		}
+		
+		Participant.setAuctionHouseBox(
+					config.getString("auctionhouse-world"), 
+					config.getDouble("auctionhouse-min-x"), 
+					config.getDouble("auctionhouse-min-y"), 
+					config.getDouble("auctionhouse-min-z"), 
+					config.getDouble("auctionhouse-max-x"), 
+					config.getDouble("auctionhouse-max-y"), 
+					config.getDouble("auctionhouse-max-z"));
         
+		bannedLore = config.getStringList("banned-lore");
+		
         // Update all values to include defaults which may be new.
 		
 		FileConfiguration cleanConfig = new YamlConfiguration();

@@ -52,6 +52,8 @@ auction-fail-gamemode-creative: '&6You cannot auction while in CREATIVE mode.'
 auction-fail-damaged-item: '&6You cannot auction damaged items.'
 auction-fail-no-sealed-auctions: '&6Sealed auctions are disabled.'
 auction-fail-renamed-item: '&6You cannot auction renamed items.'
+auction-fail-outside-auctionhouse: '&6You must auction at the auction house.'
+auction-fail-banned-lore: '&6This item contains banned lore.'
 
 bid-success-no-challenger: '&b%B&9 has bid &6%b&9 on the &a%i&9.'
 bid-success-outbid: '&b%B&9 raised the bid to &6%b&9.'
@@ -70,6 +72,7 @@ bid-fail-gamemode-creative: '&6You cannot bid while in CREATIVE mode.'
 bid-fail-under-starting-bid: '&6The bidding must start at %s.'
 bid-fail-bid-required: '&6You must enter a bid amount.'
 bid-fail-too-low: '&6Your bid was too low.'
+bid-fail-outside-auctionhouse: '&6You must auction at the auction house.'
 
 auction-queue-enter: Your auction has been queued (number %Q in line). 
 auction-queue-fail-full: '&6The auction queue is full, try again later.'

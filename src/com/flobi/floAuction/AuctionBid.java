@@ -117,10 +117,17 @@ public class AuctionBid {
 			error = "bid-fail-no-bidder";
 			return false;
 		}
+
+		if (!Participant.checkLocation(bidderName)) {
+			error = "bid-fail-outside-auctionhouse";
+			return false;
+		}
+		
 		if (bidderName.equalsIgnoreCase(auction.getOwner()) && !floAuction.allowBidOnOwn) {
 			error = "bid-fail-is-auction-owner";
 			return false;
 		}
+
 		return true;
 	}
 	private Boolean parseArgs() {

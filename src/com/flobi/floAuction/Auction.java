@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -273,9 +274,10 @@ public class Auction {
 		plugin.detachAuction(this);
 	}
 	public Boolean isValid() {
+		if (!isValidOwner()) return false;
+		if (!isValidParticipant()) return false;
 		if (!parseHeldItem()) return false;
 		if (!parseArgs()) return false;
-		if (!isValidOwner()) return false;
 		if (!isValidAmount()) return false;
 		if (!isValidStartingBid()) return false;
 		if (!isValidIncrement()) return false;
@@ -436,6 +438,20 @@ public class Auction {
 			return false;
 		}
 		
+		// Check lore:
+		String[] lore = items.getLore(heldItem);
+		if (lore != null && floAuction.bannedLore != null) {
+			for (int i = 0; i < floAuction.bannedLore.size(); i++) {
+				for (int j = 0; j < lore.length; j++) {
+					if (lore[j].toLowerCase().contains(floAuction.bannedLore.get(i).toLowerCase())) {
+						floAuction.sendMessage("auction-fail-banned-lore", owner, this, false);
+						lot = null;
+						return false;
+					}
+				}
+			}
+		}
+		
 		return true;
 	}
 	private Boolean parseArgs() {
@@ -453,6 +469,15 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	private Boolean isValidParticipant() {
+		if (Participant.checkLocation(ownerName)) {
+			return true;
+		}
+		floAuction.sendMessage("auction-fail-outside-auctionhouse", ownerName, this);
+		return false;
+	}
+	
 	private Boolean isValidAmount() {
 		if (quantity <= 0) {
 			floAuction.sendMessage("auction-fail-quantity-too-low", ownerName, this);

@@ -1,7 +1,56 @@
 package com.flobi.floAuction;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
 public class Participant {
 	private String playerName = null;
+	private static Location minLocation = null;
+	private static Location maxLocation = null;
+	
+	public static void setAuctionHouseBox(String world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+		if (world.isEmpty()) {
+			minLocation = null;
+			maxLocation = null;
+		} else {
+			minLocation = new Location(Bukkit.getWorld(world), minX, minY, minZ);
+			maxLocation = new Location(Bukkit.getWorld(world), maxX, maxY, maxZ);
+		}
+	}
+	
+	public static boolean checkLocation(String playerName) {
+		if (minLocation == null) return true;
+		Player player = floAuction.server.getPlayer(playerName);
+		Location currentLocation = player.getLocation();
+		if (!currentLocation.getWorld().equals(minLocation.getWorld())) return false;
+		if (currentLocation.getX() > Math.max(minLocation.getX(), maxLocation.getX()) || currentLocation.getX() < Math.min(minLocation.getX(), maxLocation.getX())) return false;
+		if (currentLocation.getZ() > Math.max(minLocation.getZ(), maxLocation.getZ()) || currentLocation.getZ() < Math.min(minLocation.getZ(), maxLocation.getZ())) return false;
+		if (currentLocation.getY() > Math.max(minLocation.getY(), maxLocation.getY()) || currentLocation.getY() < Math.min(minLocation.getY(), maxLocation.getY())) return false;
+		return true;
+	}
+	
+	public static void forceLocation(String playerName) {
+		if (minLocation == null) return;
+		if (!Participant.isParticipating(playerName)) return;
+		
+		Player player = floAuction.server.getPlayer(playerName);
+		Location location = player.getLocation();
+		boolean doMove = false;
+		double x = location.getX();
+		double y = location.getY();
+		double z = location.getZ();
+		
+		if (!location.getWorld().equals(minLocation.getWorld())) {doMove = true; location.setWorld(minLocation.getWorld());}
+		if (x > Math.max(minLocation.getX(), maxLocation.getX())) {doMove = true; location.setX(Math.max(minLocation.getX(), maxLocation.getX()));} 
+		if (x < Math.min(minLocation.getX(), maxLocation.getX())) {doMove = true; location.setX(Math.min(minLocation.getX(), maxLocation.getX()));}
+		if (y > Math.max(minLocation.getY(), maxLocation.getY())) {doMove = true; location.setY(Math.max(minLocation.getY(), maxLocation.getY()));}
+		if (y < Math.min(minLocation.getY(), maxLocation.getY())) {doMove = true; location.setY(Math.min(minLocation.getY(), maxLocation.getY()));}
+		if (z > Math.max(minLocation.getZ(), maxLocation.getZ())) {doMove = true; location.setZ(Math.max(minLocation.getZ(), maxLocation.getZ()));}
+		if (z < Math.min(minLocation.getZ(), maxLocation.getZ())) {doMove = true; location.setZ(Math.min(minLocation.getZ(), maxLocation.getZ()));}
+		
+		if (doMove) player.teleport(location);
+	}
 	
 	public static boolean isParticipating(String playerName) {
 		boolean participating = false;
