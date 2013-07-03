@@ -1274,7 +1274,7 @@ public class floAuction extends JavaPlugin {
     	Player[] onlinePlayers = server.getOnlinePlayers();
     	
     	for (Player player : onlinePlayers) {
-        	if (voluntarilyDisabledUsers.indexOf(player.getName()) == -1) {
+        	if (voluntarilyDisabledUsers.indexOf(player.getName()) == -1 && Participant.checkLocation(player.getName())) {
         		player.sendMessage(message);
     		}
     	}
