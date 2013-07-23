@@ -119,7 +119,9 @@ public class floAuction extends JavaPlugin {
 	
 	public static List<Participant> auctionParticipants = new ArrayList<Participant>();
 	public static List<String> bannedLore = new ArrayList<String>();
-	
+
+	public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
+
 	// Config files info.
 	private static File configFile = null;
 	private static InputStream defConfigStream;
@@ -133,7 +135,7 @@ public class floAuction extends JavaPlugin {
 	private static ConsoleCommandSender console;
 	public static Server server;
 	public static int queueTimer;
-	public static ArrayList<Auction> auctionQueue = new ArrayList<Auction>(); 
+	public static ArrayList<Auction> auctionQueue = new ArrayList<Auction>();
 	
 	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();;
 	public static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();;
@@ -407,7 +409,7 @@ public class floAuction extends JavaPlugin {
 	    
 	    logAuctions = config.getBoolean("log-auctions");
 	    
-	    defaultAuctionTime = config.getInt("decimal-places");
+	    decimalPlaces = config.getInt("decimal-places");
 	    if (econ != null && econ.isEnabled()) {
 	    	if (econ.fractionalDigits() >= 0) {
 				decimalPlaces = econ.fractionalDigits();
@@ -849,6 +851,29 @@ public class floAuction extends JavaPlugin {
     				}
 
 					return true;
+    			} else if (
+        				args[0].equalsIgnoreCase("prep") || 
+        				args[0].equalsIgnoreCase("p")
+    			) {
+    				// Save a users individual starting default values.
+    	    		if (player == null) {
+    	    			sendMessage("auction-fail-console", sender, null, false);
+    	    			return true;
+    	    		}
+    				if (!perms.has(player, "auction.start")) {
+    	    			sendMessage("no-permission", sender, null, false);
+    	    			return true;
+    				}
+    				
+    				// The function returns null and sends error on failure.
+    				String[] mergedArgs = functions.mergeInputArgs(playerName, args, true);
+    				
+    				if (mergedArgs != null) {
+						floAuction.userSavedInputArgs.put(playerName, mergedArgs);
+						sendMessage("prep-save-success", sender, null, false);
+    				}
+
+					return true;
     			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
     				if (auction == null && auctionQueue.size() == 0) {
     					sendMessage("auction-fail-no-auction-exists", sender, auction, false);
@@ -1037,14 +1062,7 @@ public class floAuction extends JavaPlugin {
     		}
     		minBidIncrement = functions.formatAmount(auction.getMinBidIncrement());
 			
-    		if (auction.getRemainingTime() >= 60) {
-    			timeRemaining = textConfig.getString("time-format-minsec");
-    			timeRemaining = timeRemaining.replace("%s", Integer.toString(auction.getRemainingTime() % 60));
-    			timeRemaining = timeRemaining.replace("%m", Integer.toString((auction.getRemainingTime() - (auction.getRemainingTime() % 60)) / 60));
-    		} else {
-    			timeRemaining = textConfig.getString("time-format-seconly");
-    			timeRemaining = timeRemaining.replace("%s", Integer.toString(auction.getRemainingTime()));
-    		}
+			timeRemaining = functions.formatTime(auction.getRemainingTime());
     		startAuctionTax = functions.formatAmount(auction.extractedPreTax);
 			endAuctionTax = functions.formatAmount(auction.extractedPostTax);
 			if (auction.getCurrentBid() != null) {
@@ -1143,6 +1161,25 @@ public class floAuction extends JavaPlugin {
 				message = message.replace("%r", rocketPower);
 				message = message.replace("%k", Integer.toString(auctionQueue.size()));
 				message = message.replace("%Q", queuePostition);
+				message = message.replace("%c", floAuction.econ.currencyNameSingular());
+				message = message.replace("%C", floAuction.econ.currencyNamePlural());
+				
+				String[] defaultStartArgs = functions.mergeInputArgs(playerName, new String[] {}, false);
+				if (defaultStartArgs[0].equalsIgnoreCase("this") || defaultStartArgs[0].equalsIgnoreCase("hand")) {
+					message = message.replace("%U", textConfig.getString("prep-amount-in-hand"));
+				} else if (defaultStartArgs[0].equalsIgnoreCase("all")) {
+					message = message.replace("%U", textConfig.getString("prep-all-of-this-kind"));
+				} else {
+					message = message.replace("%U", textConfig.getString("prep-qty-of-this-kind"));
+				}
+				message = message.replace("%u", defaultStartArgs[0]);
+				message = message.replace("%v", defaultStartArgs[1]);
+				message = message.replace("%V", functions.formatAmount(Double.parseDouble(defaultStartArgs[1])));
+				message = message.replace("%w", defaultStartArgs[2]);
+				message = message.replace("%W", functions.formatAmount(Double.parseDouble(defaultStartArgs[2])));
+				message = message.replace("%z", defaultStartArgs[3]);
+				message = message.replace("%Z", functions.formatTime(Integer.parseInt(defaultStartArgs[3])));
+				
 				
 				originalMessage = message;
 				

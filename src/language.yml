@@ -150,6 +150,17 @@ lot-drop: '&dNot enough space, your items dropped at your feet.'
 
 anti-snipe-time-added: 'ANTI-SNIPE! More time added to auction!'
 
+prep-save-success:
+- 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME]'
+- 'Quantity to auction: &6%U'
+- 'Starting bid: &6%V'
+- 'Minimum increment between bids: &6%W'
+- 'Auction length: &6%Z'
+- Use &b/auction start &9to start an auction with these parameters.
+prep-amount-in-hand: 'Amount in hand'
+prep-all-of-this-kind: 'All items matching held item'
+prep-qty-of-this-kind: '%u items'
+
 firework-shapes:
   BALL: Ball
   BALL_LARGE: Large Ball

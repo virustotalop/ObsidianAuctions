@@ -46,20 +46,12 @@ public class Auction {
 	
 	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, String scope, boolean sealed) {
 		ownerName = auctionOwner.getName();
-		args = inputArgs;
+		args = functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
 		this.plugin = plugin; 
 		this.scope = scope;
 		this.sealed = sealed;
-
-		// Remove the optional "start" arg:
-		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("s")) {
-				args = new String[inputArgs.length - 1];
-				System.arraycopy(inputArgs, 1, args, 0, inputArgs.length - 1);
-			}
-		}
-		
 	}
+	
 	public Boolean start() {
 		
 		ItemStack typeStack = lot.getTypeStack();
