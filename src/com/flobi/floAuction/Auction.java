@@ -242,6 +242,16 @@ public class Auction {
 		if (currentBid != null) currentBid.cancelBid();
 		dispose();
 	}
+	public void confiscate(Player authority) {
+		ownerName = authority.getName();
+		floAuction.sendMessage("auction-confiscated", (CommandSender) null, this, true);
+		if (lot != null) {
+			lot.setOwner(authority.getName());
+			lot.cancelLot();
+		}
+		if (currentBid != null) currentBid.cancelBid();
+		dispose();
+	}
 	public void end(Player ender) {
 		if (currentBid == null || lot == null) {
 			floAuction.sendMessage("auction-end-nobids", (CommandSender) null, this, true);

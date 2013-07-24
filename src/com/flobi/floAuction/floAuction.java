@@ -179,6 +179,23 @@ public class floAuction extends JavaPlugin {
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "finally" })
+	private static Map<String, String[]> loadMapStringStringArray(String filename) {
+    	File saveFile = new File(dataFolder, filename);
+    	Map<String, String[]> importedObjects = new HashMap<String, String[]>();
+    	try {
+			//use buffering
+			InputStream file = new FileInputStream(saveFile.getAbsolutePath());
+			InputStream buffer = new BufferedInputStream(file);
+			ObjectInput input = new ObjectInputStream (buffer);
+			importedObjects = (Map<String, String[]>) input.readObject();
+			input.close();
+  	    }  
+		finally {
+  	    	return importedObjects;
+		}
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	private static ArrayList<AuctionLot> loadArrayListAuctionLot(String filename) {
@@ -359,6 +376,7 @@ public class floAuction extends JavaPlugin {
 		orphanLots = loadArrayListAuctionLot("orphanLots.ser");
 		voluntarilyDisabledUsers = loadArrayListString("voluntarilyDisabledUsers.ser");
 		suspendedUsers = loadArrayListString("suspendedUsers.ser");
+		userSavedInputArgs = loadMapStringStringArray("userSavedInputArgs.ser");
 
         // Load up the Plugin metrics
         try {
@@ -870,6 +888,7 @@ public class floAuction extends JavaPlugin {
     				
     				if (mergedArgs != null) {
 						floAuction.userSavedInputArgs.put(playerName, mergedArgs);
+						floAuction.saveObject(floAuction.userSavedInputArgs, "userSavedInputArgs.ser");
 						sendMessage("prep-save-success", sender, null, false);
     				}
 
@@ -898,6 +917,27 @@ public class floAuction extends JavaPlugin {
 					} else {
     					sendMessage("auction-fail-not-owner-cancel", player, auction, false);
 					}
+    				return true;
+    			} else if (args[0].equalsIgnoreCase("confiscate") || args[0].equalsIgnoreCase("impound")) {
+    				if (auction == null) {
+    					sendMessage("auction-fail-no-auction-exists", sender, auction, false);
+    					return true;
+    				}
+    				
+    				if (player == null) {
+    					sendMessage("confiscation-fail-console", player, auction, false);
+    					return true;
+    				}
+					if (!perms.has(player, "auction.admin")) {
+    					sendMessage("no-permission", player, auction, false);
+    					return true;
+					}
+					if (playerName.equalsIgnoreCase(auction.getOwner())) {
+    					sendMessage("confiscation-fail-self", player, auction, false);
+    					return true;
+					}
+					auction.confiscate(player);
+					publicAuction = null;
     				return true;
     			} else if (args[0].equalsIgnoreCase("end") || args[0].equalsIgnoreCase("e")) {
     				if (auction == null) {
@@ -1024,6 +1064,7 @@ public class floAuction extends JavaPlugin {
     	}
     	
     	String owner = null;
+    	String ownerDisplay = null;
     	String quantity = null;
     	String lotType = null;
     	String startingBid = null;
@@ -1053,6 +1094,14 @@ public class floAuction extends JavaPlugin {
     		typeLot = auction.getLotType();
     		
     		if (auction.getOwner() != null) owner = auction.getOwner();
+    		
+    		Player ownerPlayer = server.getPlayer(owner);
+    		if (ownerPlayer != null) {
+    			ownerDisplay = ownerPlayer.getDisplayName();
+    		} else {
+    			ownerDisplay = owner;
+    		}
+    		
     		quantity = Integer.toString(auction.getLotQuantity());
     		lotType = items.getItemName(typeLot);
     		if (auction.getStartingBid() == 0) {
@@ -1103,6 +1152,7 @@ public class floAuction extends JavaPlugin {
 			if (rocketPower == null) rocketPower = "-";
     	} else {
         	owner = "-";
+        	ownerDisplay = "-";
         	quantity = "-";
         	lotType = "-";
         	startingBid = "-";
@@ -1143,7 +1193,9 @@ public class floAuction extends JavaPlugin {
 	    		String messageListItem = i.next();
 	    		String message = chatPrep(messageListItem);
 		
-				message = message.replace("%O", owner);
+				message = message.replace("%o", owner);
+				message = message.replace("%O", ownerDisplay);
+
 				message = message.replace("%q", quantity);
 				message = message.replace("%i", displayName);
 				message = message.replace("%s", startingBid);

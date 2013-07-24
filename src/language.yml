@@ -75,6 +75,9 @@ bid-fail-bid-required: '&6You must enter a bid amount.'
 bid-fail-too-low: '&6Your bid was too low.'
 bid-fail-outside-auctionhouse: '&6You must auction at the auction house.'
 
+confiscation-fail-console: '&6Only online players can impound items (you have no inventory, console).'
+confiscation-fail-self: '&6You cannot impound your own items.'
+
 auction-queue-enter: Your auction has been queued (number %Q in line). 
 auction-queue-fail-full: '&6The auction queue is full, try again later.'
 auction-queue-fail-in-queue: '&6You already have an auction queued (number %Q in line).'
@@ -84,6 +87,7 @@ auction-queue-status-not-in-queue: 'There are %k auctions queued, none belong to
 
 auction-cancel: The auction has been cancelled.
 auction-cancel-queued: Your auction has been removed from the queue.
+auction-confiscated: '&6This auction has been impounded by %O!'
 auction-end-nobids: The auction ended with no bids.
 auction-end: '&b%B&9 won the auction for &a%i&9 with &6%b&9!'
 auction-disabled: '&bAuctioning disabled.'
