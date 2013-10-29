@@ -31,7 +31,7 @@ public class functions {
 	// Merges player's preset with the current specifications and system defaults.
 	public static String[] mergeInputArgs(String playerName, String[] inputArgs, boolean validateArgs) {
 		// Get existing defaults (if present)
-		String[] resultArgs = floAuction.userSavedInputArgs.get(playerName);
+		String[] resultArgs = floAuction.userSavedInputArgs.get(playerName).clone();
 		
 		// if player has no preset, use the current system defaults:
 		if (resultArgs == null) {
@@ -84,7 +84,7 @@ public class functions {
 					}
 					if (validateArgs) {
 						if (resultArgs[2].isEmpty() || !resultArgs[2].matches(floAuction.decimalRegex)) {
-							floAuction.sendMessage("parse-error-invalid-starting-bid", playerName, null);
+							floAuction.sendMessage("parse-error-invalid-max-bid", playerName, null);
 							return null;
 						}
 					}
