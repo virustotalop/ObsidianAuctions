@@ -137,8 +137,8 @@ public class floAuction extends JavaPlugin {
 	public static int queueTimer;
 	public static ArrayList<Auction> auctionQueue = new ArrayList<Auction>();
 	
-	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();;
-	public static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();;
+	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();
+	public static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
 	public static ArrayList<String> suspendedUsers = new ArrayList<String>();
 	
 	
@@ -148,7 +148,7 @@ public class floAuction extends JavaPlugin {
     	try {
 			//use buffering
     		if (saveFile.exists()) saveFile.delete();
-			OutputStream file = new FileOutputStream(saveFile.getAbsolutePath());
+    		FileOutputStream file = new FileOutputStream(saveFile.getAbsolutePath());
 			OutputStream buffer = new BufferedOutputStream(file);
 			ObjectOutput output = new ObjectOutputStream(buffer);
 			try {
@@ -905,6 +905,11 @@ public class floAuction extends JavaPlugin {
     						sendMessage("auction-cancel-queued", player, auction, false);
     						return true;
     					}
+    				}
+    				
+    				if (auction == null) {
+    					sendMessage("auction-fail-no-auction-exists", sender, auction, false);
+    					return true;
     				}
     				
 					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) {

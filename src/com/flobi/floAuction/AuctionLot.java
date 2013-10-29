@@ -1,10 +1,16 @@
 package com.flobi.floAuction;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.FireworkEffect;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Item;
@@ -31,6 +37,8 @@ public class AuctionLot implements java.io.Serializable {
 	private Integer power = 0;
 	private FireworkEffect[] effects = null;
 	private String[] lore = null;
+//	private Map<String, Object> itemSerialized = null;
+	private String itemSerialized = null;
 	
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
@@ -115,7 +123,24 @@ public class AuctionLot implements java.io.Serializable {
 		}
 	}
 	public ItemStack getTypeStack() {
-		ItemStack lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability);
+		ItemStack lotTypeLock = null;
+		if (this.itemSerialized != null) {
+//			lotTypeLock = ItemStack.deserialize(this.itemSerialized);
+			FileConfiguration tmpconfig = new YamlConfiguration();
+			try {
+				tmpconfig.loadFromString(this.itemSerialized);
+				if (tmpconfig.isItemStack("itemstack")) {
+					return tmpconfig.getItemStack("itemstack");
+				}
+			} catch (InvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// The rest of this remains for backward compatibility.
+		lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability);
+		
 		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
 			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
@@ -135,6 +160,12 @@ public class AuctionLot implements java.io.Serializable {
 		return lotTypeLock;
 	}
 	private void setLotType(ItemStack lotType) {
+//		this.itemSerialized = lotType.serialize();
+		FileConfiguration tmpconfig = new YamlConfiguration();
+		tmpconfig.set("itemstack", lotType);
+		itemSerialized = tmpconfig.saveToString();
+
+		// The rest of this remains for backward compatibility.
 		lotTypeId = lotType.getTypeId();
 		lotDurability = lotType.getDurability();
 		sourceStackQuantity = lotType.getAmount();
@@ -167,27 +198,4 @@ public class AuctionLot implements java.io.Serializable {
 	public int getQuantity() {
 		return quantity;
 	}
-
-/* Working on getting this serializable. 
- * 
-  	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> serialized = new HashMap<String, Object>();
-		serialized.put("lotType", getTypeStack());
-		serialized.put("owner", getOwner());
-		serialized.put("quantity", (Integer)getQuantity());
-		return serialized;
-	}
-	
-	public static AuctionLot deserialize(Map<String, Object> map) {
-		if (map == null) return null;
-		if (!(map.get("lotType") instanceof ItemStack)) return null;
-		if (!(map.get("owner") instanceof String)) return null;
-		if (!(map.get("quantity") instanceof Integer)) return null;
-		
-		AuctionLot auctionLot = new AuctionLot((ItemStack)map.get("lotType"), (String)map.get("owner"));
-		auctionLot.AddItems((Integer) map.get("quantity"), false);
-		
-		return auctionLot;
-	}*/
 }
