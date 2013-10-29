@@ -1,13 +1,10 @@
 package com.flobi.floAuction;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.FireworkEffect;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -122,6 +119,7 @@ public class AuctionLot implements java.io.Serializable {
 			floAuction.saveObject(floAuction.orphanLots, "orphanLots.ser");
 		}
 	}
+	@SuppressWarnings("deprecation")
 	public ItemStack getTypeStack() {
 		ItemStack lotTypeLock = null;
 		if (this.itemSerialized != null) {
@@ -159,6 +157,7 @@ public class AuctionLot implements java.io.Serializable {
 		items.setLore(lotTypeLock, lore);
 		return lotTypeLock;
 	}
+	@SuppressWarnings("deprecation")
 	private void setLotType(ItemStack lotType) {
 //		this.itemSerialized = lotType.serialize();
 		FileConfiguration tmpconfig = new YamlConfiguration();

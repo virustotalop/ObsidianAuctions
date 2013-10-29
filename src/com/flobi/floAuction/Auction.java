@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -174,7 +175,7 @@ public class Auction {
 			if (payload != null && payload.length > 0) {
 				messageKeys.add("auction-info-payload");
 			}
-			if (itemType.getTypeId() == 401) {
+			if (itemType.getType() == Material.FIREWORK) {
 				messageKeys.add("auction-info-payload-power");
 			}
 			String[] lore = items.getLore(itemType);
@@ -198,7 +199,7 @@ public class Auction {
 			if (payload != null && payload.length > 0) {
 				messageKeys.add("auction-info-payload");
 			}
-			if (itemType.getTypeId() == 401) {
+			if (itemType.getType() == Material.FIREWORK) {
 				messageKeys.add("auction-info-payload-power");
 			}
 			String[] lore = items.getLore(itemType);
@@ -222,7 +223,7 @@ public class Auction {
 			if (payload != null && payload.length > 0) {
 				messageKeys.add("auction-info-payload");
 			}
-			if (itemType.getTypeId() == 401) {
+			if (itemType.getType() == Material.FIREWORK) {
 				messageKeys.add("auction-info-payload-power");
 			}
 			String[] lore = items.getLore(itemType);

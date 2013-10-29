@@ -33,6 +33,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -1148,7 +1149,7 @@ public class floAuction extends JavaPlugin {
         		displayName = ChatColor.translateAlternateColorCodes('&', textConfig.getString("display-name-prefix")) + displayName + ChatColor.translateAlternateColorCodes('&', "&r");
         	}
         	
-			if (typeLot != null && typeLot.getTypeId() == 401) {
+			if (typeLot != null && typeLot.getType() == Material.FIREWORK) {
 				Integer power = items.getFireworkPower(typeLot);
 				if (power != null) {
 					rocketPower = power.toString();
