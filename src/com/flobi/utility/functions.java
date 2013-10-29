@@ -31,11 +31,13 @@ public class functions {
 	// Merges player's preset with the current specifications and system defaults.
 	public static String[] mergeInputArgs(String playerName, String[] inputArgs, boolean validateArgs) {
 		// Get existing defaults (if present)
-		String[] resultArgs = floAuction.userSavedInputArgs.get(playerName).clone();
+		String[] resultArgs = null;
 		
 		// if player has no preset, use the current system defaults:
-		if (resultArgs == null) {
+		if (floAuction.userSavedInputArgs.get(playerName) == null) {
 			resultArgs = new String[]{"this", removeUselessDecimal(Double.toString(getUnsafeMoney(floAuction.defaultStartingBid))), removeUselessDecimal(Double.toString(getUnsafeMoney(floAuction.defaultBidIncrement))), Integer.toString(floAuction.defaultAuctionTime)};
+		} else {
+			resultArgs = floAuction.userSavedInputArgs.get(playerName).clone();
 		}
 		
 		// Remove the "start" and "prep" args:
