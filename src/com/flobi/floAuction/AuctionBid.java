@@ -172,6 +172,10 @@ public class AuctionBid {
 		if (args.length > 0) {
 			if (!args[0].isEmpty() && args[0].matches(floAuction.decimalRegex)) {
 				bidAmount = functions.getSafeMoney(Double.parseDouble(args[0]));
+				if (bidAmount == 0) {
+					error = "parse-error-invalid-bid";
+					return false;
+				}
 			} else {
 				error = "parse-error-invalid-bid";
 				return false;
