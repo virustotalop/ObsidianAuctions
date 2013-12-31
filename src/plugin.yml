@@ -29,7 +29,7 @@ commands:
   bid:
     description: Bid on auctions.
     permissions: auction.bid
-    usage: /<command> [bit amount] [max bid]
+    usage: /<command> [bid amount] [max bid]
 
 permissions:
   auction.*:
