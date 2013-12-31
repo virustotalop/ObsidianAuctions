@@ -126,7 +126,7 @@ public class Auction {
 		    	thisAuction.nextTickTime = thisAuction.nextTickTime + 1000;
 		    	
 		    	thisAuction.countdown--;
-		    	if (thisAuction.countdown == 0) {
+		    	if (thisAuction.countdown <= 0) {
 		    		thisAuction.end(null);
 		    		return;
 		    	}
