@@ -40,7 +40,7 @@ public class functions {
 			resultArgs = floAuction.userSavedInputArgs.get(playerName).clone();
 		}
 		
-		// Size increased in 2.9.3
+		// Size increased in 2.10.0
 		if (resultArgs.length < 5) {
 			String[] tmp = resultArgs.clone();
 			resultArgs = new String[]{tmp[0], tmp[1], tmp[2], tmp[3], "0"};
