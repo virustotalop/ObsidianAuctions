@@ -25,6 +25,7 @@ public class Auction {
 
 	private long startingBid = 0;
 	private long minBidIncrement = 0;
+	private long buyNow = 0;
 	private int quantity = 0;
 	private int time = 0;
 	private boolean active = false;
@@ -127,7 +128,7 @@ public class Auction {
 		    	
 		    	thisAuction.countdown--;
 		    	if (thisAuction.countdown <= 0) {
-		    		thisAuction.end(null);
+		    		thisAuction.end();
 		    		return;
 		    	}
 		    	if (!floAuction.suppressCountdown){
@@ -160,8 +161,8 @@ public class Auction {
 			floAuction.sendMessage("auction-info-no-auction", sender, this, fullBroadcast);
 			return;
 		} else if (fullBroadcast && floAuction.suppressAuctionStartInfo) {
-			floAuction.sendMessage("auction-info-suppressed-alt", sender, this, fullBroadcast);
-			return;
+			messageKeys.add("auction-info-suppressed-alt");
+			if (floAuction.allowBuyNow && getBuyNow() > 0) messageKeys.add("auction-info-buynow");
 		} else if (sealed) {
 			messageKeys.add("auction-info-header-sealed");
 			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) messageKeys.add("auction-info-display-name");
@@ -210,6 +211,7 @@ public class Auction {
 			}
 			
 			messageKeys.add("auction-info-footer-nobids");
+			if (floAuction.allowBuyNow && getBuyNow() > 0) messageKeys.add("auction-info-buynow");
 		} else {
 			messageKeys.add("auction-info-header");
 			if (items.getDisplayName(itemType) != null && !items.getDisplayName(itemType).isEmpty()) messageKeys.add("auction-info-display-name");
@@ -234,6 +236,7 @@ public class Auction {
 			}
 			
 			messageKeys.add("auction-info-footer");
+			if (floAuction.allowBuyNow && getBuyNow() > 0) messageKeys.add("auction-info-buynow");
 		}
 		floAuction.sendMessage(messageKeys, sender, this, fullBroadcast);
 	}
@@ -253,7 +256,7 @@ public class Auction {
 		if (currentBid != null) currentBid.cancelBid();
 		dispose();
 	}
-	public void end(Player ender) {
+	public void end() {
 		if (currentBid == null || lot == null) {
 			floAuction.sendMessage("auction-end-nobids", (CommandSender) null, this, true);
 			if (lot != null) lot.cancelLot();
@@ -284,14 +287,41 @@ public class Auction {
 		if (!isValidStartingBid()) return false;
 		if (!isValidIncrement()) return false;
 		if (!isValidTime()) return false;
+		if (!isValidBuyNow()) return false;
 		return true;
 	}
 	public void Bid(Player bidder, String[] inputArgs) {
+
+		// BuyNow
+		if (floAuction.allowBuyNow && inputArgs.length > 0) {
+			if (inputArgs[0].equalsIgnoreCase("buy")) {
+
+				if (buyNow == 0 || (currentBid != null && currentBid.getBidAmount() >= buyNow)) {
+					floAuction.sendMessage("bid-fail-buynow-expired", bidder, this, false);
+				} else {
+					inputArgs[0] = Long.toString(buyNow);
+					AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
+					if (bid.getError() != null) {
+						failBid(bid, bid.getError());
+						return;
+					} else {
+						// raisOwnBid does nothing if it's not the current bidder.
+						bid.raiseOwnBid(currentBid);
+						setNewBid(bid, null);
+						end();
+					}
+				}
+				return;
+			}
+		}
+		
+		// Normal bid
 		AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
 		if (bid.getError() != null) {
 			failBid(bid, bid.getError());
 			return;
 		}
+		
 		if (currentBid == null) {
 			if (bid.getBidAmount() < getStartingBid()) {
 				failBid(bid, "bid-fail-under-starting-bid");
@@ -383,6 +413,8 @@ public class Auction {
 	private void setNewBid(AuctionBid newBid, String reason) {
 		AuctionBid prevBid = currentBid;
 		
+		if (floAuction.expireBuyNowOnFirstBid) setBuyNow(0);
+		
 		if (currentBid != null) {
 			currentBid.cancelBid();
 		}
@@ -457,11 +489,12 @@ public class Auction {
 		return true;
 	}
 	private Boolean parseArgs() {
-		// (amount) (starting price) (increment) (time)
+		// (amount) (starting price) (increment) (time) (buynow)
 		if (!parseArgAmount()) return false;
 		if (!parseArgStartingBid()) return false;
 		if (!parseArgIncrement()) return false;
 		if (!parseArgTime()) return false;
+		if (!parseArgBuyNow()) return false;
 		return true;
 	}
 	private Boolean isValidOwner() {
@@ -508,6 +541,17 @@ public class Auction {
 		}
 		if (getMinBidIncrement() > floAuction.maxIncrement) {
 			floAuction.sendMessage("auction-fail-increment-too-high", ownerName, this);
+			return false;
+		}
+		return true;
+	}
+	private Boolean isValidBuyNow() {
+		if (getBuyNow() < 0) {
+			floAuction.sendMessage("auction-fail-buynow-too-low", ownerName, this);
+			return false;
+		}
+		if (getBuyNow() > floAuction.maxBuyNow) {
+			floAuction.sendMessage("auction-fail-buynow-too-high", ownerName, this);
 			return false;
 		}
 		return true;
@@ -604,6 +648,31 @@ public class Auction {
 		}
 		return true;
 	}
+	private Boolean parseArgBuyNow() {
+		
+		if (this.sealed || !floAuction.allowBuyNow) {
+			setBuyNow(0);
+			return true;
+		}
+
+		if (getBuyNow() > 0) return true;
+
+		if (args.length > 4) {
+			if (!args[4].isEmpty() && args[4].matches(floAuction.decimalRegex)) {
+				setBuyNow(functions.getSafeMoney(Double.parseDouble(args[4])));
+			} else {
+				floAuction.sendMessage("parse-error-invalid-buynow", ownerName, this);
+				return false;
+			}
+		} else {
+			setBuyNow(0);
+		}
+		if (getBuyNow() < 0) {
+			floAuction.sendMessage("parse-error-invalid-buynow", ownerName, this);
+			return false;
+		}
+		return true;
+	}
 	public long getMinBidIncrement() {
 		return minBidIncrement;
 	}
@@ -645,4 +714,12 @@ public class Auction {
             countdown += i;
             return countdown;
     }
+
+	public long getBuyNow() {
+		return buyNow;
+	}
+
+	public void setBuyNow(long buyNow) {
+		this.buyNow = buyNow;
+	}
 }

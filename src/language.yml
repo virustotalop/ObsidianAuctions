@@ -27,6 +27,7 @@ parse-error-invalid-bid-increment: '&6The bid increment you specified is invalid
 parse-error-invalid-time: '&6The time you specified is invalid.'
 parse-error-invalid-bid: '&6The bid amount you specified is invalid.'
 parse-error-invalid-max-bid: '&6The max bid amount you specified is invalid.'
+parse-error-invalid-buynow: '&6The BuyNow amount you specified is invalid.'
 
 auction-fail-banned: '&6You cannot auction this.'
 auction-fail-start-tax: '&6You cannot afford to start an auction.'
@@ -37,6 +38,8 @@ auction-fail-starting-bid-too-low: '&6The starting bid is too low.'
 auction-fail-starting-bid-too-high: '&6The starting bid is too high.'
 auction-fail-increment-too-low: '&6The bid increment is too small.'
 auction-fail-increment-too-high: '&6The bid increment is too large.'
+auction-fail-buynow-too-low: '&6The BuyNow amount is too small.'
+auction-fail-buynow-too-high: '&6The BuyNow amount is too large.'
 auction-fail-time-too-low: '&6The specified time is too short.'
 auction-fail-time-too-high: '&6The specified time is too long.'
 auction-fail-invalid-owner: '&6A non-player tried to start an auction?'
@@ -74,6 +77,7 @@ bid-fail-under-starting-bid: '&6The bidding must start at %s.'
 bid-fail-bid-required: '&6You must enter a bid amount.'
 bid-fail-too-low: '&6Your bid was too low.'
 bid-fail-outside-auctionhouse: '&6You must auction at the auction house.'
+bid-fail-buynow-expired: '&6BuyNow option missing or expired.'
 
 confiscation-fail-console: '&6Only online players can impound items (you have no inventory, console).'
 confiscation-fail-self: '&6You cannot impound your own items.'
@@ -94,7 +98,7 @@ auction-disabled: '&bAuctioning disabled.'
 auction-enabled: '&bAuctioning enabled.'
 auction-start: '&cAttention, an auction is beginning!'
 auction-help: 
-- '&b/auction&4|&bauc start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced increase of &6[INC]&9 between bids. &a("&4|&a" means "or" meaning you can any option in &4|&a lists)'
+- '&b/auction&4|&bauc start&4|&bs &6[QTY] [PRICE] [INC] [TIME] [BUYNOW]&9 - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced increase of &6[INC]&9 between bids and an option to buy item for &6[BUYNOW]&9. &a("&4|&a" means "or" meaning you can any option in &4|&a lists)'
 - '&b/auction&4|&bauc end&4|&be&4|&bstop&9 - Ends current auction'
 - '&b/auction&4|&bauc cancel&4|&bc&9 - Cancels current auction'
 - '&b/auction&4|&bauc info&4|&bi&9 - Returns current auction info.'
@@ -121,6 +125,7 @@ auction-info-damage: 'Item damaged: &6%D &aremaining.'
 auction-info-payload: 'Firework payload: &a%A'
 auction-info-payload-separator: '&9, &a'
 auction-info-payload-power: 'Firework Flight Duration: &a%r'
+auction-info-buynow: 'Buy now for &c%f &9with &a/bid buy&9.'
 
 auction-info-footer: 
 - The current bid is &6%b&9 by &b%B&9.
@@ -160,6 +165,14 @@ prep-save-success:
 - 'Starting bid: &6%V'
 - 'Minimum increment between bids: &6%W'
 - 'Auction length: &6%Z'
+- Use &b/auction start &9to start an auction with these parameters.
+prep-save-success-with-buynow:
+- 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME] [BUYNOW]'
+- 'Quantity to auction: &6%U'
+- 'Starting bid: &6%V'
+- 'Minimum increment between bids: &6%W'
+- 'Auction length: &6%Z'
+- 'BuyNow amount: &6%G'
 - Use &b/auction start &9to start an auction with these parameters.
 prep-amount-in-hand: 'Amount in hand'
 prep-all-of-this-kind: 'All items matching held item'

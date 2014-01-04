@@ -35,9 +35,15 @@ public class functions {
 		
 		// if player has no preset, use the current system defaults:
 		if (floAuction.userSavedInputArgs.get(playerName) == null) {
-			resultArgs = new String[]{"this", removeUselessDecimal(Double.toString(getUnsafeMoney(floAuction.defaultStartingBid))), removeUselessDecimal(Double.toString(getUnsafeMoney(floAuction.defaultBidIncrement))), Integer.toString(floAuction.defaultAuctionTime)};
+			resultArgs = new String[]{"this", removeUselessDecimal(Double.toString(getUnsafeMoney(floAuction.defaultStartingBid))), removeUselessDecimal(Double.toString(getUnsafeMoney(floAuction.defaultBidIncrement))), Integer.toString(floAuction.defaultAuctionTime), "0"};
 		} else {
 			resultArgs = floAuction.userSavedInputArgs.get(playerName).clone();
+		}
+		
+		// Size increased in 2.9.3
+		if (resultArgs.length < 5) {
+			String[] tmp = resultArgs.clone();
+			resultArgs = new String[]{tmp[0], tmp[1], tmp[2], tmp[3], "0"};
 		}
 		
 		// Remove the "start" and "prep" args:
@@ -100,6 +106,19 @@ public class functions {
 							if (!resultArgs[3].matches("[0-9]{1,7}")) {
 								floAuction.sendMessage("parse-error-invalid-time", playerName, null);
 								return null;
+							}
+						}
+
+						// BuyNow
+						if (processArgs.length > 4) {
+							if (!processArgs[4].equalsIgnoreCase("-")) {
+								resultArgs[4] = processArgs[4];
+							}
+							if (validateArgs) {
+								if (resultArgs[4].isEmpty() || !resultArgs[4].matches(floAuction.decimalRegex)) {
+									floAuction.sendMessage("parse-error-invalid-buynow", playerName, null);
+									return null;
+								}
 							}
 						}
 					}

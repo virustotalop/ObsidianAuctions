@@ -8,6 +8,8 @@ max-starting-bid: 10000
 default-bid-increment: 1
 min-bid-increment: 1
 max-bid-increment: 100
+max-buynow: 10000
+expire-buynow-at-first-bid: false
 
 default-auction-time: 60
 min-auction-time: 15
@@ -16,6 +18,7 @@ max-auction-time: 120
 decimal-places: 2
 
 allow-max-bids: true
+allow-buynow: true
 allow-early-end: false
 allow-gamemode-creative: false
 allow-damaged-items: false

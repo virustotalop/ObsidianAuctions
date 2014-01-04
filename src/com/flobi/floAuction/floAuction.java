@@ -72,6 +72,7 @@ public class floAuction extends JavaPlugin {
 	public static long defaultBidIncrement = 100;
 	public static int defaultAuctionTime = 60;
 	public static long maxStartingBid = 10000;
+	public static long maxBuyNow = 10000;
 	public static long minIncrement = 1;
 	public static long maxIncrement = 100;
 	public static int maxTime = 60;
@@ -116,6 +117,8 @@ public class floAuction extends JavaPlugin {
 	public static boolean suppressCountdown = true;
 	public static boolean suppressAuctionStartInfo = true;
 	public static boolean allowRenamedItems = true;
+	public static boolean allowBuyNow = true;
+	public static boolean expireBuyNowOnFirstBid = false;
 	public static List<String> disabledCommands = new ArrayList<String>();
 	
 	public static List<Participant> auctionParticipants = new ArrayList<Participant>();
@@ -448,6 +451,7 @@ public class floAuction extends JavaPlugin {
 		defaultBidIncrement = functions.getSafeMoney(config.getDouble("default-bid-increment"));
 		defaultAuctionTime = config.getInt("default-auction-time");
 		maxStartingBid = functions.getSafeMoney(config.getDouble("max-starting-bid"));
+		maxBuyNow = functions.getSafeMoney(config.getDouble("max-buynow"));
 		minIncrement = functions.getSafeMoney(config.getDouble("min-bid-increment"));
 		maxIncrement = functions.getSafeMoney(config.getDouble("max-bid-increment"));
 		maxTime = config.getInt("max-auction-time");
@@ -481,6 +485,8 @@ public class floAuction extends JavaPlugin {
         }
         
         allowRenamedItems = config.getBoolean("allow-renamed-items");
+        allowBuyNow = config.getBoolean("allow-buynow");
+        expireBuyNowOnFirstBid = config.getBoolean("expire-buynow-at-first-bid");
 
         broadCastBidUpdates = config.getBoolean("broadcast-bid-updates");
         allowAutoBid = config.getBoolean("allow-auto-bid");
@@ -542,6 +548,10 @@ public class floAuction extends JavaPlugin {
 	    
 	    if (maxStartingBid == 0) {
 	    	maxStartingBid = 100000000000000000L;
+	    }
+	    
+	    if (maxBuyNow == 0) {
+	    	maxBuyNow = 100000000000000000L;
 	    }
     }
 	public void onDisable() {
@@ -890,7 +900,11 @@ public class floAuction extends JavaPlugin {
     				if (mergedArgs != null) {
 						floAuction.userSavedInputArgs.put(playerName, mergedArgs);
 						floAuction.saveObject(floAuction.userSavedInputArgs, "userSavedInputArgs.ser");
-						sendMessage("prep-save-success", sender, null, false);
+						if (allowBuyNow) {
+							sendMessage("prep-save-success-with-buynow", sender, null, false);
+						} else {
+							sendMessage("prep-save-success", sender, null, false);
+						}
     				}
 
 					return true;
@@ -955,7 +969,7 @@ public class floAuction extends JavaPlugin {
         				return true;
     				}
 					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
-    					auction.end(player);
+    					auction.end();
     					publicAuction = null;
 					} else {
     					sendMessage("auction-fail-not-owner-end", player, auction, false);
@@ -1075,6 +1089,7 @@ public class floAuction extends JavaPlugin {
     	String lotType = null;
     	String startingBid = null;
     	String minBidIncrement = null;
+    	String buyNow = null;
     	String currentBidder = null;
     	String currentBid = null;
     	String currentMaxBid = null;
@@ -1116,6 +1131,7 @@ public class floAuction extends JavaPlugin {
 	    		startingBid = functions.formatAmount(auction.getStartingBid());
     		}
     		minBidIncrement = functions.formatAmount(auction.getMinBidIncrement());
+    		buyNow = functions.formatAmount(auction.getBuyNow());
 			
 			timeRemaining = functions.formatTime(auction.getRemainingTime());
     		startAuctionTax = functions.formatAmount(auction.extractedPreTax);
@@ -1163,6 +1179,7 @@ public class floAuction extends JavaPlugin {
         	lotType = "-";
         	startingBid = "-";
         	minBidIncrement = "-";
+        	buyNow = "-";
         	currentBidder = "-";
         	currentBid = "-";
         	currentMaxBid = "-";
@@ -1206,6 +1223,7 @@ public class floAuction extends JavaPlugin {
 				message = message.replace("%i", displayName);
 				message = message.replace("%s", startingBid);
 				message = message.replace("%n", minBidIncrement);
+				message = message.replace("%f", buyNow);
 				message = message.replace("%b", currentBid);
 				message = message.replace("%B", currentBidder);
 				message = message.replace("%h", currentMaxBid);
@@ -1237,6 +1255,8 @@ public class floAuction extends JavaPlugin {
 				message = message.replace("%W", functions.formatAmount(Double.parseDouble(defaultStartArgs[2])));
 				message = message.replace("%z", defaultStartArgs[3]);
 				message = message.replace("%Z", functions.formatTime(Integer.parseInt(defaultStartArgs[3])));
+				message = message.replace("%g", defaultStartArgs[4]);
+				message = message.replace("%G", functions.formatAmount(Double.parseDouble(defaultStartArgs[4])));
 				
 				
 				originalMessage = message;
