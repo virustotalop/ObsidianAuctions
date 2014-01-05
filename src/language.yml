@@ -7,6 +7,7 @@ whatisit-recommended: WhatIsIt plugin highly recommended for full item informati
 no-vault: Disabled due to no Vault dependency found!
 no-economy: Disabled due to no Economy found!
 plugin-reloaded: '&fconfiguration has been reloaded.'
+plugin-reloaded-fail-auctions-running: '&6Config cannot be reloaded while auctions are running or queued.  If your server is too busy to find a time when auctions are not running, you can use &a/auc suspend &6to temporarily suspend all auctioning, but don''t forget to &a/auc resume &6when finished.'
 no-permission: '&6You do not have permission.'
 disabled-command: '&6You cannot do that while participating in an auction.'
 auctionhouse-escape-warning: '&6You cannot leave the auction house while participating in an auction.'
@@ -57,6 +58,7 @@ auction-fail-damaged-item: '&6You cannot auction damaged items.'
 auction-fail-no-sealed-auctions: '&6Sealed auctions are disabled.'
 auction-fail-renamed-item: '&6You cannot auction renamed items.'
 auction-fail-outside-auctionhouse: '&6You must auction at the auction house.'
+auction-fail-no-scope: '&6Auctioning is not possible at this location.'
 auction-fail-banned-lore: '&6This item contains banned lore.'
 
 bid-success-no-challenger: '&b%B&9 has bid &6%b&9 on the &a%i&9.'

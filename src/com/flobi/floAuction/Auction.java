@@ -18,7 +18,7 @@ public class Auction {
 	protected floAuction plugin;
 	private String[] args;
 	private String ownerName;
-	private String scope;
+	private AuctionScope scope;
 	
 	public double extractedPreTax = 0;
 	public double extractedPostTax = 0;
@@ -42,11 +42,11 @@ public class Auction {
 	private int countdown = 0;
 	private int countdownTimer = 0;
 	
-	public String getScope() {
+	public AuctionScope getScope() {
 		return scope;
 	}
 	
-	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, String scope, boolean sealed) {
+	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed) {
 		ownerName = auctionOwner.getName();
 		args = functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
 		this.plugin = plugin; 
@@ -276,7 +276,7 @@ public class Auction {
 			sealedBids.get(i).cancelBid();
 		}
 		
-		plugin.detachAuction(this);
+		scope.setActiveAuction(null);
 	}
 	public Boolean isValid() {
 		if (!isValidOwner()) return false;
@@ -550,7 +550,7 @@ public class Auction {
 			floAuction.sendMessage("auction-fail-buynow-too-low", ownerName, this);
 			return false;
 		}
-		if (getBuyNow() > floAuction.maxBuyNow) {
+		if (getBuyNow() > AuctionConfig.getSafeMoneyFromDouble("max-buynow", scope)) {
 			floAuction.sendMessage("auction-fail-buynow-too-high", ownerName, this);
 			return false;
 		}

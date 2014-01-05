@@ -72,3 +72,22 @@ disabled-commands:
 
 banned-lore:
   - mcMMO Ability Tool
+
+auction-scopes:
+  default:
+    worlds:
+      - '*'
+    config:
+      taxed-items:
+        0: 100%
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

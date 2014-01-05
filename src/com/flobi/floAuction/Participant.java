@@ -116,15 +116,16 @@ public class Participant {
 
 	public boolean isParticipating() {
 		boolean participating = false;
-        if (floAuction.publicAuction != null) {
-            if (floAuction.publicAuction.getOwner().equalsIgnoreCase(playerName)) {
+		Auction playerAuction = floAuction.getPlayerAuction(this.playerName);
+        if (playerAuction != null) {
+            if (playerAuction.getOwner().equalsIgnoreCase(playerName)) {
             	participating = true;
             }
-            if (floAuction.publicAuction.getCurrentBid() != null && floAuction.publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(playerName)) {
+            if (playerAuction.getCurrentBid() != null && playerAuction.getCurrentBid().getBidder().equalsIgnoreCase(playerName)) {
             	participating = true;
             }
-            for (int i = 0; i < floAuction.publicAuction.sealedBids.size(); i++) {
-            	if (floAuction.publicAuction.sealedBids.get(i).getBidder().equalsIgnoreCase(playerName)) {
+            for (int i = 0; i < playerAuction.sealedBids.size(); i++) {
+            	if (playerAuction.sealedBids.get(i).getBidder().equalsIgnoreCase(playerName)) {
                 	participating = true;
             	}
             }
