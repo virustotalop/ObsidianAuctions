@@ -1,79 +1,63 @@
 package com.flobi.floAuction;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class Participant {
 	private String playerName = null;
-	private static Location minLocation = null;
-	private static Location maxLocation = null;
+	private AuctionScope auctionScope = null;
 	private Location lastKnownGoodLocation = null;
 	private boolean sentEscapeWarning = false;
 	
-	public static void setAuctionHouseBox(String world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-		if (world.isEmpty()) {
-			minLocation = null;
-			maxLocation = null;
-		} else {
-			minLocation = new Location(Bukkit.getWorld(world), minX, minY, minZ);
-			maxLocation = new Location(Bukkit.getWorld(world), maxX, maxY, maxZ);
-		}
-	}
-	
 	public static boolean checkLocation(String playerName) {
-		if (minLocation == null) return true;
-		Player player = floAuction.server.getPlayer(playerName);
-		Location currentLocation = player.getLocation();
-		if (!currentLocation.getWorld().equals(minLocation.getWorld())) return false;
-		if (currentLocation.getX() > Math.max(minLocation.getX(), maxLocation.getX()) || currentLocation.getX() < Math.min(minLocation.getX(), maxLocation.getX())) return false;
-		if (currentLocation.getZ() > Math.max(minLocation.getZ(), maxLocation.getZ()) || currentLocation.getZ() < Math.min(minLocation.getZ(), maxLocation.getZ())) return false;
-		if (currentLocation.getY() > Math.max(minLocation.getY(), maxLocation.getY()) || currentLocation.getY() < Math.min(minLocation.getY(), maxLocation.getY())) return false;
-		return true;
+		Participant participant = Participant.getParticipant(playerName);
+		if (participant == null) return true;
+		return (participant.auctionScope.equals(floAuction.getPlayerScope(floAuction.server.getPlayer(playerName))));
 	}
-	
-	public static void forceLocation(String playerName) {
-		if (minLocation == null) return;
 
+	public static boolean checkLocation(String playerName, Location location) {
+		Participant participant = Participant.getParticipant(playerName);
+		if (participant == null) return true;
+		return (participant.auctionScope.equals(floAuction.getLocationScope(location)));
+	}
+
+	public static void forceLocation(String playerName, Location locationForGaze) {
 		Participant participant = Participant.getParticipant(playerName);
 		if (participant == null) return;
 		if (!participant.isParticipating()) return;
 		
 		Player player = floAuction.server.getPlayer(playerName);
 		Location location = player.getLocation();
+		location.setDirection(new Vector(0, 0, 0));
+		location.setPitch(locationForGaze.getPitch());
+		location.setYaw(locationForGaze.getYaw());
 		
-		
-		if (participant.lastKnownGoodLocation != null) {
-			if (!Participant.checkLocation(playerName)) {
-				player.teleport(participant.lastKnownGoodLocation);
-				participant.sendEscapeWarning();
-				return;
-			}
-		} else {
-			boolean doMove = false;
-			double x = location.getX();
-			double y = location.getY();
-			double z = location.getZ();
-			
-			if (!location.getWorld().equals(minLocation.getWorld())) {doMove = true; location.setWorld(minLocation.getWorld());}
-			if (x > Math.max(minLocation.getX(), maxLocation.getX())) {doMove = true; location.setX(Math.max(minLocation.getX(), maxLocation.getX()));} 
-			if (x < Math.min(minLocation.getX(), maxLocation.getX())) {doMove = true; location.setX(Math.min(minLocation.getX(), maxLocation.getX()));}
-			if (y > Math.max(minLocation.getY(), maxLocation.getY())) {doMove = true; location.setY(Math.max(minLocation.getY(), maxLocation.getY()));}
-			if (y < Math.min(minLocation.getY(), maxLocation.getY())) {doMove = true; location.setY(Math.min(minLocation.getY(), maxLocation.getY()));}
-			if (z > Math.max(minLocation.getZ(), maxLocation.getZ())) {doMove = true; location.setZ(Math.max(minLocation.getZ(), maxLocation.getZ()));}
-			if (z < Math.min(minLocation.getZ(), maxLocation.getZ())) {doMove = true; location.setZ(Math.min(minLocation.getZ(), maxLocation.getZ()));}
-			
-			if (doMove) {
-				player.teleport(location);
-				participant.sendEscapeWarning();
-			}
+		if (!Participant.checkLocation(playerName)) {
+			player.teleport(participant.lastKnownGoodLocation);
+			participant.sendEscapeWarning();
+			return;
 		}
 		participant.lastKnownGoodLocation = location;
 	}
 	
+	// Returns whether or not to cancel the teleport.
+	public static boolean checkTeleportLocation(String playerName, Location location) {
+		Participant participant = Participant.getParticipant(playerName);
+		if (participant == null) return false;
+		if (!participant.isParticipating()) return false;
+		
+		if (!Participant.checkLocation(playerName, location)) {
+			participant.sendEscapeWarning();
+			return true;
+		}
+		participant.lastKnownGoodLocation = location;
+		return false;
+	}
+	
 	private void sendEscapeWarning() {
 		if (sentEscapeWarning) return;
-		floAuction.sendMessage("auctionhouse-escape-warning", playerName, null);
+		floAuction.sendMessage("auctionscope-escape-warning", playerName, null);
 		sentEscapeWarning = true;
 	}
 
@@ -88,9 +72,11 @@ public class Participant {
 		return participating;
 	}
 	
-	public static void addParticipant(String playerName) {
+	public static void addParticipant(String playerName, AuctionScope auctionScope) {
+		Player player = floAuction.server.getPlayer(playerName);
 		if (Participant.getParticipant(playerName) == null) {
-			Participant participant = new Participant(playerName);
+			Participant participant = new Participant(playerName, auctionScope);
+			participant.lastKnownGoodLocation = player.getLocation();
 			floAuction.auctionParticipants.add(participant);
 			participant.isParticipating();
 		}
@@ -99,15 +85,16 @@ public class Participant {
 	public static Participant getParticipant(String playerName) {
 		for (int i = 0; i < floAuction.auctionParticipants.size(); i++) {
 			Participant participant = floAuction.auctionParticipants.get(i);
-			if (participant.isParticipating() && playerName.equalsIgnoreCase(participant.getPlayerName())) {
+			if (playerName.equalsIgnoreCase(participant.getPlayerName())) {
 				return participant;
 			}
 		}
 		return null;
 	}
 	
-	public Participant(String playerName) {
+	public Participant(String playerName, AuctionScope auctionScope) {
 		this.playerName = playerName;
+		this.auctionScope = auctionScope;
 	}
 
 	public String getPlayerName() {
@@ -116,22 +103,22 @@ public class Participant {
 
 	public boolean isParticipating() {
 		boolean participating = false;
-		Auction playerAuction = floAuction.getPlayerAuction(this.playerName);
-        if (playerAuction != null) {
-            if (playerAuction.getOwner().equalsIgnoreCase(playerName)) {
+		Auction scopeAuction = auctionScope.getActiveAuction();
+        if (scopeAuction != null) {
+            if (scopeAuction.getOwner().equalsIgnoreCase(playerName)) {
             	participating = true;
             }
-            if (playerAuction.getCurrentBid() != null && playerAuction.getCurrentBid().getBidder().equalsIgnoreCase(playerName)) {
+            if (scopeAuction.getCurrentBid() != null && scopeAuction.getCurrentBid().getBidder().equalsIgnoreCase(playerName)) {
             	participating = true;
             }
-            for (int i = 0; i < playerAuction.sealedBids.size(); i++) {
-            	if (playerAuction.sealedBids.get(i).getBidder().equalsIgnoreCase(playerName)) {
+            for (int i = 0; i < scopeAuction.sealedBids.size(); i++) {
+            	if (scopeAuction.sealedBids.get(i).getBidder().equalsIgnoreCase(playerName)) {
                 	participating = true;
             	}
             }
         }
-		for (int i = 0; i < floAuction.auctionQueue.size(); i++) {
-			Auction queuedAuction = floAuction.auctionQueue.get(i);
+		for (int i = 0; i < auctionScope.getAuctionQueueLength(); i++) {
+			Auction queuedAuction = auctionScope.getAuctionQueue().get(i);
             if (queuedAuction != null) {
                 if (queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
                 	participating = true;

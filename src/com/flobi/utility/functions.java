@@ -4,18 +4,20 @@ import java.text.DecimalFormat;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
+import com.flobi.floAuction.AuctionConfig;
+import com.flobi.floAuction.AuctionScope;
 import com.flobi.floAuction.floAuction;
 
 public class functions {
 
-	public static String formatTime(int seconds) {
+	public static String formatTime(int seconds, AuctionScope auctionScope) {
 		String returnTime = "-";
 		if (seconds >= 60) {
-			returnTime = floAuction.textConfig.getString("time-format-minsec");
+			returnTime = AuctionConfig.getLanguageString("time-format-minsec", auctionScope);
 			returnTime = returnTime.replace("%s", Integer.toString(seconds % 60));
 			returnTime = returnTime.replace("%m", Integer.toString((seconds - (seconds % 60)) / 60));
 		} else {
-			returnTime = floAuction.textConfig.getString("time-format-seconly");
+			returnTime = AuctionConfig.getLanguageString("time-format-seconly", auctionScope);
 			returnTime = returnTime.replace("%s", Integer.toString(seconds));
 		}
 		return returnTime;
@@ -35,7 +37,7 @@ public class functions {
 		
 		// if player has no preset, use the current system defaults:
 		if (floAuction.userSavedInputArgs.get(playerName) == null) {
-			resultArgs = new String[]{"this", removeUselessDecimal(Double.toString(getUnsafeMoney(floAuction.defaultStartingBid))), removeUselessDecimal(Double.toString(getUnsafeMoney(floAuction.defaultBidIncrement))), Integer.toString(floAuction.defaultAuctionTime), "0"};
+			resultArgs = new String[]{"this", removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-starting-bid", null))), removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-bid-increment", null))), Integer.toString(AuctionConfig.getInt("default-auction-time", null)), "0"};
 		} else {
 			resultArgs = floAuction.userSavedInputArgs.get(playerName).clone();
 		}

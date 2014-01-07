@@ -61,7 +61,7 @@ public class AuctionBid {
 		if (auction.sealed) {
 			// Queue reserve refund.
 			auction.sealedBids.add(this);
-			Participant.addParticipant(getBidder());
+			Participant.addParticipant(getBidder(), auction.getScope());
 		} else {
 			// Refund reserve.
 			functions.depositPlayer(bidderName, reserve);
@@ -74,17 +74,18 @@ public class AuctionBid {
 		
 		// Extract taxes:
 		Double taxes = 0D;
-		double taxPercent = floAuction.taxPercentage; 
+		double taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", auction.getScope()); 
 		ItemStack typeStack = auction.getLotType();
 
-		for (Map.Entry<String, String> entry : floAuction.taxedItems.entrySet()) {
+		for (Map.Entry<String, String> entry : AuctionConfig.getStringStringMap("taxed-items", auction.getScope()).entrySet()) {
 			if (items.isSameItem(typeStack, entry.getKey())) {
 				if (entry.getValue().endsWith("%")) {
 					try {
 						taxPercent = Double.valueOf(entry.getValue().substring(0, entry.getValue().length() - 1));
 					} catch (Exception e) {
 						// Clearly this isn't a valid number, just forget about it.
-						taxPercent = floAuction.taxPercentage;
+						// taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", auction.getScope());
+						// On second thought, this is already the value, so just keep it.
 					}
 				}
 				break;
@@ -97,10 +98,10 @@ public class AuctionBid {
 			
 			auction.extractedPostTax = taxes;
 			
-			floAuction.sendMessage("auction-end-tax", auction.getOwner(), auction);
+			floAuction.sendMessage("auction-end-tax", auction.getOwner(), auction.getScope());
 			unsafeBidAmount -= taxes;
-			
-			if (!floAuction.taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(floAuction.taxDestinationUser, taxes);
+			String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", auction.getScope());
+			if (!taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(taxDestinationUser, taxes);
 		}
 		
 		// Apply winnings to auction owner.
@@ -123,7 +124,7 @@ public class AuctionBid {
 			return false;
 		}
 		
-		if (bidderName.equalsIgnoreCase(auction.getOwner()) && !floAuction.allowBidOnOwn) {
+		if (bidderName.equalsIgnoreCase(auction.getOwner()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", auction.getScope())) {
 			error = "bid-fail-is-auction-owner";
 			return false;
 		}
@@ -181,7 +182,7 @@ public class AuctionBid {
 				return false;
 			}
 		} else {
-			if (auction.sealed || !floAuction.allowAutoBid) {
+			if (auction.sealed || !AuctionConfig.getBoolean("allow-auto-bid", auction.getScope())) {
 				error = "bid-fail-bid-required";
 				return false;
 			} else {
@@ -213,7 +214,7 @@ public class AuctionBid {
 		return true;
 	}
 	private Boolean parseArgMaxBid() {
-		if (!floAuction.allowMaxBids || auction.sealed) {
+		if (!AuctionConfig.getBoolean("allow-max-bids", auction.getScope()) || auction.sealed) {
 			// Just ignore it.
 			maxBidAmount = bidAmount;
 			return true;

@@ -58,14 +58,6 @@ banned-items:
 taxed-items: 
   0: 100%
 
-auctionhouse-world: ''
-auctionhouse-min-x: 0.0
-auctionhouse-min-y: 0.0
-auctionhouse-min-z: 0.0
-auctionhouse-max-x: 0.0
-auctionhouse-max-y: 0.0
-auctionhouse-max-z: 0.0
-
 disabled-commands:
   - '/ma join'
   - '/mobarena join'
@@ -75,6 +67,7 @@ banned-lore:
 
 auction-scopes:
   default:
+    type: 'worlds'
     worlds:
       - '*'
     config:

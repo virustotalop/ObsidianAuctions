@@ -3,23 +3,45 @@ package com.flobi.floAuction;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class AuctionScope {
 	private Auction activeAuction = null;
-	private String name = "";
+	private String name = null;
+	private String type = null;
 	private ArrayList<Auction> auctionQueue = new ArrayList<Auction>();
 	private long lastAuctionDestroyTime = 0;
 	private List<String> worlds = null;
+	private Location minHouseLocation = null;
+	private Location maxHouseLocation = null;
 	private ConfigurationSection config = null;
+	private FileConfiguration textConfig = null;
 
-	public AuctionScope(String name, List<String> worlds, ConfigurationSection config) {
+	public AuctionScope(String name, ConfigurationSection config, YamlConfiguration textConfig) {
 		this.name = name;
-		this.worlds = worlds;
-		this.config = config;
+		this.textConfig = textConfig;
+
+		type = config.getString("type");
+		if (type.equalsIgnoreCase("worlds")) {
+			worlds = config.getStringList("worlds");
+		} else if (type.equalsIgnoreCase("house")) {
+			String world = config.getString("house-world");
+			if (world.isEmpty()) {
+				minHouseLocation = null;
+				maxHouseLocation = null;
+			} else {
+				minHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-min-x"), config.getDouble("house-min-y"), config.getDouble("house-min-z"));
+				maxHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-max-x"), config.getDouble("house-max-y"), config.getDouble("house-max-z"));
+			}
+		}
+		this.config = config.getConfigurationSection("config");
 	}
 	
 	public Auction getActiveAuction() {
@@ -51,21 +73,21 @@ public class AuctionScope {
 		if (currentAuction == null) {
 			// Queuing because of interval not yet timed out.
 			// Allow a queue of 1 to override if 0 for this condition.
-	    	if (Math.max(floAuction.maxAuctionQueueLength, 1) <= auctionQueue.size()) {
-	    		floAuction.sendMessage("auction-queue-fail-full", player, currentAuction, false);
+	    	if (Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= auctionQueue.size()) {
+	    		floAuction.sendMessage("auction-queue-fail-full", player, this, false);
 				return;
 			}
 		} else {
-	    	if (floAuction.maxAuctionQueueLength <= 0) {
-	    		floAuction.sendMessage("auction-fail-auction-exists", player, currentAuction, false);
+	    	if (AuctionConfig.getInt("max-auction-queue-length", this) <= 0) {
+	    		floAuction.sendMessage("auction-fail-auction-exists", player, this, false);
 				return;
 			}
 			if (currentAuction.getOwner().equalsIgnoreCase(playerName)) {
-				floAuction.sendMessage("auction-queue-fail-current-auction", player, currentAuction, false);
+				floAuction.sendMessage("auction-queue-fail-current-auction", player, this, false);
 				return;
 			}
-			if (floAuction.maxAuctionQueueLength <= auctionQueue.size()) {
-				floAuction.sendMessage("auction-queue-fail-full", player, currentAuction, false);
+			if (AuctionConfig.getInt("max-auction-queue-length", this) <= auctionQueue.size()) {
+				floAuction.sendMessage("auction-queue-fail-full", player, this, false);
 				return;
 			}
 		}
@@ -73,17 +95,17 @@ public class AuctionScope {
 			if (auctionQueue.get(i) != null) {
 				Auction queuedAuction = auctionQueue.get(i);
 				if (queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
-					floAuction.sendMessage("auction-queue-fail-in-queue", player, currentAuction, false);
+					floAuction.sendMessage("auction-queue-fail-in-queue", player, this, false);
 					return;
 				}
 			}
 		}
-		if ((auctionQueue.size() == 0 && System.currentTimeMillis() - lastAuctionDestroyTime >= floAuction.minAuctionIntervalSecs * 1000) || auctionToQueue.isValid()) {
+		if ((auctionQueue.size() == 0 && System.currentTimeMillis() - lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
 			auctionQueue.add(auctionToQueue);
-			Participant.addParticipant(playerName);
+			Participant.addParticipant(playerName, this);
 			checkAuctionQueue();
 			if (auctionQueue.contains(auctionToQueue)) {
-				floAuction.sendMessage("auction-queue-enter", player, currentAuction, false);
+				floAuction.sendMessage("auction-queue-enter", player, this, false);
 			}
 		}
     }
@@ -92,7 +114,7 @@ public class AuctionScope {
 		if (activeAuction != null) {
 			return;
 		}
-		if (System.currentTimeMillis() - lastAuctionDestroyTime < floAuction.minAuctionIntervalSecs * 1000) {
+		if (System.currentTimeMillis() - lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) {
 			return;
 		}
 		if (auctionQueue.size() == 0) {
@@ -107,7 +129,7 @@ public class AuctionScope {
 		if (player == null || !player.isOnline()) {
 			return;
 		}
-		if (!floAuction.allowCreativeMode && player.getGameMode() == GameMode.CREATIVE) {
+		if (!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
 			floAuction.sendMessage("auction-fail-gamemode-creative", player, null, false);
 			return;
 		}
@@ -119,8 +141,9 @@ public class AuctionScope {
 		if (!auction.isValid()) {
 			return;
 		}
-		if (auction.start()) {
-			activeAuction = auction;
+		activeAuction = auction;
+		if (!auction.start()) {
+			activeAuction = null;
 		}
 	}
 	
@@ -129,9 +152,38 @@ public class AuctionScope {
 		World playerWorld = player.getWorld();
 		if (playerWorld == null) return false;
 		String playerWorldName = playerWorld.getName();
-		for (int i = 0; i < worlds.size(); i++) {
-			if (worlds.get(i).equalsIgnoreCase(playerWorldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
-			player.sendMessage(playerWorldName + " vs. " + worlds.get(i));
+		if (type.equalsIgnoreCase("worlds")) {
+			for (int i = 0; i < worlds.size(); i++) {
+				if (worlds.get(i).equalsIgnoreCase(playerWorldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
+			}
+		} else if (type.equalsIgnoreCase("house")) {
+			if (minHouseLocation == null || maxHouseLocation == null) return false;
+			Location currentLocation = player.getLocation();
+			if (!currentLocation.getWorld().equals(minHouseLocation.getWorld())) return false;
+			if (currentLocation.getX() > Math.max(minHouseLocation.getX(), maxHouseLocation.getX()) || currentLocation.getX() < Math.min(minHouseLocation.getX(), maxHouseLocation.getX())) return false;
+			if (currentLocation.getZ() > Math.max(minHouseLocation.getZ(), maxHouseLocation.getZ()) || currentLocation.getZ() < Math.min(minHouseLocation.getZ(), maxHouseLocation.getZ())) return false;
+			if (currentLocation.getY() > Math.max(minHouseLocation.getY(), maxHouseLocation.getY()) || currentLocation.getY() < Math.min(minHouseLocation.getY(), maxHouseLocation.getY())) return false;
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isLocationInScope(Location location) {
+		if (location == null) return false;
+		World playerWorld = location.getWorld();
+		if (playerWorld == null) return false;
+		String playerWorldName = playerWorld.getName();
+		if (type.equalsIgnoreCase("worlds")) {
+			for (int i = 0; i < worlds.size(); i++) {
+				if (worlds.get(i).equalsIgnoreCase(playerWorldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
+			}
+		} else if (type.equalsIgnoreCase("house")) {
+			if (minHouseLocation == null || maxHouseLocation == null) return false;
+			if (!location.getWorld().equals(minHouseLocation.getWorld())) return false;
+			if (location.getX() > Math.max(minHouseLocation.getX(), maxHouseLocation.getX()) || location.getX() < Math.min(minHouseLocation.getX(), maxHouseLocation.getX())) return false;
+			if (location.getZ() > Math.max(minHouseLocation.getZ(), maxHouseLocation.getZ()) || location.getZ() < Math.min(minHouseLocation.getZ(), maxHouseLocation.getZ())) return false;
+			if (location.getY() > Math.max(minHouseLocation.getY(), maxHouseLocation.getY()) || location.getY() < Math.min(minHouseLocation.getY(), maxHouseLocation.getY())) return false;
+			return true;
 		}
 		return false;
 	}
@@ -143,5 +195,22 @@ public class AuctionScope {
 	public String getName() {
 		return name;
 	}
+
+	public FileConfiguration getTextConfig() {
+		return textConfig;
+	}
+
+	public void setTextConfig(FileConfiguration textConfig) {
+		this.textConfig = textConfig;
+	}
+
+	public ArrayList<Auction> getAuctionQueue() {
+		return auctionQueue;
+	}
+	
+	public void clearQueue() {
+		auctionQueue.clear();
+	}
+	
 }
 
