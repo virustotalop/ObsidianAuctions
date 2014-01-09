@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Participant {
+public class AuctionParticipant {
 	private String playerName = null;
 	private AuctionScope auctionScope = null;
 	private Location lastKnownGoodLocation = null;
@@ -13,19 +13,19 @@ public class Participant {
 	private boolean sentArenaWarning = false;
 	
 	public static boolean checkLocation(String playerName) {
-		Participant participant = Participant.getParticipant(playerName);
+		AuctionParticipant participant = AuctionParticipant.getParticipant(playerName);
 		if (participant == null) return true;
 		return (participant.auctionScope.equals(AuctionScope.getPlayerScope(Bukkit.getPlayer(playerName))));
 	}
 
 	public static boolean checkLocation(String playerName, Location location) {
-		Participant participant = Participant.getParticipant(playerName);
+		AuctionParticipant participant = AuctionParticipant.getParticipant(playerName);
 		if (participant == null) return true;
 		return (participant.auctionScope.equals(AuctionScope.getLocationScope(location)));
 	}
 
 	public static void forceLocation(String playerName, Location locationForGaze) {
-		Participant participant = Participant.getParticipant(playerName);
+		AuctionParticipant participant = AuctionParticipant.getParticipant(playerName);
 		if (participant == null) return;
 		if (!participant.isParticipating()) return;
 		
@@ -37,7 +37,7 @@ public class Participant {
 			location.setYaw(locationForGaze.getYaw());
 		}
 		
-		if (!Participant.checkLocation(playerName)) {
+		if (!AuctionParticipant.checkLocation(playerName)) {
 			player.teleport(participant.lastKnownGoodLocation);
 			participant.sendEscapeWarning();
 			return;
@@ -54,11 +54,11 @@ public class Participant {
 	
 	// Returns whether or not to cancel the teleport.
 	public static boolean checkTeleportLocation(String playerName, Location location) {
-		Participant participant = Participant.getParticipant(playerName);
+		AuctionParticipant participant = AuctionParticipant.getParticipant(playerName);
 		if (participant == null) return false;
 		if (!participant.isParticipating()) return false;
 		
-		if (!Participant.checkLocation(playerName, location)) {
+		if (!AuctionParticipant.checkLocation(playerName, location)) {
 			participant.sendEscapeWarning();
 			return true;
 		}
@@ -85,7 +85,7 @@ public class Participant {
 	public static boolean isParticipating(String playerName) {
 		boolean participating = false;
 		for (int i = 0; i < floAuction.auctionParticipants.size(); i++) {
-			Participant participant = floAuction.auctionParticipants.get(i);
+			AuctionParticipant participant = floAuction.auctionParticipants.get(i);
 			if (participant.isParticipating() && playerName.equalsIgnoreCase(participant.getPlayerName())) {
 				participating = true;
 			}
@@ -95,17 +95,17 @@ public class Participant {
 	
 	public static void addParticipant(String playerName, AuctionScope auctionScope) {
 		Player player = Bukkit.getPlayer(playerName);
-		if (Participant.getParticipant(playerName) == null) {
-			Participant participant = new Participant(playerName, auctionScope);
+		if (AuctionParticipant.getParticipant(playerName) == null) {
+			AuctionParticipant participant = new AuctionParticipant(playerName, auctionScope);
 			participant.lastKnownGoodLocation = player.getLocation();
 			floAuction.auctionParticipants.add(participant);
 			participant.isParticipating();
 		}
 	}
 	
-	public static Participant getParticipant(String playerName) {
+	public static AuctionParticipant getParticipant(String playerName) {
 		for (int i = 0; i < floAuction.auctionParticipants.size(); i++) {
-			Participant participant = floAuction.auctionParticipants.get(i);
+			AuctionParticipant participant = floAuction.auctionParticipants.get(i);
 			if (playerName.equalsIgnoreCase(participant.getPlayerName())) {
 				return participant;
 			}
@@ -113,7 +113,7 @@ public class Participant {
 		return null;
 	}
 	
-	public Participant(String playerName, AuctionScope auctionScope) {
+	public AuctionParticipant(String playerName, AuctionScope auctionScope) {
 		this.playerName = playerName;
 		this.auctionScope = auctionScope;
 	}

@@ -124,7 +124,7 @@ public class AuctionScope {
 		}
 		if ((auctionQueue.size() == 0 && System.currentTimeMillis() - lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
 			auctionQueue.add(auctionToQueue);
-			Participant.addParticipant(playerName, this);
+			AuctionParticipant.addParticipant(playerName, this);
 			checkAuctionQueue();
 			if (auctionQueue.contains(auctionToQueue)) {
 				floAuction.sendMessage("auction-queue-enter", player, this, false);

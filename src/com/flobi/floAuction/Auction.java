@@ -442,7 +442,7 @@ public class Auction {
 				floAuction.sendMessage(reason, prevBid.getBidder(), scope);
 			}
 		}
-		Participant.addParticipant(newBid.getBidder(), scope);
+		AuctionParticipant.addParticipant(newBid.getBidder(), scope);
 		
         // see if antisnipe is enabled...
         if (!this.sealed && AuctionConfig.getBoolean("anti-snipe", scope) == true && this.getRemainingTime() <= AuctionConfig.getInt("anti-snipe-prevention-seconds", scope)) {

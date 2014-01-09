@@ -71,7 +71,7 @@ public class ArenaManager implements Listener {
 		if (event.isCancelled()) return;
 		Player player = event.getPlayer();
 		if (player == null) return;
-		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && Participant.isParticipating(player.getName())) {
+		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(player.getName())) {
 			floAuction.sendMessage("arena-warning", player.getName(), null);
 			event.setCancelled(true);
 		}
@@ -82,7 +82,7 @@ public class ArenaManager implements Listener {
 		if (event.isCancelled()) return;
 		Player player = event.getPlayer();
 		if (player == null) return;
-		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && Participant.isParticipating(player.getName())) {
+		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(player.getName())) {
 			floAuction.sendMessage("arena-warning", player.getName(), null);
 			event.setCancelled(true);
 		}

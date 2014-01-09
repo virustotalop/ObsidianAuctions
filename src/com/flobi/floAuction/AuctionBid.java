@@ -61,7 +61,7 @@ public class AuctionBid {
 		if (auction.sealed) {
 			// Queue reserve refund.
 			auction.sealedBids.add(this);
-			Participant.addParticipant(getBidder(), auction.getScope());
+			AuctionParticipant.addParticipant(getBidder(), auction.getScope());
 		} else {
 			// Refund reserve.
 			functions.depositPlayer(bidderName, reserve);
@@ -124,7 +124,7 @@ public class AuctionBid {
 			return false;
 		}
 
-		if (!Participant.checkLocation(bidderName)) {
+		if (!AuctionParticipant.checkLocation(bidderName)) {
 			error = "bid-fail-outside-auctionhouse";
 			return false;
 		}

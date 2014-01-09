@@ -71,7 +71,7 @@ public class floAuction extends JavaPlugin {
 	private static File auctionLog = null;
 	private static boolean suspendAllAuctions = false;
 	public static boolean useWhatIsIt = true;
-	public static List<Participant> auctionParticipants = new ArrayList<Participant>();
+	public static List<AuctionParticipant> auctionParticipants = new ArrayList<AuctionParticipant>();
 	public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
 
 	// Config files info.
@@ -243,7 +243,7 @@ public class floAuction extends JavaPlugin {
             @EventHandler
             public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
             	// Hopefully the teleport and portal things I just added will make this obsolete, but I figure I'll keep it just to make sure.
-        		Participant.forceLocation(event.getPlayer().getName(), null);
+        		AuctionParticipant.forceLocation(event.getPlayer().getName(), null);
             }
             @EventHandler
             public void onPlayerChangedGameMode(PlayerGameModeChangeEvent event){
@@ -253,7 +253,7 @@ public class floAuction extends JavaPlugin {
             	Auction playerAuction = getPlayerAuction(player);
             	if (AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) return;
             	
-            	if (Participant.isParticipating(player.getName())) {
+            	if (AuctionParticipant.isParticipating(player.getName())) {
                 	event.setCancelled(true);
                 	sendMessage("gamemodechange-fail-participating", player, playerScope, false);
             	}
@@ -283,7 +283,7 @@ public class floAuction extends JavaPlugin {
             	
             	// Check participating disabled commands
             	if (playerScope == null) return;
-            	if (!Participant.isParticipating(player.getName())) return;
+            	if (!AuctionParticipant.isParticipating(player.getName())) return;
 
             	disabledCommands = AuctionConfig.getStringList("disabled-commands-participating", playerScope);
         		for (int i = 0; i < disabledCommands.size(); i++) {
@@ -299,17 +299,17 @@ public class floAuction extends JavaPlugin {
         	@EventHandler()
         	public void onPlayerMove(PlayerMoveEvent event) {
         		if (event.isCancelled()) return;
-        		Participant.forceLocation(event.getPlayer().getName(), event.getTo());
+        		AuctionParticipant.forceLocation(event.getPlayer().getName(), event.getTo());
         	}
         	@EventHandler()
         	public void onPlayerTeleport(PlayerTeleportEvent event) {
         		if (event.isCancelled()) return;
-        		if (Participant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
+        		if (AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
         	}
         	@EventHandler()
         	public void onPlayerPortalEvent(PlayerPortalEvent event) {
         		if (event.isCancelled()) return;
-        		if (Participant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
+        		if (AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
         	}
         }, this);
 		

@@ -78,7 +78,7 @@ public class AuctionProhibition {
 	}
 	
 	public static boolean prohibitPlayer(Plugin prohibiterPlugin, String playerName, String enableMessage, String reminderMessage, String disableMessage) {
-		if (Participant.isParticipating(playerName)) return false;
+		if (AuctionParticipant.isParticipating(playerName)) return false;
 		
 		if (AuctionProhibition.isOnProhibition(prohibiterPlugin, playerName, false)) return true;
 		
