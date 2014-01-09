@@ -17,5 +17,10 @@
 			<attribute name="javadoc_location" value="http://www.hollowmatrix.com/javadoc/WhatIsIt/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Joshua Hatfield/Documents/Eclipse/libraries/WorldGuard.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Joshua Hatfield/Documents/Eclipse/libraries/WorldEdit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Joshua Hatfield/Documents/Eclipse/libraries/MobArena.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Joshua Hatfield/Documents/Eclipse/libraries/pvparena.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Joshua Hatfield/Documents/Eclipse/libraries/War-v1.7.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

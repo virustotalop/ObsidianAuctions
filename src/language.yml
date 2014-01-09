@@ -22,6 +22,7 @@ unsuspension-user-success: 'The user has been unsuspended.'
 unsuspension-user-fail-not-suspended: 'That user was not suspended.'
 suspension-global: '&6All auctioning has been suspended.'
 unsuspension-global: 'Auctioning has been resumed.'
+arena-warning: '&6Auction participation is banned in arenas.'
 
 parse-error-invalid-quantity: '&6The quantity you specified is invalid.'
 parse-error-invalid-starting-bid: '&6The staring bid you specified is invalid.'

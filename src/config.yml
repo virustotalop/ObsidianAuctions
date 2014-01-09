@@ -23,6 +23,7 @@ allow-early-end: false
 allow-gamemode-creative: false
 allow-damaged-items: false
 allow-gamemode-change: false
+allow-arenas: false
 
 max-auction-queue-length: 2
 min-auction-interval-secs: 10

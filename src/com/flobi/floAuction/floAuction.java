@@ -233,6 +233,8 @@ public class floAuction extends JavaPlugin {
             return;
 		}
         
+		Bukkit.getPluginManager().registerEvents(new ArenaManager(), this);
+		
 		Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void playerJoin(PlayerJoinEvent event) {

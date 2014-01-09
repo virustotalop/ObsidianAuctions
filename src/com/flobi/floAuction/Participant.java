@@ -10,6 +10,7 @@ public class Participant {
 	private AuctionScope auctionScope = null;
 	private Location lastKnownGoodLocation = null;
 	private boolean sentEscapeWarning = false;
+	private boolean sentArenaWarning = false;
 	
 	public static boolean checkLocation(String playerName) {
 		Participant participant = Participant.getParticipant(playerName);
@@ -41,6 +42,13 @@ public class Participant {
 			participant.sendEscapeWarning();
 			return;
 		}
+		
+		if (ArenaManager.isInArena(player)) {
+			player.teleport(participant.lastKnownGoodLocation);
+			participant.sendArenaWarning();
+			return;
+		}
+		
 		participant.lastKnownGoodLocation = location;
 	}
 	
@@ -54,10 +62,20 @@ public class Participant {
 			participant.sendEscapeWarning();
 			return true;
 		}
-		participant.lastKnownGoodLocation = location;
+		
+		if (ArenaManager.isInArena(location)) {
+			participant.sendArenaWarning();
+			return true;
+		}
 		return false;
 	}
 	
+	private void sendArenaWarning() {
+		if (sentArenaWarning) return;
+		floAuction.sendMessage("arena-warning", playerName, null);
+		sentArenaWarning = true;
+	}
+
 	private void sendEscapeWarning() {
 		if (sentEscapeWarning) return;
 		floAuction.sendMessage("auctionscope-escape-warning", playerName, null);

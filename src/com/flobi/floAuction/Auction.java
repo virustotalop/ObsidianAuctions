@@ -57,6 +57,11 @@ public class Auction {
 	
 	public Boolean start() {
 		
+		if (ArenaManager.isInArena(Bukkit.getPlayer(ownerName))) {
+			floAuction.sendMessage("arena-warning", ownerName, null);
+			return false;
+		}
+		
 		ItemStack typeStack = lot.getTypeStack();
 		double preAuctionTax = AuctionConfig.getDouble("auction-start-tax", scope);
 		
@@ -295,6 +300,11 @@ public class Auction {
 	}
 	public void Bid(Player bidder, String[] inputArgs) {
 
+		if (ArenaManager.isInArena(bidder)) {
+			floAuction.sendMessage("arena-warning", bidder.getName(), null);
+			return;
+		}
+		
 		// BuyNow
 		if (AuctionConfig.getBoolean("allow-buynow", scope) && inputArgs.length > 0) {
 			if (inputArgs[0].equalsIgnoreCase("buy")) {
