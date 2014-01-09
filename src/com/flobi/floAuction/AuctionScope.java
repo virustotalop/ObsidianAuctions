@@ -14,6 +14,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
+import com.garbagemule.MobArena.MobArena;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class AuctionScope {
 	private Auction activeAuction = null;
@@ -21,18 +28,22 @@ public class AuctionScope {
 	private String type = null;
 	private ArrayList<Auction> auctionQueue = new ArrayList<Auction>();
 	private long lastAuctionDestroyTime = 0;
+	
+	// Definitions
 	private List<String> worlds = null;
 	private Location minHouseLocation = null;
 	private Location maxHouseLocation = null;
+	private String regionId = null;
+	
 	private ConfigurationSection config = null;
 	private FileConfiguration textConfig = null;
 
 	public static List<String> auctionScopesOrder = new ArrayList<String>();
 	public static Map<String, AuctionScope> auctionScopes = new HashMap<String, AuctionScope>();
+	private static WorldGuardPlugin worldGuardPlugin = null;
 
 	private AuctionScope(String name, ConfigurationSection config, YamlConfiguration textConfig) {
 		this.name = name;
-		this.textConfig = textConfig;
 
 		type = config.getString("type");
 		if (type.equalsIgnoreCase("worlds")) {
@@ -43,11 +54,23 @@ public class AuctionScope {
 				minHouseLocation = null;
 				maxHouseLocation = null;
 			} else {
-				minHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-min-x"), config.getDouble("house-min-y"), config.getDouble("house-min-z"));
-				maxHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-max-x"), config.getDouble("house-max-y"), config.getDouble("house-max-z"));
+				minHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("region-min-x"), config.getDouble("house-min-y"), config.getDouble("house-min-z"));
+				maxHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("region-max-x"), config.getDouble("house-max-y"), config.getDouble("house-max-z"));
 			}
+		} else if (type.equalsIgnoreCase("worldguardregion")) {
+			if (worldGuardPlugin == null) {
+				// get the list of regions that contain the given location
+			    Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
+			    
+			    // WorldGuard may not be loaded
+			    if (plugin != null && plugin instanceof WorldGuardPlugin) {
+				    worldGuardPlugin = (WorldGuardPlugin) plugin;
+			    }
+			}
+			regionId = config.getString("region-id");
 		}
 		this.config = config.getConfigurationSection("config");
+		this.textConfig = textConfig;
 	}
 	
 	public Auction getActiveAuction() {
@@ -148,33 +171,17 @@ public class AuctionScope {
 	
 	private boolean isPlayerInScope(Player player) {
 		if (player == null) return false;
-		World playerWorld = player.getWorld();
-		if (playerWorld == null) return false;
-		String playerWorldName = playerWorld.getName();
-		if (type.equalsIgnoreCase("worlds")) {
-			for (int i = 0; i < worlds.size(); i++) {
-				if (worlds.get(i).equalsIgnoreCase(playerWorldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
-			}
-		} else if (type.equalsIgnoreCase("house")) {
-			if (minHouseLocation == null || maxHouseLocation == null) return false;
-			Location currentLocation = player.getLocation();
-			if (!currentLocation.getWorld().equals(minHouseLocation.getWorld())) return false;
-			if (currentLocation.getX() > Math.max(minHouseLocation.getX(), maxHouseLocation.getX()) || currentLocation.getX() < Math.min(minHouseLocation.getX(), maxHouseLocation.getX())) return false;
-			if (currentLocation.getZ() > Math.max(minHouseLocation.getZ(), maxHouseLocation.getZ()) || currentLocation.getZ() < Math.min(minHouseLocation.getZ(), maxHouseLocation.getZ())) return false;
-			if (currentLocation.getY() > Math.max(minHouseLocation.getY(), maxHouseLocation.getY()) || currentLocation.getY() < Math.min(minHouseLocation.getY(), maxHouseLocation.getY())) return false;
-			return true;
-		}
-		return false;
+		return isLocationInScope(player.getLocation());
 	}
 	
 	private boolean isLocationInScope(Location location) {
 		if (location == null) return false;
-		World playerWorld = location.getWorld();
-		if (playerWorld == null) return false;
-		String playerWorldName = playerWorld.getName();
+		World world = location.getWorld();
+		if (world == null) return false;
+		String worldName = world.getName();
 		if (type.equalsIgnoreCase("worlds")) {
 			for (int i = 0; i < worlds.size(); i++) {
-				if (worlds.get(i).equalsIgnoreCase(playerWorldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
+				if (worlds.get(i).equalsIgnoreCase(worldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
 			}
 		} else if (type.equalsIgnoreCase("house")) {
 			if (minHouseLocation == null || maxHouseLocation == null) return false;
@@ -183,6 +190,13 @@ public class AuctionScope {
 			if (location.getZ() > Math.max(minHouseLocation.getZ(), maxHouseLocation.getZ()) || location.getZ() < Math.min(minHouseLocation.getZ(), maxHouseLocation.getZ())) return false;
 			if (location.getY() > Math.max(minHouseLocation.getY(), maxHouseLocation.getY()) || location.getY() < Math.min(minHouseLocation.getY(), maxHouseLocation.getY())) return false;
 			return true;
+		} else if (type.equalsIgnoreCase("worldguardregion")) {
+			if (worldGuardPlugin == null) return false;
+			RegionManager regionManager =  worldGuardPlugin.getRegionManager( location.getWorld() );
+			ApplicableRegionSet applicableRegions = regionManager.getApplicableRegions(location);
+			for (ProtectedRegion region : applicableRegions) {
+				if (region.getId().equalsIgnoreCase(regionId)) return true;
+			}
 		}
 		return false;
 	}
