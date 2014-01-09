@@ -30,18 +30,16 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -56,9 +54,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -67,88 +63,36 @@ import com.flobi.utility.items;
 
 public class floAuction extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
-	public static List<String> auctionScopesOrder = new ArrayList<String>();
-	public static Map<String, AuctionScope> auctionScopes = new HashMap<String, AuctionScope>();
 
 	// Got to figure out a better way to store these:
-//	public static long defaultStartingBid = 0;
-//	public static long defaultBidIncrement = 100;
-//	public static int defaultAuctionTime = 60;
-//	public static long maxStartingBid = 10000;
-//	public static long maxBuyNow = 10000;
-//	public static long minIncrement = 1;
-//	public static long maxIncrement = 100;
-//	public static int maxTime = 60;
-//	public static int minTime = 15;
-//	public static int maxAuctionQueueLength = 2;
-//	public static int minAuctionIntervalSecs = 10;
-//	public static boolean allowBidOnOwn = false;
-//	public static boolean useOldBidLogic = false;
-//	public static boolean logAuctions = false;
-//	public static boolean allowEarlyEnd = false;
 	public static int decimalPlaces = 2;
 	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
 	public static boolean loadedDecimalFromVault = false;
-//	public static boolean allowCreativeMode = false;
-//	public static boolean allowDamagedItems = false;
 	private static File auctionLog = null;
 	private static boolean suspendAllAuctions = false;
-//	public static boolean allowMaxBids = true;
-//	public static boolean allowGamemodeChange = false;
-//	public static boolean allowWorldChange = false;
-//	public static List<String> bannedItems = new ArrayList<String>();
-//	public static Map<String, String> taxedItems = new HashMap<String, String>();
-//	public static double taxPerAuction = 0;
-//	public static double taxPercentage = 0;
-//	public static String taxDestinationUser = "";
-	public static Location currentBidPlayerLocation;
-	public static GameMode currentBidPlayerGamemode;
-	public static Location currentAuctionOwnerLocation;
-	public static GameMode currentAuctionOwnerGamemode;
-//	public static int cancelPreventionSeconds = 15;
-//	public static double cancelPreventionPercent = 50;
-//	public static boolean antiSnipe = false;
-//	public static int antiSnipePreventionSeconds = 15;
-//	public static int antiSnipeExtensionSeconds = 15;
 	public static boolean useWhatIsIt = true;
-	
-//	public static boolean allowSealedAuctions = true;
-//	public static boolean allowUnsealedAuctions = true;
-//	public static boolean broadCastBidUpdates = true;
-//	public static boolean allowAutoBid = true;
-//	public static boolean suppressCountdown = true;
-//	public static boolean suppressAuctionStartInfo = true;
-//	public static boolean allowRenamedItems = true;
-//	public static boolean allowBuyNow = true;
-//	public static boolean expireBuyNowOnFirstBid = false;
-//	public static List<String> disabledCommands = new ArrayList<String>();
-	
 	public static List<Participant> auctionParticipants = new ArrayList<Participant>();
-//	public static List<String> bannedLore = new ArrayList<String>();
-
 	public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
 
 	// Config files info.
-	private static File configFile = null;
-	private static InputStream defConfigStream;
 	public static FileConfiguration config = null;
-	private static File textConfigFile = null;
-	private static InputStream defTextConfigStream;
 	public static FileConfiguration textConfig = null;
-	private static YamlConfiguration defConfig = null;
-	private static YamlConfiguration defTextConfig = null;
 	private static File dataFolder;
 	private static ConsoleCommandSender console;
-	public static Server server;
-	public static int queueTimer;
-//	public static ArrayList<Auction> auctionQueue = new ArrayList<Auction>();
+	private static int queueTimer;
+	private static floAuction plugin;
 	
-	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();
-	public static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
-	public static ArrayList<String> suspendedUsers = new ArrayList<String>();
+	private static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();
+	private static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
+	private static ArrayList<String> suspendedUsers = new ArrayList<String>();
 	
 	
-	public static void saveObject(Object arraylist, String filename) {
+	public static void saveOrphanLot(AuctionLot auctionLot) {
+		floAuction.orphanLots.add(auctionLot);
+		saveObject(floAuction.orphanLots, "orphanLots.ser");		
+	}
+	
+	private static void saveObject(Object object, String filename) {
     	File saveFile = new File(dataFolder, filename);
     	
     	try {
@@ -158,7 +102,7 @@ public class floAuction extends JavaPlugin {
 			OutputStream buffer = new BufferedOutputStream(file);
 			ObjectOutput output = new ObjectOutputStream(buffer);
 			try {
-				output.writeObject(arraylist);
+				output.writeObject(object);
 			}
 			finally {
 				output.close();
@@ -261,25 +205,23 @@ public class floAuction extends JavaPlugin {
     public static Chat chat = null;
 
 	public void onEnable() {
-		server = getServer();
-		console = server.getConsoleSender();
+		console = Bukkit.getConsoleSender();
 		dataFolder = getDataFolder();
-		defConfigStream = getResource("config.yml");
-		defTextConfigStream = getResource("language.yml");
-		final Plugin plugin = this;
-
+		plugin = this;
+    	auctionLog = new File(dataFolder, "auctions.log");
+		
 		setupEconomy();
         setupPermissions();
         setupChat();
 
         loadConfig();
-		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
+		if (Bukkit.getPluginManager().getPlugin("WhatIsIt") == null) {
 			if (config.getBoolean("allow-inferior-item-name-logic")) {
 				log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("whatisit-recommended", null), null));
 				useWhatIsIt = false;
 			} else {
 				log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("no-whatisit", null), null));
-				server.getPluginManager().disablePlugin(this);
+				Bukkit.getPluginManager().disablePlugin(this);
 	            return;
 			}
 		} else {
@@ -287,11 +229,11 @@ public class floAuction extends JavaPlugin {
 		}
 		if (econ == null) {
 			log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("no-economy", null), null));
-			server.getPluginManager().disablePlugin(this);
+			Bukkit.getPluginManager().disablePlugin(this);
             return;
 		}
         
-        server.getPluginManager().registerEvents(new Listener() {
+		Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void playerJoin(PlayerJoinEvent event) {
         	    floAuction.killOrphan(event.getPlayer());
@@ -299,81 +241,58 @@ public class floAuction extends JavaPlugin {
             @EventHandler
             public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
             	// Hopefully the teleport and portal things I just added will make this obsolete, but I figure I'll keep it just to make sure.
-            	AuctionScope playerScope = getPlayerScope(event.getPlayer());
-            	Auction playerAuction = getPlayerAuction(event.getPlayer());
-
-            	if (AuctionConfig.getBoolean("allow-world-change", playerScope) || playerAuction == null) return;
-            	
-                // Get player objects
-                final Player player = event.getPlayer();
-                if (playerAuction.getOwner().equalsIgnoreCase(player.getName()) && !player.getLocation().getWorld().equals(currentAuctionOwnerLocation.getWorld())) {
-                	// This is running as a timer because MultiInv is using HIGHEST priority and 
-                	// there's no way to send a cancel to it, so we have to go after the fact and
-                	// remove the user.
-                	getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                		public void run() {
-    	                	player.teleport(currentAuctionOwnerLocation, TeleportCause.PLUGIN);
-                		}
-                	}, 1L);
-                	sendMessage("worldchange-fail-auction-owner", player, playerScope, false);
-                } else if (playerAuction.getCurrentBid() != null && playerAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())
-                		 && !player.getLocation().getWorld().equals(currentBidPlayerLocation.getWorld())
-                		) {
-                	// This is running as a timer because MultiInv is using HIGHEST priority and 
-                	// there's no way to send a cancel to it, so we have to go after the fact and
-                	// remove the user.
-                	getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                		public void run() {
-                        	player.teleport(currentBidPlayerLocation, TeleportCause.PLUGIN);
-                		}
-                	}, 1L);
-                	sendMessage("worldchange-fail-auction-bidder", player, playerScope, false);
-                }
+        		Participant.forceLocation(event.getPlayer().getName(), null);
             }
             @EventHandler
             public void onPlayerChangedGameMode(PlayerGameModeChangeEvent event){
             	if (event.isCancelled()) return;
-            	AuctionScope playerScope = getPlayerScope(event.getPlayer());
-            	Auction playerAuction = getPlayerAuction(event.getPlayer());
+            	Player player = event.getPlayer();
+            	AuctionScope playerScope = AuctionScope.getPlayerScope(player);
+            	Auction playerAuction = getPlayerAuction(player);
             	if (AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) return;
             	
-                // Get player objects
-                Player player = event.getPlayer();
-                
-                if (playerAuction.getOwner().equalsIgnoreCase(player.getName())) {
+            	if (Participant.isParticipating(player.getName())) {
                 	event.setCancelled(true);
-                	sendMessage("gamemodechange-fail-auction-owner", player, playerScope, false);
-                } else if (playerAuction.getCurrentBid() != null && playerAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
-                	event.setCancelled(true);
-                	sendMessage("gamemodechange-fail-auction-bidder", player, playerScope, false);
-                }
+                	sendMessage("gamemodechange-fail-participating", player, playerScope, false);
+            	}
             }
             @EventHandler(priority = EventPriority.LOWEST)
             public void onPlayerPreprocessCommand(PlayerCommandPreprocessEvent event){
+
             	if (event.isCancelled()) return;
-            	AuctionScope playerScope = getPlayerScope(event.getPlayer());
-            	if (playerScope == null) return;
-            	if (playerScope.getActiveAuction() == null && playerScope.getAuctionQueueLength() == 0) return;
-            	if (event.getPlayer() == null) return;
-            	if (event.getMessage().isEmpty()) return;
+            	Player player = event.getPlayer();
+            	if (player == null) return;
+            	String message = event.getMessage();
+            	if (message == null || message.isEmpty()) return;
+
+            	AuctionScope playerScope = AuctionScope.getPlayerScope(player);
             	
-            	boolean isDisabledCommand = false;
-            	List<String> disabledCommands = AuctionConfig.getStringList("disabled-commands", playerScope);
+            	// Check inscope disabled commands, doesn't matter if participating:
+            	List<String> disabledCommands = AuctionConfig.getStringList("disabled-commands-inscope", playerScope);
         		for (int i = 0; i < disabledCommands.size(); i++) {
         			String disabledCommand = disabledCommands.get(i);
         			if (disabledCommand.isEmpty()) continue;
-        			if (event.getMessage().toLowerCase().startsWith(disabledCommand.toLowerCase())) {
-        				isDisabledCommand = true;
-        				break;
+        			if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
+    	            	event.setCancelled(true);
+    	            	sendMessage("disabled-command-inscope", event.getPlayer(), playerScope, false);
+        				return;
         			}
         		}
-        		if (!isDisabledCommand) return;
+            	
+            	// Check participating disabled commands
+            	if (playerScope == null) return;
+            	if (!Participant.isParticipating(player.getName())) return;
 
-    			if (Participant.isParticipating(event.getPlayer().getName())) {
-	            	event.setCancelled(true);
-	            	sendMessage("disabled-command", event.getPlayer(), playerScope, false);
-    				return;
-    			}
+            	disabledCommands = AuctionConfig.getStringList("disabled-commands-participating", playerScope);
+        		for (int i = 0; i < disabledCommands.size(); i++) {
+        			String disabledCommand = disabledCommands.get(i);
+        			if (disabledCommand.isEmpty()) continue;
+        			if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
+    	            	event.setCancelled(true);
+    	            	sendMessage("disabled-command-participating", event.getPlayer(), playerScope, false);
+        				return;
+        			}
+        		}
             }
         	@EventHandler()
         	public void onPlayerMove(PlayerMoveEvent event) {
@@ -394,7 +313,7 @@ public class floAuction extends JavaPlugin {
 		
 		queueTimer = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 		    public void run() {
-		    	checkAuctionQueue();
+		    	AuctionScope.checkAuctionQueue();
 		    }
 		}, 20L, 20L);
 		
@@ -417,12 +336,13 @@ public class floAuction extends JavaPlugin {
 	 * Loads config.yml and language.yml configuration files.
 	 */
     private static void loadConfig() {
-		if (configFile == null) {
-	    	configFile = new File(dataFolder, "config.yml");
-	    }
-		if (auctionLog == null) {
-	    	auctionLog = new File(dataFolder, "auctions.log");
-		}
+		File configFile = new File(dataFolder, "config.yml");
+    	InputStream defConfigStream = plugin.getResource("config.yml");;
+    	File textConfigFile = new File(dataFolder, "language.yml");
+    	InputStream defTextConfigStream = plugin.getResource("language.yml");;
+    	YamlConfiguration defConfig = null;
+    	YamlConfiguration defTextConfig = null;
+		
 		config = null;
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
@@ -435,9 +355,6 @@ public class floAuction extends JavaPlugin {
 	    	config.setDefaults(defConfig);
 	    }
 	    
-	    if (textConfigFile == null) {
-	    	textConfigFile = new File(dataFolder, "language.yml");
-	    }
 	    textConfig = null;
 	    textConfig = YamlConfiguration.loadConfiguration(textConfigFile);
 	 
@@ -449,8 +366,6 @@ public class floAuction extends JavaPlugin {
 	    if (defTextConfig != null) {
 	        textConfig.setDefaults(defTextConfig);
 	    }
-	    
-//	    logAuctions = config.getBoolean("log-auctions");
 	    
 	    decimalPlaces = config.getInt("decimal-places");
 	    if (econ != null && econ.isEnabled()) {
@@ -468,65 +383,7 @@ public class floAuction extends JavaPlugin {
 			decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
 		}
 
-//		defaultStartingBid = functions.getSafeMoney(config.getDouble("default-starting-bid"));
-//		defaultBidIncrement = functions.getSafeMoney(config.getDouble("default-bid-increment"));
-//		defaultAuctionTime = config.getInt("default-auction-time");
-//		maxStartingBid = functions.getSafeMoney(config.getDouble("max-starting-bid"));
-//		maxBuyNow = functions.getSafeMoney(config.getDouble("max-buynow"));
-//		minIncrement = functions.getSafeMoney(config.getDouble("min-bid-increment"));
-//		maxIncrement = functions.getSafeMoney(config.getDouble("max-bid-increment"));
-//		maxTime = config.getInt("max-auction-time");
-//		minTime = config.getInt("min-auction-time");
-//		maxAuctionQueueLength = config.getInt("max-auction-queue-length");
-//		minAuctionIntervalSecs = config.getInt("min-auction-interval-secs");
-//		allowBidOnOwn = config.getBoolean("allow-bid-on-own-auction");
-//		useOldBidLogic = config.getBoolean("use-old-bid-logic");
-//		allowEarlyEnd = config.getBoolean("allow-early-end");
-//		allowCreativeMode = config.getBoolean("allow-gamemode-creative");
-//		allowDamagedItems = config.getBoolean("allow-damaged-items");
-//		bannedItems = config.getStringList("banned-items");
-//		taxPerAuction = config.getDouble("auction-start-tax");
-//		taxPercentage = config.getDouble("auction-end-tax-percent");
-//		allowMaxBids = config.getBoolean("allow-max-bids");
-//		allowGamemodeChange = config.getBoolean("allow-gamemode-change");
-//		allowWorldChange = config.getBoolean("allow-world-change");
-//		taxDestinationUser = config.getString("deposit-tax-to-user");
-//		cancelPreventionSeconds = config.getInt("cancel-prevention-seconds");
-//		cancelPreventionPercent = config.getDouble("cancel-prevention-percent");
-//        antiSnipe = config.getBoolean("anti-snipe");
-//		antiSnipePreventionSeconds = config.getInt("anti-snipe-prevention-seconds");
-//		antiSnipeExtensionSeconds = config.getInt("anti-snipe-extension-seconds");
-//		disabledCommands = config.getStringList("disabled-commands");
-		
-//      allowSealedAuctions = config.getBoolean("allow-sealed-auctions");
-//      if (allowSealedAuctions) {
-//      	allowUnsealedAuctions = config.getBoolean("allow-unsealed-auctions");
-//      } else {
-//      	allowUnsealedAuctions = true;
-//      }
-        
-//      allowRenamedItems = config.getBoolean("allow-renamed-items");
-//      allowBuyNow = config.getBoolean("allow-buynow");
-//      expireBuyNowOnFirstBid = config.getBoolean("expire-buynow-at-first-bid");
-
-//      broadCastBidUpdates = config.getBoolean("broadcast-bid-updates");
-//      allowAutoBid = config.getBoolean("allow-auto-bid");
-//      suppressCountdown = config.getBoolean("suppress-countdown");
-//      suppressAuctionStartInfo = config.getBoolean("suppress-auction-start-info");
-        
-
-//		ConfigurationSection taxedItemsSection = config.getConfigurationSection("taxed-items");
-//		taxedItems = new HashMap<String, String>();
-//		if (taxedItemsSection != null) {
-//			for (String itemCode : taxedItemsSection.getKeys(false)) {
-//				taxedItems.put(itemCode, taxedItemsSection.getString(itemCode));
-//			}
-//		}
-		
-//		bannedLore = config.getStringList("banned-lore");
-		
-        // Update all values to include defaults which may be new.
-		
+		// Clean up the configuration of any unsed values.
 		FileConfiguration cleanConfig = new YamlConfiguration();
 		Map<String, Object> configValues = config.getDefaults().getValues(false);
 		for (Map.Entry<String, Object> configEntry : configValues.entrySet()) {
@@ -558,40 +415,14 @@ public class floAuction extends JavaPlugin {
         defTextConfig = null;
 	    textConfigFile = null;
 	    
-//	    if (maxStartingBid == 0) {
-//	    	maxStartingBid = 100000000000000000L;
-//	    }
-	    
-//	    if (maxBuyNow == 0) {
-//	    	maxBuyNow = 100000000000000000L;
-//	    }
-
 	    // Build auction scopes.
-	    auctionScopes.clear();
-	    auctionScopesOrder.clear();
-	    ConfigurationSection auctionScopesConfig = config.getConfigurationSection("auction-scopes");
-		if (auctionScopesConfig != null) {
-			for (String scopeName : auctionScopesConfig.getKeys(false)) {
-				auctionScopesOrder.add(scopeName);
-				ConfigurationSection auctionScopeConfig = auctionScopesConfig.getConfigurationSection(scopeName);
-		    	File scopeTextConfigFile = new File(dataFolder, "language-"+scopeName+".yml");
-		    	YamlConfiguration scopeTextConfig = null;
-		    	if (scopeTextConfigFile.exists()) {
-				    scopeTextConfig = YamlConfiguration.loadConfiguration(scopeTextConfigFile);
-		    	}
-				AuctionScope auctionScope = new AuctionScope(scopeName, auctionScopeConfig, scopeTextConfig);
-				auctionScopes.put(scopeName, auctionScope);
-			}
-		} else {
-			
-		}
-		
+	    AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
     }
 	public void onDisable() {
-		for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
-			auctionScopesEntry.getValue().cancelAllAuctions();
-		}
+		AuctionScope.cancelAllAuctions();
 		getServer().getScheduler().cancelTask(queueTimer);
+		plugin = null;
+		auctionLog = null;
 		sendMessage("plugin-disabled", console, null, false);
 	}
 	/**
@@ -637,7 +468,7 @@ public class floAuction extends JavaPlugin {
     	if (sender instanceof Player) {
     		player = (Player) sender;
 			playerName = player.getName();
-			userScope = getPlayerScope(player);
+			userScope = AuctionScope.getPlayerScope(player);
 			if (userScope != null) {
 				auction = userScope.getActiveAuction();
 			}
@@ -674,55 +505,20 @@ public class floAuction extends JavaPlugin {
     		cmd.getName().equalsIgnoreCase("sealedauction")
     	) {
     		if (args.length > 0) {
-/*    			if (args[0].equalsIgnoreCase("addlore")) {
-    				if (player == null || !perms.has(player, "auction.admin")) {
-    	    			sendMessage("no-permission", sender, null, false);
-    	    			return true;
-    				}
-    				ItemStack heldItem = player.getItemInHand();
-    				if (heldItem == null) return true;
-    				String[] lore = new String[4];
-    				lore[0] = "Flobi's Lore";
-    				lore[1] = "Crazy shit goes here!";
-    				lore[2] = "More lore!";
-    				lore[3] = "Last line of lore.";
-    				items.setLore(heldItem, lore);
-    				return true;
-    			}*/
-    			
 				if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
     	    			sendMessage("no-permission", sender, null, false);
     	    			return true;
     				}
     		    	// Don't reload if any auctions are running.
-    				for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
-						AuctionScope auctionScope = auctionScopesEntry.getValue();
-    					if (auctionScope.getActiveAuction() != null || auctionScope.getAuctionQueueLength() > 0) {
-    						sendMessage("plugin-reloaded-fail-auctions-running", sender, null, false);
-    						return true;
-    					}
+    				if (AuctionScope.areAuctionsRunning()) {
+						sendMessage("plugin-reloaded-fail-auctions-running", sender, null, false);
+						return true;
     				}
 
-    				defConfigStream = getResource("config.yml");
-    				defTextConfigStream = getResource("language.yml");
     				loadConfig();
 	    			sendMessage("plugin-reloaded", sender, null, false);
     				return true;
-/*    			} else if (args[0].equalsIgnoreCase("orphans")) {
-    				if (player != null && !perms.has(player, "auction.admin")) {
-    	    			sendMessage("no-permission", sender, null, false);
-    	    			return true;
-    				}
-    				
-    				for(int i = 0; i < orphanLots.size(); i++) {
-    					if (orphanLots.get(i) != null) {
-    						AuctionLot lot = orphanLots.get(i);
-    		    			sendMessage(lot.getOwner() + ": " + lot.getQuantity() + " " + items.getItemName(lot.getTypeStack()), sender, null, false);
-    					}
-    				}
-
-    				return true;*/
     			} else if (args[0].equalsIgnoreCase("resume")) {
 			    	if (args.length == 1) {
 						if (player != null && !perms.has(player, "auction.admin")) {
@@ -785,17 +581,7 @@ public class floAuction extends JavaPlugin {
     				// Suspend globally:
     				suspendAllAuctions = true;
     				
-    				// Clear queued auctions first.
-    				for (int i = 0; i < floAuction.auctionScopesOrder.size(); i++) {
-    					String auctionScopeName = auctionScopesOrder.get(i);
-    					AuctionScope auctionScope = auctionScopes.get(auctionScopeName);
-    					auctionScope.clearQueue();
-    				}
-    				
-    				// Loop through all scopes.
-    				for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
-    					auctionScopesEntry.getValue().cancelAllAuctions();
-    				}
+    				AuctionScope.cancelAllAuctions();
 
 	    			sendMessage("suspension-global", (Player) null, null, true);
 
@@ -1107,7 +893,7 @@ public class floAuction extends JavaPlugin {
     		
     		if (auction.getOwner() != null) owner = auction.getOwner();
     		
-    		Player ownerPlayer = server.getPlayer(owner);
+    		Player ownerPlayer = Bukkit.getPlayer(owner);
     		if (ownerPlayer != null) {
     			ownerDisplay = ownerPlayer.getDisplayName();
     		} else {
@@ -1377,11 +1163,11 @@ public class floAuction extends JavaPlugin {
     	
     }
     public static void broadcastMessage(String message, AuctionScope auctionScope) {
-    	Player[] onlinePlayers = server.getOnlinePlayers();
+    	Player[] onlinePlayers = Bukkit.getOnlinePlayers();
     	
     	for (Player player : onlinePlayers) {
         	if (voluntarilyDisabledUsers.contains(player.getName())) continue;
-    		if (auctionScope != null && !auctionScope.isPlayerInScope(player)) continue;
+    		if (auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) continue;
     		player.sendMessage(message);
     	}
     	
@@ -1394,7 +1180,7 @@ public class floAuction extends JavaPlugin {
     	AuctionScope playerScope = null;
     	if (sender instanceof Player) {
     		player = (Player) sender;
-    		playerScope = getPlayerScope(player);
+    		playerScope = AuctionScope.getPlayerScope(player);
     	}
     	if (AuctionConfig.getBoolean("log-auctions", playerScope)) {
     		String playerName = null;
@@ -1436,10 +1222,10 @@ public class floAuction extends JavaPlugin {
 		
 	}
 	private boolean setupEconomy() {
-        if (server.getPluginManager().getPlugin("Vault") == null) {
+        if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = server.getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }
@@ -1448,7 +1234,7 @@ public class floAuction extends JavaPlugin {
     }
 
     private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = server.getServicesManager().getRegistration(Chat.class);
+        RegisteredServiceProvider<Chat> rsp = Bukkit.getServicesManager().getRegistration(Chat.class);
         if (rsp == null) {
             return false;
         }
@@ -1457,7 +1243,7 @@ public class floAuction extends JavaPlugin {
     }
 
     private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = server.getServicesManager().getRegistration(Permission.class);
+        RegisteredServiceProvider<Permission> rsp = Bukkit.getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
         return perms != null;
     }
@@ -1466,42 +1252,19 @@ public class floAuction extends JavaPlugin {
 		if (playerName == null) {
 			sendMessage(messageKey, (CommandSender) null, auctionScope, true);
 		} else {
-			sendMessage(messageKey, server.getPlayer(playerName), auctionScope, false);
+			sendMessage(messageKey, Bukkit.getPlayer(playerName), auctionScope, false);
 		}
 		
 	}
 	public static Auction getPlayerAuction(String playerName) {
 		if (playerName == null) return null;
-		return getPlayerAuction(server.getPlayer(playerName));
+		return getPlayerAuction(Bukkit.getPlayer(playerName));
 	}
 	public static Auction getPlayerAuction(Player player) {
 		if (player == null) return null;
-		AuctionScope auctionScope = getPlayerScope(player);
+		AuctionScope auctionScope = AuctionScope.getPlayerScope(player);
 		if (auctionScope == null) return null;
 		return auctionScope.getActiveAuction();
-	}
-	public static AuctionScope getPlayerScope(Player player) {
-		if (player == null) return null;
-		for (int i = 0; i < floAuction.auctionScopesOrder.size(); i++) {
-			String auctionScopeName = auctionScopesOrder.get(i);
-			AuctionScope auctionScope = auctionScopes.get(auctionScopeName);
-			if (auctionScope.isPlayerInScope(player)) return auctionScope;
-		}
-		return null;
-	}
-	public static AuctionScope getLocationScope(Location location) {
-		if (location == null) return null;
-		for (int i = 0; i < floAuction.auctionScopesOrder.size(); i++) {
-			String auctionScopeName = auctionScopesOrder.get(i);
-			AuctionScope auctionScope = auctionScopes.get(auctionScopeName);
-			if (auctionScope.isLocationInScope(location)) return auctionScope;
-		}
-		return null;
-	}
-	private void checkAuctionQueue() {
-		for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
-			auctionScopesEntry.getValue().checkAuctionQueue();
-		}
 	}
 }
 

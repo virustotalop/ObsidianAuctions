@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
 
+import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
@@ -504,8 +505,8 @@ public class items {
 		}
 	}
 	public static int getAmount(String ownerName, ItemStack compareItem) {
-		if (floAuction.server.getPlayer(ownerName) == null) return 0;
-		PlayerInventory inventory = floAuction.server.getPlayer(ownerName).getInventory();
+		if (Bukkit.getPlayer(ownerName) == null) return 0;
+		PlayerInventory inventory = Bukkit.getPlayer(ownerName).getInventory();
 		ItemStack[] items = inventory.getContents();
 		int has = 0;
 		for (ItemStack item : items) {
@@ -516,7 +517,7 @@ public class items {
 		return has;
 	}
 	public static void remove(String playerName, int amount, ItemStack compareItem){
-		Player player = floAuction.server.getPlayer(playerName);
+		Player player = Bukkit.getPlayer(playerName);
 		if (player != null) {
 			PlayerInventory inventory = player.getInventory();
 	    	

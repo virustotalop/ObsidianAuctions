@@ -23,7 +23,6 @@ allow-early-end: false
 allow-gamemode-creative: false
 allow-damaged-items: false
 allow-gamemode-change: false
-allow-world-change: false
 
 max-auction-queue-length: 2
 min-auction-interval-secs: 10
@@ -58,7 +57,10 @@ banned-items:
 taxed-items: 
   0: 100%
 
-disabled-commands:
+disabled-commands-participating:
+  - '/ma'
+  - '/mobarena'
+disabled-commands-inscope:
   - '/ma join'
   - '/mobarena join'
 

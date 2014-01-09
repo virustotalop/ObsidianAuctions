@@ -1,7 +1,10 @@
 package com.flobi.floAuction;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -24,7 +27,10 @@ public class AuctionScope {
 	private ConfigurationSection config = null;
 	private FileConfiguration textConfig = null;
 
-	public AuctionScope(String name, ConfigurationSection config, YamlConfiguration textConfig) {
+	public static List<String> auctionScopesOrder = new ArrayList<String>();
+	public static Map<String, AuctionScope> auctionScopes = new HashMap<String, AuctionScope>();
+
+	private AuctionScope(String name, ConfigurationSection config, YamlConfiguration textConfig) {
 		this.name = name;
 		this.textConfig = textConfig;
 
@@ -60,13 +66,6 @@ public class AuctionScope {
 		activeAuction = auction;
 	}
 	
-	public void cancelAllAuctions() {
-		auctionQueue.clear();
-		if (activeAuction != null) {
-			activeAuction.cancel();
-		}
-	}
-
     public void queueAuction(Auction auctionToQueue, Player player, Auction currentAuction) {
 		String playerName = player.getName();
 
@@ -110,7 +109,7 @@ public class AuctionScope {
 		}
     }
 
-	public void checkAuctionQueue() {
+	private void checkThisAuctionQueue() {
 		if (activeAuction != null) {
 			return;
 		}
@@ -125,7 +124,7 @@ public class AuctionScope {
 			return;
 		}
 		
-		Player player = floAuction.server.getPlayer(auction.getOwner());
+		Player player = Bukkit.getPlayer(auction.getOwner());
 		if (player == null || !player.isOnline()) {
 			return;
 		}
@@ -147,7 +146,7 @@ public class AuctionScope {
 		}
 	}
 	
-	public boolean isPlayerInScope(Player player) {
+	private boolean isPlayerInScope(Player player) {
 		if (player == null) return false;
 		World playerWorld = player.getWorld();
 		if (playerWorld == null) return false;
@@ -168,7 +167,7 @@ public class AuctionScope {
 		return false;
 	}
 	
-	public boolean isLocationInScope(Location location) {
+	private boolean isLocationInScope(Location location) {
 		if (location == null) return false;
 		World playerWorld = location.getWorld();
 		if (playerWorld == null) return false;
@@ -200,17 +199,70 @@ public class AuctionScope {
 		return textConfig;
 	}
 
-	public void setTextConfig(FileConfiguration textConfig) {
-		this.textConfig = textConfig;
-	}
-
 	public ArrayList<Auction> getAuctionQueue() {
 		return auctionQueue;
 	}
 	
-	public void clearQueue() {
-		auctionQueue.clear();
+	public static void checkAuctionQueue() {
+		for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
+			auctionScopesEntry.getValue().checkThisAuctionQueue();
+		}
 	}
-	
+	public static AuctionScope getPlayerScope(Player player) {
+		if (player == null) return null;
+		for (int i = 0; i < auctionScopesOrder.size(); i++) {
+			String auctionScopeName = auctionScopesOrder.get(i);
+			AuctionScope auctionScope = auctionScopes.get(auctionScopeName);
+			if (auctionScope.isPlayerInScope(player)) return auctionScope;
+		}
+		return null;
+	}
+	public static AuctionScope getLocationScope(Location location) {
+		if (location == null) return null;
+		for (int i = 0; i < auctionScopesOrder.size(); i++) {
+			String auctionScopeName = auctionScopesOrder.get(i);
+			AuctionScope auctionScope = auctionScopes.get(auctionScopeName);
+			if (auctionScope.isLocationInScope(location)) return auctionScope;
+		}
+		return null;
+	}
+	public static void setupScopeList(ConfigurationSection auctionScopesConfig, File dataFolder) {
+	    auctionScopes.clear();
+	    auctionScopesOrder.clear();
+		if (auctionScopesConfig != null) {
+			for (String scopeName : auctionScopesConfig.getKeys(false)) {
+				auctionScopesOrder.add(scopeName);
+				ConfigurationSection auctionScopeConfig = auctionScopesConfig.getConfigurationSection(scopeName);
+		    	File scopeTextConfigFile = new File(dataFolder, "language-"+scopeName+".yml");
+		    	YamlConfiguration scopeTextConfig = null;
+		    	if (scopeTextConfigFile.exists()) {
+				    scopeTextConfig = YamlConfiguration.loadConfiguration(scopeTextConfigFile);
+		    	}
+				AuctionScope auctionScope = new AuctionScope(scopeName, auctionScopeConfig, scopeTextConfig);
+				auctionScopes.put(scopeName, auctionScope);
+			}
+		} else {
+			
+		}
+	}
+	public static void cancelAllAuctions() {
+		for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
+			AuctionScope auctionScope = auctionScopesEntry.getValue();
+			if (auctionScope.activeAuction != null) {
+				auctionScope.activeAuction.cancel();
+			}
+			auctionScope.auctionQueue.clear();
+		}
+	}
+
+	public static boolean areAuctionsRunning() {
+		for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
+			AuctionScope auctionScope = auctionScopesEntry.getValue();
+			if (auctionScope.getActiveAuction() != null || auctionScope.getAuctionQueueLength() > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 

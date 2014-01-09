@@ -1,5 +1,6 @@
 package com.flobi.floAuction;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -13,13 +14,13 @@ public class Participant {
 	public static boolean checkLocation(String playerName) {
 		Participant participant = Participant.getParticipant(playerName);
 		if (participant == null) return true;
-		return (participant.auctionScope.equals(floAuction.getPlayerScope(floAuction.server.getPlayer(playerName))));
+		return (participant.auctionScope.equals(AuctionScope.getPlayerScope(Bukkit.getPlayer(playerName))));
 	}
 
 	public static boolean checkLocation(String playerName, Location location) {
 		Participant participant = Participant.getParticipant(playerName);
 		if (participant == null) return true;
-		return (participant.auctionScope.equals(floAuction.getLocationScope(location)));
+		return (participant.auctionScope.equals(AuctionScope.getLocationScope(location)));
 	}
 
 	public static void forceLocation(String playerName, Location locationForGaze) {
@@ -27,11 +28,13 @@ public class Participant {
 		if (participant == null) return;
 		if (!participant.isParticipating()) return;
 		
-		Player player = floAuction.server.getPlayer(playerName);
+		Player player = Bukkit.getPlayer(playerName);
 		Location location = player.getLocation();
-		location.setDirection(new Vector(0, 0, 0));
-		location.setPitch(locationForGaze.getPitch());
-		location.setYaw(locationForGaze.getYaw());
+		if (locationForGaze != null) {
+			location.setDirection(new Vector(0, 0, 0));
+			location.setPitch(locationForGaze.getPitch());
+			location.setYaw(locationForGaze.getYaw());
+		}
 		
 		if (!Participant.checkLocation(playerName)) {
 			player.teleport(participant.lastKnownGoodLocation);
@@ -73,7 +76,7 @@ public class Participant {
 	}
 	
 	public static void addParticipant(String playerName, AuctionScope auctionScope) {
-		Player player = floAuction.server.getPlayer(playerName);
+		Player player = Bukkit.getPlayer(playerName);
 		if (Participant.getParticipant(playerName) == null) {
 			Participant participant = new Participant(playerName, auctionScope);
 			participant.lastKnownGoodLocation = player.getLocation();

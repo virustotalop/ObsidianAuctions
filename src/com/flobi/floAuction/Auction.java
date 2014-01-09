@@ -3,6 +3,8 @@ package com.flobi.floAuction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -117,8 +119,6 @@ public class Auction {
 		}
 
 		active = true;
-		floAuction.currentAuctionOwnerLocation = floAuction.server.getPlayer(ownerName).getLocation().clone();
-		floAuction.currentAuctionOwnerGamemode = floAuction.server.getPlayer(ownerName).getGameMode();
 		floAuction.sendMessage("auction-start", (CommandSender) null, scope, true);
 		
 		// Set timer:
@@ -422,8 +422,6 @@ public class Auction {
 			currentBid.cancelBid();
 		}
 		currentBid = newBid;
-		floAuction.currentBidPlayerLocation = floAuction.server.getPlayer(newBid.getBidder()).getLocation().clone();
-		floAuction.currentBidPlayerGamemode = floAuction.server.getPlayer(newBid.getBidder()).getGameMode();
 		if (this.sealed) {
 			floAuction.sendMessage("bid-success-sealed", newBid.getBidder(), scope);
 		} else if (AuctionConfig.getBoolean("broadcast-bid-updates", scope)) {
@@ -443,7 +441,7 @@ public class Auction {
         }
 	}
 	private Boolean parseHeldItem() {
-		Player owner = floAuction.server.getPlayer(ownerName);
+		Player owner = Bukkit.getPlayer(ownerName);
 		if (lot != null) {
 			return true;
 		}

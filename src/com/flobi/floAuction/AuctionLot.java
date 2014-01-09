@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -65,7 +66,7 @@ public class AuctionLot implements java.io.Serializable {
 		ownerName = playerName;
 		if (quantity == 0) return;
 		ItemStack lotTypeLock = getTypeStack();
-		Player player = floAuction.server.getPlayer(playerName);
+		Player player = Bukkit.getPlayer(playerName);
 		
 		int maxStackSize = lotTypeLock.getType().getMaxStackSize();
 		if (player != null && player.isOnline()) {
@@ -115,8 +116,7 @@ public class AuctionLot implements java.io.Serializable {
 			quantity = 0;
 			
 			// Queue for distribution on space availability.
-			floAuction.orphanLots.add(orphanLot);
-			floAuction.saveObject(floAuction.orphanLots, "orphanLots.ser");
+			floAuction.saveOrphanLot(orphanLot);
 		}
 	}
 	@SuppressWarnings("deprecation")
