@@ -119,6 +119,11 @@ public class AuctionBid {
 			return false;
 		}
 
+		if (AuctionProhibition.isOnProhibition(bidderName, false)) {
+			error = "remote-plugin-prohibition-reminder";
+			return false;
+		}
+
 		if (!Participant.checkLocation(bidderName)) {
 			error = "bid-fail-outside-auctionhouse";
 			return false;

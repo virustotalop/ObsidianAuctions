@@ -151,11 +151,17 @@ public class AuctionScope {
 		if (player == null || !player.isOnline()) {
 			return;
 		}
+		
+		if (AuctionProhibition.isOnProhibition(auction.getOwner(), false)) {
+			floAuction.sendMessage("remote-plugin-prohibition-reminder", player, null, false);
+			return;
+		}
+		
 		if (!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
 			floAuction.sendMessage("auction-fail-gamemode-creative", player, null, false);
 			return;
 		}
-			
+		
 		if (!floAuction.perms.has(player, "auction.start")) {
 			floAuction.sendMessage("no-permission", player, null, false);
 			return;
