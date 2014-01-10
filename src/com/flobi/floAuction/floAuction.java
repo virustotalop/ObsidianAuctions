@@ -686,15 +686,15 @@ public class floAuction extends JavaPlugin {
     				
     				if (cmd.getName().equalsIgnoreCase("sealedauction") || cmd.getName().equalsIgnoreCase("sauc")) {
     					if (AuctionConfig.getBoolean("allow-sealed-auctions", userScope)) {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, true), player, auction);
+    						userScope.queueAuction(new Auction(this, player, args, userScope, true));
     					} else {
     						sendMessage("auction-fail-no-sealed-auctions", sender, userScope, false);
     					}
     				} else {
     					if (AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, false), player, auction);
+    						userScope.queueAuction(new Auction(this, player, args, userScope, false));
     					} else {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, true), player, auction);
+    						userScope.queueAuction(new Auction(this, player, args, userScope, true));
     					}
     				}
 

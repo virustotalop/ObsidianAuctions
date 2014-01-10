@@ -122,12 +122,11 @@ public class AuctionScope {
 	 * @param player player initiating queue request
 	 * @param currentAuction the auction that's currently running
 	 */
-	
-	// TODO: Remove player and current auction.  Get player from auctionToQueue and currentAuction from scope.
-    public void queueAuction(Auction auctionToQueue, Player player, Auction currentAuction) {
-		String playerName = player.getName();
+    public void queueAuction(Auction auctionToQueue) {
+		String playerName = auctionToQueue.getOwner();
+		Player player = Bukkit.getPlayer(playerName);
 
-		if (currentAuction == null) {
+		if (activeAuction == null) {
 			// Queuing because of interval not yet timed out.
 			// Allow a queue of 1 to override if 0 for this condition.
 	    	if (Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= auctionQueue.size()) {
@@ -139,7 +138,7 @@ public class AuctionScope {
 	    		floAuction.sendMessage("auction-fail-auction-exists", player, this, false);
 				return;
 			}
-			if (currentAuction.getOwner().equalsIgnoreCase(playerName)) {
+			if (activeAuction.getOwner().equalsIgnoreCase(playerName)) {
 				floAuction.sendMessage("auction-queue-fail-current-auction", player, this, false);
 				return;
 			}
