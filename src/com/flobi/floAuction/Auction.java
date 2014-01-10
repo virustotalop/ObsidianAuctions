@@ -374,14 +374,14 @@ public class Auction {
 				if (buyNow == 0 || (currentBid != null && currentBid.getBidAmount() >= buyNow)) {
 					floAuction.sendMessage("bid-fail-buynow-expired", bidder, scope, false);
 				} else {
-					inputArgs[0] = Long.toString(buyNow);
+					inputArgs[0] = Double.toString(functions.getUnsafeMoney(buyNow));
 					AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
 					if (bid.getError() != null) {
 						failBid(bid, bid.getError());
 						return;
 					} else {
 						// raisOwnBid does nothing if it's not the current bidder.
-						bid.raiseOwnBid(currentBid);
+						if (currentBid != null) bid.raiseOwnBid(currentBid);
 						setNewBid(bid, null);
 						end();
 					}
