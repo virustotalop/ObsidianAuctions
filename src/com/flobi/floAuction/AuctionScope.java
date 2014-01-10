@@ -16,12 +16,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import com.garbagemule.MobArena.MobArena;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+/**
+ * Class to manage different auction areas or scopes.  
+ * 
+ * @author Joshua "flobi" Hatfield
+ */
 public class AuctionScope {
 	private Auction activeAuction = null;
 	private String name = null;
@@ -42,6 +46,13 @@ public class AuctionScope {
 	public static Map<String, AuctionScope> auctionScopes = new HashMap<String, AuctionScope>();
 	private static WorldGuardPlugin worldGuardPlugin = null;
 
+	/**
+	 * Constructor to make new scopes from the name, config and language config files.
+	 * 
+	 * @param name name of scope
+	 * @param config configuration
+	 * @param textConfig language config
+	 */
 	private AuctionScope(String name, ConfigurationSection config, YamlConfiguration textConfig) {
 		this.name = name;
 
@@ -73,14 +84,29 @@ public class AuctionScope {
 		this.textConfig = textConfig;
 	}
 	
+	/**
+	 * Retrieves and instance of the active auction from this scope.
+	 * 
+	 * @return active auction instance
+	 */
 	public Auction getActiveAuction() {
 		return activeAuction;
 	}
 	
+	/**
+	 * Gets the number of queued auctions.
+	 * 
+	 * @return length of auction queue
+	 */
 	public int getAuctionQueueLength() {
 		return auctionQueue.size();
 	}
 	
+	/**
+	 * Sets the passed in auction instance as the active auction.  
+	 * 
+	 * @param auction auction instance to set as active
+	 */
 	public void setActiveAuction(Auction auction) {
 		if (activeAuction != null && auction == null) {
 			lastAuctionDestroyTime = System.currentTimeMillis();
@@ -89,6 +115,15 @@ public class AuctionScope {
 		activeAuction = auction;
 	}
 	
+	/**
+	 * Adds an auction instance to the auction queue for this scope.
+	 * 
+	 * @param auctionToQueue auction instance to queue
+	 * @param player player initiating queue request
+	 * @param currentAuction the auction that's currently running
+	 */
+	
+	// TODO: Remove player and current auction.  Get player from auctionToQueue and currentAuction from scope.
     public void queueAuction(Auction auctionToQueue, Player player, Auction currentAuction) {
 		String playerName = player.getName();
 
@@ -132,6 +167,9 @@ public class AuctionScope {
 		}
     }
 
+    /**
+     * Checks the auction queue to see if the next auction is ready to start. 
+     */
 	private void checkThisAuctionQueue() {
 		if (activeAuction != null) {
 			return;
@@ -175,11 +213,23 @@ public class AuctionScope {
 		}
 	}
 	
+	/**
+	 * Checks to see if the player is inside the scope boundaries.
+	 * 
+	 * @param player player to check
+	 * @return whether he's in the scope
+	 */
 	private boolean isPlayerInScope(Player player) {
 		if (player == null) return false;
 		return isLocationInScope(player.getLocation());
 	}
 	
+	/**
+	 * Checks to see if a location is inside the scope boundaries.
+	 * 
+	 * @param location location to check
+	 * @return whether it's in the scope
+	 */
 	private boolean isLocationInScope(Location location) {
 		if (location == null) return false;
 		World world = location.getWorld();
@@ -207,27 +257,58 @@ public class AuctionScope {
 		return false;
 	}
 
+	/**
+	 * Retrieves the configuration for this scope.
+	 * 
+	 * @return config for the scope
+	 */
 	public ConfigurationSection getConfig() {
 		return config;
 	}
 
+	/**
+	 * Gets the name of the scope.
+	 * 
+	 * @return name of the scope
+	 */
+	// TODO: distinguish the id of the scope from the name
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Retrieves the language configuration for this scope.
+	 * 
+	 * @return language config for the scope
+	 */
 	public FileConfiguration getTextConfig() {
 		return textConfig;
 	}
 
+	/**
+	 * Retrieves the list of auctions queued.
+	 * 
+	 * @return auction queue
+	 */
 	public ArrayList<Auction> getAuctionQueue() {
 		return auctionQueue;
 	}
 	
+	/**
+	 * Checks the auction queues for each scope, starting any auctions which are ready.
+	 */
 	public static void checkAuctionQueue() {
 		for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
 			auctionScopesEntry.getValue().checkThisAuctionQueue();
 		}
 	}
+	
+	/**
+	 * Gets the AuctionScope instance in which the player is.
+	 * 
+	 * @param player player to check
+	 * @return scope where the player is
+	 */
 	public static AuctionScope getPlayerScope(Player player) {
 		if (player == null) return null;
 		for (int i = 0; i < auctionScopesOrder.size(); i++) {
@@ -237,6 +318,13 @@ public class AuctionScope {
 		}
 		return null;
 	}
+
+	/**
+	 * Gets the AuctionScope instance in which the location is.
+	 * 
+	 * @param player location to check
+	 * @return scope where the location is
+	 */
 	public static AuctionScope getLocationScope(Location location) {
 		if (location == null) return null;
 		for (int i = 0; i < auctionScopesOrder.size(); i++) {
@@ -246,6 +334,13 @@ public class AuctionScope {
 		}
 		return null;
 	}
+	
+	/**
+	 * Builds list of AuctionScope instances based on the configuration loaded by the plugin.
+	 * 
+	 * @param auctionScopesConfig
+	 * @param dataFolder
+	 */
 	public static void setupScopeList(ConfigurationSection auctionScopesConfig, File dataFolder) {
 	    auctionScopes.clear();
 	    auctionScopesOrder.clear();
@@ -265,16 +360,25 @@ public class AuctionScope {
 			
 		}
 	}
+	
+	/**
+	 * Big red button.
+	 */
 	public static void cancelAllAuctions() {
 		for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
 			AuctionScope auctionScope = auctionScopesEntry.getValue();
+			auctionScope.auctionQueue.clear();
 			if (auctionScope.activeAuction != null) {
 				auctionScope.activeAuction.cancel();
 			}
-			auctionScope.auctionQueue.clear();
 		}
 	}
 
+	/**
+	 * Checks to see if any auctions are running.
+	 * 
+	 * @return
+	 */
 	public static boolean areAuctionsRunning() {
 		for (Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
 			AuctionScope auctionScope = auctionScopesEntry.getValue();

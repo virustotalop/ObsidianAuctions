@@ -61,6 +61,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.flobi.utility.functions;
 import com.flobi.utility.items;
 
+/**
+ * A Bukkit based Minecraft plugin to facilitate auctions.
+ * 
+ * @author Joshua "flobi" Hatfield
+ */
 public class floAuction extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -86,12 +91,22 @@ public class floAuction extends JavaPlugin {
 	private static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
 	private static ArrayList<String> suspendedUsers = new ArrayList<String>();
 	
-	
+	/**
+	 * Used by AuctinLot to store auction lots which could not be given to players because they were offline.
+	 * 
+	 * @param auctionLot AuctionLot to save.
+	 */
 	public static void saveOrphanLot(AuctionLot auctionLot) {
 		floAuction.orphanLots.add(auctionLot);
 		saveObject(floAuction.orphanLots, "orphanLots.ser");		
 	}
 	
+	/**
+	 * Saves an object to a file.
+	 * 
+	 * @param object object to save
+	 * @param filename name of file
+	 */
 	private static void saveObject(Object object, String filename) {
     	File saveFile = new File(dataFolder, filename);
     	
@@ -112,6 +127,13 @@ public class floAuction extends JavaPlugin {
     		return;
   	    }
 	}
+	
+	/**
+	 * Load a String array from a file.
+	 * 
+	 * @param filename where the file is
+	 * @return the resulting string array
+	 */
 	@SuppressWarnings({ "unchecked", "finally" })
 	private static ArrayList<String> loadArrayListString(String filename) {
     	File saveFile = new File(dataFolder, filename);
@@ -129,6 +151,12 @@ public class floAuction extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Load a String String map from a file.
+	 * 
+	 * @param filename where the file is
+	 * @return the resulting string string map
+	 */
 	@SuppressWarnings({ "unchecked", "finally" })
 	private static Map<String, String[]> loadMapStringStringArray(String filename) {
     	File saveFile = new File(dataFolder, filename);
@@ -146,7 +174,12 @@ public class floAuction extends JavaPlugin {
 		}
 	}
 	
-	
+	/**
+	 * Load a list of AuctionLot from a file.
+	 * 
+	 * @param filename where the file is
+	 * @return the loaded list
+	 */
 	@SuppressWarnings("unchecked")
 	private static ArrayList<AuctionLot> loadArrayListAuctionLot(String filename) {
     	File saveFile = new File(dataFolder, filename);
@@ -170,7 +203,11 @@ public class floAuction extends JavaPlugin {
     	return importedObjects;
 	}
 	
-	
+	/**
+	 * Attempts to give lost AuctionLots back to their intended destination.
+	 * 
+	 * @param player the player to check for missing items
+	 */
 	// Eliminate orphan lots (i.e. try to give the items to a player again).
 	public static void killOrphan(Player player) {
 		// List of orphans to potentially kill.
@@ -204,6 +241,9 @@ public class floAuction extends JavaPlugin {
     public static Permission perms = null;
     public static Chat chat = null;
 
+    /**
+     * Called by Bukkit when initializing.  Sets up basic plugin settings.
+     */
 	public void onEnable() {
 		console = Bukkit.getConsoleSender();
 		dataFolder = getDataFolder();
@@ -304,12 +344,12 @@ public class floAuction extends JavaPlugin {
         	@EventHandler()
         	public void onPlayerTeleport(PlayerTeleportEvent event) {
         		if (event.isCancelled()) return;
-        		if (AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
+        		if (!AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
         	}
         	@EventHandler()
         	public void onPlayerPortalEvent(PlayerPortalEvent event) {
         		if (event.isCancelled()) return;
-        		if (AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
+        		if (!AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
         	}
         }, this);
 		
@@ -420,6 +460,10 @@ public class floAuction extends JavaPlugin {
 	    // Build auction scopes.
 	    AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
     }
+    
+    /**
+     * Called by Bukkit when disabling.  Cancels all auctions and clears data.
+     */
 	public void onDisable() {
 		AuctionScope.cancelAllAuctions();
 		getServer().getScheduler().cancelTask(queueTimer);
@@ -427,24 +471,35 @@ public class floAuction extends JavaPlugin {
 		auctionLog = null;
 		sendMessage("plugin-disabled", console, null, false);
 	}
+	
 	/**
 	 * Prepares chat, prepending prefix and processing colors.
 	 * 
-	 * @param String message to prepare
-	 * @return String prepared message
+	 * @param message message to prepare
+	 * @param auctionScope the scope of the destination
+	 * @return prepared message
 	 */
     private static String chatPrep(String message, AuctionScope auctionScope) {
     	message = AuctionConfig.getLanguageString("chat-prefix", auctionScope) + message;
     	message = ChatColor.translateAlternateColorCodes('&', message);
     	return message;
     }
+    
+    /**
+     * Prepares chat, prepending prefix and removing colors.
+     * 
+	 * @param message message to prepare
+	 * @param auctionScope the scope of the destination
+	 * @return prepared message
+     */
     private static String chatPrepClean(String message, AuctionScope auctionScope) {
     	message = AuctionConfig.getLanguageString("chat-prefix", auctionScope) + message;
     	message = ChatColor.translateAlternateColorCodes('&', message);
     	message = ChatColor.stripColor(message);
     	return message;
     }
-    
+
+    // Overrides onCommand from Plugin
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
     	// Make sure the decimalPlaces loaded correctly.
@@ -809,6 +864,14 @@ public class floAuction extends JavaPlugin {
     	return false;
     }
     
+    /**
+     * Sends a message to a player or scope.
+     * 
+     * @param messageKey key to message in language.yml
+     * @param player focused player
+     * @param auctionScope focused scope
+     * @param fullBroadcast whether to broadcast or send to player
+     */
     public static void sendMessage(String messageKey, CommandSender player, AuctionScope auctionScope, boolean fullBroadcast) {
     	if (messageKey == null) {
     		return;
@@ -818,20 +881,37 @@ public class floAuction extends JavaPlugin {
     	sendMessage(messageKeys, player, auctionScope, fullBroadcast, "-");
     }
 
+    /**
+     * Sends a message to a player or scope.
+     * 
+     * @param messageKeys keys to message in language.yml
+     * @param player focused player
+     * @param auctionScope focused scope
+     * @param fullBroadcast whether to broadcast or send to player
+     */
     public static void sendMessage(List<String> messageKeys, CommandSender player, AuctionScope auctionScope, boolean fullBroadcast) {
     	sendMessage(messageKeys, player, auctionScope, fullBroadcast, "-");
     }
 
-    public static void sendMessage(String messageKey, CommandSender player, AuctionScope auctionScope, boolean fullBroadcast, String fireworkAspect) {
+    /*private static void sendMessage(String messageKey, CommandSender player, AuctionScope auctionScope, boolean fullBroadcast, String fireworkAspect) {
     	if (messageKey == null) {
     		return;
     	}
     	List<String> messageKeys = new ArrayList<String>();
     	messageKeys.add(messageKey);
     	sendMessage(messageKeys, player, auctionScope, fullBroadcast, fireworkAspect);
-    }
+    }*/
 
-    public static void sendMessage(List<String> messageKeys, CommandSender player, AuctionScope auctionScope, boolean fullBroadcast, String fireworkAspect) {
+    /**
+     * Sends a message to a player or scope.
+     * 
+     * @param messageKeys keys to message in language.yml
+     * @param player focused player
+     * @param auctionScope focused scope
+     * @param fullBroadcast whether to broadcast or send to player
+     * @param fireworkAspect aspects of firework to send
+     */
+    private static void sendMessage(List<String> messageKeys, CommandSender player, AuctionScope auctionScope, boolean fullBroadcast, String fireworkAspect) {
 
     	String playerName = null;
     	Auction auction = null;
@@ -1169,7 +1249,14 @@ public class floAuction extends JavaPlugin {
     	}
     	
     }
-    public static void broadcastMessage(String message, AuctionScope auctionScope) {
+    
+    /**
+     * Broadcast a message to everyone in an auctionscope.
+     * 
+     * @param message message to send
+     * @param auctionScope scope to send it to
+     */
+    private static void broadcastMessage(String message, AuctionScope auctionScope) {
     	Player[] onlinePlayers = Bukkit.getOnlinePlayers();
     	
     	for (Player player : onlinePlayers) {
@@ -1182,6 +1269,13 @@ public class floAuction extends JavaPlugin {
 			console.sendMessage(message);
 		}
     }
+    
+    /**
+     * Log data to the floAuction log file if logging is enabled.
+     * 
+     * @param sender who is initiating the logged event
+     * @param message message to save
+     */
     private static void log(CommandSender sender, String message) {
     	Player player = null;
     	AuctionScope playerScope = null;
@@ -1223,12 +1317,15 @@ public class floAuction extends JavaPlugin {
 			} catch (IOException e) {
 				
 			}
-	    	
-			
     	}
-		
 	}
-	private boolean setupEconomy() {
+
+    /**
+     * Setup Vault economy.
+     * 
+     * @return success level
+     */
+    private boolean setupEconomy() {
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
@@ -1240,6 +1337,11 @@ public class floAuction extends JavaPlugin {
         return econ != null;
     }
 
+    /**
+     * Setup Vault chat.
+     * 
+     * @return success level
+     */
     private boolean setupChat() {
         RegisteredServiceProvider<Chat> rsp = Bukkit.getServicesManager().getRegistration(Chat.class);
         if (rsp == null) {
@@ -1249,12 +1351,24 @@ public class floAuction extends JavaPlugin {
         return chat != null;
     }
 
+    /**
+     * Setup Vault permission.
+     * 
+     * @return success level
+     */
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = Bukkit.getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
         return perms != null;
     }
 
+    /**
+     * Sends a message to a player or scope.
+     * 
+     * @param messageKeys keys to message in language.yml
+     * @param player focused player
+     * @param auctionScope focused scope
+     */
 	public static void sendMessage(String messageKey, String playerName, AuctionScope auctionScope) {
 		if (playerName == null) {
 			sendMessage(messageKey, (CommandSender) null, auctionScope, true);
@@ -1263,10 +1377,24 @@ public class floAuction extends JavaPlugin {
 		}
 		
 	}
+	
+	/**
+	 * Gets the active auction instance from the scope where the player is.
+	 * 
+	 * @param playerName player in reference
+	 * @return auction instance
+	 */
 	public static Auction getPlayerAuction(String playerName) {
 		if (playerName == null) return null;
 		return getPlayerAuction(Bukkit.getPlayer(playerName));
 	}
+
+	/**
+	 * Gets the active auction instance from the scope where the player is.
+	 * 
+	 * @param player player in reference
+	 * @return auction instance
+	 */
 	public static Auction getPlayerAuction(Player player) {
 		if (player == null) return null;
 		AuctionScope auctionScope = AuctionScope.getPlayerScope(player);

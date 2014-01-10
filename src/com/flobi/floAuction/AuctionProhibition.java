@@ -6,6 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * Class to manipulate remote plugin prohibitions on player auctioning.
+ * 
+ * @author Joshua "flobi" Hatfield
+ */
 public class AuctionProhibition {
 	private Plugin prohibiterPlugin = null;
 	private String playerName = null;
@@ -15,6 +20,13 @@ public class AuctionProhibition {
 
 	private static ArrayList<AuctionProhibition> involuntarilyDisabledUsers = new ArrayList<AuctionProhibition>();
 
+	/**
+	 * Gets the prohibition instance by plugin and player name.
+	 * 
+	 * @param prohibiterPlugin prohibiting plugin
+	 * @param playerName prohibited player
+	 * @return prohibition instance
+	 */
 	private static AuctionProhibition getProhibition(Plugin prohibiterPlugin, String playerName) {
 		for (int i = 0; i < involuntarilyDisabledUsers.size(); i++) {
 			AuctionProhibition auctionProhibition = involuntarilyDisabledUsers.get(i);
@@ -25,6 +37,12 @@ public class AuctionProhibition {
 		return null;
 	}
 	
+	/**
+	 * Gets the first prohibition instance of a player by name.
+	 * 
+	 * @param playerName prohibited player
+	 * @return prohibition instance
+	 */
 	private static AuctionProhibition getProhibition(String playerName) {
 		for (int i = 0; i < involuntarilyDisabledUsers.size(); i++) {
 			AuctionProhibition auctionProhibition = involuntarilyDisabledUsers.get(i);
@@ -35,6 +53,13 @@ public class AuctionProhibition {
 		return null;
 	}
 
+	/**
+	 * Checks to see if a player is on prohibition by any plugin and optionally sends a reminder to them that they are.
+	 * 
+	 * @param playerName player to check
+	 * @param sendReminderMessage whether to remind
+	 * @return whether they're prohibited
+	 */
 	public static boolean isOnProhibition(String playerName, boolean sendReminderMessage) {
 		AuctionProhibition auctionProhibition = AuctionProhibition.getProhibition(playerName);
 		if (auctionProhibition != null) {
@@ -54,6 +79,14 @@ public class AuctionProhibition {
 		}
 	}
 
+	/**
+	 * Checks to see if a player is on prohibition by a specified plugin and optionally sends a reminder to them that they are.
+	 * 
+	 * @prohibiterPlugin plugin to check
+	 * @param playerName player to check
+	 * @param sendReminderMessage whether to remind
+	 * @return whether they're prohibited
+	 */
 	public static boolean isOnProhibition(Plugin prohibiterPlugin, String playerName, boolean sendReminderMessage) {
 		AuctionProhibition auctionProhibition = AuctionProhibition.getProhibition(prohibiterPlugin, playerName);
 		if (auctionProhibition != null) {
@@ -73,10 +106,29 @@ public class AuctionProhibition {
 		}
 	}
 
+	/**
+	 * Mark a player as prohibited from auctioning and notify them.  Will return false if unable to prohibit user.  Plugin instituted prohibitions cannot be instituted while a player is participating in an auction.
+	 * 
+	 * @param prohibiterPlugin plugin requesting prohibition
+	 * @param playerName player being prohibited
+	 * @return success as prohibiting
+	 */
 	public static boolean prohibitPlayer(Plugin prohibiterPlugin, String playerName) {
 		return prohibitPlayer(prohibiterPlugin, playerName, null, null, null);
 	}
 	
+	/**
+	 * Mark a player as prohibited from auctioning.  Will return false if unable to prohibit user.  Plugin instituted prohibitions cannot be instituted while a player is participating in an auction.
+	 * <p>
+	 * Optional messages can be set to override floAuction's normal notification.  Set these to null to use the floAuction's normal messages.
+	 * 
+	 * @param prohibiterPlugin plugin requesting prohibition
+	 * @param playerName player being prohibited
+	 * @param enableMessage message to send when starting prohibition
+	 * @param reminderMessage message to send when reminding player of prohibition
+	 * @param disableMessage message to send when ending prohibition
+	 * @return success as prohibiting
+	 */
 	public static boolean prohibitPlayer(Plugin prohibiterPlugin, String playerName, String enableMessage, String reminderMessage, String disableMessage) {
 		if (AuctionParticipant.isParticipating(playerName)) return false;
 		
@@ -100,7 +152,13 @@ public class AuctionProhibition {
 		return true;
 	}
 
-	public static boolean removeProhibition(Plugin prohibiterPlugin, String playerName) {
+	/**
+	 * Removes the prohibition set by a specific plugin and notifies user of such.
+	 * 
+	 * @param prohibiterPlugin plugin which requested prohibition
+	 * @param playerName prohibited player
+	 */
+	public static void removeProhibition(Plugin prohibiterPlugin, String playerName) {
 		Player player = Bukkit.getPlayer(playerName);
 		AuctionScope auctionScope = AuctionScope.getPlayerScope(player);
 		for (int i = 0; i < involuntarilyDisabledUsers.size(); i++) {
@@ -130,10 +188,17 @@ public class AuctionProhibition {
 				}
 			}
 		}
-		
-		return true;
 	}
 	
+	/**
+	 * Private constructor called when initializing prohibition. 
+	 * 
+	 * @param prohibiterPlugin prohibiting plugin
+	 * @param playerName prohibited player's name
+	 * @param enableMessage message to send when starting prohibition
+	 * @param reminderMessage message to send when reminding player of prohibition
+	 * @param disableMessage message to send when ending prohibition
+	 */
 	private AuctionProhibition(Plugin prohibiterPlugin, String playerName, String enableMessage, String reminderMessage, String disableMessage) {
 		this.prohibiterPlugin = prohibiterPlugin;
 		this.playerName = playerName;

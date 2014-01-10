@@ -16,12 +16,19 @@ import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
 import com.tommytony.war.War;
 import com.tommytony.war.Warzone;
 
+/**
+ * Utility class for managing MobArena, PVPArena and War arenas.
+ * 
+ * @author Joshua "flobi" Hatfield
+ */
 public class ArenaManager implements Listener {
 	private static MobArena mobArena = null;
 	private static PVPArena pVPArena = null;
 	private static War war = null;
 	
-	// Call when loading plugin.
+	/**
+	 * Attempts to load arena plugins.
+	 */
 	public static void loadArenaPlugins() {
 		PluginManager pluginManager = Bukkit.getPluginManager();
 		// Load plugins
@@ -35,13 +42,21 @@ public class ArenaManager implements Listener {
 		if (war != null && !war.isEnabled()) war = null;
 	}
 	
-	// Call when unloading plugin.
+	/**
+	 * Unloads arena plugins.
+	 */
 	public static void unloadArenaPlugins() {
 		mobArena = null;
 		pVPArena = null;
 		war = null;
 	}
 	
+	/**
+	 * Checks to see if the player is in any arena.
+	 * 
+	 * @param  player  the player for whom to check 
+	 * @return         whether or not the player is in an arena 
+	 */
 	public static boolean isInArena(Player player) {
 		if (player == null) return false;
 		if (AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player))) return false;
@@ -54,6 +69,12 @@ public class ArenaManager implements Listener {
 		return false;
 	}
 	
+	/**
+	 * Checks to see if the location is in any arena.
+	 * 
+	 * @param  location  the location for which to check 
+	 * @return           whether or not the location is in an arena 
+	 */
 	public static boolean isInArena(Location location) {
 		if (location == null) return false;
 		if (AuctionConfig.getBoolean("allow-arenas", AuctionScope.getLocationScope(location))) return false;
@@ -66,6 +87,11 @@ public class ArenaManager implements Listener {
 		return false;
 	}
 	
+	/**
+	 * Listener for MobArena.  Cancels arena entry if player is participating in an auction.
+	 * 
+	 * @param  event  the location for which to check 
+	 */
 	@EventHandler
 	public void onMAPlayerJoin(ArenaPlayerJoinEvent event) {
 		if (event.isCancelled()) return;
@@ -77,6 +103,11 @@ public class ArenaManager implements Listener {
 		}
 	}
 	
+	/**
+	 * Listener for PVPArena.  Cancels arena entry if player is participating in an auction.
+	 * 
+	 * @param  event  the location for which to check 
+	 */
 	@EventHandler
 	public void onPAPlayerJoin(PAJoinEvent event) {
 		if (event.isCancelled()) return;

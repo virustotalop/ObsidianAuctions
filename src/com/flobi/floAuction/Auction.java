@@ -15,6 +15,11 @@ import org.bukkit.inventory.ItemStack;
 import com.flobi.utility.functions;
 import com.flobi.utility.items;
 
+/**
+ * Main auction class.
+ * 
+ * @author Joshua "flobi" Hatfield
+ */
 public class Auction {
 	protected floAuction plugin;
 	private String[] args;
@@ -43,10 +48,24 @@ public class Auction {
 	private int countdown = 0;
 	private int countdownTimer = 0;
 	
+	/**
+	 * Gets the AuctionScope which hosts this auction.
+	 * 
+	 * @return the hosting AuctionScope
+	 */
 	public AuctionScope getScope() {
 		return scope;
 	}
 	
+	/**
+	 * Instantiates an auction instance.
+	 * 
+	 * @param plugin       the active floAuction plugin instance
+	 * @param auctionOwner the player who is starting the auction
+	 * @param inputArgs    the command parameters entered in chat
+	 * @param scope        the hosting AuctionScope
+	 * @param sealed       whether or not it is a sealed auction
+	 */
 	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed) {
 		ownerName = auctionOwner.getName();
 		args = functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
@@ -55,6 +74,11 @@ public class Auction {
 		this.sealed = sealed;
 	}
 	
+	/**
+	 * Attempts to start this auction instance.  Returns success.
+	 * 
+	 * @return whether or not the auction start succeeded
+	 */
 	public Boolean start() {
 		
 		if (ArenaManager.isInArena(Bukkit.getPlayer(ownerName))) {
@@ -108,7 +132,7 @@ public class Auction {
 			}
 		}
 		
-		if (!lot.AddItems(quantity, true)) {
+		if (!lot.addItems(quantity, true)) {
 			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, scope);
 			return false;
 		}
@@ -158,6 +182,13 @@ public class Auction {
 		info(null, true);
 		return true;
 	}
+	
+	/**
+	 * Sends auction info to chat.
+	 * 
+	 * @param sender the CommandSender initiating the request
+	 * @param fullBroadcast whether to send the message to everyone in the hosting AuctionScope
+	 */
 	public void info(CommandSender sender, boolean fullBroadcast) {
 		List<String> messageKeys = new ArrayList<String>();
 		
@@ -249,22 +280,36 @@ public class Auction {
 		}
 		floAuction.sendMessage(messageKeys, sender, scope, fullBroadcast);
 	}
+	
+	/**
+	 * Cancels the Auction instance and disposes of it normally.
+	 */
 	public void cancel() {
 		floAuction.sendMessage("auction-cancel", (CommandSender) null, scope, true);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
 		dispose();
 	}
+	
+	/**
+	 * Cancels the Auction instance redirecting all goods to an approved authority. 
+	 * If the authority is not approved, Auction instance will not be cancelled.
+	 * 
+	 * @param authority the name of a player authorized to confiscate auctions
+	 */
 	public void confiscate(Player authority) {
 		ownerName = authority.getName();
 		floAuction.sendMessage("auction-confiscated", (CommandSender) null, scope, true);
 		if (lot != null) {
-			lot.setOwner(authority.getName());
-			lot.cancelLot();
+			lot.winLot(authority.getName());
 		}
 		if (currentBid != null) currentBid.cancelBid();
 		dispose();
 	}
+	
+	/**
+	 * Ends an auction normally sending money and goods to their earned destinations.
+	 */
 	public void end() {
 		if (currentBid == null || lot == null) {
 			floAuction.sendMessage("auction-end-nobids", (CommandSender) null, scope, true);
@@ -277,6 +322,10 @@ public class Auction {
 		}
 		dispose();
 	}
+	
+	/**
+	 * Disposes of the remains of a terminated auction, purging the timer, refunding sealed bid losers and removing self from host scope.
+	 */
 	private void dispose() {
 		plugin.getServer().getScheduler().cancelTask(countdownTimer);
 
@@ -287,6 +336,12 @@ public class Auction {
 		
 		scope.setActiveAuction(null);
 	}
+	
+	/**
+	 * Checks all auction parameters and environment factors to determine if the Auction instance can legitimately start. 
+	 * 
+	 * @return whether the auction can begin
+	 */
 	public Boolean isValid() {
 		if (!isValidOwner()) return false;
 		if (!parseHeldItem()) return false;
@@ -298,6 +353,13 @@ public class Auction {
 		if (!isValidBuyNow()) return false;
 		return true;
 	}
+	
+	/**
+	 * Parses a bid command.
+	 * 
+	 * @param bidder Player attempting to bid
+	 * @param inputArgs parameters entered in chat
+	 */
 	public void Bid(Player bidder, String[] inputArgs) {
 
 		if (ArenaManager.isInArena(bidder)) {
@@ -411,22 +473,33 @@ public class Auction {
 			// Seriously don't know what could cause this, but might as well take care of it.
 			floAuction.sendMessage("bid-fail-too-low", bid.getBidder(), scope);
 		}
-		
-		
-		
 	}
-	private void failBid(AuctionBid newBid, String reason) {
-		newBid.cancelBid();
-		if (this.sealed && (newBid.getError() == null || newBid.getError().isEmpty())) {
-			floAuction.sendMessage("bid-success-sealed", newBid.getBidder(), scope);
+	
+	/**
+	 * Disposes of a failed bid attempt.
+	 * 
+	 * @param attemptedBid the attempted bid
+	 * @param reason message key to send to looser
+	 */
+	private void failBid(AuctionBid attemptedBid, String reason) {
+		attemptedBid.cancelBid();
+		if (this.sealed && (attemptedBid.getError() == null || attemptedBid.getError().isEmpty())) {
+			floAuction.sendMessage("bid-success-sealed", attemptedBid.getBidder(), scope);
 		} else {
-			floAuction.sendMessage(reason, newBid.getBidder(), scope);
+			floAuction.sendMessage(reason, attemptedBid.getBidder(), scope);
 		}
 	}
+	
+	/**
+	 * Assigns new bid and alerts those in the hosting AuctionScope.
+	 * 
+	 * @param newBid the new bid
+	 * @param reason message key to broadcast
+	 */
 	private void setNewBid(AuctionBid newBid, String reason) {
 		AuctionBid prevBid = currentBid;
 		
-		if (AuctionConfig.getBoolean("expire-buynow-at-first-bid", scope)) setBuyNow(0);
+		if (AuctionConfig.getBoolean("expire-buynow-at-first-bid", scope)) this.buyNow = 0;
 		
 		if (currentBid != null) {
 			currentBid.cancelBid();
@@ -450,6 +523,12 @@ public class Auction {
 	        floAuction.sendMessage("anti-snipe-time-added", null, scope, true);
         }
 	}
+	
+	/**
+	 * Checks the item in hand to see if it's valid and allowed.
+	 * 
+	 * @return acceptability of held item for auctioning
+	 */
 	private Boolean parseHeldItem() {
 		Player owner = Bukkit.getPlayer(ownerName);
 		if (lot != null) {
@@ -500,6 +579,12 @@ public class Auction {
 		
 		return true;
 	}
+	
+	/**
+	 * Parses arguments entered into chat.
+	 * 
+	 * @return acceptability of entered arguments
+	 */
 	private Boolean parseArgs() {
 		// (amount) (starting price) (increment) (time) (buynow)
 		if (!parseArgAmount()) return false;
@@ -509,6 +594,12 @@ public class Auction {
 		if (!parseArgBuyNow()) return false;
 		return true;
 	}
+	
+	/**
+	 * Checks auction starter ability to start auction.
+	 * 
+	 * @return acceptability of starter auctioning
+	 */
 	private Boolean isValidOwner() {
 		if (ownerName == null) {
 			floAuction.sendMessage("auction-fail-invalid-owner", (Player) plugin.getServer().getConsoleSender(), scope, false);
@@ -517,17 +608,31 @@ public class Auction {
 		return true;
 	}
 	
+	/**
+	 * Checks lot quantity range and availability in starter's inventory.
+	 * 
+	 * @return acceptability of lot quantity
+	 */
 	private Boolean isValidAmount() {
 		if (quantity <= 0) {
 			floAuction.sendMessage("auction-fail-quantity-too-low", ownerName, scope);
 			return false;
 		}
+		
+		// TODO: Add config setting for max quantity.
+		
 		if (!items.hasAmount(ownerName, quantity, lot.getTypeStack())) {
 			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, scope);
 			return false;
 		}
 		return true;
 	}
+	
+	/**
+	 * Checks starting bid.
+	 * 
+	 * @return if starting bid is ok
+	 */
 	private Boolean isValidStartingBid() {
 		if (startingBid < 0) {
 			floAuction.sendMessage("auction-fail-starting-bid-too-low", ownerName, scope);
@@ -538,6 +643,12 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Checks minimum bid increment.
+	 * 
+	 * @return if minimum bid increment is okay
+	 */
 	private Boolean isValidIncrement() {
 		if (getMinBidIncrement() < AuctionConfig.getSafeMoneyFromDouble("min-bid-increment", scope)) {
 			floAuction.sendMessage("auction-fail-increment-too-low", ownerName, scope);
@@ -549,6 +660,12 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Checks BuyNow amount.
+	 * 
+	 * @return if BuyNow amount is okay
+	 */
 	private Boolean isValidBuyNow() {
 		if (getBuyNow() < 0) {
 			floAuction.sendMessage("auction-fail-buynow-too-low", ownerName, scope);
@@ -560,6 +677,12 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Checks auction time limit.
+	 * 
+	 * @return if auction time limit is okiedokie
+	 */
 	private Boolean isValidTime() {
 		if (time < AuctionConfig.getInt("min-auction-time", scope)) {
 			floAuction.sendMessage("auction-fail-time-too-low", ownerName, scope);
@@ -571,6 +694,12 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Parses quantity argument.
+	 * 
+	 * @return if quantity argument parsed correctly
+	 */
 	private Boolean parseArgAmount() {
 		if (quantity > 0) return true;
 
@@ -595,6 +724,12 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Parses starting bid argument.
+	 * 
+	 * @return if argument parsed correctly
+	 */
 	private Boolean parseArgStartingBid() {
 		if (startingBid > 0) return true;
 		
@@ -614,6 +749,12 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Parses minimum bid increment.
+	 * 
+	 * @return if minimum bid increment parsed correctly
+	 */
 	private Boolean parseArgIncrement() {
 		if (minBidIncrement > 0) return true;
 
@@ -633,6 +774,12 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Parses time argument.
+	 * 
+	 * @return if time argument parsed correctly
+	 */
 	private Boolean parseArgTime() {
 		if (time > 0) return true;
 
@@ -652,10 +799,16 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Parses BuyNow argument.
+	 * 
+	 * @return if BuyNow argument parsed correctly
+	 */
 	private Boolean parseArgBuyNow() {
 		
 		if (this.sealed || !AuctionConfig.getBoolean("allow-buynow", scope)) {
-			setBuyNow(0);
+			this.buyNow = 0;
 			return true;
 		}
 
@@ -663,13 +816,13 @@ public class Auction {
 
 		if (args.length > 4) {
 			if (!args[4].isEmpty() && args[4].matches(floAuction.decimalRegex)) {
-				setBuyNow(functions.getSafeMoney(Double.parseDouble(args[4])));
+				this.buyNow = functions.getSafeMoney(Double.parseDouble(args[4]));
 			} else {
 				floAuction.sendMessage("parse-error-invalid-buynow", ownerName, scope);
 				return false;
 			}
 		} else {
-			setBuyNow(0);
+			this.buyNow = 0;
 		}
 		if (getBuyNow() < 0) {
 			floAuction.sendMessage("parse-error-invalid-buynow", ownerName, scope);
@@ -677,10 +830,21 @@ public class Auction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Gets the specified minimum bid increment for this Auction instance.
+	 * 
+	 * @return minimum bid increment
+	 */
 	public long getMinBidIncrement() {
 		return minBidIncrement;
 	}
 	
+	/**
+	 * Gets a type stack of the items being auctioned.
+	 * 
+	 * @return stack of example items
+	 */
 	public ItemStack getLotType() {
 		if (lot == null) {
 			return null;
@@ -688,12 +852,23 @@ public class Auction {
 		return lot.getTypeStack();
 	}
 	
+	/**
+	 * Gets quantity of the auctioned lot.
+	 * 
+	 * @return amount being auctioned
+	 */
 	public int getLotQuantity() {
 		if (lot == null) {
 			return 0;
 		}
 		return lot.getQuantity();
 	}
+	
+	/**
+	 * Gets the lowest amount first bid can be.
+	 * 
+	 * @return lowest possible starting bid in floAuction's proprietary "safe money"
+	 */
 	public long getStartingBid() {
 		long effectiveStartingBid = startingBid;
 		if (effectiveStartingBid == 0) {
@@ -701,29 +876,60 @@ public class Auction {
 		}
 		return effectiveStartingBid;
 	}
+
+	/**
+	 * Gets the AuctionBid object for the current winning bid.
+	 * 
+	 * @return AuctionBid object of leader
+	 */
 	public AuctionBid getCurrentBid() {
 		return currentBid;
 	}
+	
+	/**
+	 * Gets the name of the player who started and therefore "owns" the auction.
+	 * 
+	 * @return auction owner name
+	 */
 	public String getOwner() {
 		return ownerName;
 	}
+	
+	/**
+	 * Gets the amount of time remaining in the auction.
+	 * 
+	 * @return number of seconds remaining in auction
+	 */
 	public int getRemainingTime() {
 		return countdown;
 	}
+	
+	/**
+	 * Gets the originally specified auction time limit.  This does not take into account time added by anti-snipe being triggered.
+	 * 
+	 * @return original auction length in seconds
+	 */
 	public int getTotalTime() {
 		return time;
 	}
 
-    public int addToRemainingTime(int i) {
-            countdown += i;
+	/**
+	 * Adds to the remaining auction countdown.
+	 * 
+	 * @param secondsToAdd
+	 * @return
+	 */
+    public int addToRemainingTime(int secondsToAdd) {
+            countdown += secondsToAdd;
             return countdown;
     }
 
+    /**
+     * Gets the amount specified for BuyNow.
+     * 
+     * @return BuyNow amount in floAuction's proprietary "safe money"
+     */
 	public long getBuyNow() {
 		return buyNow;
-	}
-
-	public void setBuyNow(long buyNow) {
-		this.buyNow = buyNow;
 	}
 }

@@ -8,6 +8,11 @@ import org.bukkit.inventory.ItemStack;
 import com.flobi.utility.functions;
 import com.flobi.utility.items;
 
+/**
+ * Structure to handle auction bids.
+ * 
+ * @author Joshua "flobi" Hatfield
+ */
 public class AuctionBid {
 	private Auction auction;
 	private String bidderName;
@@ -17,14 +22,27 @@ public class AuctionBid {
 	private String[] args;
 	private double reserve = 0;
 
-	public AuctionBid(Auction theAuction, Player player, String[] inputArgs) {
-		auction = theAuction;
+	/**
+	 * Constructor that validates bidder, parses arguments and reserves maximum bid funds.
+	 * 
+	 * @param auction the auction being bid upon
+	 * @param player the player doing the bidding
+	 * @param inputArgs the parameters entered in chat
+	 */
+	public AuctionBid(Auction auction, Player player, String[] inputArgs) {
+		this.auction = auction;
 		bidderName = player.getName();
 		args = inputArgs;
 		if (!validateBidder()) return;
 		if (!parseArgs()) return;
 		if (!reserveBidFunds()) return;
 	}
+	
+	/**
+	 * Removes funds from bidder's account and stores them in the AuctionBid instance.
+	 * 
+	 * @return true if funds are reserved, false if an issue was encountered
+	 */
 	private boolean reserveBidFunds() {
 		long amountToReserve = 0;
 		long previousSealedReserve = 0;
@@ -57,6 +75,10 @@ public class AuctionBid {
 			return false;
 		}
 	}
+	
+	/**
+	 * Refunds reserve for unsealed auctions or queues reserve refund for sealed auctions. 
+	 */
 	public void cancelBid() {
 		if (auction.sealed) {
 			// Queue reserve refund.
@@ -69,6 +91,10 @@ public class AuctionBid {
 		}
 		
 	}
+	
+	/**
+	 * Process winning bid, gives winnings to auction owner, returns the remainder of the reserve and appropriates end of auction taxes.
+	 */
 	public void winBid() {
 		Double unsafeBidAmount = functions.getUnsafeMoney(bidAmount);
 		
@@ -113,6 +139,11 @@ public class AuctionBid {
 		reserve = 0;
 	}
 	
+	/**
+	 * Checks existence, permission, scope and prohibitions on player trying to bid.
+	 * 
+	 * @return whether player can bid
+	 */
 	private Boolean validateBidder() {
 		if (bidderName == null) {
 			error = "bid-fail-no-bidder";
@@ -136,11 +167,24 @@ public class AuctionBid {
 
 		return true;
 	}
+	
+	/**
+	 * Parses bid arguments.
+	 * 
+	 * @return whether args are acceptable
+	 */
 	private Boolean parseArgs() {
 		if (!parseArgBid()) return false;
 		if (!parseArgMaxBid()) return false;
 		return true;
 	}
+	
+	/**
+	 * Prepares two bids from the same player to compete against each other.
+	 * 
+	 * @param otherBid the previous bid
+	 * @return whether it's the same player bidding
+	 */
 	public Boolean raiseOwnBid(AuctionBid otherBid) {
 		if (bidderName.equalsIgnoreCase(otherBid.bidderName)) {
 			// Move reserve money here.
@@ -166,6 +210,13 @@ public class AuctionBid {
 			return false;
 		}
 	}
+	
+	/**
+	 * Attempt to raise this bid.
+	 * 
+	 * @param newBidAmount
+	 * @return success of raising bid
+	 */
 	public Boolean raiseBid(Long newBidAmount) {
 		if (newBidAmount <= maxBidAmount && newBidAmount >= bidAmount) {
 			bidAmount = newBidAmount;
@@ -174,6 +225,12 @@ public class AuctionBid {
 			return false;
 		}
 	}
+	
+	/**
+	 * Parses main bid argument.
+	 * 
+	 * @return acceptability of bid argument
+	 */
 	private Boolean parseArgBid() {
 		if (args.length > 0) {
 			if (!args[0].isEmpty() && args[0].matches(floAuction.decimalRegex)) {
@@ -218,6 +275,12 @@ public class AuctionBid {
 		}
 		return true;
 	}
+	
+	/**
+	 * Parse max bid argument.
+	 * 
+	 * @return acceptability of max bid
+	 */
 	private Boolean parseArgMaxBid() {
 		if (!AuctionConfig.getBoolean("allow-max-bids", auction.getScope()) || auction.sealed) {
 			// Just ignore it.
@@ -240,22 +303,38 @@ public class AuctionBid {
 		return true;
 	}
 
+	/**
+	 * Gets the error which may have occurred.
+	 * 
+	 * @return the error
+	 */
 	public String getError() {
 		return error;
 	}
+	
+	/**
+	 * Gets the name of the bidder.
+	 * @return name of bidder
+	 */
 	public String getBidder() {
 		return bidderName;
 	}
+	
+	/**
+	 * Gets the amount currently bid in floAuction's proprietary "safe money."
+	 * 
+	 * @return
+	 */
 	public long getBidAmount() {
 		return bidAmount;
 	}
+	
+	/**
+	 * Gets the amount maximum bid for this instance in floAuction's proprietary "safe money."
+	 * 
+	 * @return
+	 */
 	public long getMaxBidAmount() {
 		return maxBidAmount;
-	}
-	public void setReserve(double newReserve) {
-		reserve = newReserve;
-	}
-	public double getReserve() {
-		return reserve;
 	}
 }

@@ -17,6 +17,11 @@ import org.bukkit.inventory.ItemStack;
 
 import com.flobi.utility.items;
 
+/**
+ * Structure to hold and process the items being auctioned.
+ * 
+ * @author Joshua "flobi" Hatfield
+ */
 public class AuctionLot implements java.io.Serializable {
 	private static final long serialVersionUID = -1764290458703647129L;
 	private String ownerName;
@@ -38,12 +43,26 @@ public class AuctionLot implements java.io.Serializable {
 //	private Map<String, Object> itemSerialized = null;
 	private String itemSerialized = null;
 	
+	/**
+	 * Constructor that sets owner and lot type.
+	 * 
+	 * @param lotType
+	 * @param lotOwner
+	 */
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
 		ownerName = lotOwner;
 		setLotType(lotType);
 	}
-	public boolean AddItems(int addQuantity, boolean removeFromOwner) {
+	
+	/**
+	 * Adds items to this lot by removing them from a player.
+	 * 
+	 * @param addQuantity amount to move
+	 * @param removeFromOwner player to take items from
+	 * @return whether the items were moved
+	 */
+	public boolean addItems(int addQuantity, boolean removeFromOwner) {
 		if (removeFromOwner) {
 			if (!items.hasAmount(ownerName, addQuantity, getTypeStack())) {
 				return false;
@@ -54,14 +73,27 @@ public class AuctionLot implements java.io.Serializable {
 		return true;
 	}
 	
+	/**
+	 * Public alias for giveLot(String playerName) used when we happen to be giving the lot to an auction winner or authorized confiscator.
+	 * 
+	 * @param winnerName who receives the items
+	 */
 	public void winLot(String winnerName) {
 		giveLot(winnerName);
 	}
+	
+	/**
+	 * Cancels the lot by giving the items to the lots original owner.
+	 */
 	public void cancelLot() {
 		giveLot(ownerName);
 	}
 	
-	
+	/**
+	 * Gives the items to a player, drops excess on ground or saves all of it to orphanage if the player is offline.
+	 * 
+	 * @param playerName who receives the items
+	 */
 	private void giveLot(String playerName) {
 		ownerName = playerName;
 		if (quantity == 0) return;
@@ -112,13 +144,19 @@ public class AuctionLot implements java.io.Serializable {
 			final AuctionLot orphanLot = new AuctionLot(lotTypeLock, playerName);
 			
 			// Move items to orphan lot
-			orphanLot.AddItems(quantity, false);
+			orphanLot.addItems(quantity, false);
 			quantity = 0;
 			
 			// Queue for distribution on space availability.
 			floAuction.saveOrphanLot(orphanLot);
 		}
 	}
+	
+	/**
+	 * Gets a stack of a single item having the properties of all the items in this lot.
+	 * 
+	 * @return item stack of one item
+	 */
 	@SuppressWarnings("deprecation")
 	public ItemStack getTypeStack() {
 		ItemStack lotTypeLock = null;
@@ -157,6 +195,12 @@ public class AuctionLot implements java.io.Serializable {
 		items.setLore(lotTypeLock, lore);
 		return lotTypeLock;
 	}
+	
+	/**
+	 * Sets the items in this lot to have the properties of the referenced item stack.
+	 * 
+	 * @param lotType
+	 */
 	@SuppressWarnings("deprecation")
 	private void setLotType(ItemStack lotType) {
 //		this.itemSerialized = lotType.serialize();
@@ -188,12 +232,21 @@ public class AuctionLot implements java.io.Serializable {
 		effects = items.getFireworkEffects(lotType);
 		lore = items.getLore(lotType);
 	}
+	
+	/**
+	 * Gets the name of the owner of this lot.
+	 * 
+	 * @return name of lot owner
+	 */
 	public String getOwner() {
 		return ownerName;
 	}
-	public void setOwner(String ownerName) {
-		this.ownerName = ownerName;
-	}
+	
+	/**
+	 * Gets the quantity of items in this lot.
+	 * 
+	 * @return quantity of items in lot
+	 */
 	public int getQuantity() {
 		return quantity;
 	}
