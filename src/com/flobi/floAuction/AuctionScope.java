@@ -28,6 +28,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
  */
 public class AuctionScope {
 	private Auction activeAuction = null;
+	private String scopeId = null;
 	private String name = null;
 	private String type = null;
 	private ArrayList<Auction> auctionQueue = new ArrayList<Auction>();
@@ -53,8 +54,10 @@ public class AuctionScope {
 	 * @param config configuration
 	 * @param textConfig language config
 	 */
-	private AuctionScope(String name, ConfigurationSection config, YamlConfiguration textConfig) {
-		this.name = name;
+	private AuctionScope(String scopeId, ConfigurationSection config, YamlConfiguration textConfig) {
+		this.scopeId = scopeId;
+		name = config.getString("name");
+		if (name == null) name = scopeId;
 
 		type = config.getString("type");
 		if (type.equalsIgnoreCase("worlds")) {
@@ -270,9 +273,18 @@ public class AuctionScope {
 	 * 
 	 * @return name of the scope
 	 */
-	// TODO: distinguish the id of the scope from the name
 	public String getName() {
 		return name;
+	}
+
+
+	/**
+	 * Gets the id of the scope.
+	 * 
+	 * @return id of the scope
+	 */
+	public String getScopeId() {
+		return scopeId;
 	}
 
 	/**

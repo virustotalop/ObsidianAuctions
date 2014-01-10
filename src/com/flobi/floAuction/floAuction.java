@@ -1285,7 +1285,7 @@ public class floAuction extends JavaPlugin {
     	}
     	if (AuctionConfig.getBoolean("log-auctions", playerScope)) {
     		String playerName = null;
-    		String scopeName = null;
+    		String scopeId = null;
     		
 			BufferedWriter out = null;
 			try {
@@ -1305,13 +1305,13 @@ public class floAuction extends JavaPlugin {
 				}
 				
 				if (playerScope == null) {
-					scopeName = "NOSCOPE";
+					scopeId = "NOSCOPE";
 				} else {
-					scopeName = playerScope.getName();
+					scopeId = playerScope.getScopeId();
 				}
 				
 				// TODO: Add scope name, yay!
-				out.append((new Date()).toString() + " (" + playerName + ", " + scopeName + "): " + ChatColor.stripColor(message) + "\n");
+				out.append((new Date()).toString() + " (" + playerName + ", " + scopeId + "): " + ChatColor.stripColor(message) + "\n");
 				out.close();
 
 			} catch (IOException e) {
