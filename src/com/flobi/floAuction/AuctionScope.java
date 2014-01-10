@@ -68,8 +68,8 @@ public class AuctionScope {
 				minHouseLocation = null;
 				maxHouseLocation = null;
 			} else {
-				minHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("region-min-x"), config.getDouble("house-min-y"), config.getDouble("house-min-z"));
-				maxHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("region-max-x"), config.getDouble("house-max-y"), config.getDouble("house-max-z"));
+				minHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-min-x"), config.getDouble("house-min-y"), config.getDouble("house-min-z"));
+				maxHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-max-x"), config.getDouble("house-max-y"), config.getDouble("house-max-z"));
 			}
 		} else if (type.equalsIgnoreCase("worldguardregion")) {
 			if (worldGuardPlugin == null) {
