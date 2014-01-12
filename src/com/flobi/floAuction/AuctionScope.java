@@ -339,8 +339,8 @@ public class AuctionScope {
 	public static AuctionScope getLocationScope(Location location) {
 		if (location == null) return null;
 		for (int i = 0; i < auctionScopesOrder.size(); i++) {
-			String auctionScopeName = auctionScopesOrder.get(i);
-			AuctionScope auctionScope = auctionScopes.get(auctionScopeName);
+			String auctionScopeId = auctionScopesOrder.get(i);
+			AuctionScope auctionScope = auctionScopes.get(auctionScopeId);
 			if (auctionScope.isLocationInScope(location)) return auctionScope;
 		}
 		return null;
