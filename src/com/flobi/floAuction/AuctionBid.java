@@ -103,6 +103,7 @@ public class AuctionBid {
 		double taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", auction.getScope()); 
 		ItemStack typeStack = auction.getLotType();
 
+		// TODO: Check this line for possible NULL
 		for (Map.Entry<String, String> entry : AuctionConfig.getStringStringMap("taxed-items", auction.getScope()).entrySet()) {
 			if (items.isSameItem(typeStack, entry.getKey())) {
 				if (entry.getValue().endsWith("%")) {

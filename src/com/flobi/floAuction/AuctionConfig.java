@@ -128,7 +128,7 @@ public class AuctionConfig {
 				result.put(itemCode, section.getString(itemCode));
 			}
 		}
-		return null;
+		return result;
 	}
 	
 	/**

@@ -78,6 +78,7 @@ public class floAuction extends JavaPlugin {
 	public static boolean useWhatIsIt = true;
 	public static List<AuctionParticipant> auctionParticipants = new ArrayList<AuctionParticipant>();
 	public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
+	private static AuctionWebserver auctionWebserver = null; 
 
 	// Config files info.
 	public static FileConfiguration config = null;
@@ -85,7 +86,7 @@ public class floAuction extends JavaPlugin {
 	private static File dataFolder;
 	private static ConsoleCommandSender console;
 	private static int queueTimer;
-	private static floAuction plugin;
+	static floAuction plugin;
 	
 	private static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();
 	private static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
@@ -371,6 +372,7 @@ public class floAuction extends JavaPlugin {
         } catch (IOException e) {
             // Failed to submit the stats :-(
         }
+        
 		sendMessage("plugin-enabled", console, null, false);
 		
 	}
@@ -459,12 +461,42 @@ public class floAuction extends JavaPlugin {
 	    
 	    // Build auction scopes.
 	    AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
+	    
+	    // Enable webserver
+        int port = config.getInt("web-port");
+	    if (auctionWebserver == null) {
+			if (port > 0) {
+		        auctionWebserver = new AuctionWebserver(port);
+		        try {
+					auctionWebserver.start();
+				} catch (IOException e) {
+					auctionWebserver = null;
+				}
+	        }
+	    } else {
+			if (port > 0) {
+				if (auctionWebserver.getListeningPort() != port) {
+					auctionWebserver.stop();
+					auctionWebserver = null;
+					auctionWebserver = new AuctionWebserver(port);
+			        try {
+						auctionWebserver.start();
+					} catch (IOException e) {
+						auctionWebserver = null;
+					}
+				}
+	        }
+	    }
     }
     
     /**
      * Called by Bukkit when disabling.  Cancels all auctions and clears data.
      */
 	public void onDisable() {
+		if (auctionWebserver != null && auctionWebserver.isAlive()) {
+			auctionWebserver.stop();
+		}
+		auctionWebserver = null;
 		AuctionScope.cancelAllAuctions();
 		getServer().getScheduler().cancelTask(queueTimer);
 		plugin = null;
