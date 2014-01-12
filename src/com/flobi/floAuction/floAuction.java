@@ -211,29 +211,17 @@ public class floAuction extends JavaPlugin {
 	 */
 	// Eliminate orphan lots (i.e. try to give the items to a player again).
 	public static void killOrphan(Player player) {
-		// List of orphans to potentially kill.
-		ArrayList<AuctionLot> orphanDeathRow = orphanLots;
-		
-		// New orphanage.
-		orphanLots = new ArrayList<AuctionLot>();
-		
-		// KILL THEM ALL!
-		for(int i = 0; i < orphanDeathRow.size(); i++) {
-			// Hmm, only if they're actually orphans though.
-			if (orphanDeathRow.get(i) != null) {
-				// And only if they belong to player.
-				AuctionLot lot = orphanDeathRow.get(i);
-				
-				if (lot.getOwner().equalsIgnoreCase(player.getName())) {
-					lot.cancelLot();
-					orphanDeathRow.set(i, null);
-				} else {
-					// This one's still alive, put it back in the orphanage.
-					orphanLots.add(lot);
-				}
+		if (orphanLots != null && orphanLots.size() > 0) {
+			Iterator<AuctionLot> iter = orphanLots.iterator();
+			while (iter.hasNext()) {
+				AuctionLot lot = iter.next();
+			    if (lot.getOwner().equalsIgnoreCase(player.getName())) {
+			    	lot.cancelLot();
+			        iter.remove();
+			    }
 			}
+			saveObject(orphanLots, "orphanLots.ser");
 		}
-		saveObject(orphanLots, "orphanLots.ser");
 	}
 	
 
