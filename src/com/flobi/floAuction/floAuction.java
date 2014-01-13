@@ -78,7 +78,6 @@ public class floAuction extends JavaPlugin {
 	public static boolean useWhatIsIt = true;
 	public static List<AuctionParticipant> auctionParticipants = new ArrayList<AuctionParticipant>();
 	public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
-	private static AuctionWebserver auctionWebserver = null; 
 
 	// Config files info.
 	public static FileConfiguration config = null;
@@ -450,41 +449,12 @@ public class floAuction extends JavaPlugin {
 	    // Build auction scopes.
 	    AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
 	    
-	    // Enable webserver
-        int port = config.getInt("web-port");
-	    if (auctionWebserver == null) {
-			if (port > 0) {
-		        auctionWebserver = new AuctionWebserver(port);
-		        try {
-					auctionWebserver.start();
-				} catch (IOException e) {
-					auctionWebserver = null;
-				}
-	        }
-	    } else {
-			if (port > 0) {
-				if (auctionWebserver.getListeningPort() != port) {
-					auctionWebserver.stop();
-					auctionWebserver = null;
-					auctionWebserver = new AuctionWebserver(port);
-			        try {
-						auctionWebserver.start();
-					} catch (IOException e) {
-						auctionWebserver = null;
-					}
-				}
-	        }
-	    }
     }
     
     /**
      * Called by Bukkit when disabling.  Cancels all auctions and clears data.
      */
 	public void onDisable() {
-		if (auctionWebserver != null && auctionWebserver.isAlive()) {
-			auctionWebserver.stop();
-		}
-		auctionWebserver = null;
 		AuctionScope.cancelAllAuctions();
 		getServer().getScheduler().cancelTask(queueTimer);
 		plugin = null;
@@ -706,15 +676,15 @@ public class floAuction extends JavaPlugin {
     				
     				if (cmd.getName().equalsIgnoreCase("sealedauction") || cmd.getName().equalsIgnoreCase("sauc")) {
     					if (AuctionConfig.getBoolean("allow-sealed-auctions", userScope)) {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, true));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, true, false));
     					} else {
     						sendMessage("auction-fail-no-sealed-auctions", sender, userScope, false);
     					}
     				} else {
     					if (AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, false));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, false, false));
     					} else {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, true));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, true, false));
     					}
     				}
 
