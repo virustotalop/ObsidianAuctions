@@ -91,6 +91,8 @@ public class floAuction extends JavaPlugin {
 	private static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
 	private static ArrayList<String> suspendedUsers = new ArrayList<String>();
 	
+	private static MessageManager messageManager = new AuctionMessageManager();
+	
 	/**
 	 * Used by AuctinLot to store auction lots which could not be given to players because they were offline.
 	 * 
@@ -676,15 +678,15 @@ public class floAuction extends JavaPlugin {
     				
     				if (cmd.getName().equalsIgnoreCase("sealedauction") || cmd.getName().equalsIgnoreCase("sauc")) {
     					if (AuctionConfig.getBoolean("allow-sealed-auctions", userScope)) {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, true, false));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager));
     					} else {
     						sendMessage("auction-fail-no-sealed-auctions", sender, userScope, false);
     					}
     				} else {
     					if (AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, false, false));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, false, messageManager));
     					} else {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, true, false));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager));
     					}
     				}
 

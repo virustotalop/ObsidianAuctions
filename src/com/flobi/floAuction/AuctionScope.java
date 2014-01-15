@@ -28,7 +28,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
  */
 public class AuctionScope {
 	private Auction activeAuction = null;
-	private List<Auction> webAuctions = null;
+	private List<Auction> otherPluginsAuctions = null;
 	private String scopeId = null;
 	private String name = null;
 	private String type = null;
@@ -401,9 +401,9 @@ public class AuctionScope {
 		return false;
 	}
 
-	public int getWebAuctionsLength() {
-		if (webAuctions == null) return 0;
-		return webAuctions.size();
+	public int getOtherPluginsAuctionsLength() {
+		if (otherPluginsAuctions == null) return 0;
+		return otherPluginsAuctions.size();
 	}
 }
 

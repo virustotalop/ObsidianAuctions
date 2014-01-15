@@ -41,13 +41,14 @@ public class Auction {
 	public ArrayList<AuctionBid> sealedBids = new ArrayList<AuctionBid>(); 
 	
 	public boolean sealed = false;
-	public boolean web = false;
 	
 	public long nextTickTime = 0;
 	
 	// Scheduled timers:
 	private int countdown = 0;
 	private int countdownTimer = 0;
+	
+	private MessageManager messageManager = null;
 	
 	/**
 	 * Gets the AuctionScope which hosts this auction.
@@ -67,13 +68,13 @@ public class Auction {
 	 * @param scope        the hosting AuctionScope
 	 * @param sealed       whether or not it is a sealed auction
 	 */
-	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, boolean web) {
+	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager) {
 		ownerName = auctionOwner.getName();
 		args = functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
 		this.plugin = plugin; 
 		this.scope = scope;
 		this.sealed = sealed;
-		this.web = false;
+		this.messageManager = messageManager;
 	}
 	
 	/**
