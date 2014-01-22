@@ -12,6 +12,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.flobi.floAuction.events.AuctionBidEvent;
+import com.flobi.floAuction.events.AuctionEndEvent;
+import com.flobi.floAuction.events.AuctionStartEvent;
 import com.flobi.utility.functions;
 import com.flobi.utility.items;
 import com.google.common.collect.Lists;
@@ -84,8 +87,9 @@ public class Auction {
 	 * @return whether or not the auction start succeeded
 	 */
 	public Boolean start() {
+		Player owner = Bukkit.getPlayer(ownerName);
 		
-		if (ArenaManager.isInArena(Bukkit.getPlayer(ownerName))) {
+		if (ArenaManager.isInArena(owner)) {
 			messageManager.sendPlayerMessage(Lists.newArrayList("arena-warning"), ownerName, this);
 			return false;
 		}
@@ -151,40 +155,49 @@ public class Auction {
 			}
 		}
 
-		active = true;
-		messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-start"), this);
+		// Check to see if any other plugins have a reason...or they can forever hold their piece.
+		AuctionStartEvent auctionStartEvent = new AuctionStartEvent(owner, this);
+		Bukkit.getServer().getPluginManager().callEvent(auctionStartEvent);
 		
-		// Set timer:
-		final Auction thisAuction = this;
-		countdown = time;
-		
-		countdownTimer = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-		    public void run() {
-		    	if (thisAuction.nextTickTime > System.currentTimeMillis()) return;
-		    	thisAuction.nextTickTime = thisAuction.nextTickTime + 1000;
-		    	
-		    	thisAuction.countdown--;
-		    	if (thisAuction.countdown <= 0) {
-		    		thisAuction.end();
-		    		return;
-		    	}
-		    	if (!AuctionConfig.getBoolean("suppress-countdown", scope)){
-			    	if (thisAuction.countdown < 4) {
-			    		messageManager.broadcastAuctionMessage(Lists.newArrayList("timer-countdown-notification"), thisAuction);
-				    	return;
+		if (auctionStartEvent.isCancelled()) {
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-blocked-by-other-plugin"), ownerName, this);
+		} else {
+			active = true;
+			messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-start"), this);
+			
+			// Set timer:
+			final Auction thisAuction = this;
+			countdown = time;
+			
+			countdownTimer = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+			    public void run() {
+			    	if (thisAuction.nextTickTime > System.currentTimeMillis()) return;
+			    	thisAuction.nextTickTime = thisAuction.nextTickTime + 1000;
+			    	
+			    	thisAuction.countdown--;
+			    	if (thisAuction.countdown <= 0) {
+			    		thisAuction.end();
+			    		return;
 			    	}
-			    	if (thisAuction.time >= 20) {
-			    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
-			    			messageManager.broadcastAuctionMessage(Lists.newArrayList("timer-countdown-notification"), thisAuction);
-			    		}
+			    	if (!AuctionConfig.getBoolean("suppress-countdown", scope)){
+				    	if (thisAuction.countdown < 4) {
+				    		messageManager.broadcastAuctionMessage(Lists.newArrayList("timer-countdown-notification"), thisAuction);
+					    	return;
+				    	}
+				    	if (thisAuction.time >= 20) {
+				    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
+				    			messageManager.broadcastAuctionMessage(Lists.newArrayList("timer-countdown-notification"), thisAuction);
+				    		}
+				    	}
 			    	}
-		    	}
-		    }
-		}, 1L, 1L);
-		nextTickTime = System.currentTimeMillis() + 1000;
+			    }
+			}, 1L, 1L);
+			nextTickTime = System.currentTimeMillis() + 1000;
+	
+			info(null, true);
+		}
 
-		info(null, true);
-		return true;
+		return active;
 	}
 	
 	/**
@@ -299,6 +312,7 @@ public class Auction {
 	 * Cancels the Auction instance and disposes of it normally.
 	 */
 	public void cancel() {
+		Bukkit.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
 		messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-cancel"), this);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
@@ -312,6 +326,7 @@ public class Auction {
 	 * @param authority the name of a player authorized to confiscate auctions
 	 */
 	public void confiscate(Player authority) {
+		Bukkit.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
 		ownerName = authority.getName();
 		messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-confiscated"), this);
 		if (lot != null) {
@@ -325,14 +340,22 @@ public class Auction {
 	 * Ends an auction normally sending money and goods to their earned destinations.
 	 */
 	public void end() {
-		if (currentBid == null || lot == null) {
-			messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-end-nobids"), this);
+		AuctionEndEvent auctionEndEvent = new AuctionEndEvent(this, false);
+		Bukkit.getServer().getPluginManager().callEvent(auctionEndEvent);
+		if (auctionEndEvent.isCancelled()) {
+			messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-cancel"), this);
 			if (lot != null) lot.cancelLot();
 			if (currentBid != null) currentBid.cancelBid();
 		} else {
-			messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-end"), this);
-			lot.winLot(currentBid.getBidder());
-			currentBid.winBid();
+			if (currentBid == null || lot == null) {
+				messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-end-nobids"), this);
+				if (lot != null) lot.cancelLot();
+				if (currentBid != null) currentBid.cancelBid();
+			} else {
+				messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-end"), this);
+				lot.winLot(currentBid.getBidder());
+				currentBid.winBid();
+			}
 		}
 		dispose();
 	}
@@ -399,8 +422,16 @@ public class Auction {
 					} else {
 						// raisOwnBid does nothing if it's not the current bidder.
 						if (currentBid != null) bid.raiseOwnBid(currentBid);
-						setNewBid(bid, null);
-						end();
+						
+						// Let other plugins figure out any reasons why this buy shouldn't happen.
+						AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
+						Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
+						if (auctionBidEvent.isCancelled()) {
+							setNewBid(bid, null);
+							end();
+						} else {
+							failBid(bid, "bid-fail-blocked-by-other-plugin");
+						}
 					}
 				}
 				return;
@@ -419,14 +450,28 @@ public class Auction {
 				failBid(bid, "bid-fail-under-starting-bid");
 				return;
 			}
-			setNewBid(bid, "bid-success-no-challenger");
+			// Let other plugins figure out any reasons why this buy shouldn't happen.
+			AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
+			Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
+			if (auctionBidEvent.isCancelled()) {
+				setNewBid(bid, "bid-success-no-challenger");
+			} else {
+				failBid(bid, "bid-fail-blocked-by-other-plugin");
+			}
 			return;
 		}
 		long previousBidAmount = currentBid.getBidAmount();
 		long previousMaxBidAmount = currentBid.getMaxBidAmount();
 		if (currentBid.getBidder().equals(bidder.getName())) {
 			if (bid.raiseOwnBid(currentBid)) {
-				setNewBid(bid, "bid-success-update-own-bid");
+				// Let other plugins figure out any reasons why this buy shouldn't happen.
+				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
+				Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
+				if (auctionBidEvent.isCancelled()) {
+					setNewBid(bid, "bid-success-update-own-bid");
+				} else {
+					failBid(bid, "bid-fail-blocked-by-other-plugin");
+				}
 			} else {
 				if (previousMaxBidAmount < currentBid.getMaxBidAmount()) {
 					failBid(bid, "bid-success-update-own-maxbid");
@@ -475,7 +520,14 @@ public class Auction {
 		if (previousBidAmount <= winner.getBidAmount()) {
 			// Did the new bid win?
 			if (winner.equals(bid)) {
-				setNewBid(bid, "bid-success-outbid");
+				// Let other plugins figure out any reasons why this buy shouldn't happen.
+				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
+				Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
+				if (auctionBidEvent.isCancelled()) {
+					setNewBid(bid, "bid-success-outbid");
+				} else {
+					failBid(bid, "bid-fail-blocked-by-other-plugin");
+				}
 			} else {
 				// Did the old bid have to raise the bid to stay winner?
 				if (previousBidAmount < winner.getBidAmount()) {
