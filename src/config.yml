@@ -59,11 +59,10 @@ taxed-items:
   0: 100%
 
 disabled-commands-participating:
-  - '/ma'
-  - '/mobarena'
-disabled-commands-inscope:
   - '/ma join'
   - '/mobarena join'
+  - '/arena join'
+disabled-commands-inscope: {}
 
 banned-lore:
   - mcMMO Ability Tool
