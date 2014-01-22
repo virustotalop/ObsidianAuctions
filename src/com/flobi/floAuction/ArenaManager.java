@@ -13,6 +13,7 @@ import org.bukkit.plugin.PluginManager;
 
 import com.garbagemule.MobArena.MobArena;
 import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
+import com.google.common.collect.Lists;
 import com.tommytony.war.War;
 import com.tommytony.war.Warzone;
 
@@ -97,8 +98,9 @@ public class ArenaManager implements Listener {
 		if (event.isCancelled()) return;
 		Player player = event.getPlayer();
 		if (player == null) return;
-		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(player.getName())) {
-			floAuction.sendMessage("arena-warning", player.getName(), null);
+		String playerName = player.getName();
+		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
+			floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
 			event.setCancelled(true);
 		}
 	}
@@ -113,8 +115,9 @@ public class ArenaManager implements Listener {
 		if (event.isCancelled()) return;
 		Player player = event.getPlayer();
 		if (player == null) return;
-		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(player.getName())) {
-			floAuction.sendMessage("arena-warning", player.getName(), null);
+		String playerName = player.getName();
+		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
+			floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
 			event.setCancelled(true);
 		}
 	}

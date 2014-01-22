@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.flobi.utility.functions;
 import com.flobi.utility.items;
+import com.google.common.collect.Lists;
 
 /**
  * Structure to handle auction bids.
@@ -124,8 +125,7 @@ public class AuctionBid {
 			taxes = unsafeBidAmount * (taxPercent / 100D);
 			
 			auction.extractedPostTax = taxes;
-			
-			floAuction.sendMessage("auction-end-tax", auction.getOwner(), auction.getScope());
+			auction.messageManager.sendPlayerMessage(Lists.newArrayList("auction-end-tax"), auction.getOwner(), auction);
 			unsafeBidAmount -= taxes;
 			String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", auction.getScope());
 			if (!taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(taxDestinationUser, taxes);

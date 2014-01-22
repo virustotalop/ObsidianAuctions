@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.flobi.utility.functions;
 import com.flobi.utility.items;
+import com.google.common.collect.Lists;
 
 /**
  * Main auction class.
@@ -48,7 +49,7 @@ public class Auction {
 	private int countdown = 0;
 	private int countdownTimer = 0;
 	
-	private MessageManager messageManager = null;
+	public MessageManager messageManager = null;
 	
 	/**
 	 * Gets the AuctionScope which hosts this auction.
@@ -85,7 +86,7 @@ public class Auction {
 	public Boolean start() {
 		
 		if (ArenaManager.isInArena(Bukkit.getPlayer(ownerName))) {
-			floAuction.sendMessage("arena-warning", ownerName, null);
+			messageManager.sendPlayerMessage(Lists.newArrayList("arena-warning"), ownerName, this);
 			return false;
 		}
 		
@@ -96,7 +97,7 @@ public class Auction {
 		List<String> bannedItems = AuctionConfig.getStringList("banned-items", scope);
 		for (int i = 0; i < bannedItems.size(); i++) {
 			if (items.isSameItem(typeStack, bannedItems.get(i))) {
-				floAuction.sendMessage("auction-fail-banned", ownerName, scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-banned"), ownerName, this);
 				return false;
 			}
 		}
@@ -130,13 +131,13 @@ public class Auction {
 		
 		if (preAuctionTax > 0D) {
 			if (!floAuction.econ.has(ownerName, preAuctionTax)) {
-				floAuction.sendMessage("auction-fail-start-tax", ownerName, scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-start-tax"), ownerName, this);
 				return false;
 			}
 		}
 		
 		if (!lot.addItems(quantity, true)) {
-			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-insufficient-supply"), ownerName, this);
 			return false;
 		}
 
@@ -144,14 +145,14 @@ public class Auction {
 			if (floAuction.econ.has(ownerName, preAuctionTax)) {
 				floAuction.econ.withdrawPlayer(ownerName, preAuctionTax);
 				extractedPreTax = preAuctionTax;
-				floAuction.sendMessage("auction-start-tax", getOwner(), scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList("auction-start-tax"), ownerName, this);
 				String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", scope);
 				if (!taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(taxDestinationUser, preAuctionTax);
 			}
 		}
 
 		active = true;
-		floAuction.sendMessage("auction-start", (CommandSender) null, scope, true);
+		messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-start"), this);
 		
 		// Set timer:
 		final Auction thisAuction = this;
@@ -169,12 +170,12 @@ public class Auction {
 		    	}
 		    	if (!AuctionConfig.getBoolean("suppress-countdown", scope)){
 			    	if (thisAuction.countdown < 4) {
-				    	floAuction.sendMessage("timer-countdown-notification", (CommandSender) null, scope, true);
+			    		messageManager.broadcastAuctionMessage(Lists.newArrayList("timer-countdown-notification"), thisAuction);
 				    	return;
 			    	}
 			    	if (thisAuction.time >= 20) {
 			    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
-					    	floAuction.sendMessage("timer-countdown-notification", (CommandSender) null, scope, true);
+			    			messageManager.broadcastAuctionMessage(Lists.newArrayList("timer-countdown-notification"), thisAuction);
 			    		}
 			    	}
 		    	}
@@ -194,6 +195,10 @@ public class Auction {
 	 */
 	public void info(CommandSender sender, boolean fullBroadcast) {
 		List<String> messageKeys = new ArrayList<String>();
+		String playerName = null;
+		if (sender instanceof Player) {
+			playerName = ((Player)sender).getName();
+		}
 		
 		ItemStack itemType = this.getLotType();
 		short maxDurability = itemType.getType().getMaxDurability();
@@ -201,7 +206,9 @@ public class Auction {
 		Map<Enchantment, Integer> enchantments = itemType.getEnchantments();
 		if (enchantments == null || enchantments.size() == 0) enchantments = items.getStoredEnchantments(itemType);
 		if (!active) {
-			floAuction.sendMessage("auction-info-no-auction", sender, scope, fullBroadcast);
+			if (fullBroadcast && sender instanceof Player) {
+				messageManager.sendPlayerMessage(Lists.newArrayList("auction-info-no-auction"), playerName, this);
+			}
 			return;
 		} else if (fullBroadcast && AuctionConfig.getBoolean("suppress-auction-start-info", scope)) {
 			messageKeys.add("auction-info-suppressed-alt");
@@ -281,14 +288,18 @@ public class Auction {
 			messageKeys.add("auction-info-footer");
 			if (AuctionConfig.getBoolean("allow-buynow", scope) && getBuyNow() > 0) messageKeys.add("auction-info-buynow");
 		}
-		floAuction.sendMessage(messageKeys, sender, scope, fullBroadcast);
+		if (fullBroadcast) {
+			messageManager.broadcastAuctionMessage(messageKeys, this);
+		} else {
+			messageManager.sendPlayerMessage(messageKeys, playerName, this);
+		}
 	}
 	
 	/**
 	 * Cancels the Auction instance and disposes of it normally.
 	 */
 	public void cancel() {
-		floAuction.sendMessage("auction-cancel", (CommandSender) null, scope, true);
+		messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-cancel"), this);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
 		dispose();
@@ -302,7 +313,7 @@ public class Auction {
 	 */
 	public void confiscate(Player authority) {
 		ownerName = authority.getName();
-		floAuction.sendMessage("auction-confiscated", (CommandSender) null, scope, true);
+		messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-confiscated"), this);
 		if (lot != null) {
 			lot.winLot(authority.getName());
 		}
@@ -315,11 +326,11 @@ public class Auction {
 	 */
 	public void end() {
 		if (currentBid == null || lot == null) {
-			floAuction.sendMessage("auction-end-nobids", (CommandSender) null, scope, true);
+			messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-end-nobids"), this);
 			if (lot != null) lot.cancelLot();
 			if (currentBid != null) currentBid.cancelBid();
 		} else {
-			floAuction.sendMessage("auction-end", (CommandSender) null, scope, true);
+			messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-end"), this);
 			lot.winLot(currentBid.getBidder());
 			currentBid.winBid();
 		}
@@ -365,8 +376,11 @@ public class Auction {
 	 */
 	public void Bid(Player bidder, String[] inputArgs) {
 
+		if (bidder == null) return;
+		String playerName = bidder.getName();
+		
 		if (ArenaManager.isInArena(bidder)) {
-			floAuction.sendMessage("arena-warning", bidder.getName(), null);
+			messageManager.sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, this);
 			return;
 		}
 		
@@ -375,7 +389,7 @@ public class Auction {
 			if (inputArgs[0].equalsIgnoreCase("buy")) {
 
 				if (buyNow == 0 || (currentBid != null && currentBid.getBidAmount() >= buyNow)) {
-					floAuction.sendMessage("bid-fail-buynow-expired", bidder, scope, false);
+					messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-buynow-expired"), playerName, this);
 				} else {
 					inputArgs[0] = Double.toString(functions.getUnsafeMoney(buyNow));
 					AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
@@ -465,16 +479,18 @@ public class Auction {
 			} else {
 				// Did the old bid have to raise the bid to stay winner?
 				if (previousBidAmount < winner.getBidAmount()) {
-					if (!this.sealed && !AuctionConfig.getBoolean("broadcast-bid-updates", scope)) floAuction.sendMessage("bid-auto-outbid", (CommandSender) null, scope, true);
+					if (!this.sealed && !AuctionConfig.getBoolean("broadcast-bid-updates", scope)) {
+						messageManager.broadcastAuctionMessage(Lists.newArrayList("bid-auto-outbid"), this);
+					}
 					failBid(bid, "bid-fail-auto-outbid");
 				} else {
-					if (!this.sealed) floAuction.sendMessage("bid-fail-too-low", bid.getBidder(), scope);
+					if (!this.sealed) messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-too-low"), bid.getBidder(), this);
 					failBid(bid, null);
 				}
 			}
 		} else {
 			// Seriously don't know what could cause this, but might as well take care of it.
-			floAuction.sendMessage("bid-fail-too-low", bid.getBidder(), scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-too-low"), bid.getBidder(), this);
 		}
 	}
 	
@@ -487,9 +503,9 @@ public class Auction {
 	private void failBid(AuctionBid attemptedBid, String reason) {
 		attemptedBid.cancelBid();
 		if (this.sealed && (attemptedBid.getError() == null || attemptedBid.getError().isEmpty())) {
-			floAuction.sendMessage("bid-success-sealed", attemptedBid.getBidder(), scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("bid-success-sealed"), attemptedBid.getBidder(), this);
 		} else {
-			floAuction.sendMessage(reason, attemptedBid.getBidder(), scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList(reason), attemptedBid.getBidder(), this);
 		}
 	}
 	
@@ -509,13 +525,13 @@ public class Auction {
 		}
 		currentBid = newBid;
 		if (this.sealed) {
-			floAuction.sendMessage("bid-success-sealed", newBid.getBidder(), scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("bid-success-sealed"), newBid.getBidder(), this);
 		} else if (AuctionConfig.getBoolean("broadcast-bid-updates", scope)) {
-			floAuction.sendMessage(reason, (CommandSender) null, scope, true);
+			messageManager.broadcastAuctionMessage(Lists.newArrayList(reason), this);
 		} else {
-			floAuction.sendMessage(reason, newBid.getBidder(), scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList(reason), newBid.getBidder(), this);
 			if (prevBid != null && newBid.getBidder().equalsIgnoreCase(prevBid.getBidder())) {
-				floAuction.sendMessage(reason, prevBid.getBidder(), scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList(reason), prevBid.getBidder(), this);
 			}
 		}
 		AuctionParticipant.addParticipant(newBid.getBidder(), scope);
@@ -523,7 +539,7 @@ public class Auction {
         // see if antisnipe is enabled...
         if (!this.sealed && AuctionConfig.getBoolean("anti-snipe", scope) == true && this.getRemainingTime() <= AuctionConfig.getInt("anti-snipe-prevention-seconds", scope)) {
         	this.addToRemainingTime(AuctionConfig.getInt("anti-snipe-prevention-seconds", scope));
-	        floAuction.sendMessage("anti-snipe-time-added", null, scope, true);
+			messageManager.broadcastAuctionMessage(Lists.newArrayList("anti-snipe-time-added"), this);
         }
 	}
 	
@@ -539,7 +555,7 @@ public class Auction {
 		}
 		ItemStack heldItem = owner.getItemInHand();
 		if (heldItem == null || heldItem.getAmount() == 0) {
-			floAuction.sendMessage("auction-fail-hand-is-empty", owner, scope, false);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-hand-is-empty"), ownerName, this);
 			return false;
 		}
 		lot = new AuctionLot(heldItem, ownerName);
@@ -551,7 +567,7 @@ public class Auction {
 				itemType.getType().getMaxDurability() > 0 &&
 				itemType.getDurability() > 0
 		) {
-			floAuction.sendMessage("auction-fail-damaged-item", owner, scope, false);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-damaged-item"), ownerName, this);
 			lot = null;
 			return false;
 		}
@@ -560,7 +576,7 @@ public class Auction {
     	if (displayName == null) displayName = "";
     	
 		if (!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) {
-			floAuction.sendMessage("auction-fail-renamed-item", owner, scope, false);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-renamed-item"), ownerName, this);
 			lot = null;
 			return false;
 		}
@@ -572,7 +588,7 @@ public class Auction {
 			for (int i = 0; i < bannedLore.size(); i++) {
 				for (int j = 0; j < lore.length; j++) {
 					if (lore[j].toLowerCase().contains(bannedLore.get(i).toLowerCase())) {
-						floAuction.sendMessage("auction-fail-banned-lore", owner, scope, false);
+						messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-banned-lore"), ownerName, this);
 						lot = null;
 						return false;
 					}
@@ -605,7 +621,7 @@ public class Auction {
 	 */
 	private Boolean isValidOwner() {
 		if (ownerName == null) {
-			floAuction.sendMessage("auction-fail-invalid-owner", (Player) plugin.getServer().getConsoleSender(), scope, false);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-invalid-owner"), null, this);
 			return false;
 		}
 		return true;
@@ -618,14 +634,14 @@ public class Auction {
 	 */
 	private Boolean isValidAmount() {
 		if (quantity <= 0) {
-			floAuction.sendMessage("auction-fail-quantity-too-low", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-quantity-too-low"), ownerName, this);
 			return false;
 		}
 		
 		// TODO: Add config setting for max quantity.
 		
 		if (!items.hasAmount(ownerName, quantity, lot.getTypeStack())) {
-			floAuction.sendMessage("auction-fail-insufficient-supply", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-insufficient-supply"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -638,10 +654,10 @@ public class Auction {
 	 */
 	private Boolean isValidStartingBid() {
 		if (startingBid < 0) {
-			floAuction.sendMessage("auction-fail-starting-bid-too-low", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-starting-bid-too-low"), ownerName, this);
 			return false;
 		} else if (startingBid > AuctionConfig.getSafeMoneyFromDouble("max-starting-bid", scope)) {
-			floAuction.sendMessage("auction-fail-starting-bid-too-high", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-starting-bid-too-high"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -654,11 +670,11 @@ public class Auction {
 	 */
 	private Boolean isValidIncrement() {
 		if (getMinBidIncrement() < AuctionConfig.getSafeMoneyFromDouble("min-bid-increment", scope)) {
-			floAuction.sendMessage("auction-fail-increment-too-low", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-increment-too-low"), ownerName, this);
 			return false;
 		}
 		if (getMinBidIncrement() > AuctionConfig.getSafeMoneyFromDouble("max-bid-increment", scope)) {
-			floAuction.sendMessage("auction-fail-increment-too-high", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-increment-too-high"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -671,11 +687,11 @@ public class Auction {
 	 */
 	private Boolean isValidBuyNow() {
 		if (getBuyNow() < 0) {
-			floAuction.sendMessage("auction-fail-buynow-too-low", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-buynow-too-low"), ownerName, this);
 			return false;
 		}
 		if (getBuyNow() > AuctionConfig.getSafeMoneyFromDouble("max-buynow", scope)) {
-			floAuction.sendMessage("auction-fail-buynow-too-high", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-buynow-too-high"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -688,11 +704,11 @@ public class Auction {
 	 */
 	private Boolean isValidTime() {
 		if (time < AuctionConfig.getInt("min-auction-time", scope)) {
-			floAuction.sendMessage("auction-fail-time-too-low", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-time-too-low"), ownerName, this);
 			return false;
 		}
 		if (time > AuctionConfig.getInt("max-auction-time", scope)) {
-			floAuction.sendMessage("auction-fail-time-too-high", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-time-too-high"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -715,14 +731,14 @@ public class Auction {
 			} else if (args[0].matches("[0-9]{1,7}")) {
 				quantity = Integer.parseInt(args[0]);
 			} else {
-				floAuction.sendMessage("parse-error-invalid-quantity", ownerName, scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-quantity"), ownerName, this);
 				return false;
 			}
 		} else {
 			quantity = lotType.getAmount();
 		}
 		if (quantity < 0) {
-			floAuction.sendMessage("parse-error-invalid-quantity", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-quantity"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -740,14 +756,14 @@ public class Auction {
 			if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
 				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
-				floAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-starting-bid"), ownerName, this);
 				return false;
 			}
 		} else {
 			startingBid = AuctionConfig.getSafeMoneyFromDouble("default-starting-bid", scope);
 		}
 		if (startingBid < 0) {
-			floAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-starting-bid"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -765,14 +781,14 @@ public class Auction {
 			if (!args[2].isEmpty() && args[2].matches(floAuction.decimalRegex)) {
 				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args[2]));
 			} else {
-				floAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-bid-increment"), ownerName, this);
 				return false;
 			}
 		} else {
 			minBidIncrement = AuctionConfig.getSafeMoneyFromDouble("default-bid-increment", scope);
 		}
 		if (minBidIncrement < 0) {
-			floAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-bid-increment"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -790,14 +806,14 @@ public class Auction {
 			if (args[3].matches("[0-9]{1,7}")) {
 				time = Integer.parseInt(args[3]);
 			} else {
-				floAuction.sendMessage("parse-error-invalid-time", ownerName, scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-time"), ownerName, this);
 				return false;
 			}
 		} else {
 			time = AuctionConfig.getInt("default-auction-time", scope);
 		}
 		if (time < 0) {
-			floAuction.sendMessage("parse-error-invalid-time", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-time"), ownerName, this);
 			return false;
 		}
 		return true;
@@ -821,14 +837,14 @@ public class Auction {
 			if (!args[4].isEmpty() && args[4].matches(floAuction.decimalRegex)) {
 				this.buyNow = functions.getSafeMoney(Double.parseDouble(args[4]));
 			} else {
-				floAuction.sendMessage("parse-error-invalid-buynow", ownerName, scope);
+				messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-buynow"), ownerName, this);
 				return false;
 			}
 		} else {
 			this.buyNow = 0;
 		}
 		if (getBuyNow() < 0) {
-			floAuction.sendMessage("parse-error-invalid-buynow", ownerName, scope);
+			messageManager.sendPlayerMessage(Lists.newArrayList("parse-error-invalid-buynow"), ownerName, this);
 			return false;
 		}
 		return true;

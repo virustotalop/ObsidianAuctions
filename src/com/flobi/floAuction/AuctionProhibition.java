@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import com.google.common.collect.Lists;
+
 /**
  * Class to manipulate remote plugin prohibitions on player auctioning.
  * 
@@ -68,7 +70,7 @@ public class AuctionProhibition {
 				if (player == null) return true;
 				if (auctionProhibition.reminderMessage == null) {
 					// Send stock message.
-					floAuction.sendMessage("remote-plugin-prohibition-reminder", playerName, AuctionScope.getPlayerScope(player));
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-reminder"), playerName, null);
 				} else {
 					player.sendMessage(auctionProhibition.reminderMessage);
 				}
@@ -95,7 +97,7 @@ public class AuctionProhibition {
 				if (player == null) return true;
 				if (auctionProhibition.reminderMessage == null) {
 					// Send stock message.
-					floAuction.sendMessage("remote-plugin-prohibition-reminder", playerName, AuctionScope.getPlayerScope(player));
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-reminder"), playerName, null);
 				} else {
 					player.sendMessage(auctionProhibition.reminderMessage);
 				}
@@ -145,7 +147,7 @@ public class AuctionProhibition {
 		if (player == null) return true;
 		if (enableMessage == null) {
 			// Send stock message.
-			floAuction.sendMessage("remote-plugin-prohibition-enabled", playerName, AuctionScope.getPlayerScope(player));
+			floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-enabled"), playerName, null);
 		} else {
 			player.sendMessage(enableMessage);
 		}
@@ -160,14 +162,13 @@ public class AuctionProhibition {
 	 */
 	public static void removeProhibition(Plugin prohibiterPlugin, String playerName) {
 		Player player = Bukkit.getPlayer(playerName);
-		AuctionScope auctionScope = AuctionScope.getPlayerScope(player);
 		for (int i = 0; i < involuntarilyDisabledUsers.size(); i++) {
 			AuctionProhibition auctionProhibition = involuntarilyDisabledUsers.get(i);
 			if (auctionProhibition.playerName.equalsIgnoreCase(playerName) && auctionProhibition.prohibiterPlugin.equals(prohibiterPlugin)) {
 				if (player != null) {
 					if (auctionProhibition.disableMessage == null) {
 						// Send stock message.
-						floAuction.sendMessage("remote-plugin-prohibition-disabled", playerName, auctionScope);
+						floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-disabled"), playerName, null);
 					} else {
 						player.sendMessage(auctionProhibition.disableMessage);
 					}
@@ -182,7 +183,7 @@ public class AuctionProhibition {
 			if (player != null) {
 				if (auctionProhibition.enableMessage == null) {
 					// Send stock message.
-					floAuction.sendMessage("remote-plugin-prohibition-enabled", playerName, auctionScope);
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-enabled"), playerName, null);
 				} else {
 					player.sendMessage(auctionProhibition.enableMessage);
 				}

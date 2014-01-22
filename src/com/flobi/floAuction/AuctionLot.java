@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.flobi.utility.items;
+import com.google.common.collect.Lists;
 
 /**
  * Structure to hold and process the items being auctioned.
@@ -111,7 +112,7 @@ public class AuctionLot implements java.io.Serializable {
 			// Give whatever items space permits at this time.
 			ItemStack typeStack = getTypeStack();
 			if (amountToGive > 0) {
-				floAuction.sendMessage("lot-give", player, null, false);
+				floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("lot-give"), playerName, null);
 			}
 			while (amountToGive > 0) {
 				ItemStack givingItems = lotTypeLock.clone();
@@ -136,7 +137,7 @@ public class AuctionLot implements java.io.Serializable {
 					Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
 					drop.setItemStack(cloneStack);
 				}
-				floAuction.sendMessage("lot-drop", player, null, false);
+				floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("lot-drop"), playerName, null);
 			}
 		} else {
 			// Player is offline, queue lot for give on login.

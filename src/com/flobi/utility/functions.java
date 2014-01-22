@@ -7,6 +7,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import com.flobi.floAuction.AuctionConfig;
 import com.flobi.floAuction.AuctionScope;
 import com.flobi.floAuction.floAuction;
+import com.google.common.collect.Lists;
 
 public class functions {
 
@@ -70,7 +71,7 @@ public class functions {
 					!resultArgs[0].equalsIgnoreCase("all") && 
 					!resultArgs[0].matches("[0-9]{1,7}")
 				) {
-					floAuction.sendMessage("parse-error-invalid-quantity", playerName, null);
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("parse-error-invalid-quantity"), playerName, null);
 					return null;
 				}
 			}
@@ -82,7 +83,7 @@ public class functions {
 				}
 				if (validateArgs) {
 					if (resultArgs[1].isEmpty() || !resultArgs[1].matches(floAuction.decimalRegex)) {
-						floAuction.sendMessage("parse-error-invalid-starting-bid", playerName, null);
+						floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("parse-error-invalid-starting-bid"), playerName, null);
 						return null;
 					}
 				}
@@ -94,7 +95,7 @@ public class functions {
 					}
 					if (validateArgs) {
 						if (resultArgs[2].isEmpty() || !resultArgs[2].matches(floAuction.decimalRegex)) {
-							floAuction.sendMessage("parse-error-invalid-max-bid", playerName, null);
+							floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("parse-error-invalid-max-bid"), playerName, null);
 							return null;
 						}
 					}
@@ -106,7 +107,7 @@ public class functions {
 						}
 						if (validateArgs) {
 							if (!resultArgs[3].matches("[0-9]{1,7}")) {
-								floAuction.sendMessage("parse-error-invalid-time", playerName, null);
+								floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("parse-error-invalid-time"), playerName, null);
 								return null;
 							}
 						}
@@ -118,7 +119,7 @@ public class functions {
 							}
 							if (validateArgs) {
 								if (resultArgs[4].isEmpty() || !resultArgs[4].matches(floAuction.decimalRegex)) {
-									floAuction.sendMessage("parse-error-invalid-buynow", playerName, null);
+									floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("parse-error-invalid-buynow"), playerName, null);
 									return null;
 								}
 							}

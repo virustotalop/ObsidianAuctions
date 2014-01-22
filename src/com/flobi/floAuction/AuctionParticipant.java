@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import com.google.common.collect.Lists;
+
 /**
  * Class to track and manipulate the participants of auctions, which are auction starters (a.k.a. owners), the current highest bidder for unsealed auctions and all bidders on sealed auctions.
  * 
@@ -105,7 +107,7 @@ public class AuctionParticipant {
 	 */
 	private void sendArenaWarning() {
 		if (sentArenaWarning) return;
-		floAuction.sendMessage("arena-warning", playerName, null);
+		floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
 		sentArenaWarning = true;
 	}
 
@@ -114,7 +116,7 @@ public class AuctionParticipant {
 	 */
 	private void sendEscapeWarning() {
 		if (sentEscapeWarning) return;
-		floAuction.sendMessage("auctionscope-escape-warning", playerName, null);
+		floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-escape-warning"), playerName, null);
 		sentEscapeWarning = true;
 	}
 

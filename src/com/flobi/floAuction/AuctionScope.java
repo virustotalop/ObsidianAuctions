@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import com.google.common.collect.Lists;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -128,26 +129,26 @@ public class AuctionScope {
 	 */
     public void queueAuction(Auction auctionToQueue) {
 		String playerName = auctionToQueue.getOwner();
-		Player player = Bukkit.getPlayer(playerName);
+		MessageManager messageManager = auctionToQueue.messageManager;
 
 		if (activeAuction == null) {
 			// Queuing because of interval not yet timed out.
 			// Allow a queue of 1 to override if 0 for this condition.
 	    	if (Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= auctionQueue.size()) {
-	    		floAuction.sendMessage("auction-queue-fail-full", player, this, false);
+	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-fail-full"), playerName, auctionToQueue);
 				return;
 			}
 		} else {
 	    	if (AuctionConfig.getInt("max-auction-queue-length", this) <= 0) {
-	    		floAuction.sendMessage("auction-fail-auction-exists", player, this, false);
+	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-auction-exists"), playerName, auctionToQueue);
 				return;
 			}
 			if (activeAuction.getOwner().equalsIgnoreCase(playerName)) {
-				floAuction.sendMessage("auction-queue-fail-current-auction", player, this, false);
+	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-fail-current-auction"), playerName, auctionToQueue);
 				return;
 			}
 			if (AuctionConfig.getInt("max-auction-queue-length", this) <= auctionQueue.size()) {
-				floAuction.sendMessage("auction-queue-fail-full", player, this, false);
+	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-fail-full"), playerName, auctionToQueue);
 				return;
 			}
 		}
@@ -155,7 +156,7 @@ public class AuctionScope {
 			if (auctionQueue.get(i) != null) {
 				Auction queuedAuction = auctionQueue.get(i);
 				if (queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
-					floAuction.sendMessage("auction-queue-fail-in-queue", player, this, false);
+		    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-fail-in-queue"), playerName, auctionToQueue);
 					return;
 				}
 			}
@@ -165,7 +166,7 @@ public class AuctionScope {
 			AuctionParticipant.addParticipant(playerName, this);
 			checkAuctionQueue();
 			if (auctionQueue.contains(auctionToQueue)) {
-				floAuction.sendMessage("auction-queue-enter", player, this, false);
+	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-enter"), playerName, auctionToQueue);
 			}
 		}
     }
@@ -187,24 +188,26 @@ public class AuctionScope {
 		if (auction == null) {
 			return;
 		}
+		MessageManager messageManager = auction.messageManager;
 		
-		Player player = Bukkit.getPlayer(auction.getOwner());
+		String playerName = auction.getOwner();
+		Player player = Bukkit.getPlayer(playerName);
 		if (player == null || !player.isOnline()) {
 			return;
 		}
 		
 		if (AuctionProhibition.isOnProhibition(auction.getOwner(), false)) {
-			floAuction.sendMessage("remote-plugin-prohibition-reminder", player, null, false);
+    		messageManager.sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-reminder"), playerName, auction);
 			return;
 		}
 		
 		if (!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
-			floAuction.sendMessage("auction-fail-gamemode-creative", player, null, false);
+    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-gamemode-creative"), playerName, auction);
 			return;
 		}
 		
 		if (!floAuction.perms.has(player, "auction.start")) {
-			floAuction.sendMessage("no-permission", player, null, false);
+    		messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, auction);
 			return;
 		}
 		if (!auction.isValid()) {
@@ -315,6 +318,20 @@ public class AuctionScope {
 		}
 	}
 	
+	/**
+	 * Gets the position of the named player's auction in the queue or zero if not in queue.
+	 * 
+	 * @param playerName name of player
+	 * @return players position in queue or zero if not in queue
+	 */
+	public int getQueuePosition(String playerName) {
+		for (int t = 0; t < auctionQueue.size(); t++) {
+			Auction auction = auctionQueue.get(t);
+			if (auction.getOwner().equalsIgnoreCase(playerName)) return t + 1;
+		}
+		return 0;
+	}
+
 	/**
 	 * Gets the AuctionScope instance in which the player is.
 	 * 
