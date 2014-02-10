@@ -41,6 +41,7 @@ public class AuctionScope {
 	private Location minHouseLocation = null;
 	private Location maxHouseLocation = null;
 	private String regionId = null;
+	private boolean locationChecked = false;
 	
 	private ConfigurationSection config = null;
 	private FileConfiguration textConfig = null;
@@ -64,13 +65,18 @@ public class AuctionScope {
 		type = config.getString("type");
 		this.config = config.getConfigurationSection("config");
 		this.textConfig = textConfig;
-		loadScopeLocations();
 	}
 	
-	private boolean loadScopeLocations() {
-		if (type.equalsIgnoreCase("worlds") && worlds == null) {
+	/**
+	 * Checks whether the scopes definition is valid.  
+	 * 
+	 * @return true if valid location, false if invalid
+	 */
+	private boolean scopeLocationIsValid() {
+		if (locationChecked) return worlds != null && minHouseLocation != null && maxHouseLocation != null && regionId != null;
+		if (type.equalsIgnoreCase("worlds")) {
 			worlds = config.getStringList("worlds");
-		} else if (type.equalsIgnoreCase("house") && (minHouseLocation == null || maxHouseLocation == null)) {
+		} else if (type.equalsIgnoreCase("house")) {
 			String world = config.getString("house-world");
 			if (world.isEmpty()) {
 				minHouseLocation = null;
@@ -79,7 +85,7 @@ public class AuctionScope {
 				minHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-min-x"), config.getDouble("house-min-y"), config.getDouble("house-min-z"));
 				maxHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-max-x"), config.getDouble("house-max-y"), config.getDouble("house-max-z"));
 			}
-		} else if (type.equalsIgnoreCase("worldguardregion") && regionId == null) {
+		} else if (type.equalsIgnoreCase("worldguardregion")) {
 			if (worldGuardPlugin == null) {
 				// get the list of regions that contain the given location
 			    Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
@@ -91,7 +97,8 @@ public class AuctionScope {
 			}
 			regionId = config.getString("region-id");
 		}
-		return false;
+		locationChecked = true;
+		return worlds != null && minHouseLocation != null && maxHouseLocation != null && regionId != null;
 	}
 	
 	/**
@@ -246,7 +253,7 @@ public class AuctionScope {
 		World world = location.getWorld();
 		if (world == null) return false;
 		String worldName = world.getName();
-		loadScopeLocations();
+		if (!scopeLocationIsValid()) return false;
 		if (type.equalsIgnoreCase("worlds")) {
 			for (int i = 0; i < worlds.size(); i++) {
 				if (worlds.get(i).equalsIgnoreCase(worldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
