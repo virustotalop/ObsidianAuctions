@@ -62,9 +62,15 @@ public class AuctionScope {
 		if (name == null) name = scopeId;
 
 		type = config.getString("type");
-		if (type.equalsIgnoreCase("worlds")) {
+		this.config = config.getConfigurationSection("config");
+		this.textConfig = textConfig;
+		loadScopeLocations();
+	}
+	
+	private boolean loadScopeLocations() {
+		if (type.equalsIgnoreCase("worlds") && worlds == null) {
 			worlds = config.getStringList("worlds");
-		} else if (type.equalsIgnoreCase("house")) {
+		} else if (type.equalsIgnoreCase("house") && (minHouseLocation == null || maxHouseLocation == null)) {
 			String world = config.getString("house-world");
 			if (world.isEmpty()) {
 				minHouseLocation = null;
@@ -73,7 +79,7 @@ public class AuctionScope {
 				minHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-min-x"), config.getDouble("house-min-y"), config.getDouble("house-min-z"));
 				maxHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-max-x"), config.getDouble("house-max-y"), config.getDouble("house-max-z"));
 			}
-		} else if (type.equalsIgnoreCase("worldguardregion")) {
+		} else if (type.equalsIgnoreCase("worldguardregion") && regionId == null) {
 			if (worldGuardPlugin == null) {
 				// get the list of regions that contain the given location
 			    Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
@@ -85,8 +91,7 @@ public class AuctionScope {
 			}
 			regionId = config.getString("region-id");
 		}
-		this.config = config.getConfigurationSection("config");
-		this.textConfig = textConfig;
+		return false;
 	}
 	
 	/**
@@ -241,6 +246,7 @@ public class AuctionScope {
 		World world = location.getWorld();
 		if (world == null) return false;
 		String worldName = world.getName();
+		loadScopeLocations();
 		if (type.equalsIgnoreCase("worlds")) {
 			for (int i = 0; i < worlds.size(); i++) {
 				if (worlds.get(i).equalsIgnoreCase(worldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
