@@ -449,8 +449,8 @@ public class floAuction extends JavaPlugin {
 		AuctionScope.cancelAllAuctions();
 		getServer().getScheduler().cancelTask(queueTimer);
 		plugin = null;
-		auctionLog = null;
 		messageManager.sendPlayerMessage(Lists.newArrayList("plugin-disabled"), null, null);
+		auctionLog = null;
 	}
 	
     // Overrides onCommand from Plugin
@@ -682,6 +682,10 @@ public class floAuction extends JavaPlugin {
 
 					return true;
     			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
+    	    		if (userScope == null) {
+    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-scope"), playerName, null);
+    	    			return true;
+    	    		}
     				if (userScope.getActiveAuction() == null && userScope.getAuctionQueueLength() == 0) {
     					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, null);
     					return true;
@@ -837,7 +841,7 @@ public class floAuction extends JavaPlugin {
     		
 			BufferedWriter out = null;
 			try {
-		    	if (!auctionLog.exists()) {
+		    	if (auctionLog == null || !auctionLog.exists()) {
 					auctionLog.createNewFile();
 					auctionLog.setWritable(true);
 		    	}

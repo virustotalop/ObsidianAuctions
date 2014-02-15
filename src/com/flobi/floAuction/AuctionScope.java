@@ -11,7 +11,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -44,7 +43,7 @@ public class AuctionScope {
 	private boolean locationChecked = false;
 	
 	private ConfigurationSection config = null;
-	private FileConfiguration textConfig = null;
+	private ConfigurationSection textConfig = null;
 
 	public static List<String> auctionScopesOrder = new ArrayList<String>();
 	public static Map<String, AuctionScope> auctionScopes = new HashMap<String, AuctionScope>();
@@ -57,13 +56,13 @@ public class AuctionScope {
 	 * @param config configuration
 	 * @param textConfig language config
 	 */
-	private AuctionScope(String scopeId, ConfigurationSection config, YamlConfiguration textConfig) {
+	private AuctionScope(String scopeId, ConfigurationSection config, ConfigurationSection textConfig) {
 		this.scopeId = scopeId;
 		name = config.getString("name");
 		if (name == null) name = scopeId;
 
 		type = config.getString("type");
-		this.config = config.getConfigurationSection("config");
+		this.config = config;
 		this.textConfig = textConfig;
 	}
 	
@@ -73,12 +72,12 @@ public class AuctionScope {
 	 * @return true if valid location, false if invalid
 	 */
 	private boolean scopeLocationIsValid() {
-		if (locationChecked) return worlds != null && minHouseLocation != null && maxHouseLocation != null && regionId != null;
+		if (locationChecked) return worlds != null || minHouseLocation != null || maxHouseLocation != null || regionId != null;
 		if (type.equalsIgnoreCase("worlds")) {
 			worlds = config.getStringList("worlds");
 		} else if (type.equalsIgnoreCase("house")) {
 			String world = config.getString("house-world");
-			if (world.isEmpty()) {
+			if (world == null || world.isEmpty()) {
 				minHouseLocation = null;
 				maxHouseLocation = null;
 			} else {
@@ -98,7 +97,7 @@ public class AuctionScope {
 			regionId = config.getString("region-id");
 		}
 		locationChecked = true;
-		return worlds != null && minHouseLocation != null && maxHouseLocation != null && regionId != null;
+		return worlds != null || minHouseLocation != null || maxHouseLocation != null || regionId != null;
 	}
 	
 	/**
@@ -282,7 +281,7 @@ public class AuctionScope {
 	 * @return config for the scope
 	 */
 	public ConfigurationSection getConfig() {
-		return config;
+		return config.getConfigurationSection("config");
 	}
 
 	/**
@@ -309,7 +308,7 @@ public class AuctionScope {
 	 * 
 	 * @return language config for the scope
 	 */
-	public FileConfiguration getTextConfig() {
+	public ConfigurationSection getTextConfig() {
 		return textConfig;
 	}
 
@@ -354,8 +353,9 @@ public class AuctionScope {
 	public static AuctionScope getPlayerScope(Player player) {
 		if (player == null) return null;
 		for (int i = 0; i < auctionScopesOrder.size(); i++) {
-			String auctionScopeName = auctionScopesOrder.get(i);
-			AuctionScope auctionScope = auctionScopes.get(auctionScopeName);
+			String auctionScopeId = auctionScopesOrder.get(i);
+			floAuction.log(null, "Checking scope " + auctionScopeId + " for player " + player.getName() + ".");
+			AuctionScope auctionScope = auctionScopes.get(auctionScopeId);
 			if (auctionScope.isPlayerInScope(player)) return auctionScope;
 		}
 		return null;
@@ -371,6 +371,7 @@ public class AuctionScope {
 		if (location == null) return null;
 		for (int i = 0; i < auctionScopesOrder.size(); i++) {
 			String auctionScopeId = auctionScopesOrder.get(i);
+			floAuction.log(null, "Checking scope " + auctionScopeId + " for location.");
 			AuctionScope auctionScope = auctionScopes.get(auctionScopeId);
 			if (auctionScope.isLocationInScope(location)) return auctionScope;
 		}
@@ -384,10 +385,12 @@ public class AuctionScope {
 	 * @param dataFolder
 	 */
 	public static void setupScopeList(ConfigurationSection auctionScopesConfig, File dataFolder) {
+		floAuction.log(null, "Loading Scopes...");
 	    auctionScopes.clear();
 	    auctionScopesOrder.clear();
 		if (auctionScopesConfig != null) {
 			for (String scopeName : auctionScopesConfig.getKeys(false)) {
+				floAuction.log(null, "Adding scope: " + scopeName);
 				auctionScopesOrder.add(scopeName);
 				ConfigurationSection auctionScopeConfig = auctionScopesConfig.getConfigurationSection(scopeName);
 		    	File scopeTextConfigFile = new File(dataFolder, "language-"+scopeName+".yml");

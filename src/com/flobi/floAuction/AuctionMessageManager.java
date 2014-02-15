@@ -29,7 +29,11 @@ public class AuctionMessageManager extends MessageManager {
 	
 	public void sendPlayerMessage(List<String> messageKeys, String playerName, Auction auction) {
 		CommandSender recipient = null;
-		if (playerName == null) recipient = Bukkit.getConsoleSender();
+		if (playerName == null) {
+			recipient = Bukkit.getConsoleSender();
+		} else {
+			recipient = Bukkit.getPlayer(playerName);
+		}
 		AuctionScope auctionScope = null;
 		if (auction != null) auctionScope = auction.getScope();
 		if (auctionScope == null && recipient instanceof Player) auctionScope = AuctionScope.getPlayerScope((Player) recipient);
