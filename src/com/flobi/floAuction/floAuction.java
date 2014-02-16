@@ -235,18 +235,23 @@ public class floAuction extends JavaPlugin {
         loadConfig();
 		if (Bukkit.getPluginManager().getPlugin("WhatIsIt") == null) {
 			if (config.getBoolean("allow-inferior-item-name-logic")) {
-				log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("whatisit-recommended", null), null));
+				log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("recommended-whatisit", null), null));
 				useWhatIsIt = false;
 			} else {
-				log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("no-whatisit", null), null));
+				log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("plugin-disabled-no-whatisit", null), null));
 				Bukkit.getPluginManager().disablePlugin(this);
 	            return;
 			}
 		} else {
 			useWhatIsIt = true;
 		}
+		if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
+			log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("plugin-disabled-no-vault", null), null));
+			Bukkit.getPluginManager().disablePlugin(this);
+            return;
+		}
 		if (econ == null) {
-			log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("no-economy", null), null));
+			log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("plugin-disabled-no-economy", null), null));
 			Bukkit.getPluginManager().disablePlugin(this);
             return;
 		}
@@ -518,7 +523,7 @@ public class floAuction extends JavaPlugin {
     		if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("plogin-reload-fail-permissions"), playerName, null);
     	    			return true;
     				}
     		    	// Don't reload if any auctions are running.
@@ -533,7 +538,7 @@ public class floAuction extends JavaPlugin {
     			} else if (args[0].equalsIgnoreCase("resume")) {
 			    	if (args.length == 1) {
 						if (player != null && !perms.has(player, "auction.admin")) {
-							messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, null);
+							messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-fail-permissions"), playerName, null);
 			    			return true;
 						}
 						// Resume globally:
@@ -543,7 +548,7 @@ public class floAuction extends JavaPlugin {
     		    	}
     		    	
     				if (player != null && !perms.has(player, "auction.admin")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-fail-permissions"), playerName, null);
     	    			return true;
     				}
 
@@ -560,7 +565,7 @@ public class floAuction extends JavaPlugin {
     				return true;
     			} else if (args[0].equalsIgnoreCase("suspend")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("suspension-fail-permissions"), playerName, null);
     	    			return true;
     				}
     				if (args.length > 1) {
@@ -629,7 +634,7 @@ public class floAuction extends JavaPlugin {
     	    		}
     	    			
     				if (!perms.has(player, "auction.start")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-permissions"), playerName, null);
     	    			return true;
     				}
     				
@@ -663,7 +668,7 @@ public class floAuction extends JavaPlugin {
     	    			return true;
     	    		}
     				if (!perms.has(player, "auction.start")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-permissions"), playerName, null);
     	    			return true;
     				}
     				
@@ -722,15 +727,15 @@ public class floAuction extends JavaPlugin {
     				}
     				
     				if (player == null) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("confiscation-fail-console"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-console"), playerName, null);
     					return true;
     				}
 					if (!perms.has(player, "auction.admin")) {
-						messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, null);
+						messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-permissions"), playerName, null);
     					return true;
 					}
 					if (playerName.equalsIgnoreCase(auction.getOwner())) {
-						messageManager.sendPlayerMessage(Lists.newArrayList("confiscation-fail-self"), playerName, null);
+						messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-self"), playerName, null);
     					return true;
 					}
 					auction.confiscate(player);
@@ -809,7 +814,7 @@ public class floAuction extends JavaPlugin {
     			return true;
     		}
 			if (!perms.has(player, "auction.bid")) {
-				messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, null);
+				messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-permissions"), playerName, null);
     			return true;
 			}
     		if (auction == null) {

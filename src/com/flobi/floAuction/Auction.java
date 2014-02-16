@@ -90,7 +90,7 @@ public class Auction {
 		Player owner = Bukkit.getPlayer(ownerName);
 		
 		if (ArenaManager.isInArena(owner)) {
-			messageManager.sendPlayerMessage(Lists.newArrayList("arena-warning"), ownerName, this);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-arena"), ownerName, this);
 			return false;
 		}
 		
@@ -328,7 +328,7 @@ public class Auction {
 	public void confiscate(Player authority) {
 		Bukkit.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
 		ownerName = authority.getName();
-		messageManager.broadcastAuctionMessage(Lists.newArrayList("auction-confiscated"), this);
+		messageManager.broadcastAuctionMessage(Lists.newArrayList("confiscate-success"), this);
 		if (lot != null) {
 			lot.winLot(authority.getName());
 		}
@@ -403,7 +403,7 @@ public class Auction {
 		String playerName = bidder.getName();
 		
 		if (ArenaManager.isInArena(bidder)) {
-			messageManager.sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, this);
+			messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-arena"), playerName, this);
 			return;
 		}
 		

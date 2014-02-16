@@ -218,7 +218,7 @@ public class AuctionScope {
 		}
 		
 		if (!floAuction.perms.has(player, "auction.start")) {
-    		messageManager.sendPlayerMessage(Lists.newArrayList("no-permission"), playerName, auction);
+    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-permissions"), playerName, auction);
 			return;
 		}
 		if (!auction.isValid()) {

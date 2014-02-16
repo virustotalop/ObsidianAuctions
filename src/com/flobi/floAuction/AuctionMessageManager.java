@@ -195,7 +195,7 @@ public class AuctionMessageManager extends MessageManager {
         	if (displayName.isEmpty()) {
         		displayName = lotType;
         	} else {
-        		displayName = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("display-name-prefix", auctionScope)) + displayName + ChatColor.translateAlternateColorCodes('&', "&r");
+        		displayName = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("wrap-display-name", auctionScope)).replace("%i", displayName) + ChatColor.translateAlternateColorCodes('&', "&r");
         	}
         	
 			if (typeLot != null && typeLot.getType() == Material.FIREWORK) {

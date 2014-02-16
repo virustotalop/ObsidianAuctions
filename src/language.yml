@@ -1,28 +1,67 @@
 chat-prefix: '&f[&7flo&9Auction&f] &9'
-display-name-prefix: '&o'
+
+wrap-player-name: '&o%i'
+
 plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
-no-whatisit: Disabled due to no WhatIsIt dependency found!
-whatisit-recommended: WhatIsIt plugin highly recommended for full item information!
-no-vault: Disabled due to no Vault dependency found!
-no-economy: Disabled due to no Economy found!
+plugin-disabled-no-whatisit: 
+- '&b+-------------------------------------------------------------------+
+- '&b|                                                                   |
+- '&b|  ATTENTION!  THIS IS A NOTIFICATION THAT floAuction HAS NOT BEEN  |
+- '&b|  ENABLED.  floAuction REQUIRES THE WhatIsIt PLUGIN AND YOU LACK   |
+- '&b|  IT.  DOWNLOAD AND INSTALL WhatIsIt IF YOU WANT floAuction TO     |
+- '&b|  PROVIDE YOU WITH IT''S LEGENDARY AUCTION FUNCTIONALITY!           |
+- '&b|                                                                   |
+- '&b+-------------------------------------------------------------------+
+plugin-disabled-no-vault: 
+- '&b+-------------------------------------------------------------------+
+- '&b|                                                                   |
+- '&b|  HELLO, WEARY ADMIN.                                              |
+- '&b|                                                                   |
+- '&b|  THIS IS flobi, THE AUTHOR OF floAuction.  I''VE BEEN HOPING TO    |
+- '&b|  HAVE A CHAT WITH YOU ABOUT INSTALLING THE REQUIRED               |
+- '&b|  DEPENDANCIES FOR floAuction.  THAT''S A LIE, GO INSTALL Vault,    |
+- '&b|  YOU RETARD!  floAuction IS DISABLED BECAUSE OF YOUR FAILURE.     |
+- '&b|                                                                   |
+- '&b|  SINCERELY,                                                       |
+- '&b|  flobi                                                            |
+- '&b|                                                                   |
+- '&b+-------------------------------------------------------------------+
+plugin-disabled-no-economy: 
+- '&b+-------------------------------------------------------------------+
+- '&b|                                                                   |
+- '&b|  THERE'S A POSSIBILITY YOU DON'T UNDERSTAND HOW AUCTIONS WORK.    |
+- '&b|  TO HAVE AUCTIONS, YOU MUST FIRST HAVE MONEY.  YOU NEED TO        |
+- '&b|  DOWNLOAD AN ECONOMY PLUGIN SUPPORTED BY Vault.  UNTIL YOU DO     |
+- '&b|  YOU CANNOT USE floAuction, IT IS DISABLED.                       |
+- '&b|                                                                   |
+- '&b+-------------------------------------------------------------------+
 plugin-reloaded: '&fconfiguration has been reloaded.'
-plugin-reloaded-fail-auctions-running: '&6Config cannot be reloaded while auctions are running or queued.  If your server is too busy to find a time when auctions are not running, you can use &a/auc suspend &6to temporarily suspend all auctioning, but don''t forget to &a/auc resume &6when finished.'
-no-permission: '&6You do not have permission.'
+plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions are running or queued.  If your server is too busy to find a time when auctions are not running, you can use &a/auc suspend &6to temporarily suspend all auctioning, but don''t forget to &a/auc resume &6when finished.'
+plogin-reload-fail-permissions: '&6You do not have permission to reload this plugin.'
+
+recommended-whatisit: WhatIsIt plugin highly recommended for full item information!
+arena-warning: '&6You cannot enter an arena while participating in an auction.'
+auctionscope-escape-warning: '&6You cannot leave the auction scope while participating in an auction.'
+gamemodechange-fail-participating: '&6You cannot change gamemode while participating in an auction.'
+
 disabled-command-participating: '&6You cannot do that while participating in an auction.'
 disabled-command-inscope: '&6You cannot do that inside this auction scope.'
-auctionscope-escape-warning: '&6You cannot leave the auction scope while participating in an auction.'
+
 suspension-user: '&6Your auction access has been suspended.'
 suspension-user-success: 'The user has been suspended.'
 suspension-user-fail-already-suspended: '&6That user is already suspended.'
 suspension-user-fail-is-admin: '&6You cannot suspend auction admins.'
 suspension-user-fail-is-offline: '&6You cannot suspend offline users.'
+suspension-fail-permissions: '&6You do not have permission to suspend auctioning.'
+
 unsuspension-user: 'You may now participate in auctions again.'
 unsuspension-user-success: 'The user has been unsuspended.'
 unsuspension-user-fail-not-suspended: 'That user was not suspended.'
+unsuspension-fail-permissions: '&6You do not have permission to resume auctioning.'
 suspension-global: '&6All auctioning has been suspended.'
 unsuspension-global: 'Auctioning has been resumed.'
-arena-warning: '&6Auction participation is banned in arenas.'
+
 remote-plugin-prohibition-enabled: '&6%? has disabled your ability to auction.'
 remote-plugin-prohibition-disabled: '&6%? has restored your ability to auction.'
 remote-plugin-prohibition-reminder: '&6%? has disabled your ability to auction.'
@@ -35,7 +74,9 @@ parse-error-invalid-bid: '&6The bid amount you specified is invalid.'
 parse-error-invalid-max-bid: '&6The max bid amount you specified is invalid.'
 parse-error-invalid-buynow: '&6The BuyNow amount you specified is invalid.'
 
-auction-fail-banned: '&6You cannot auction this.'
+auction-fail-permissions: '&6You do not have permissions to start an auction.'
+auction-fail-arena: '&6You cannot start an auction in an arena.'
+auction-fail-banned: '&6You cannot auction this item.'
 auction-fail-start-tax: '&6You cannot afford to start an auction.'
 auction-fail-hand-is-empty: '&6Hold something to auction.'
 auction-fail-quantity-too-low: '&6You must offer more than that.'
@@ -73,6 +114,7 @@ bid-success-update-own-bid: '&b%B&9 raised the bid to &6%b&9.'
 bid-success-update-own-maxbid: You raised your own max bid to &6%h&9.
 bid-success-sealed: '&bYour bid has been placed.'
 bid-auto-outbid: '&b%B&9 has raised the bid to &6%b&9.'
+bid-fail-arena: '&6You cannot bid on auctions in an arena.'
 bid-fail-is-auction-owner: '&6You cannot bid on your own auction.'
 bid-fail-already-current-bidder: '&6Your bid remains unchanged.'
 bid-fail-cant-allocate-funds: '&6You cannot afford that bid.'
@@ -87,9 +129,12 @@ bid-fail-too-low: '&6Your bid was too low.'
 bid-fail-outside-auctionhouse: '&6You must auction at the auction house.'
 bid-fail-buynow-expired: '&6BuyNow option missing or expired.'
 bid-fail-blocked-by-other-plugin: '&6The bid was blocked by another plugin.'
+bid-fail-permissions: '&6You do not have permissions to bid on an auction.'
 
-confiscation-fail-console: '&6Only online players can impound items (you have no inventory, console).'
-confiscation-fail-self: '&6You cannot impound your own items.'
+confiscate-success: '&6This auction has been impounded by %O!'
+confiscate-fail-console: '&6Only online players can impound items (you have no inventory, console).'
+confiscate-fail-self: '&6You cannot impound your own items (try &a/auction cancel&6).'
+confiscate-fail-permissions: '&6You do not have permission to confiscate auctions.'
 
 auction-queue-enter: Your auction has been queued (number %Q in line). 
 auction-queue-fail-full: '&6The auction queue is full, try again later.'
@@ -100,7 +145,6 @@ auction-queue-status-not-in-queue: 'There are %k auctions queued, none belong to
 
 auction-cancel: The auction has been cancelled.
 auction-cancel-queued: Your auction has been removed from the queue.
-auction-confiscated: '&6This auction has been impounded by %O!'
 auction-end-nobids: The auction ended with no bids.
 auction-end: '&b%B&9 won the auction for &a%i&9 with &6%b&9!'
 auction-disabled: '&bAuctioning disabled.'
@@ -143,8 +187,7 @@ auction-info-footer-nobids:
 - Bidding starts at &6%s&9.
 - Min bid increment is &6%n&9. 
 auction-info-footer-sealed: 
-- Bidding starts at &6%s&9.  
-- Min bid increment is &6%n&9. 
+- Bidding starts at &6%s&9.
 auction-info-no-auction: 
 - Nothing is being auctioned at this time.
 
@@ -155,12 +198,6 @@ auction-info-lore-footer: '--------------------&1LORE&9--'
 timer-countdown-notification: Auction has &c%t&9 remaining.
 time-format-minsec: '%m min, %s sec'
 time-format-seconly: '%s sec'
-gold-standard-name-singular: '%g Nugget'
-gold-standard-name-plural: '%g Nuggets'
-
-worldchange-fail-auction-owner: '&6You cannot change worlds while auctioning.'
-worldchange-fail-auction-bidder: '&6You cannot change worlds while bidding.'
-gamemodechange-fail-participating: '&6You cannot change gamemode while participating in an auction.'
 
 lot-give: '&dYour items have been added to your inventory.'
 lot-drop: '&dNot enough space, your items dropped at your feet.'

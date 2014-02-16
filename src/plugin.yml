@@ -3,8 +3,7 @@ version: 3.alpha.0.4
 description: Auction plugin for economies.
 author: flobi
 website: http://dev.bukkit.org/server-mods/floauction/
-depend: [Vault]
-softdepend: [WhatIsIt]
+softdepend: [WhatIsIt,Vault]
 
 main: com.flobi.floAuction.floAuction
 database: false
