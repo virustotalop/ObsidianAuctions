@@ -5,37 +5,29 @@ wrap-player-name: '&o%i'
 plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
 plugin-disabled-no-whatisit: 
-- '&b+-------------------------------------------------------------------+
-- '&b|                                                                   |
-- '&b|  ATTENTION!  THIS IS A NOTIFICATION THAT floAuction HAS NOT BEEN  |
-- '&b|  ENABLED.  floAuction REQUIRES THE WhatIsIt PLUGIN AND YOU LACK   |
-- '&b|  IT.  DOWNLOAD AND INSTALL WhatIsIt IF YOU WANT floAuction TO     |
-- '&b|  PROVIDE YOU WITH IT''S LEGENDARY AUCTION FUNCTIONALITY!           |
-- '&b|                                                                   |
-- '&b+-------------------------------------------------------------------+
+- ----- WhatIsIt Dependency Failure -----
+- ATTENTION!  THIS IS A NOTIFICATION THAT floAuction HAS NOT BEEN
+- ENABLED.  floAuction REQUIRES THE WhatIsIt PLUGIN AND YOU LACK
+- IT.  DOWNLOAD AND INSTALL WhatIsIt IF YOU WANT floAuction TO
+- PROVIDE YOU WITH IT'S LEGENDARY AUCTION FUNCTIONALITY!
+- ----- --------------------------- -----
 plugin-disabled-no-vault: 
-- '&b+-------------------------------------------------------------------+
-- '&b|                                                                   |
-- '&b|  HELLO, WEARY ADMIN.                                              |
-- '&b|                                                                   |
-- '&b|  THIS IS flobi, THE AUTHOR OF floAuction.  I''VE BEEN HOPING TO    |
-- '&b|  HAVE A CHAT WITH YOU ABOUT INSTALLING THE REQUIRED               |
-- '&b|  DEPENDANCIES FOR floAuction.  THAT''S A LIE, GO INSTALL Vault,    |
-- '&b|  YOU RETARD!  floAuction IS DISABLED BECAUSE OF YOUR FAILURE.     |
-- '&b|                                                                   |
-- '&b|  SINCERELY,                                                       |
-- '&b|  flobi                                                            |
-- '&b|                                                                   |
-- '&b+-------------------------------------------------------------------+
+- ----- Vault Dependency Failure -----
+- HELLO, WEARY ADMIN.
+- THIS IS flobi, THE AUTHOR OF floAuction.  I'VE BEEN HOPING TO
+- HAVE A CHAT WITH YOU ABOUT INSTALLING THE REQUIRED
+- DEPENDENCIES FOR floAuction.  THAT'S A LIE, GO INSTALL Vault,
+- YOU RETARD!  floAuction IS DISABLED BECAUSE OF YOUR FAILURE.
+- SINCERELY,
+- flobi
+- ----- ------------------------ -----
 plugin-disabled-no-economy: 
-- '&b+-------------------------------------------------------------------+
-- '&b|                                                                   |
-- '&b|  THERE'S A POSSIBILITY YOU DON'T UNDERSTAND HOW AUCTIONS WORK.    |
-- '&b|  TO HAVE AUCTIONS, YOU MUST FIRST HAVE MONEY.  YOU NEED TO        |
-- '&b|  DOWNLOAD AN ECONOMY PLUGIN SUPPORTED BY Vault.  UNTIL YOU DO     |
-- '&b|  YOU CANNOT USE floAuction, IT IS DISABLED.                       |
-- '&b|                                                                   |
-- '&b+-------------------------------------------------------------------+
+- ----- Economy Dependency Failure -----
+- THERE'S A POSSIBILITY YOU DON'T UNDERSTAND HOW AUCTIONS WORK.
+- TO HAVE AUCTIONS, YOU MUST FIRST HAVE MONEY.  YOU NEED TO
+- DOWNLOAD AN ECONOMY PLUGIN SUPPORTED BY Vault.  UNTIL YOU DO
+- YOU CANNOT USE floAuction, IT IS DISABLED.
+- ----- -------------------------- -----
 plugin-reloaded: '&fconfiguration has been reloaded.'
 plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions are running or queued.  If your server is too busy to find a time when auctions are not running, you can use &a/auc suspend &6to temporarily suspend all auctioning, but don''t forget to &a/auc resume &6when finished.'
 plogin-reload-fail-permissions: '&6You do not have permission to reload this plugin.'

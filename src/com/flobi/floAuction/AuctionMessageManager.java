@@ -338,7 +338,8 @@ public class AuctionMessageManager extends MessageManager {
 				            	if (fullBroadcast) {
 				            		broadcastMessage(message, auctionScope);
 				            	} else {
-				        	    	player.sendMessage(message);
+				            		sendTellRaw(player.getName(), message);
+//				        	    	player.sendMessage(message);
 				            	}
 				            	floAuction.log(player, message);
 							}
@@ -383,7 +384,8 @@ public class AuctionMessageManager extends MessageManager {
 			            	if (fullBroadcast) {
 			            		broadcastMessage(message, auctionScope);
 			            	} else {
-			        	    	player.sendMessage(message);
+			            		sendTellRaw(player.getName(), message);
+			        	    	//player.sendMessage(message);
 			            	}
 			            	floAuction.log(player, message);
 		        		}
@@ -400,7 +402,8 @@ public class AuctionMessageManager extends MessageManager {
 			            	if (fullBroadcast) {
 			            		broadcastMessage(message, auctionScope);
 			            	} else {
-			        	    	player.sendMessage(message);
+			            		sendTellRaw(player.getName(), message);
+//			        	    	player.sendMessage(message);
 			            	}
 			            	floAuction.log(player, message);
 		        		}
@@ -411,7 +414,8 @@ public class AuctionMessageManager extends MessageManager {
 				if (fullBroadcast) {
 		    		broadcastMessage(message, auctionScope);
 		    	} else if (player != null) {
-			    	player.sendMessage(message);
+            		sendTellRaw(player.getName(), message);
+//			    	player.sendMessage(message);
 		    	}
 		    	floAuction.log(player, message);
 	    	}
@@ -431,7 +435,8 @@ public class AuctionMessageManager extends MessageManager {
     	for (Player player : onlinePlayers) {
         	if (floAuction.getVoluntarilyDisabledUsers().contains(player.getName())) continue;
     		if (auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) continue;
-    		player.sendMessage(message);
+    		sendTellRaw(player.getName(), message);
+//    		player.sendMessage(message);
     	}
     	
     	if (auctionScope == null && floAuction.getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
@@ -451,4 +456,13 @@ public class AuctionMessageManager extends MessageManager {
     	message = ChatColor.translateAlternateColorCodes('&', message);
     	return message;
     }
+    
+    private static void sendTellRaw(String playerName, String message) {
+    	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "tellraw " + playerName + " {text:\"" + escapeJSONString(message) + "\"}");
+    }
+    
+    private static String escapeJSONString(String message) {
+    	return message.replace("'", "\\'").replace("\"", "\\\"").replace("\\", "\\\\");
+    }
+    
 }

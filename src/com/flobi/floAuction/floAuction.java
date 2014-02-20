@@ -15,6 +15,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ public class floAuction extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
 
 	// Got to figure out a better way to store these:
-	public static int decimalPlaces = 2;
+	public static int decimalPlaces = 0;
 	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
 	public static boolean loadedDecimalFromVault = false;
 	private static File auctionLog = null;
@@ -228,17 +229,13 @@ public class floAuction extends JavaPlugin {
 		plugin = this;
     	auctionLog = new File(dataFolder, "auctions.log");
 		
-		setupEconomy();
-        setupPermissions();
-        setupChat();
-
         loadConfig();
 		if (Bukkit.getPluginManager().getPlugin("WhatIsIt") == null) {
 			if (config.getBoolean("allow-inferior-item-name-logic")) {
-				log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("recommended-whatisit", null), null));
+				logToBukkit("recommended-whatisit", Level.WARNING);
 				useWhatIsIt = false;
 			} else {
-				log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("plugin-disabled-no-whatisit", null), null));
+				logToBukkit("plugin-disabled-no-whatisit", Level.SEVERE);
 				Bukkit.getPluginManager().disablePlugin(this);
 	            return;
 			}
@@ -246,12 +243,17 @@ public class floAuction extends JavaPlugin {
 			useWhatIsIt = true;
 		}
 		if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
-			log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("plugin-disabled-no-vault", null), null));
+			logToBukkit("plugin-disabled-no-vault", Level.SEVERE);
 			Bukkit.getPluginManager().disablePlugin(this);
             return;
 		}
+
+		setupEconomy();
+        setupPermissions();
+        setupChat();
+
 		if (econ == null) {
-			log.log(Level.SEVERE, chatPrepClean(AuctionConfig.getLanguageString("plugin-disabled-no-economy", null), null));
+			logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
 			Bukkit.getPluginManager().disablePlugin(this);
             return;
 		}
@@ -394,22 +396,6 @@ public class floAuction extends JavaPlugin {
 	        textConfig.setDefaults(defTextConfig);
 	    }
 	    
-	    decimalPlaces = config.getInt("decimal-places");
-	    if (econ != null && econ.isEnabled()) {
-	    	if (econ.fractionalDigits() >= 0) {
-				decimalPlaces = econ.fractionalDigits();
-	    	}
-	    	loadedDecimalFromVault = true;
-	    }
-		config.set("decimal-places", decimalPlaces);
-		if (decimalPlaces < 1) {
-			decimalRegex = "^[0-9]{1,13}$";
-		} else if (decimalPlaces == 1) {
-			decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
-		} else {
-			decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
-		}
-
 		// Clean up the configuration of any unsed values.
 		FileConfiguration cleanConfig = new YamlConfiguration();
 		Map<String, Object> configValues = config.getDefaults().getValues(false);
@@ -454,7 +440,7 @@ public class floAuction extends JavaPlugin {
 		AuctionScope.cancelAllAuctions();
 		getServer().getScheduler().cancelTask(queueTimer);
 		plugin = null;
-		messageManager.sendPlayerMessage(Lists.newArrayList("plugin-disabled"), null, null);
+		logToBukkit("plugin-disabled", Level.INFO);
 		auctionLog = null;
 	}
 	
@@ -963,5 +949,23 @@ public class floAuction extends JavaPlugin {
     public static MessageManager getMessageManager() {
     	return messageManager;
     }
+
+    private void logToBukkit(String key, Level level) {
+    	List<String> messageList = AuctionConfig.getLanguageStringList(key, null);
+    	
+    	String originalMessage = null;
+    	if (messageList == null || messageList.size() == 0) {
+    		originalMessage = AuctionConfig.getLanguageString(key, null);
+    		
+    		if (originalMessage != null && originalMessage.length() != 0) {
+        		messageList = Arrays.asList(originalMessage.split("(\r?\n|\r)"));
+    		}
+    	}
+    	for (Iterator<String> i = messageList.iterator(); i.hasNext(); ) {
+    		String messageListItem = i.next();
+    		log.log(level, chatPrepClean(messageListItem, null));
+    	}
+    }
+    
 }
 
