@@ -427,10 +427,10 @@ public class Auction {
 						AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 						Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
 						if (auctionBidEvent.isCancelled()) {
+							failBid(bid, "bid-fail-blocked-by-other-plugin");
+						} else {
 							setNewBid(bid, null);
 							end();
-						} else {
-							failBid(bid, "bid-fail-blocked-by-other-plugin");
 						}
 					}
 				}
@@ -454,9 +454,9 @@ public class Auction {
 			AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 			Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
 			if (auctionBidEvent.isCancelled()) {
-				setNewBid(bid, "bid-success-no-challenger");
-			} else {
 				failBid(bid, "bid-fail-blocked-by-other-plugin");
+			} else {
+				setNewBid(bid, "bid-success-no-challenger");
 			}
 			return;
 		}
@@ -468,9 +468,9 @@ public class Auction {
 				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 				Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
 				if (auctionBidEvent.isCancelled()) {
-					setNewBid(bid, "bid-success-update-own-bid");
-				} else {
 					failBid(bid, "bid-fail-blocked-by-other-plugin");
+				} else {
+					setNewBid(bid, "bid-success-update-own-bid");
 				}
 			} else {
 				if (previousMaxBidAmount < currentBid.getMaxBidAmount()) {
@@ -524,9 +524,9 @@ public class Auction {
 				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 				Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
 				if (auctionBidEvent.isCancelled()) {
-					setNewBid(bid, "bid-success-outbid");
-				} else {
 					failBid(bid, "bid-fail-blocked-by-other-plugin");
+				} else {
+					setNewBid(bid, "bid-success-outbid");
 				}
 			} else {
 				// Did the old bid have to raise the bid to stay winner?
