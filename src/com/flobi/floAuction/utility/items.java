@@ -1,4 +1,4 @@
-package com.flobi.utility;
+package com.flobi.floAuction.utility;
 
 import java.util.ArrayList;
 import java.util.HashMap;

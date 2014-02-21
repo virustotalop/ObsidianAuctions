@@ -15,7 +15,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.utility.items;
+import com.flobi.floAuction.utility.items;
 import com.google.common.collect.Lists;
 
 /**

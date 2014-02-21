@@ -15,8 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import com.flobi.floAuction.events.AuctionBidEvent;
 import com.flobi.floAuction.events.AuctionEndEvent;
 import com.flobi.floAuction.events.AuctionStartEvent;
-import com.flobi.utility.functions;
-import com.flobi.utility.items;
+import com.flobi.floAuction.utility.functions;
+import com.flobi.floAuction.utility.items;
 import com.google.common.collect.Lists;
 
 /**

@@ -19,8 +19,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.utility.functions;
-import com.flobi.utility.items;
+import com.flobi.floAuction.utility.functions;
+import com.flobi.floAuction.utility.items;
 
 public class AuctionMessageManager extends MessageManager {
 	public AuctionMessageManager() {

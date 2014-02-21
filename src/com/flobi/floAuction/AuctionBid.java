@@ -5,8 +5,8 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.utility.functions;
-import com.flobi.utility.items;
+import com.flobi.floAuction.utility.functions;
+import com.flobi.floAuction.utility.items;
 import com.google.common.collect.Lists;
 
 /**

@@ -49,7 +49,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.flobi.utility.functions;
+import com.flobi.floAuction.foreign.MetricsLite;
+import com.flobi.floAuction.utility.functions;
 import com.google.common.collect.Lists;
 
 /**

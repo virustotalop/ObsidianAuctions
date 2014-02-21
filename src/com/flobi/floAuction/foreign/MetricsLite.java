@@ -26,7 +26,7 @@
  * either expressed or implied, of anybody else.
  */
 
-package com.flobi.floAuction;
+package com.flobi.floAuction.foreign;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
