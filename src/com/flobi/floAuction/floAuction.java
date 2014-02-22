@@ -50,6 +50,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.flobi.floAuction.foreign.MetricsLite;
+import com.flobi.floAuction.foreign.Updater;
 import com.flobi.floAuction.utility.functions;
 import com.google.common.collect.Lists;
 
@@ -231,6 +232,11 @@ public class floAuction extends JavaPlugin {
     	auctionLog = new File(dataFolder, "auctions.log");
 		
         loadConfig();
+
+        if (config.getBoolean("auto-update")) {
+            new Updater(this, 38103, this.getFile(), Updater.UpdateType.DEFAULT, false);
+        }
+		
 		if (Bukkit.getPluginManager().getPlugin("WhatIsIt") == null) {
 			if (config.getBoolean("allow-inferior-item-name-logic")) {
 				logToBukkit("recommended-whatisit", Level.WARNING);

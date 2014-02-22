@@ -1,3 +1,5 @@
+auto-update: true
+
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
 log-auctions: false
