@@ -1,4 +1,4 @@
-auto-update: true
+auto-update: false
 
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
