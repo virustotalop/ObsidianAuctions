@@ -671,11 +671,7 @@ public class floAuction extends JavaPlugin {
     				if (mergedArgs != null) {
 						floAuction.userSavedInputArgs.put(playerName, mergedArgs);
 						floAuction.saveObject(floAuction.userSavedInputArgs, "userSavedInputArgs.ser");
-						if (AuctionConfig.getBoolean("allow-buynow", userScope)) {
-							messageManager.sendPlayerMessage(Lists.newArrayList("prep-save-success-with-buynow"), playerName, null);
-						} else {
-							messageManager.sendPlayerMessage(Lists.newArrayList("prep-save-success"), playerName, null);
-						}
+						messageManager.sendPlayerMessage(Lists.newArrayList("prep-save-success"), playerName, null);
     				}
 
 					return true;
@@ -826,15 +822,8 @@ public class floAuction extends JavaPlugin {
      * @param sender who is initiating the logged event
      * @param message message to save
      */
-    static void log(CommandSender sender, String message) {
-    	Player player = null;
-    	AuctionScope playerScope = null;
-    	if (sender instanceof Player) {
-    		player = (Player) sender;
-    		playerScope = AuctionScope.getPlayerScope(player);
-    	}
-    	if (AuctionConfig.getBoolean("log-auctions", playerScope)) {
-    		String playerName = null;
+    static void log(String playerName, String message, AuctionScope auctionScope) {
+    	if (AuctionConfig.getBoolean("log-auctions", auctionScope)) {
     		String scopeId = null;
     		
 			BufferedWriter out = null;
@@ -846,18 +835,10 @@ public class floAuction extends JavaPlugin {
 		    	
 				out = new BufferedWriter(new FileWriter(auctionLog.getAbsolutePath(), true));
 
-				if (player == null && sender != null) {
-					playerName = "CONSOLE";
-				} else if (player == null) {
-					playerName = "BROADCAST";
-				} else {
-					playerName = player.getName();
-				}
-				
-				if (playerScope == null) {
+				if (auctionScope == null) {
 					scopeId = "NOSCOPE";
 				} else {
-					scopeId = playerScope.getScopeId();
+					scopeId = auctionScope.getScopeId();
 				}
 				
 				out.append((new Date()).toString() + " (" + playerName + ", " + scopeId + "): " + ChatColor.stripColor(message) + "\n");

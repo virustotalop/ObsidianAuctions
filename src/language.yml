@@ -1,7 +1,5 @@
 chat-prefix: '&f[&7flo&9Auction&f] &9'
 
-wrap-player-name: '&o%i'
-
 plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
 plugin-disabled-no-whatisit: 
@@ -100,12 +98,12 @@ auction-fail-no-scope: '&6Auctioning is not possible at this location.'
 auction-fail-banned-lore: '&6This item contains banned lore.'
 auction-fail-blocked-by-other-plugin: '&6The auction was blocked by another plugin.'
 
-bid-success-no-challenger: '&b%B&9 has bid &6%b&9 on the &a%i&9.'
-bid-success-outbid: '&b%B&9 raised the bid to &6%b&9.'
-bid-success-update-own-bid: '&b%B&9 raised the bid to &6%b&9.'
-bid-success-update-own-maxbid: You raised your own max bid to &6%h&9.
+bid-success-no-challenger: '&b%B1&9 has bid &6%B3&9 on the %CB&4damaged %CB%C4&benchanted %C4&a%L1&9%C5 named &f"%L2"&9%C5&9.'
+bid-success-outbid: '&b%B1&9 raised the bid to &6%B3&9.'
+bid-success-update-own-bid: '&b%B1&9 raised the bid to &6%B3&9.'
+bid-success-update-own-maxbid: You raised your own max bid to &6%B4&9.
 bid-success-sealed: '&bYour bid has been placed.'
-bid-auto-outbid: '&b%B&9 has raised the bid to &6%b&9.'
+bid-auto-outbid: '&b%B1&9 has raised the bid to &6%B3&9.'
 bid-fail-arena: '&6You cannot bid on auctions in an arena.'
 bid-fail-is-auction-owner: '&6You cannot bid on your own auction.'
 bid-fail-already-current-bidder: '&6Your bid remains unchanged.'
@@ -115,7 +113,7 @@ bid-fail-console: '&6Console bidding is prohibited.'
 bid-fail-no-auction: '&6There is no auction at this time on which to bid.'
 bid-fail-auto-outbid: '&6You have been automatically outbid.'
 bid-fail-gamemode-creative: '&6You cannot bid while in CREATIVE mode.'
-bid-fail-under-starting-bid: '&6The bidding must start at %s.'
+bid-fail-under-starting-bid: '&6The bidding must start at %A8.'
 bid-fail-bid-required: '&6You must enter a bid amount.'
 bid-fail-too-low: '&6Your bid was too low.'
 bid-fail-outside-auctionhouse: '&6You must auction at the auction house.'
@@ -123,71 +121,64 @@ bid-fail-buynow-expired: '&6BuyNow option missing or expired.'
 bid-fail-blocked-by-other-plugin: '&6The bid was blocked by another plugin.'
 bid-fail-permissions: '&6You do not have permissions to bid on an auction.'
 
-confiscate-success: '&6This auction has been impounded by %O!'
+confiscate-success: '&6This auction has been impounded by %A1!'
 confiscate-fail-console: '&6Only online players can impound items (you have no inventory, console).'
 confiscate-fail-self: '&6You cannot impound your own items (try &a/auction cancel&6).'
 confiscate-fail-permissions: '&6You do not have permission to confiscate auctions.'
 
-auction-queue-enter: Your auction has been queued (number %Q in line). 
+auction-queue-enter: Your auction has been queued (number %S1 in line). 
 auction-queue-fail-full: '&6The auction queue is full, try again later.'
-auction-queue-fail-in-queue: '&6You already have an auction queued (number %Q in line).'
+auction-queue-fail-in-queue: '&6You already have an auction queued (number %S1 in line).'
 auction-queue-fail-current-auction: '&6You are already running an auction.'
-auction-queue-status-in-queue: 'You are number %Q of %k in the auction queue.'
-auction-queue-status-not-in-queue: 'There are %k auctions queued, none belong to you.'
+auction-queue-status-in-queue: 'You are number %S1 of %S2 in the auction queue.'
+auction-queue-status-not-in-queue: 'There are %S2 auctions queued, none belong to you.'
 
 auction-cancel: The auction has been cancelled.
 auction-cancel-queued: Your auction has been removed from the queue.
 auction-end-nobids: The auction ended with no bids.
-auction-end: '&b%B&9 won the auction for &a%i&9 with &6%b&9!'
+auction-end: '&b%B1&9 won the auction for &a%L1&9 with &6%B3&9!'
 auction-disabled: '&bAuctioning disabled.'
 auction-enabled: '&bAuctioning enabled.'
 auction-start: '&cAttention, an auction is beginning!'
 auction-help: 
-- '&b/auction&4|&bauc start&4|&bs &6[QTY] [PRICE] [INC] [TIME] [BUYNOW]&9 - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced increase of &6[INC]&9 between bids and an option to buy item for &6[BUYNOW]&9. &a("&4|&a" means "or" meaning you can any option in &4|&a lists)'
-- '&b/auction&4|&bauc end&4|&be&4|&bstop&9 - Ends current auction'
-- '&b/auction&4|&bauc cancel&4|&bc&9 - Cancels current auction'
-- '&b/auction&4|&bauc info&4|&bi&9 - Returns current auction info.'
-- '&b/bid &6[BID] [MAXBID]&9 - Bids on auction. If you set a &6[MAXBID]&9 and the &6[BID]&9 is greater than the current, you will outbit that bid if it''s lower than your maximum. If you omit a &6[BID]&9 the lowest allowable bid will be used.'
-- '&b/sauction&4|&bsauc start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction. '
+- '%C2%CK&b/auction&4|&bauc start&4|&bs &6[QTY] [PRICE] [INC] [TIME]%CG [BUYNOW]%CG&9 - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced increase of &6[INC]&9 between bids%CG and an option to buy item for &6[BUYNOW]%CG&9. &a("&4|&a" means "or" meaning you can any option in &4|&a lists)'
+- '%C2%CL&b/%CKs%CKauction&4|&b%CKs%CKauc start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction%CK.%CK%NK for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced increase of &6[INC]&9 between bids&9. &a("&4|&a" means "or" meaning you can any option in &4|&a lists)'
+- '%C2%CM&b/auction&4|&bauc prep&4|&bp &6[QTY] [PRICE] [INC] [TIME]%CG [BUYNOW]%CG&9 - Assigns your default values when placing auctions.'
+- '%C2%CM%CI&b/auction&4|&bauc end&4|&be&4|&bstop&9 - Ends current auction'
+- '%C2%CM%CJ&b/auction&4|&bauc cancel&4|&bc&9 - Cancels current auction'
+- '%C2%CM&b/auction&4|&bauc info&4|&bi&9 - Returns current auction info.'
+- '%C3%CM&b/bid &6[BID]%CF [MAXBID]%CF&9 - Bids on auction. %CFIf you set a &6[MAXBID]&9 and the &6[BID]&9 is greater than the current, you will outbit that bid if it''s lower than your maximum. %CF%CHIf you omit a &6[BID]&9 the lowest allowable bid will be used.%CH'
 - '&b/auction&4|&bauc stfu&4|&bignore&4|&bquiet&4|&boff&4|&bsilent&4|&bsilence&9 - Opt out of auction participation and announcements.'
 
-auction-start-tax: You have been charged an auction tax of %x.
-auction-end-tax: An auction tax of %X has been extracted from your winnings.
+auction-start-tax: You have been charged an auction tax of %A8.
+auction-end-tax: An auction tax of %A9 has been extracted from your winnings.
 
-auction-info-suppressed-alt: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9. Starting bid: &6%s&9. Bid increment: &6%n&9. Type &a/auction info&9 for full details.'
-auction-info-header: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
-auction-info-header-nobids: '&b%O&9 is auctioning &f%q&a %i&9 for &c%t&9.'
-auction-info-header-sealed: 
-- '&b%O&9 is auctioning &f%q %i&9&a for &c%t&9.'
-- 'This is a SEALED auction.'
-auction-info-enchantment: 'Enchantments: &a%F'
-auction-info-enchantment-separator: '&9, &a'
-auction-info-enchantment-none: 'No Enchantments'
-auction-info-display-name: 'Actual Item Type: &a%d'
-auction-info-book-title: 'Book is titled: &a%Y'
-auction-info-book-author: 'Book signed by: &a%y'
-auction-info-damage: 'Item damaged: &6%D &aremaining.'
-auction-info-payload: 'Firework payload: &a%A'
-auction-info-payload-separator: '&9, &a'
-auction-info-payload-power: 'Firework Flight Duration: &a%r'
-auction-info-buynow: 'Buy now for &c%f &9with &a/bid buy&9.'
+auction-info:
+- '&b%A1&9 is auctioning &f%A3 %CB&4damaged %CB%C4&benchanted %C4&a%L1&9%C5 named &f"%L2"&9%C5 for &c%A7&9.%C8 Starting bid: &6%A4&9. Bid increment: &6%A5&9. Type &a/auction info&9 for full details.'
+- '%CB&lItem damaged: &6%L6 &aremaining.'
+- '%N8%CEEnchantments: &a%L7'
+- '%N8%C9Book is titled: &a%L5'
+- '%N8%C0Book signed by: &a%L4'
+- '%N8%CCFirework Flight Duration: &a%L3'
+- '%N8%CCFirework payload: &a%R2'
+- '%N8%CDBuy now for &c%A6 &9with &a/bid buy&9.'
+- '%N8%N6%C7The current bid is &6%B3&9 by &b%B1&9.'
+- '%N8%N6%N7Bidding starts at &6%A4&9.'
+- '%N8%C6Bidding starts at &6%A4&9.'
+- '%N8%N6Min bid increment is &6%A5&9.' 
+- '%N8%CA--&1LORE&9--------------------'
+- '%N8%CA|  &5&o%R3'
+- '%N8%CA--------------------&1LORE&9--'
+- '%C6&fThis is a SEALED auction, bids are hidden from other players.'
 
-auction-info-footer: 
-- The current bid is &6%b&9 by &b%B&9.
-- Min bid increment is &6&9%n&9. 
-auction-info-footer-nobids: 
-- Bidding starts at &6%s&9.
-- Min bid increment is &6%n&9. 
-auction-info-footer-sealed: 
-- Bidding starts at &6%s&9.
 auction-info-no-auction: 
 - Nothing is being auctioned at this time.
+auction-info-enchantment-separator: '&9, &a'
+auction-info-enchantment-none: 'No Enchantments'
+auction-info-bidder-noone: 'no one'
+auction-info-payload-separator: '&9, &a'
 
-auction-info-lore-header: '--&1LORE&9--------------------'
-auction-info-lore-detail: '|  &5&o%L'
-auction-info-lore-footer: '--------------------&1LORE&9--'
-
-timer-countdown-notification: Auction has &c%t&9 remaining.
+timer-countdown-notification: Auction has &c%A7&9 remaining.
 time-format-minsec: '%m min, %s sec'
 time-format-seconly: '%s sec'
 
@@ -197,23 +188,16 @@ lot-drop: '&dNot enough space, your items dropped at your feet.'
 anti-snipe-time-added: 'ANTI-SNIPE! More time added to auction!'
 
 prep-save-success:
-- 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME]'
-- 'Quantity to auction: &6%U'
-- 'Starting bid: &6%V'
-- 'Minimum increment between bids: &6%W'
-- 'Auction length: &6%Z'
-- Use &b/auction start &9to start an auction with these parameters.
-prep-save-success-with-buynow:
-- 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME] [BUYNOW]'
-- 'Quantity to auction: &6%U'
-- 'Starting bid: &6%V'
-- 'Minimum increment between bids: &6%W'
-- 'Auction length: &6%Z'
-- 'BuyNow amount: &6%G'
-- Use &b/auction start &9to start an auction with these parameters.
+- 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME]%CG [BUYNOW]'
+- 'Quantity to auction: &6%P1'
+- 'Starting bid: &6%P3'
+- 'Minimum increment between bids: &6%P5'
+- 'Auction length: &6%P7'
+- '%CGBuyNow amount: &6%P9'
+- 'Use &b/auction start &9to start an auction with these parameters.'
 prep-amount-in-hand: 'Amount in hand'
 prep-all-of-this-kind: 'All items matching held item'
-prep-qty-of-this-kind: '%u items'
+prep-qty-of-this-kind: '%P2 items'
 
 firework-shapes:
   BALL: Ball

@@ -354,7 +354,6 @@ public class AuctionScope {
 		if (player == null) return null;
 		for (int i = 0; i < auctionScopesOrder.size(); i++) {
 			String auctionScopeId = auctionScopesOrder.get(i);
-			floAuction.log(null, "Checking scope " + auctionScopeId + " for player " + player.getName() + ".");
 			AuctionScope auctionScope = auctionScopes.get(auctionScopeId);
 			if (auctionScope.isPlayerInScope(player)) return auctionScope;
 		}
@@ -371,7 +370,6 @@ public class AuctionScope {
 		if (location == null) return null;
 		for (int i = 0; i < auctionScopesOrder.size(); i++) {
 			String auctionScopeId = auctionScopesOrder.get(i);
-			floAuction.log(null, "Checking scope " + auctionScopeId + " for location.");
 			AuctionScope auctionScope = auctionScopes.get(auctionScopeId);
 			if (auctionScope.isLocationInScope(location)) return auctionScope;
 		}
@@ -385,12 +383,10 @@ public class AuctionScope {
 	 * @param dataFolder
 	 */
 	public static void setupScopeList(ConfigurationSection auctionScopesConfig, File dataFolder) {
-		floAuction.log(null, "Loading Scopes...");
 	    auctionScopes.clear();
 	    auctionScopesOrder.clear();
 		if (auctionScopesConfig != null) {
 			for (String scopeName : auctionScopesConfig.getKeys(false)) {
-				floAuction.log(null, "Adding scope: " + scopeName);
 				auctionScopesOrder.add(scopeName);
 				ConfigurationSection auctionScopeConfig = auctionScopesConfig.getConfigurationSection(scopeName);
 		    	File scopeTextConfigFile = new File(dataFolder, "language-"+scopeName+".yml");

@@ -2,6 +2,7 @@ package com.flobi.floAuction;
 
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -321,6 +322,15 @@ public class AuctionBid {
 		return bidderName;
 	}
 	
+	public String getBidderDisplayName() {
+		Player bidderPlayer = Bukkit.getPlayer(bidderName);
+		if (bidderPlayer != null) {
+			return bidderPlayer.getDisplayName();
+		} else {
+			return bidderName;
+		}
+	}
+
 	/**
 	 * Gets the amount currently bid in floAuction's proprietary "safe money."
 	 * 
