@@ -152,6 +152,10 @@ public class Auction {
 				if (!taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(taxDestinationUser, preAuctionTax);
 			}
 		}
+		
+		if (buyNow < getStartingBid()) {
+			buyNow = 0;
+		}
 
 		// Check to see if any other plugins have a reason...or they can forever hold their piece.
 		AuctionStartEvent auctionStartEvent = new AuctionStartEvent(owner, this);
@@ -336,6 +340,9 @@ public class Auction {
 					messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-buynow-expired"), playerName, this);
 				} else {
 					inputArgs[0] = Double.toString(functions.getUnsafeMoney(buyNow));
+					if (inputArgs[0].endsWith(".0")) {
+						inputArgs[0] = inputArgs[0].substring(0, inputArgs[0].length() - 2);
+					}
 					AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
 					if (bid.getError() != null) {
 						failBid(bid, bid.getError());
@@ -508,6 +515,9 @@ public class Auction {
 			}
 		}
 		AuctionParticipant.addParticipant(newBid.getBidder(), scope);
+		if (currentBid.getBidAmount() >= buyNow) {
+			buyNow = 0;
+		}
 		
         // see if antisnipe is enabled...
         if (!this.sealed && AuctionConfig.getBoolean("anti-snipe", scope) == true && this.getRemainingTime() <= AuctionConfig.getInt("anti-snipe-prevention-seconds", scope)) {
