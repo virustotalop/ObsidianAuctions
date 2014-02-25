@@ -22,10 +22,59 @@ import com.tommytony.war.Warzone;
  * 
  * @author Joshua "flobi" Hatfield
  */
-public class ArenaManager implements Listener {
+public class ArenaManager {
 	private static MobArena mobArena = null;
 	private static PVPArena pVPArena = null;
 	private static War war = null;
+	
+	/**
+	 * Loads listeners for the Arena plugins.
+	 * 
+	 * @param plugin the floAuction instance to pass into the listener
+	 */
+	public static void loadArenaListeners(floAuction plugin) {
+		PluginManager pluginManager = Bukkit.getPluginManager();
+		// Load plugins
+		if (mobArena == null) mobArena = (MobArena) pluginManager.getPlugin("MobArena");
+		if (mobArena != null) pluginManager.registerEvents(new Listener() {
+			/**
+			 * Listener for MobArena.  Cancels arena entry if player is participating in an auction.
+			 * 
+			 * @param  event  the location for which to check 
+			 */
+			@EventHandler
+			public void onMAPlayerJoin(ArenaPlayerJoinEvent event) {
+				if (event.isCancelled()) return;
+				Player player = event.getPlayer();
+				if (player == null) return;
+				String playerName = player.getName();
+				if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
+					event.setCancelled(true);
+				}
+			}
+		}, plugin);
+		
+		if (pVPArena == null) pVPArena = (PVPArena) pluginManager.getPlugin("pvparena");
+		if (pVPArena != null) pluginManager.registerEvents(new Listener() {
+			/**
+			 * Listener for PVPArena.  Cancels arena entry if player is participating in an auction.
+			 * 
+			 * @param  event  the location for which to check 
+			 */
+			@EventHandler
+			public void onPAPlayerJoin(PAJoinEvent event) {
+				if (event.isCancelled()) return;
+				Player player = event.getPlayer();
+				if (player == null) return;
+				String playerName = player.getName();
+				if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
+					event.setCancelled(true);
+				}
+			}
+		}, plugin);
+	}
 	
 	/**
 	 * Attempts to load arena plugins.
@@ -41,6 +90,7 @@ public class ArenaManager implements Listener {
 		if (mobArena != null && !mobArena.isEnabled()) mobArena = null;
 		if (pVPArena != null && !pVPArena.isEnabled()) pVPArena = null;
 		if (war != null && !war.isEnabled()) war = null;
+		
 	}
 	
 	/**
@@ -86,40 +136,5 @@ public class ArenaManager implements Listener {
 		if (war != null && Warzone.getZoneByLocation(location) != null) return true;
 
 		return false;
-	}
-	
-	/**
-	 * Listener for MobArena.  Cancels arena entry if player is participating in an auction.
-	 * 
-	 * @param  event  the location for which to check 
-	 */
-	@EventHandler
-	public void onMAPlayerJoin(ArenaPlayerJoinEvent event) {
-		if (event.isCancelled()) return;
-		Player player = event.getPlayer();
-		if (player == null) return;
-		String playerName = player.getName();
-		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-			floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
-			event.setCancelled(true);
-		}
-	}
-	
-	/**
-	 * Listener for PVPArena.  Cancels arena entry if player is participating in an auction.
-	 * 
-	 * @param  event  the location for which to check 
-	 */
-	@EventHandler
-	public void onPAPlayerJoin(PAJoinEvent event) {
-		if (event.isCancelled()) return;
-		Player player = event.getPlayer();
-		if (player == null) return;
-		String playerName = player.getName();
-		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-			floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
-			event.setCancelled(true);
-		}
-	}
-	
+	}	
 }

@@ -265,7 +265,7 @@ public class floAuction extends JavaPlugin {
             return;
 		}
         
-		Bukkit.getPluginManager().registerEvents(new ArenaManager(), this);
+		ArenaManager.loadArenaListeners(this);
 		
 		Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
