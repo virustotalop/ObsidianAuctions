@@ -89,6 +89,17 @@ public class AuctionMessageManager extends MessageManager {
 		sendMessage(messageKeys, recipient, auctionScope, false);
 	}
 	
+	public void sendPlayerMessage(List<String> messageKeys, String playerName, AuctionScope auctionScope) {
+		CommandSender recipient = null;
+		if (playerName == null) {
+			recipient = Bukkit.getConsoleSender();
+		} else {
+			recipient = Bukkit.getPlayer(playerName);
+		}
+		if (auctionScope == null && recipient instanceof Player) auctionScope = AuctionScope.getPlayerScope((Player) recipient);
+		sendMessage(messageKeys, recipient, auctionScope, false);
+	}
+	
 	public void broadcastAuctionMessage(List<String> messageKeys, Auction auction) {
 		if (auction == null) return;
 		AuctionScope auctionScope = auction.getScope();
@@ -428,6 +439,8 @@ public class AuctionMessageManager extends MessageManager {
     	    	conditionals.put("K", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope));
     	    	conditionals.put("L", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope));
     	    	conditionals.put("M", conditionals.get("K") || conditionals.get("L"));
+    	    	conditionals.put("N", auctionScope != null && auctionScope.getActiveAuction() != null);
+    	    	conditionals.put("O", auctionScope != null && auctionScope.getAuctionQueueLength() > 0);
     			break;
     		}
     	}

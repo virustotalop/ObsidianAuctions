@@ -48,6 +48,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.flobi.floAuction.foreign.MetricsLite;
 import com.flobi.floAuction.foreign.Updater;
@@ -78,6 +79,9 @@ public class floAuction extends JavaPlugin {
 	private static File dataFolder;
 	private static int queueTimer;
 	static floAuction plugin;
+	
+	private static int playerScopeCheckTimer;
+	static Map<String, String> playerScopeCache = new HashMap<String, String>();
 	
 	private static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();
 	private static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
@@ -288,7 +292,7 @@ public class floAuction extends JavaPlugin {
             	
             	if (AuctionParticipant.isParticipating(playerName)) {
                 	event.setCancelled(true);
-                	messageManager.sendPlayerMessage(Lists.newArrayList("gamemodechange-fail-participating"), playerName, null);
+                	messageManager.sendPlayerMessage(Lists.newArrayList("gamemodechange-fail-participating"), playerName, (AuctionScope) null);
             	}
             }
             @EventHandler(priority = EventPriority.LOWEST)
@@ -310,7 +314,7 @@ public class floAuction extends JavaPlugin {
         			if (disabledCommand.isEmpty()) continue;
         			if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
     	            	event.setCancelled(true);
-    	            	messageManager.sendPlayerMessage(Lists.newArrayList("disabled-command-inscope"), playerName, null);
+    	            	messageManager.sendPlayerMessage(Lists.newArrayList("disabled-command-inscope"), playerName, (AuctionScope) null);
         				return;
         			}
         		}
@@ -325,7 +329,7 @@ public class floAuction extends JavaPlugin {
         			if (disabledCommand.isEmpty()) continue;
         			if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
     	            	event.setCancelled(true);
-    	            	messageManager.sendPlayerMessage(Lists.newArrayList("disabled-command-participating"), playerName, null);
+    	            	messageManager.sendPlayerMessage(Lists.newArrayList("disabled-command-participating"), playerName, (AuctionScope) null);
         				return;
         			}
         		}
@@ -347,11 +351,22 @@ public class floAuction extends JavaPlugin {
         	}
         }, this);
 		
-		queueTimer = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+		BukkitScheduler bukkitScheduler = getServer().getScheduler();
+		if (queueTimer > 0) bukkitScheduler.cancelTask(queueTimer);
+		queueTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, new Runnable() {
 		    public void run() {
 		    	AuctionScope.checkAuctionQueue();
 		    }
 		}, 20L, 20L);
+		
+		long playerScopeCheckInterval = config.getLong("auctionscope-change-check-interval");
+		if (playerScopeCheckTimer > 0) bukkitScheduler.cancelTask(playerScopeCheckTimer);
+		playerScopeCheckTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+		    public void run() {
+		    	AuctionScope.sendFairwellMessages();
+		    	AuctionScope.sendWelcomeMessages();
+		    }
+		}, playerScopeCheckInterval, playerScopeCheckInterval);
 		
 		orphanLots = loadArrayListAuctionLot("orphanLots.ser");
 		floAuction.voluntarilyDisabledUsers = loadArrayListString("voluntarilyDisabledUsers.ser");
@@ -365,7 +380,7 @@ public class floAuction extends JavaPlugin {
         } catch (IOException e) {
             // Failed to submit the stats :-(
         }
-        messageManager.sendPlayerMessage(Lists.newArrayList("plugin-enabled"), null, null);
+        messageManager.sendPlayerMessage(Lists.newArrayList("plugin-enabled"), null, (AuctionScope) null);
 		
 	}
     /**
@@ -494,14 +509,14 @@ public class floAuction extends JavaPlugin {
 			if (index != -1) {
 				getVoluntarilyDisabledUsers().remove(index);
 			}
-			messageManager.sendPlayerMessage(Lists.newArrayList("auction-enabled"), playerName, null);
+			messageManager.sendPlayerMessage(Lists.newArrayList("auction-enabled"), playerName, (AuctionScope) null);
 			saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
 			return true;
 		}
      
     	if (getVoluntarilyDisabledUsers().contains(playerName)) {
     		getVoluntarilyDisabledUsers().remove(getVoluntarilyDisabledUsers().indexOf(playerName));
-    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-disabled"), playerName, null);
+    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-disabled"), playerName, (AuctionScope) null);
 			getVoluntarilyDisabledUsers().add(playerName);
 			saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
 			return true;
@@ -516,74 +531,74 @@ public class floAuction extends JavaPlugin {
     		if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("plogin-reload-fail-permissions"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("plogin-reload-fail-permissions"), playerName, (AuctionScope) null);
     	    			return true;
     				}
     		    	// Don't reload if any auctions are running.
     				if (AuctionScope.areAuctionsRunning()) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("plugin-reload-fail-auctions-running"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("plugin-reload-fail-auctions-running"), playerName, (AuctionScope) null);
 						return true;
     				}
 
     				loadConfig();
-    				messageManager.sendPlayerMessage(Lists.newArrayList("plugin-reloaded"), playerName, null);
+    				messageManager.sendPlayerMessage(Lists.newArrayList("plugin-reloaded"), playerName, (AuctionScope) null);
     				return true;
     			} else if (args[0].equalsIgnoreCase("resume")) {
 			    	if (args.length == 1) {
 						if (player != null && !perms.has(player, "auction.admin")) {
-							messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-fail-permissions"), playerName, null);
+							messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-fail-permissions"), playerName, (AuctionScope) null);
 			    			return true;
 						}
 						// Resume globally:
 						suspendAllAuctions = false;
-						messageManager.broadcastAuctionScopeMessage(Lists.newArrayList("unsuspension-global"), null);
+						messageManager.broadcastAuctionScopeMessage(Lists.newArrayList("unsuspension-global"), (AuctionScope) null);
 						return true;
     		    	}
     		    	
     				if (player != null && !perms.has(player, "auction.admin")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-fail-permissions"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-fail-permissions"), playerName, (AuctionScope) null);
     	    			return true;
     				}
 
 					if (!suspendedUsers.contains(args[1].toLowerCase())) {
-						messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-user-fail-not-suspended"), playerName, null);
+						messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-user-fail-not-suspended"), playerName, (AuctionScope) null);
 		    			return true;
 					}
 
 					suspendedUsers.remove(args[1].toLowerCase());
 					saveObject(suspendedUsers, "suspendedUsers.ser");
-					messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-user"), args[1], null);
-			    	messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-user-success"), playerName, null);
+					messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-user"), args[1], (AuctionScope) null);
+			    	messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-user-success"), playerName, (AuctionScope) null);
     				
     				return true;
     			} else if (args[0].equalsIgnoreCase("suspend")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("suspension-fail-permissions"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("suspension-fail-permissions"), playerName, (AuctionScope) null);
     	    			return true;
     				}
     				if (args.length > 1) {
     					// Suspend a player:
     					if (suspendedUsers.contains(args[1].toLowerCase())) {
-    						messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user-fail-already-suspended"), playerName, null);
+    						messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user-fail-already-suspended"), playerName, (AuctionScope) null);
     		    			return true;
     					}
     					
     					Player playerToSuspend = getServer().getPlayer(args[1]);
     					
     					if (playerToSuspend == null || !playerToSuspend.isOnline()) {
-    						messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user-fail-is-offline"), playerName, null);
+    						messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user-fail-is-offline"), playerName, (AuctionScope) null);
     		    			return true;
     					}
     					
     					if (perms.has(playerToSuspend, "auction.admin")) {
-    						messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user-fail-is-admin"), playerName, null);
+    						messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user-fail-is-admin"), playerName, (AuctionScope) null);
     		    			return true;
     					}
     					
     					suspendedUsers.add(args[1].toLowerCase());
     					saveObject(suspendedUsers, "suspendedUsers.ser");
-    					messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user"), playerToSuspend.getName(), null);
-    			    	messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user-success"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user"), playerToSuspend.getName(), (AuctionScope) null);
+    			    	messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user-success"), playerName, (AuctionScope) null);
     					
     					return true;
     				}
@@ -604,35 +619,35 @@ public class floAuction extends JavaPlugin {
         				args[0].matches("[0-9]+")
     			) {
     		    	if (suspendAllAuctions) {
-    			    	messageManager.sendPlayerMessage(Lists.newArrayList("suspension-global"), playerName, null);
+    			    	messageManager.sendPlayerMessage(Lists.newArrayList("suspension-global"), playerName, (AuctionScope) null);
     		    		return true;
     		    	}
     		    	if (player != null && suspendedUsers.contains(playerName.toLowerCase())) {
-    		    		messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user"), playerName, null);
+    		    		messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user"), playerName, (AuctionScope) null);
     					return true;
     		    	}
 
     				// Start new auction!
     	    		if (player == null) {
-    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-console"), playerName, null);
+    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-console"), playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     	    		if (!AuctionConfig.getBoolean("allow-gamemode-creative", userScope) && player.getGameMode() == GameMode.CREATIVE) {
-    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-gamemode-creative"), playerName, null);
+    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-gamemode-creative"), playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     	    		if (userScope == null) {
-    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-scope"), playerName, null);
+    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-scope"), playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     	    			
     				if (!perms.has(player, "auction.start")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-permissions"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-permissions"), playerName, (AuctionScope) null);
     	    			return true;
     				}
     				
     				if (!AuctionConfig.getBoolean("allow-sealed-auctions", userScope) && !AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auctions-allowed"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auctions-allowed"), playerName, (AuctionScope) null);
     					return true;
     				}
     				
@@ -640,7 +655,7 @@ public class floAuction extends JavaPlugin {
     					if (AuctionConfig.getBoolean("allow-sealed-auctions", userScope)) {
     						userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager));
     					} else {
-    						messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-sealed-auctions"), playerName, null);
+    						messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-sealed-auctions"), playerName, (AuctionScope) null);
     					}
     				} else {
     					if (AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
@@ -657,11 +672,11 @@ public class floAuction extends JavaPlugin {
     			) {
     				// Save a users individual starting default values.
     	    		if (player == null) {
-    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-console"), playerName, null);
+    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-console"), playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     				if (!perms.has(player, "auction.start")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-permissions"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-permissions"), playerName, (AuctionScope) null);
     	    			return true;
     				}
     				
@@ -671,17 +686,17 @@ public class floAuction extends JavaPlugin {
     				if (mergedArgs != null) {
 						floAuction.userSavedInputArgs.put(playerName, mergedArgs);
 						floAuction.saveObject(floAuction.userSavedInputArgs, "userSavedInputArgs.ser");
-						messageManager.sendPlayerMessage(Lists.newArrayList("prep-save-success"), playerName, null);
+						messageManager.sendPlayerMessage(Lists.newArrayList("prep-save-success"), playerName, (AuctionScope) null);
     				}
 
 					return true;
     			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
     	    		if (userScope == null) {
-    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-scope"), playerName, null);
+    	    			messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-scope"), playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     				if (userScope.getActiveAuction() == null && userScope.getAuctionQueueLength() == 0) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, (AuctionScope) null);
     					return true;
     				}
     				
@@ -689,59 +704,59 @@ public class floAuction extends JavaPlugin {
     				for(int i = 0; i < auctionQueue.size(); i++){
     					if (auctionQueue.get(i).getOwner().equalsIgnoreCase(playerName)) {
     						auctionQueue.remove(i);
-    						messageManager.sendPlayerMessage(Lists.newArrayList("auction-cancel-queued"), playerName, null);
+    						messageManager.sendPlayerMessage(Lists.newArrayList("auction-cancel-queued"), playerName, (AuctionScope) null);
     						return true;
     					}
     				}
     				
     				if (auction == null) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, (AuctionScope) null);
     					return true;
     				}
     				
 					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) {
 						if (AuctionConfig.getInt("cancel-prevention-seconds", userScope) > auction.getRemainingTime() || AuctionConfig.getDouble("cancel-prevention-percent", userScope) > (double)auction.getRemainingTime() / (double)auction.getTotalTime() * 100D) {
-							messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-cancel-prevention"), playerName, null);
+							messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-cancel-prevention"), playerName, (AuctionScope) null);
 						} else {
 	    					auction.cancel();
 						}
 					} else {
-						messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-not-owner-cancel"), playerName, null);
+						messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-not-owner-cancel"), playerName, (AuctionScope) null);
 					}
     				return true;
     			} else if (args[0].equalsIgnoreCase("confiscate") || args[0].equalsIgnoreCase("impound")) {
     				if (auction == null) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, (AuctionScope) null);
     					return true;
     				}
     				
     				if (player == null) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-console"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-console"), playerName, (AuctionScope) null);
     					return true;
     				}
 					if (!perms.has(player, "auction.admin")) {
-						messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-permissions"), playerName, null);
+						messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-permissions"), playerName, (AuctionScope) null);
     					return true;
 					}
 					if (playerName.equalsIgnoreCase(auction.getOwner())) {
-						messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-self"), playerName, null);
+						messageManager.sendPlayerMessage(Lists.newArrayList("confiscate-fail-self"), playerName, (AuctionScope) null);
     					return true;
 					}
 					auction.confiscate(player);
     				return true;
     			} else if (args[0].equalsIgnoreCase("end") || args[0].equalsIgnoreCase("e")) {
     				if (auction == null) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-auction-exists"), playerName, (AuctionScope) null);
         				return true;
     				}
     				if (!AuctionConfig.getBoolean("allow-early-end", userScope)) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-early-end"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-no-early-end"), playerName, (AuctionScope) null);
         				return true;
     				}
 					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
     					auction.end();
 					} else {
-						messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-not-owner-end"), playerName, null);
+						messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-not-owner-end"), playerName, (AuctionScope) null);
 					}
     				return true;
     			} else if (
@@ -753,14 +768,14 @@ public class floAuction extends JavaPlugin {
         				args[0].equalsIgnoreCase("silence")
     			) {
     				if (getVoluntarilyDisabledUsers().indexOf(playerName) == -1) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-disabled"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-disabled"), playerName, (AuctionScope) null);
     					getVoluntarilyDisabledUsers().add(playerName);
     					saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
     				}
     				return true;
     			} else if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("i")) {
     				if (auction == null) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-info-no-auction"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-info-no-auction"), playerName, (AuctionScope) null);
     					return true;
     				}
 					auction.info(sender, false);
@@ -768,46 +783,46 @@ public class floAuction extends JavaPlugin {
     			} else if (args[0].equalsIgnoreCase("queue") || args[0].equalsIgnoreCase("q")) {
     				ArrayList<Auction> auctionQueue = userScope.getAuctionQueue();
     				if (auctionQueue.isEmpty()) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-status-not-in-queue"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-status-not-in-queue"), playerName, (AuctionScope) null);
     					return true;
     				}
     				for(int i = 0; i < auctionQueue.size(); i++){
     					if (auctionQueue.get(i).getOwner().equalsIgnoreCase(playerName)) {
-    						messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-status-in-queue"), playerName, null);
+    						messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-status-in-queue"), playerName, (AuctionScope) null);
     						return true;
     					}
     				}
 
-    				messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-status-not-in-queue"), playerName, null);
+    				messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-status-not-in-queue"), playerName, (AuctionScope) null);
     				return true;
     			}
     		}
-    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-help"), playerName, null);
+    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-help"), playerName, (AuctionScope) null);
     		return true;
     	} else if (cmd.getName().equalsIgnoreCase("bid")) {
         	if (suspendAllAuctions) {
-        		messageManager.sendPlayerMessage(Lists.newArrayList("suspension-global"), playerName, null);
+        		messageManager.sendPlayerMessage(Lists.newArrayList("suspension-global"), playerName, (AuctionScope) null);
         		return true;
         	}
         	if (player != null && suspendedUsers.contains(playerName.toLowerCase())) {
-        		messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user"), playerName, null);
+        		messageManager.sendPlayerMessage(Lists.newArrayList("suspension-user"), playerName, (AuctionScope) null);
     			return true;
         	}
 
     		if (player == null) {
-    			messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-console"), playerName, null);
+    			messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-console"), playerName, (AuctionScope) null);
     			return true;
     		} 
     		if (!AuctionConfig.getBoolean("allow-gamemode-creative", userScope) && player.getGameMode().equals(GameMode.CREATIVE)) {
-    			messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-gamemode-creative"), playerName, null);
+    			messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-gamemode-creative"), playerName, (AuctionScope) null);
     			return true;
     		}
 			if (!perms.has(player, "auction.bid")) {
-				messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-permissions"), playerName, null);
+				messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-permissions"), playerName, (AuctionScope) null);
     			return true;
 			}
     		if (auction == null) {
-    			messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-no-auction"), playerName, null);
+    			messageManager.sendPlayerMessage(Lists.newArrayList("bid-fail-no-auction"), playerName, (AuctionScope) null);
     			return true;
     		}
     		auction.Bid(player, args);

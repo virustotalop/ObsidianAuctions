@@ -3,6 +3,7 @@ package com.flobi.floAuction;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -433,6 +434,47 @@ public class AuctionScope {
 	public int getOtherPluginsAuctionsLength() {
 		if (otherPluginsAuctions == null) return 0;
 		return otherPluginsAuctions.size();
+	}
+
+	public static void sendFairwellMessages() {
+		Iterator<String> playerIterator = floAuction.playerScopeCache.keySet().iterator();
+		while (playerIterator.hasNext()) {
+			String playerName = playerIterator.next();
+			Player player = Bukkit.getPlayer(playerName);
+			if (player != null && player.isOnline()) {
+				String oldScopeId = floAuction.playerScopeCache.get(playerName);
+				AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
+				AuctionScope playerScope = AuctionScope.getPlayerScope(player);
+				String playerScopeId = null;
+				if (playerScope != null) {
+					playerScopeId = playerScope.getScopeId();
+				}
+				if (playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-fairwell"), playerName, oldScope);
+					playerIterator.remove();
+					floAuction.playerScopeCache.remove(playerName);
+				}
+			}
+		}
+	}
+
+	public static void sendWelcomeMessages() {
+		Player[] players = Bukkit.getOnlinePlayers();
+		for (Player player : players) {
+			String playerName = player.getName();
+			AuctionScope playerScope = AuctionScope.getPlayerScope(player);
+			String oldScopeId = floAuction.playerScopeCache.get(playerName);
+			if (playerScope == null) {
+				if (oldScopeId != null) {
+					floAuction.playerScopeCache.remove(playerName);
+				}
+			} else {
+				if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-welcome"), playerName, playerScope);
+					floAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
+				}
+			}
+		}
 	}
 }
 

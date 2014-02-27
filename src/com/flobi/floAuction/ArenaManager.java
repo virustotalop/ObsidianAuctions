@@ -49,7 +49,7 @@ public class ArenaManager {
 				if (player == null) return;
 				String playerName = player.getName();
 				if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, (AuctionScope) null);
 					event.setCancelled(true);
 				}
 			}
@@ -69,7 +69,7 @@ public class ArenaManager {
 				if (player == null) return;
 				String playerName = player.getName();
 				if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, (AuctionScope) null);
 					event.setCancelled(true);
 				}
 			}

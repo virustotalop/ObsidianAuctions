@@ -30,6 +30,13 @@ plugin-reloaded: '&fconfiguration has been reloaded.'
 plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions are running or queued.  If your server is too busy to find a time when auctions are not running, you can use &a/auc suspend &6to temporarily suspend all auctioning, but don''t forget to &a/auc resume &6when finished.'
 plogin-reload-fail-permissions: '&6You do not have permission to reload this plugin.'
 
+auctionscope-welcome: 
+- '&2Entering auction area: &f%S3.'
+- '%CN&b%A1&9 is auctioning &f%A3 %CB&4damaged %CB%C4&benchanted %C4&a%L1&9%C5 named &f"%L2"&9%C5 for &c%A7&9. Starting bid: &6%A4&9. Bid increment: &6%A5&9. %CDBuy now: &6%A6&9. %CDType &a/auction info&9 for full details.'
+- '%C6&fThis is a SEALED auction, bids are hidden from other players.'
+- '%CO&9There are %S2 auctions queued.'
+auctionscope-fairwell: '&2Leaving auction area: &f%S3.'
+
 recommended-whatisit: WhatIsIt plugin highly recommended for full item information!
 arena-warning: '&6You cannot enter an arena while participating in an auction.'
 auctionscope-escape-warning: '&6You cannot leave the auction scope while participating in an auction.'
@@ -154,7 +161,7 @@ auction-start-tax: You have been charged an auction tax of %A8.
 auction-end-tax: An auction tax of %A9 has been extracted from your winnings.
 
 auction-info:
-- '&b%A1&9 is auctioning &f%A3 %CB&4damaged %CB%C4&benchanted %C4&a%L1&9%C5 named &f"%L2"&9%C5 for &c%A7&9.%C8 Starting bid: &6%A4&9. Bid increment: &6%A5&9. %CDBuy now: &6%A6&9. %cdType &a/auction info&9 for full details.'
+- '&b%A1&9 is auctioning &f%A3 %CB&4damaged %CB%C4&benchanted %C4&a%L1&9%C5 named &f"%L2"&9%C5 for &c%A7&9.%C8 Starting bid: &6%A4&9. Bid increment: &6%A5&9. %CDBuy now: &6%A6&9. %CDType &a/auction info&9 for full details.'
 - '%CB&lItem damaged: &6%L6 &aremaining.'
 - '%N8%CEEnchantments: &a%L7'
 - '%N8%C9Book is titled: &a%L5'

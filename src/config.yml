@@ -51,6 +51,8 @@ suppress-auction-start-info: true
 
 allow-inferior-item-name-logic: false
 
+auctionscope-change-check-interval: 20
+
 banned-items: 
   - 7
   - 383;63

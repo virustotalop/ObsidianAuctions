@@ -107,7 +107,7 @@ public class AuctionParticipant {
 	 */
 	private void sendArenaWarning() {
 		if (sentArenaWarning) return;
-		floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, null);
+		floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, (AuctionScope) null);
 		sentArenaWarning = true;
 	}
 
@@ -116,7 +116,7 @@ public class AuctionParticipant {
 	 */
 	private void sendEscapeWarning() {
 		if (sentEscapeWarning) return;
-		floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-escape-warning"), playerName, null);
+		floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-escape-warning"), playerName, (AuctionScope) null);
 		sentEscapeWarning = true;
 	}
 
