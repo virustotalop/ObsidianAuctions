@@ -361,12 +361,14 @@ public class floAuction extends JavaPlugin {
 		
 		long playerScopeCheckInterval = config.getLong("auctionscope-change-check-interval");
 		if (playerScopeCheckTimer > 0) bukkitScheduler.cancelTask(playerScopeCheckTimer);
-		playerScopeCheckTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, new Runnable() {
-		    public void run() {
-		    	AuctionScope.sendFairwellMessages();
-		    	AuctionScope.sendWelcomeMessages();
-		    }
-		}, playerScopeCheckInterval, playerScopeCheckInterval);
+		if (playerScopeCheckInterval > 0) {
+			playerScopeCheckTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+			    public void run() {
+			    	AuctionScope.sendFairwellMessages();
+			    	AuctionScope.sendWelcomeMessages();
+			    }
+			}, playerScopeCheckInterval, playerScopeCheckInterval);
+		}
 		
 		orphanLots = loadArrayListAuctionLot("orphanLots.ser");
 		floAuction.voluntarilyDisabledUsers = loadArrayListString("voluntarilyDisabledUsers.ser");
