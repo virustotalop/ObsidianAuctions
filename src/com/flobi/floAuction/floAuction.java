@@ -486,7 +486,7 @@ public class floAuction extends JavaPlugin {
     	}
 
 		if (
-				cmd.getName().equalsIgnoreCase("auction") &&
+				(cmd.getName().equalsIgnoreCase("auction") || cmd.getName().equalsIgnoreCase("auc")) &&
 				args.length > 0 &&
 				args[0].equalsIgnoreCase("on")
 		) {
@@ -521,7 +521,7 @@ public class floAuction extends JavaPlugin {
     				}
     		    	// Don't reload if any auctions are running.
     				if (AuctionScope.areAuctionsRunning()) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("plugin-reloaded-fail-auctions-running"), playerName, null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("plugin-reload-fail-auctions-running"), playerName, null);
 						return true;
     				}
 
@@ -536,7 +536,7 @@ public class floAuction extends JavaPlugin {
 						}
 						// Resume globally:
 						suspendAllAuctions = false;
-						messageManager.sendPlayerMessage(Lists.newArrayList("unsuspension-global"), playerName, null);
+						messageManager.broadcastAuctionScopeMessage(Lists.newArrayList("unsuspension-global"), null);
 						return true;
     		    	}
     		    	
