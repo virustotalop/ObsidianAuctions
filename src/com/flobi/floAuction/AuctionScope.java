@@ -440,19 +440,21 @@ public class AuctionScope {
 		Iterator<String> playerIterator = floAuction.playerScopeCache.keySet().iterator();
 		while (playerIterator.hasNext()) {
 			String playerName = playerIterator.next();
-			Player player = Bukkit.getPlayer(playerName);
-			if (player != null && player.isOnline()) {
-				String oldScopeId = floAuction.playerScopeCache.get(playerName);
-				AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
-				AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-				String playerScopeId = null;
-				if (playerScope != null) {
-					playerScopeId = playerScope.getScopeId();
-				}
-				if (playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-fairwell"), playerName, oldScope);
-					playerIterator.remove();
-					floAuction.playerScopeCache.remove(playerName);
+			if (!AuctionParticipant.isParticipating(playerName)) {
+				Player player = Bukkit.getPlayer(playerName);
+				if (player != null && player.isOnline()) {
+					String oldScopeId = floAuction.playerScopeCache.get(playerName);
+					AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
+					AuctionScope playerScope = AuctionScope.getPlayerScope(player);
+					String playerScopeId = null;
+					if (playerScope != null) {
+						playerScopeId = playerScope.getScopeId();
+					}
+					if (playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
+							floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-fairwell"), playerName, oldScope);
+							playerIterator.remove();
+							floAuction.playerScopeCache.remove(playerName);
+					}
 				}
 			}
 		}
@@ -462,16 +464,18 @@ public class AuctionScope {
 		Player[] players = Bukkit.getOnlinePlayers();
 		for (Player player : players) {
 			String playerName = player.getName();
-			AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-			String oldScopeId = floAuction.playerScopeCache.get(playerName);
-			if (playerScope == null) {
-				if (oldScopeId != null) {
-					floAuction.playerScopeCache.remove(playerName);
-				}
-			} else {
-				if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-welcome"), playerName, playerScope);
-					floAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
+			if (!AuctionParticipant.isParticipating(playerName)) {
+				AuctionScope playerScope = AuctionScope.getPlayerScope(player);
+				String oldScopeId = floAuction.playerScopeCache.get(playerName);
+				if (playerScope == null) {
+					if (oldScopeId != null) {
+						floAuction.playerScopeCache.remove(playerName);
+					}
+				} else {
+					if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
+						floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-welcome"), playerName, playerScope);
+						floAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
+					}
 				}
 			}
 		}
