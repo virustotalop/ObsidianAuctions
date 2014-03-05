@@ -435,6 +435,7 @@ public class floAuction extends JavaPlugin {
 	    		scopes.set("house", house);
 	    		config.set("auction-scopes", scopes);
 	    	}
+	    	config.set("disabled-commands-participating", config.get("disabled-commands"));
 	    	// The unused rows will be removed through the cleaning process.
 	    	// The entire language file needs to be purged though.
 		    textConfig = new YamlConfiguration();
