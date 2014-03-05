@@ -33,7 +33,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -56,7 +55,6 @@ import com.flobi.floAuction.foreign.MetricsLite;
 import com.flobi.floAuction.foreign.Updater;
 import com.flobi.floAuction.utility.functions;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 
 /**
  * A Bukkit based Minecraft plugin to facilitate auctions.
