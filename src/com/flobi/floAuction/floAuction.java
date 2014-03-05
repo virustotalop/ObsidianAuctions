@@ -412,16 +412,6 @@ public class floAuction extends JavaPlugin {
 	    }
 	    
 	    textConfig = null;
-	    textConfig = YamlConfiguration.loadConfiguration(textConfigFile);
-	 
-	    // Look for defaults in the jar
-	    if (defTextConfigStream != null) {
-	        defTextConfig = YamlConfiguration.loadConfiguration(defTextConfigStream);
-	        defTextConfigStream = null;
-	    }
-	    if (defTextConfig != null) {
-	        textConfig.setDefaults(defTextConfig);
-	    }
 	    
 	    // Check to see if this needs converstion from floAuction version 2:
 	    // suppress-auction-start-info was added in 2.6 and removed in 3.0.
@@ -447,7 +437,20 @@ public class floAuction extends JavaPlugin {
 	    		scopes.set("house", house);
 	    		config.set("auction-scopes", scopes);
 	    	}
-	    	
+	    	// The unused rows will be removed through the cleaning process.
+	    	// The entire language file needs to be purged though.
+		    textConfig = new YamlConfiguration();
+	    } else {
+		    textConfig = YamlConfiguration.loadConfiguration(textConfigFile);
+	    }
+
+	    // Look for defaults in the jar
+	    if (defTextConfigStream != null) {
+	        defTextConfig = YamlConfiguration.loadConfiguration(defTextConfigStream);
+	        defTextConfigStream = null;
+	    }
+	    if (defTextConfig != null) {
+	        textConfig.setDefaults(defTextConfig);
 	    }
 	    
 		// Clean up the configuration of any unsed values.
