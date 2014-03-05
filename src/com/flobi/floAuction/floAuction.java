@@ -33,6 +33,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -49,11 +50,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.util.FileUtil;
 
 import com.flobi.floAuction.foreign.MetricsLite;
 import com.flobi.floAuction.foreign.Updater;
 import com.flobi.floAuction.utility.functions;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 /**
  * A Bukkit based Minecraft plugin to facilitate auctions.
@@ -418,6 +421,33 @@ public class floAuction extends JavaPlugin {
 	    }
 	    if (defTextConfig != null) {
 	        textConfig.setDefaults(defTextConfig);
+	    }
+	    
+	    // Check to see if this needs converstion from floAuction version 2:
+	    // suppress-auction-start-info was added in 2.6 and removed in 3.0.
+	    if (config.contains("suppress-auction-start-info")) {
+	    	// I want to save a copy of the config and language files for them.
+	    	FileUtil.copy(configFile, new File(dataFolder, "config.v2-backup.yml"));
+	    	FileUtil.copy(textConfigFile, new File(dataFolder, "language.v2-backup.yml"));
+	    	
+	    	// Late version 2's also had an auction house.  If it has this, it needs to be converted.
+	    	String houseWorld = config.getString("auctionhouse-world");
+	    	if (!houseWorld.isEmpty()) {
+	    		YamlConfiguration house = new YamlConfiguration();
+	    		house.set("name", "Auction House");
+	    		house.set("type", "house");
+	    		house.set("house-world", houseWorld);
+	    		house.set("house-min-x", config.get("auctionhouse-min-x"));
+	    		house.set("house-min-y", config.get("auctionhouse-min-y"));
+	    		house.set("house-min-z", config.get("auctionhouse-min-z"));
+	    		house.set("house-max-x", config.get("auctionhouse-max-x"));
+	    		house.set("house-max-y", config.get("auctionhouse-max-y"));
+	    		house.set("house-max-z", config.get("auctionhouse-max-z"));
+	    		YamlConfiguration scopes = new YamlConfiguration();
+	    		scopes.set("house", house);
+	    		config.set("auction-scopes", scopes);
+	    	}
+	    	
 	    }
 	    
 		// Clean up the configuration of any unsed values.

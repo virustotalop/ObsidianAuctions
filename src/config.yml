@@ -1,4 +1,4 @@
-auto-update: false
+auto-update: true
 
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
@@ -47,7 +47,6 @@ broadcast-bid-updates: true
 allow-auto-bid: true
 
 suppress-countdown: false
-suppress-auction-start-info: true
 
 allow-inferior-item-name-logic: false
 
@@ -71,12 +70,12 @@ banned-lore:
 
 auction-scopes:
   default:
+    name: 'Default Auction Scope'
     type: 'worlds'
     worlds:
       - '*'
     config:
-      taxed-items:
-        0: 100%
+      disabled-commands-inscope: {}
   
   
   
