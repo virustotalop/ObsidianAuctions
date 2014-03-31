@@ -463,19 +463,27 @@ public class AuctionScope {
 	public static void sendWelcomeMessages() {
 		Player[] players = Bukkit.getOnlinePlayers();
 		for (Player player : players) {
-			String playerName = player.getName();
-			if (!AuctionParticipant.isParticipating(playerName)) {
-				AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-				String oldScopeId = floAuction.playerScopeCache.get(playerName);
-				if (playerScope == null) {
-					if (oldScopeId != null) {
-						floAuction.playerScopeCache.remove(playerName);
-					}
-				} else {
-					if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
-						floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-welcome"), playerName, playerScope);
-						floAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
-					}
+			sendWelcomeMessage(player, false);
+		}
+	}
+	
+	public static void sendWelcomeMessage(Player player, boolean isOnJoin) {
+		String welcomeMessageKey = "auctionscope-welcome";
+		if (isOnJoin) {
+			welcomeMessageKey += "-onjoin";
+		}
+		String playerName = player.getName();
+		if (!AuctionParticipant.isParticipating(playerName)) {
+			AuctionScope playerScope = AuctionScope.getPlayerScope(player);
+			String oldScopeId = floAuction.playerScopeCache.get(playerName);
+			if (playerScope == null) {
+				if (oldScopeId != null) {
+					floAuction.playerScopeCache.remove(playerName);
+				}
+			} else {
+				if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
+					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList(welcomeMessageKey), playerName, playerScope);
+					floAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
 				}
 			}
 		}

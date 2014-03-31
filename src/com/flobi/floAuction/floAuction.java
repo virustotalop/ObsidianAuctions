@@ -275,7 +275,9 @@ public class floAuction extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void playerJoin(PlayerJoinEvent event) {
-        	    floAuction.killOrphan(event.getPlayer());
+            	Player player = event.getPlayer();
+        	    floAuction.killOrphan(player);
+        	    AuctionScope.sendWelcomeMessage(player, true);
             }
             @EventHandler
             public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
