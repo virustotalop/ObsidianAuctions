@@ -477,6 +477,10 @@ public class floAuction extends JavaPlugin {
 			cleanTextConfig.set(textConfigEntry.getKey(), textConfig.get(textConfigEntry.getKey()));
 		}
 		textConfig = cleanTextConfig;
+		
+		if (textConfig.getString("bid-fail-under-starting-bid") != null && textConfig.getString("bid-fail-under-starting-bid").equals("&6The bidding must start at %A8.")) {
+			textConfig.set("bid-fail-under-starting-bid", "&6The bidding must start at %A4.");
+		}
 
 		try {
     		textConfig.save(textConfigFile);
