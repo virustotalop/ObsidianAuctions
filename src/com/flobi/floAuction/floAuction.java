@@ -478,6 +478,7 @@ public class floAuction extends JavaPlugin {
 		}
 		textConfig = cleanTextConfig;
 		
+		// Here's an oppsie fix for a typo in 3.0.0.
 		if (textConfig.getString("bid-fail-under-starting-bid") != null && textConfig.getString("bid-fail-under-starting-bid").equals("&6The bidding must start at %A8.")) {
 			textConfig.set("bid-fail-under-starting-bid", "&6The bidding must start at %A4.");
 		}
