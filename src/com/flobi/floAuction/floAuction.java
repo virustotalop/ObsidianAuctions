@@ -422,7 +422,7 @@ public class floAuction extends JavaPlugin {
 	    	
 	    	// Late version 2's also had an auction house.  If it has this, it needs to be converted.
 	    	String houseWorld = config.getString("auctionhouse-world");
-	    	if (!houseWorld.isEmpty()) {
+	    	if (houseWorld != null && !houseWorld.isEmpty()) {
 	    		YamlConfiguration house = new YamlConfiguration();
 	    		house.set("name", "Auction House");
 	    		house.set("type", "house");
@@ -470,6 +470,11 @@ public class floAuction extends JavaPlugin {
     	defConfig = null;
 	    configFile = null;
 
+	    
+	    // Another typo fix from 3.0.0
+	    if (textConfig.contains("plogin-reload-fail-permissions")) {
+	    	textConfig.set("plugin-reload-fail-permissions", textConfig.get("plogin-reload-fail-permissions"));
+	    }
 	    
 		FileConfiguration cleanTextConfig = new YamlConfiguration();
 		Map<String, Object> textConfigValues = textConfig.getDefaults().getValues(false);
@@ -572,7 +577,7 @@ public class floAuction extends JavaPlugin {
     		if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("reload")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
-    					messageManager.sendPlayerMessage(Lists.newArrayList("plogin-reload-fail-permissions"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage(Lists.newArrayList("plugin-reload-fail-permissions"), playerName, (AuctionScope) null);
     	    			return true;
     				}
     		    	// Don't reload if any auctions are running.
