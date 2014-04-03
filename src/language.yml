@@ -28,7 +28,7 @@ plugin-disabled-no-economy:
 - ----- -------------------------- -----
 plugin-reloaded: '&fconfiguration has been reloaded.'
 plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions are running or queued.  If your server is too busy to find a time when auctions are not running, you can use &a/auc suspend &6to temporarily suspend all auctioning, but don''t forget to &a/auc resume &6when finished.'
-plogin-reload-fail-permissions: '&6You do not have permission to reload this plugin.'
+plugin-reload-fail-permissions: '&6You do not have permission to reload this plugin.'
 
 auctionscope-welcome:
 - '&2Entering auction area: &f%S3.'
