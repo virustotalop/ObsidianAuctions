@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import com.google.common.collect.Lists;
+import com.flobi.floAuction.utility.CArrayList;
 
 /**
  * Class to manipulate remote plugin prohibitions on player auctioning.
@@ -70,7 +70,7 @@ public class AuctionProhibition {
 				if (player == null) return true;
 				if (auctionProhibition.reminderMessage == null) {
 					// Send stock message.
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
+					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
 				} else {
 					player.sendMessage(auctionProhibition.reminderMessage);
 				}
@@ -97,7 +97,7 @@ public class AuctionProhibition {
 				if (player == null) return true;
 				if (auctionProhibition.reminderMessage == null) {
 					// Send stock message.
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
+					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
 				} else {
 					player.sendMessage(auctionProhibition.reminderMessage);
 				}
@@ -147,7 +147,7 @@ public class AuctionProhibition {
 		if (player == null) return true;
 		if (enableMessage == null) {
 			// Send stock message.
-			floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
+			floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
 		} else {
 			player.sendMessage(enableMessage);
 		}
@@ -168,7 +168,7 @@ public class AuctionProhibition {
 				if (player != null) {
 					if (auctionProhibition.disableMessage == null) {
 						// Send stock message.
-						floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-disabled"), playerName, (AuctionScope) null);
+						floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-disabled"), playerName, (AuctionScope) null);
 					} else {
 						player.sendMessage(auctionProhibition.disableMessage);
 					}
@@ -183,7 +183,7 @@ public class AuctionProhibition {
 			if (player != null) {
 				if (auctionProhibition.enableMessage == null) {
 					// Send stock message.
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
+					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
 				} else {
 					player.sendMessage(auctionProhibition.enableMessage);
 				}

@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.flobi.floAuction.utility.functions;
 import com.flobi.floAuction.utility.items;
-import com.google.common.collect.Lists;
+import com.flobi.floAuction.utility.CArrayList;
 
 /**
  * Structure to handle auction bids.
@@ -126,7 +126,7 @@ public class AuctionBid {
 			taxes = unsafeBidAmount * (taxPercent / 100D);
 			
 			auction.extractedPostTax = taxes;
-			auction.messageManager.sendPlayerMessage(Lists.newArrayList("auction-end-tax"), auction.getOwner(), auction);
+			auction.messageManager.sendPlayerMessage(new CArrayList<String>("auction-end-tax"), auction.getOwner(), auction);
 			unsafeBidAmount -= taxes;
 			String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", auction.getScope());
 			if (!taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(taxDestinationUser, taxes);
@@ -237,6 +237,14 @@ public class AuctionBid {
 		if (args.length > 0) {
 			if (!args[0].isEmpty() && args[0].matches(floAuction.decimalRegex)) {
 				bidAmount = functions.getSafeMoney(Double.parseDouble(args[0]));
+				/*Should fix the bug that allowed over-sized payments
+				 */
+				if(bidAmount > floAuction.econ.getBalance(this.bidderName))
+				{
+					this.error = "bid-fail-cant-allocate-funds";
+					return false;
+				}
+
 				if (bidAmount == 0) {
 					error = "parse-error-invalid-bid";
 					return false;

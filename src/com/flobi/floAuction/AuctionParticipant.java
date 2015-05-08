@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import com.google.common.collect.Lists;
+import com.flobi.floAuction.utility.CArrayList;
 
 /**
  * Class to track and manipulate the participants of auctions, which are auction starters (a.k.a. owners), the current highest bidder for unsealed auctions and all bidders on sealed auctions.
@@ -107,7 +107,7 @@ public class AuctionParticipant {
 	 */
 	private void sendArenaWarning() {
 		if (sentArenaWarning) return;
-		floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, (AuctionScope) null);
+		floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("arena-warning"), playerName, (AuctionScope) null);
 		sentArenaWarning = true;
 	}
 
@@ -116,7 +116,7 @@ public class AuctionParticipant {
 	 */
 	private void sendEscapeWarning() {
 		if (sentEscapeWarning) return;
-		floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-escape-warning"), playerName, (AuctionScope) null);
+		floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-escape-warning"), playerName, (AuctionScope) null);
 		sentEscapeWarning = true;
 	}
 

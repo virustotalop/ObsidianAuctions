@@ -21,7 +21,6 @@ import org.bukkit.inventory.meta.*;
 import com.flobi.WhatIsIt.WhatIsIt;
 import com.flobi.floAuction.floAuction;
 
-
 public class items {
 	private static Map<Integer, String> enchantmentNames = null;
 	private static Map<Integer, String> enchantmentLevels = null;

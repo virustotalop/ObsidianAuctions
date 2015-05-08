@@ -1,5 +1,7 @@
 package com.flobi.floAuction;
 
+import com.flobi.floAuction.utility.CArrayList;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.api.PVPArenaAPI;
 import net.slipcor.pvparena.events.PAJoinEvent;
@@ -13,9 +15,9 @@ import org.bukkit.plugin.PluginManager;
 
 import com.garbagemule.MobArena.MobArena;
 import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
-import com.google.common.collect.Lists;
 import com.tommytony.war.War;
 import com.tommytony.war.Warzone;
+
 
 /**
  * Utility class for managing MobArena, PVPArena and War arenas.
@@ -49,7 +51,7 @@ public class ArenaManager {
 				if (player == null) return;
 				String playerName = player.getName();
 				if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, (AuctionScope) null);
+					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
 					event.setCancelled(true);
 				}
 			}
@@ -69,7 +71,7 @@ public class ArenaManager {
 				if (player == null) return;
 				String playerName = player.getName();
 				if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("arena-warning"), playerName, (AuctionScope) null);
+					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
 					event.setCancelled(true);
 				}
 			}

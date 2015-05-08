@@ -16,7 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import com.google.common.collect.Lists;
+import com.flobi.floAuction.utility.CArrayList;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -147,20 +147,20 @@ public class AuctionScope {
 			// Queuing because of interval not yet timed out.
 			// Allow a queue of 1 to override if 0 for this condition.
 	    	if (Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= auctionQueue.size()) {
-	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-fail-full"), playerName, auctionToQueue);
+	    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-fail-full"), playerName, auctionToQueue);
 				return;
 			}
 		} else {
 	    	if (AuctionConfig.getInt("max-auction-queue-length", this) <= 0) {
-	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-auction-exists"), playerName, auctionToQueue);
+	    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-auction-exists"), playerName, auctionToQueue);
 				return;
 			}
 			if (activeAuction.getOwner().equalsIgnoreCase(playerName)) {
-	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-fail-current-auction"), playerName, auctionToQueue);
+	    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-fail-current-auction"), playerName, auctionToQueue);
 				return;
 			}
 			if (AuctionConfig.getInt("max-auction-queue-length", this) <= auctionQueue.size()) {
-	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-fail-full"), playerName, auctionToQueue);
+	    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-fail-full"), playerName, auctionToQueue);
 				return;
 			}
 		}
@@ -168,7 +168,7 @@ public class AuctionScope {
 			if (auctionQueue.get(i) != null) {
 				Auction queuedAuction = auctionQueue.get(i);
 				if (queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
-		    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-fail-in-queue"), playerName, auctionToQueue);
+		    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-fail-in-queue"), playerName, auctionToQueue);
 					return;
 				}
 			}
@@ -178,7 +178,7 @@ public class AuctionScope {
 			AuctionParticipant.addParticipant(playerName, this);
 			checkAuctionQueue();
 			if (auctionQueue.contains(auctionToQueue)) {
-	    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-queue-enter"), playerName, auctionToQueue);
+	    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-enter"), playerName, auctionToQueue);
 			}
 		}
     }
@@ -209,17 +209,17 @@ public class AuctionScope {
 		}
 		
 		if (AuctionProhibition.isOnProhibition(auction.getOwner(), false)) {
-    		messageManager.sendPlayerMessage(Lists.newArrayList("remote-plugin-prohibition-reminder"), playerName, auction);
+    		messageManager.sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, auction);
 			return;
 		}
 		
 		if (!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
-    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-gamemode-creative"), playerName, auction);
+    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-gamemode-creative"), playerName, auction);
 			return;
 		}
 		
 		if (!floAuction.perms.has(player, "auction.start")) {
-    		messageManager.sendPlayerMessage(Lists.newArrayList("auction-fail-permissions"), playerName, auction);
+    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-permissions"), playerName, auction);
 			return;
 		}
 		if (!auction.isValid()) {
@@ -451,7 +451,7 @@ public class AuctionScope {
 						playerScopeId = playerScope.getScopeId();
 					}
 					if (playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
-							floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList("auctionscope-fairwell"), playerName, oldScope);
+							floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-fairwell"), playerName, oldScope);
 							playerIterator.remove();
 							floAuction.playerScopeCache.remove(playerName);
 					}
@@ -482,7 +482,7 @@ public class AuctionScope {
 				}
 			} else {
 				if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
-					floAuction.getMessageManager().sendPlayerMessage(Lists.newArrayList(welcomeMessageKey), playerName, playerScope);
+					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(welcomeMessageKey), playerName, playerScope);
 					floAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
 				}
 			}
