@@ -1,11 +1,11 @@
 package com.flobi.floAuction;
 
+import me.virustotal.utility.CArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import com.flobi.floAuction.utility.CArrayList;
 
 /**
  * Class to track and manipulate the participants of auctions, which are auction starters (a.k.a. owners), the current highest bidder for unsealed auctions and all bidders on sealed auctions.

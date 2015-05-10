@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import me.virustotal.utility.CArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -16,7 +18,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import com.flobi.floAuction.utility.CArrayList;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -66,7 +67,7 @@ public class AuctionScope {
 		this.config = config;
 		this.textConfig = textConfig;
 	}
-	
+
 	/**
 	 * Checks whether the scopes definition is valid.  
 	 * 
@@ -143,6 +144,10 @@ public class AuctionScope {
 		String playerName = auctionToQueue.getOwner();
 		MessageManager messageManager = auctionToQueue.messageManager;
 
+
+		//Bukkit.broadcastMessage("queued");
+		//Bukkit.broadcastMessage("" + auctionToQueue.getBuyNow());
+		
 		if (activeAuction == null) {
 			// Queuing because of interval not yet timed out.
 			// Allow a queue of 1 to override if 0 for this condition.

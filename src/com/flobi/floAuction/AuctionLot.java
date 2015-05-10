@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import me.virustotal.utility.CArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -15,7 +17,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floAuction.utility.CArrayList;
 import com.flobi.floAuction.utility.items;
 
 /**

@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.virustotal.listeners.InventoryClickListener;
+import me.virustotal.utility.CArrayList;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -46,12 +48,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.FileUtil;
 
-import com.flobi.floAuction.utility.CArrayList;
 import com.flobi.floAuction.utility.functions;
 
 /**
@@ -87,6 +89,8 @@ public class floAuction extends JavaPlugin {
 	private static ArrayList<String> suspendedUsers = new ArrayList<String>();
 	
 	private static MessageManager messageManager = new AuctionMessageManager();
+	
+	public static String guiQueueName;
 	
 	/**
 	 * Used by AuctinLot to store auction lots which could not be given to players because they were offline.
@@ -266,6 +270,9 @@ public class floAuction extends JavaPlugin {
         
 		ArenaManager.loadArenaListeners(this);
 		
+		//Load in inventory click listener
+		Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);
+		
 		Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void playerJoin(PlayerJoinEvent event) {
@@ -372,7 +379,6 @@ public class floAuction extends JavaPlugin {
 		suspendedUsers = loadArrayListString("suspendedUsers.ser");
 		userSavedInputArgs = loadMapStringStringArray("userSavedInputArgs.ser");
 
-        // Load up the Plugin metrics
         messageManager.sendPlayerMessage(new CArrayList<String>("plugin-enabled"), null, (AuctionScope) null);
 		
 	}
@@ -390,6 +396,15 @@ public class floAuction extends JavaPlugin {
 		config = null;
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
+	    if(config.get("queue-gui-name") == null){
+	    	config.set("queue-gui-name", "&9floAuction Queue");
+	    	try {
+				config.save(new File(floAuction.dataFolder.getPath(),"config.yml"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	    
 	    // Look for defaults in the jar
 	    if (defConfigStream != null) {
 	        defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
@@ -486,6 +501,12 @@ public class floAuction extends JavaPlugin {
 	    
 	    // Build auction scopes.
 	    AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
+	    
+	  
+	    	
+	    
+	    
+	    floAuction.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
 	    
     }
     
@@ -605,7 +626,22 @@ public class floAuction extends JavaPlugin {
 			    	messageManager.sendPlayerMessage(new CArrayList<String>("unsuspension-user-success"), playerName, (AuctionScope) null);
     				
     				return true;
-    			} else if (args[0].equalsIgnoreCase("suspend")) {
+    			} 
+    			/*else if(args[0].equalsIgnoreCase("list")) //beginning
+    			{
+    				AuctionScope scope = AuctionScope.getPlayerScope(player);
+    				ArrayList<Auction> aucs = scope.getAuctionQueue();
+    				Inventory inv = Bukkit.createInventory(null, 18, "test");
+    				System.out.println(aucs.size());
+    				for(int i = 0; i < aucs.size(); i++)
+    				{
+    					inv.setItem(i, aucs.get(i).getGuiItem());
+    					//System.out.println(aucs.get(i).getItem().getType().name());
+    				}
+    				player.openInventory(inv);
+    				return true;
+    			}//end */
+    			else if (args[0].equalsIgnoreCase("suspend")) {
     				if (player != null && !perms.has(player, "auction.admin")) {
     					messageManager.sendPlayerMessage(new CArrayList<String>("suspension-fail-permissions"), playerName, (AuctionScope) null);
     	    			return true;
@@ -685,17 +721,22 @@ public class floAuction extends JavaPlugin {
     					return true;
     				}
     				
+    				if(player.getInventory().getItemInHand() == null || player.getInventory().getItemInHand().getAmount() == 0) {
+    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-hand-is-empty"), playerName, (AuctionScope) null);
+    					return true;
+    				}
+    				
     				if (cmd.getName().equalsIgnoreCase("sealedauction") || cmd.getName().equalsIgnoreCase("sauc")) {
     					if (AuctionConfig.getBoolean("allow-sealed-auctions", userScope)) {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, player.getItemInHand().clone()));
     					} else {
     						messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-sealed-auctions"), playerName, (AuctionScope) null);
     					}
     				} else {
     					if (AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, false, messageManager));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, false, messageManager, player.getItemInHand().clone()));
     					} else {
-    						userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager));
+    						userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, player.getItemInHand().clone()));
     					}
     				}
 
@@ -820,7 +861,16 @@ public class floAuction extends JavaPlugin {
     					messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-status-not-in-queue"), playerName, (AuctionScope) null);
     					return true;
     				}
-    				for(int i = 0; i < auctionQueue.size(); i++){
+    				Inventory inv = Bukkit.createInventory(null, 18, floAuction.guiQueueName);
+    				for(int i = 0; i < auctionQueue.size(); i++)
+    				{
+    					if(i == inv.getSize())
+    						break;
+    					inv.setItem(i, auctionQueue.get(i).getGuiItem());
+    				}
+    				player.openInventory(inv);
+    				return true;
+    				/*for(int i = 0; i < auctionQueue.size(); i++){
     					if (auctionQueue.get(i).getOwner().equalsIgnoreCase(playerName)) {
     						messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-status-in-queue"), playerName, (AuctionScope) null);
     						return true;
@@ -828,7 +878,7 @@ public class floAuction extends JavaPlugin {
     				}
 
     				messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-status-not-in-queue"), playerName, (AuctionScope) null);
-    				return true;
+    				return true;*/
     			}
     		}
     		messageManager.sendPlayerMessage(new CArrayList<String>("auction-help"), playerName, (AuctionScope) null);

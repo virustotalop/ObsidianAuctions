@@ -2,11 +2,11 @@ package com.flobi.floAuction;
 
 import java.util.ArrayList;
 
+import me.virustotal.utility.CArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-
-import com.flobi.floAuction.utility.CArrayList;
 
 /**
  * Class to manipulate remote plugin prohibitions on player auctioning.

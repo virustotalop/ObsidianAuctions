@@ -2,6 +2,7 @@ package com.flobi.floAuction.utility;
 
 import java.text.DecimalFormat;
 
+import me.virustotal.utility.CArrayList;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import com.flobi.floAuction.AuctionConfig;

@@ -4,18 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import me.virustotal.utility.CArrayList;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.flobi.floAuction.events.AuctionBidEvent;
 import com.flobi.floAuction.events.AuctionEndEvent;
 import com.flobi.floAuction.events.AuctionStartEvent;
 import com.flobi.floAuction.utility.functions;
 import com.flobi.floAuction.utility.items;
-import com.flobi.floAuction.utility.CArrayList;
 
 /**
  * Main auction class.
@@ -50,7 +53,12 @@ public class Auction {
 	private int countdown = 0;
 	private int countdownTimer = 0;
 	
+	//added
+	private ItemStack guiItem;
+	
 	public MessageManager messageManager = null;
+	
+	
 	
 	/**
 	 * Gets the AuctionScope which hosts this auction.
@@ -61,6 +69,9 @@ public class Auction {
 		return scope;
 	}
 	
+	
+	
+	
 	/**
 	 * Instantiates an auction instance.
 	 * 
@@ -70,13 +81,48 @@ public class Auction {
 	 * @param scope        the hosting AuctionScope
 	 * @param sealed       whether or not it is a sealed auction
 	 */
-	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager) {
+	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) {
 		ownerName = auctionOwner.getName();
 		args = functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
 		this.plugin = plugin; 
 		this.scope = scope;
 		this.sealed = sealed;
 		this.messageManager = messageManager;
+		this.guiItem = guiItem;
+		
+		//Override gui item item meta
+		if(this.guiItem.hasItemMeta())
+		{
+			if(this.guiItem.getItemMeta().hasLore())
+			{
+				List<String> lore = this.guiItem.getItemMeta().getLore();
+				lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
+				//lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
+				//lore.add(ChatColor.BLUE + "Buy it now price: " + this.buyNow);
+				ItemMeta itemMeta = this.guiItem.getItemMeta();
+				itemMeta.setLore(lore);
+				this.guiItem.setItemMeta(itemMeta);
+			}
+			else {
+				List<String> lore = new ArrayList<String>();
+				lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
+				//lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
+				//lore.add(ChatColor.BLUE + "Buy it now price: " + this.buyNow);
+				ItemMeta itemMeta = this.guiItem.getItemMeta();
+				itemMeta.setLore(lore);
+				this.guiItem.setItemMeta(itemMeta);
+			}
+		}
+		else {
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
+			//lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
+			//lore.add(ChatColor.BLUE + "Buy it now price: " + this.buyNow);
+			ItemMeta itemMeta = this.guiItem.getItemMeta();
+			itemMeta.setLore(lore);
+			this.guiItem.setItemMeta(itemMeta);
+		}
+		
 	}
 	
 	/**
@@ -943,4 +989,10 @@ public class Auction {
 			return ownerName;
 		}
 	}
+	
+	public ItemStack getGuiItem()
+	{	
+		return this.guiItem;
+	}
+	
 }
