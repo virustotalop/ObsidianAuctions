@@ -571,23 +571,15 @@ public class items {
 		return false;
 	}
 	
-	public static String getItemName(ItemStack typeStack) {
-		if (floAuction.useWhatIsIt) {
-			return WhatIsIt.itemName(typeStack);
-		} else {
-			ItemInfo itemInfo = Items.itemByStack(typeStack);
-			if (itemInfo == null) {
-				return typeStack.getType().name();
-			} else {
-				return itemInfo.getName();
-			}
-		}
+	public static String getItemName(ItemStack typeStack) 
+	{
+		return floAuction.plugin.mUtil.getName(typeStack);
 	}
 	
 	public static String getEnchantmentName(Entry<Enchantment, Integer> enchantment) {
-		if (floAuction.useWhatIsIt) {
+		/*if (floAuction.useWhatIsIt) {
 			return WhatIsIt.enchantmentName(enchantment);
-		} else {
+		} else {*/
 			int enchantmentId = enchantment.getKey().getId();
 			int enchantmentLevel = enchantment.getValue();
 			String enchantmentName = null;
@@ -600,6 +592,7 @@ public class items {
 				enchantmentNames.put(4, "Projectile Protection");
 				enchantmentNames.put(5, "Respiration");
 				enchantmentNames.put(6, "Aqua Afinity");
+				enchantmentNames.put(8, "Depth Strider");
 				enchantmentNames.put(16, "Sharpness");
 				enchantmentNames.put(17, "Smite");
 				enchantmentNames.put(18, "Bane of Arthropods");
@@ -614,6 +607,8 @@ public class items {
 				enchantmentNames.put(49, "Punch");
 				enchantmentNames.put(50, "Flame");
 				enchantmentNames.put(51, "Infinity");
+				enchantmentNames.put(61, "Luck of the Sea");
+				enchantmentNames.put(62, "Lure");
 			}
 			if (enchantmentNames.get(enchantmentId) != null) {
 				enchantmentName = enchantmentNames.get(enchantmentId) + " ";
@@ -636,6 +631,6 @@ public class items {
 			}
 			return enchantmentName;
 		}
-	}
+	//}
 	
 }

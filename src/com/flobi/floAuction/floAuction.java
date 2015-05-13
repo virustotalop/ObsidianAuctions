@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import me.virustotal.listeners.InventoryClickListener;
 import me.virustotal.utility.CArrayList;
+import me.virustotal.utility.MaterialUtil;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -70,7 +71,8 @@ public class floAuction extends JavaPlugin {
 	public static boolean loadedDecimalFromVault = false;
 	private static File auctionLog = null;
 	private static boolean suspendAllAuctions = false;
-	public static boolean useWhatIsIt = true;
+	//public static boolean useWhatIsIt = true;
+	public static boolean isDamagedAllowed;
 	public static List<AuctionParticipant> auctionParticipants = new ArrayList<AuctionParticipant>();
 	public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
 
@@ -79,7 +81,7 @@ public class floAuction extends JavaPlugin {
 	public static FileConfiguration textConfig = null;
 	private static File dataFolder;
 	private static int queueTimer;
-	static floAuction plugin;
+	public static floAuction plugin;
 	
 	private static int playerScopeCheckTimer;
 	static Map<String, String> playerScopeCache = new HashMap<String, String>();
@@ -91,6 +93,8 @@ public class floAuction extends JavaPlugin {
 	private static MessageManager messageManager = new AuctionMessageManager();
 	
 	public static String guiQueueName;
+	public HashMap<String,String> names = new HashMap<String,String>();
+	public MaterialUtil mUtil;
 	
 	/**
 	 * Used by AuctinLot to store auction lots which could not be given to players because they were offline.
@@ -234,13 +238,14 @@ public class floAuction extends JavaPlugin {
      * Called by Bukkit when initializing.  Sets up basic plugin settings.
      */
 	public void onEnable() {
+		this.mUtil = new MaterialUtil(this);
 		dataFolder = getDataFolder();
 		plugin = this;
     	auctionLog = new File(dataFolder, "auctions.log");
 		
         loadConfig();
 		
-		if (Bukkit.getPluginManager().getPlugin("WhatIsIt") == null) {
+		/*if (Bukkit.getPluginManager().getPlugin("WhatIsIt") == null) {
 			if (config.getBoolean("allow-inferior-item-name-logic")) {
 				logToBukkit("recommended-whatisit", Level.WARNING);
 				useWhatIsIt = false;
@@ -251,7 +256,7 @@ public class floAuction extends JavaPlugin {
 			}
 		} else {
 			useWhatIsIt = true;
-		}
+		}*/
 		if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
 			logToBukkit("plugin-disabled-no-vault", Level.SEVERE);
 			Bukkit.getPluginManager().disablePlugin(this);
@@ -389,13 +394,19 @@ public class floAuction extends JavaPlugin {
 		File configFile = new File(dataFolder, "config.yml");
     	InputStream defConfigStream = plugin.getResource("config.yml");;
     	File textConfigFile = new File(dataFolder, "language.yml");
-    	InputStream defTextConfigStream = plugin.getResource("language.yml");;
+    	InputStream defTextConfigStream = plugin.getResource("language.yml");
+    	File nameConfigFile = new File(dataFolder, "names.yml");
+    	if(!nameConfigFile.exists())
+    		floAuction.plugin.saveResource("names.yml", true);
+    		
     	YamlConfiguration defConfig = null;
     	YamlConfiguration defTextConfig = null;
+		YamlConfiguration nameConfig = null;
 		
 		config = null;
 	    config = YamlConfiguration.loadConfiguration(configFile);
-	 
+	    nameConfig = YamlConfiguration.loadConfiguration(nameConfigFile);
+	    
 	    if(config.get("queue-gui-name") == null){
 	    	config.set("queue-gui-name", "&9floAuction Queue");
 	    	try {
@@ -470,8 +481,7 @@ public class floAuction extends JavaPlugin {
 		} catch(IOException ex) {
 			log.severe("Cannot save config.yml");
 		}
-    	defConfig = null;
-	    configFile = null;
+    	
 
 	    
 	    // Another typo fix from 3.0.0
@@ -496,17 +506,28 @@ public class floAuction extends JavaPlugin {
 		} catch(IOException ex) {
 			log.severe("Cannot save language.yml");
 		}
-        defTextConfig = null;
-	    textConfigFile = null;
+
 	    
 	    // Build auction scopes.
 	    AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
 	    
-	  
-	    	
-	    
-	    
+	    //Gui queue inventory name
 	    floAuction.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
+	    
+	    //Get name from id
+	    for(String string : nameConfig.getKeys(false))
+	    {
+	    	floAuction.plugin.names.put(string, nameConfig.getString(string));
+	    }
+	    
+	    //Setup additional floAuction values
+	    floAuction.isDamagedAllowed = defConfig.getBoolean("allow-damaged-items");
+	    
+	    //make values null at the end
+		defConfig = null;
+	    configFile = null;
+        defTextConfig = null;
+	    textConfigFile = null;
 	    
     }
     
