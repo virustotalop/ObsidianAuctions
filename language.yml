@@ -2,13 +2,6 @@ chat-prefix: '&f[&7flo&9Auction&f] &9'
 
 plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
-plugin-disabled-no-whatisit: 
-- ----- WhatIsIt Dependency Failure -----
-- ATTENTION!  THIS IS A NOTIFICATION THAT floAuction HAS NOT BEEN
-- ENABLED.  floAuction REQUIRES THE WhatIsIt PLUGIN AND YOU LACK
-- IT.  DOWNLOAD AND INSTALL WhatIsIt IF YOU WANT floAuction TO
-- PROVIDE YOU WITH IT'S LEGENDARY AUCTION FUNCTIONALITY!
-- ----- --------------------------- -----
 plugin-disabled-no-vault: 
 - ----- Vault Dependency Failure -----
 - HELLO, WEARY ADMIN.

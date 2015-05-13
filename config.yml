@@ -1,4 +1,4 @@
-auto-update: true
+queue-gui-name: "&9floAuction Queue"
 
 use-old-bid-logic: false
 allow-bid-on-own-auction: false

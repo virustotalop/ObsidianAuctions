@@ -31,7 +31,7 @@ public class MaterialUtil {
 			name = names.get(id + "," + dura);
 		}
 		else {
-			name = names.get("unknown-block");
+			name = id + ":" + dura;
 		}
 		return name;
 	}
