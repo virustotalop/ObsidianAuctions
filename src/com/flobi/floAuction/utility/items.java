@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.milkbowl.vault.item.ItemInfo;
-import net.milkbowl.vault.item.Items;
-
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
@@ -18,12 +15,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
 
-import com.flobi.WhatIsIt.WhatIsIt;
 import com.flobi.floAuction.floAuction;
 
 public class items {
-	private static Map<Integer, String> enchantmentNames = null;
-	private static Map<Integer, String> enchantmentLevels = null;
+	private static Map<Integer, String> enchantmentNames =  new HashMap<Integer, String>();
+	private static Map<Integer, String> enchantmentLevels = new HashMap<Integer, String>();
 	
 	
     private static int firstPartial(ItemStack item, ItemStack[] inventory) {
@@ -583,7 +579,7 @@ public class items {
 			int enchantmentId = enchantment.getKey().getId();
 			int enchantmentLevel = enchantment.getValue();
 			String enchantmentName = null;
-			if (enchantmentNames == null) {
+			if (enchantmentNames.size() == 0) {
 				enchantmentNames = new HashMap<Integer, String>();
 				enchantmentNames.put(0, "Protection");
 				enchantmentNames.put(1, "Fire Protection");
@@ -615,7 +611,7 @@ public class items {
 			} else {
 				enchantmentName = "UNKNOWN ";
 			}
-			if (enchantmentLevels == null) {
+			if (enchantmentLevels.size() == 0) {
 				enchantmentLevels = new HashMap<Integer, String>();
 				enchantmentLevels.put(0, "");
 				enchantmentLevels.put(1, "I");
@@ -625,7 +621,7 @@ public class items {
 				enchantmentLevels.put(5, "V");
 			}
 			if (enchantmentLevels.get(enchantmentLevel) != null) {
-				enchantmentName = enchantmentLevels.get(enchantmentLevel) + " ";
+				enchantmentName += enchantmentLevels.get(enchantmentLevel) + " ";
 			} else {
 				enchantmentName += enchantmentLevel;
 			}

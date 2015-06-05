@@ -57,6 +57,8 @@ import org.bukkit.util.FileUtil;
 
 import com.flobi.floAuction.utility.functions;
 
+import de.dustplanet.util.SilkUtil;
+
 /**
  * A Bukkit based Minecraft plugin to facilitate auctions.
  * 
@@ -95,6 +97,8 @@ public class floAuction extends JavaPlugin {
 	public static String guiQueueName;
 	public HashMap<String,String> names = new HashMap<String,String>();
 	public MaterialUtil mUtil;
+	
+	public static SilkUtil sUtil;
 	
 	/**
 	 * Used by AuctinLot to store auction lots which could not be given to players because they were offline.
@@ -245,18 +249,13 @@ public class floAuction extends JavaPlugin {
 		
         loadConfig();
 		
-		/*if (Bukkit.getPluginManager().getPlugin("WhatIsIt") == null) {
-			if (config.getBoolean("allow-inferior-item-name-logic")) {
-				logToBukkit("recommended-whatisit", Level.WARNING);
-				useWhatIsIt = false;
-			} else {
-				logToBukkit("plugin-disabled-no-whatisit", Level.SEVERE);
-				Bukkit.getPluginManager().disablePlugin(this);
-	            return;
-			}
-		} else {
-			useWhatIsIt = true;
-		}*/
+        if(Bukkit.getPluginManager().getPlugin("SilkSpawners") != null)
+        {
+        	floAuction.sUtil = SilkUtil.hookIntoSilkSpanwers();
+        } else {
+        	floAuction.sUtil = null;
+        }
+        
 		if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
 			logToBukkit("plugin-disabled-no-vault", Level.SEVERE);
 			Bukkit.getPluginManager().disablePlugin(this);
@@ -415,6 +414,16 @@ public class floAuction extends JavaPlugin {
 				e.printStackTrace();
 			}
 	    }
+	    //set whether or not to allow mob spawners in the config, default is no
+	    if(config.get("allow-renamed-mobspawners") == null){
+	    	config.set("allow-renamed-mobspawners", false);
+	    	try {
+				config.save(new File(floAuction.dataFolder.getPath(),"config.yml"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	    
 	    
 	    // Look for defaults in the jar
 	    if (defConfigStream != null) {

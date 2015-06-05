@@ -8,6 +8,7 @@ import me.virustotal.utility.CArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -603,11 +604,26 @@ public class Auction {
 		
     	String displayName = items.getDisplayName(itemType);
     	if (displayName == null) displayName = "";
-    	
+    	//Implementing allowing auctioned mob-spawners
 		if (!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
-			lot = null;
-			return false;
+			
+			if(floAuction.sUtil == null)
+			{
+				messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
+				lot = null;
+				return false;
+			}
+			else {
+				if(itemType.getType() == Material.MOB_SPAWNER && AuctionConfig.getBoolean("allow-renamed-mobspawners", scope))
+				{
+					//do nothing
+				}
+				else {
+					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
+					lot = null;
+					return false;
+				}
+			}
 		}
 		
 		// Check lore:
