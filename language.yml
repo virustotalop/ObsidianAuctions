@@ -4,20 +4,12 @@ plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
 plugin-disabled-no-vault: 
 - ----- Vault Dependency Failure -----
-- HELLO, WEARY ADMIN.
-- THIS IS flobi, THE AUTHOR OF floAuction.  I'VE BEEN HOPING TO
-- HAVE A CHAT WITH YOU ABOUT INSTALLING THE REQUIRED
-- DEPENDENCIES FOR floAuction.  THAT'S A LIE, GO INSTALL Vault,
-- YOU RETARD!  floAuction IS DISABLED BECAUSE OF YOUR FAILURE.
-- SINCERELY,
-- flobi
+- Vault is a needed dependency, please install it.
+- Without vault ObsidianAuctions will not work, thank you!
 - ----- ------------------------ -----
 plugin-disabled-no-economy: 
 - ----- Economy Dependency Failure -----
-- THERE'S A POSSIBILITY YOU DON'T UNDERSTAND HOW AUCTIONS WORK.
-- TO HAVE AUCTIONS, YOU MUST FIRST HAVE MONEY.  YOU NEED TO
-- DOWNLOAD AN ECONOMY PLUGIN SUPPORTED BY Vault.  UNTIL YOU DO
-- YOU CANNOT USE floAuction, IT IS DISABLED.
+- You do not have an economy plugin installed!
 - ----- -------------------------- -----
 plugin-reloaded: '&fconfiguration has been reloaded.'
 plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions are running or queued.  If your server is too busy to find a time when auctions are not running, you can use &a/auc suspend &6to temporarily suspend all auctioning, but don''t forget to &a/auc resume &6when finished.'

@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import me.virustotal.listeners.InventoryClickListener;
 import me.virustotal.utility.CArrayList;
 import me.virustotal.utility.MaterialUtil;
+import me.virustotal.utility.MigrationUtil;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -241,7 +242,11 @@ public class floAuction extends JavaPlugin {
     /**
      * Called by Bukkit when initializing.  Sets up basic plugin settings.
      */
+    @Override
 	public void onEnable() {
+    	
+    	MigrationUtil.migrateOldData(this);
+    	
 		this.mUtil = new MaterialUtil(this);
 		dataFolder = getDataFolder();
 		plugin = this;
@@ -543,6 +548,7 @@ public class floAuction extends JavaPlugin {
     /**
      * Called by Bukkit when disabling.  Cancels all auctions and clears data.
      */
+    @Override
 	public void onDisable() {
 		AuctionScope.cancelAllAuctions();
 		getServer().getScheduler().cancelTask(queueTimer);

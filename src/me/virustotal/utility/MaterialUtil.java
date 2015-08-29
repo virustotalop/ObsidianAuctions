@@ -2,9 +2,7 @@ package me.virustotal.utility;
 
 import java.util.HashMap;
 
-import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.flobi.floAuction.AuctionConfig;
@@ -17,7 +15,7 @@ public class MaterialUtil {
 	{
 		this.plugin = plugin;
 	}
-	
+
 	public String getName(ItemStack item)
 	{
 		HashMap<String,String> names = plugin.names;
@@ -36,43 +34,35 @@ public class MaterialUtil {
 				}
 			}	
 		}
-		
-		if(id == 52)
+		else if(id == 52)
 		{
 			if(floAuction.sUtil != null)
 			{
 				if(AuctionConfig.getBoolean("allow-renamed-mobspawners", null))
 				{
-					if(item.hasItemMeta())
-					{
-						if(item.getItemMeta().hasDisplayName())
-						{
-							short sid = floAuction.sUtil.getDefaultEntityID();
-							String creature = floAuction.sUtil.getCreatureName(sid);
-							if(floAuction.sUtil.isKnown(creature))
-							{
-								return item.getItemMeta().getDisplayName();
-							}
-						}
-					}	
+					short sid = floAuction.sUtil.getStoredSpawnerItemEntityID(item);
+					String creature = floAuction.sUtil.getCreatureName(sid);
+					return creature + " Spawner";
 				}
 			}
 		}
-		
-		if(names.get(id + "," + dura) == null && floAuction.isDamagedAllowed)
+		else if(names.get(id + "," + dura) == null && floAuction.isDamagedAllowed)
 		{
 			if(names.get(id + "," + 0) != null)
 			{
 				name = names.get(id + "," + 0);
 			}
-			else {
+			else 
+			{
 				name = id + ":" + dura;
 			}
 		}
-		else if(names.get(id + "," + dura) != null){
+		else if(names.get(id + "," + dura) != null)
+		{
 			name = names.get(id + "," + dura);
 		}
-		else {
+		else 
+		{
 			name = id + ":" + dura;
 		}
 		return name;
