@@ -14,6 +14,31 @@ public class MigrationUtil {
 	public static void migrateOldData(floAuction plugin)
 	{
 		String path = plugin.getDataFolder().getAbsolutePath();
+		String strippedPath = path.substring(0, path.lastIndexOf(File.separator));
+
+		for(File file : new File(strippedPath).listFiles())
+		{
+			if(file.isFile())
+			{
+				String fileName = file.getName();
+				if(fileName.contains("floAuction") && fileName.endsWith(".jar"))
+				{
+					plugin.getLogger().log(Level.INFO, "Disabling floAuction");
+					try 
+					{
+						MigrationUtil.copyFile(file, new File(file.getAbsolutePath() + ".dis"));
+						file.delete();
+						break;
+					} 
+					catch (IOException e) 
+					{
+						e.printStackTrace();
+						break;
+					}
+				}
+			}
+		}
+
 		File pathFolder = new File(path);
 		plugin.getLogger().log(Level.INFO, "Checking to see if migration is needed...");
 		if(pathFolder.exists())
@@ -23,7 +48,6 @@ public class MigrationUtil {
 		else
 		{
 
-			String strippedPath = path.substring(0, path.lastIndexOf(File.separator));
 			String floAuctionPath = strippedPath + File.separator + "floAuction";
 			File floAuctionFolder = new File(floAuctionPath);
 			if(floAuctionFolder.exists())
@@ -54,30 +78,30 @@ public class MigrationUtil {
 	}
 	private static void copyFile(File sourceFile, File destFile) throws IOException 
 	{
-	    if(!destFile.exists()) 
-	    {
-	        destFile.createNewFile();
-	    }
+		if(!destFile.exists()) 
+		{
+			destFile.createNewFile();
+		}
 
-	    FileChannel source = null;
-	    FileChannel destination = null;
+		FileChannel source = null;
+		FileChannel destination = null;
 
-	    try 
-	    {
-	        source = new FileInputStream(sourceFile).getChannel();
-	        destination = new FileOutputStream(destFile).getChannel();
-	        destination.transferFrom(source, 0, source.size());
-	    }
-	    finally 
-	    {
-	        if(source != null) 
-	        {
-	            source.close();
-	        }
-	        if(destination != null) 
-	        {
-	            destination.close();
-	        }
-	    }
+		try 
+		{
+			source = new FileInputStream(sourceFile).getChannel();
+			destination = new FileOutputStream(destFile).getChannel();
+			destination.transferFrom(source, 0, source.size());
+		}
+		finally 
+		{
+			if(source != null) 
+			{
+				source.close();
+			}
+			if(destination != null) 
+			{
+				destination.close();
+			}
+		}
 	}
 }
