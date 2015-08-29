@@ -15,9 +15,12 @@ public class InventoryClickListener implements Listener {
 		{
 			if(e.getClick() != null)
 			{
-				if(e.getClickedInventory().getTitle().equals(floAuction.guiQueueName))
+				if(e.getWhoClicked().getOpenInventory() != null)
 				{
-					e.setCancelled(true);
+					/*Shift clicking items into the gui was likely possible, this should fix that bug
+					 */
+					if(e.getWhoClicked().getOpenInventory().getTitle().equals(floAuction.guiQueueName))
+						e.setCancelled(true);
 				}
 			}
 		}
