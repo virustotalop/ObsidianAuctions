@@ -1,5 +1,5 @@
 name: ObsidianAuctions
-version: 3.0.14
+version: 3.0.15
 description: Auction plugin for economies.
 authors: [flobi, VirusTotal]
 softdepend: [Vault, SilkSpawners]
