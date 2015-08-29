@@ -419,6 +419,17 @@ public class floAuction extends JavaPlugin {
 				e.printStackTrace();
 			}
 	    }
+	    
+	    if(config.get("name-blacklist") == null){
+	    	List<String> blackListDefault = floAuction.plugin.getConfig().getDefaults().getStringList("name-blacklist");
+	    	config.set("name-blacklist", blackListDefault);
+	    	try {
+				config.save(new File(floAuction.dataFolder.getPath(),"config.yml"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	    
 	    //set whether or not to allow mob spawners in the config, default is no
 	    if(config.get("allow-renamed-mobspawners") == null){
 	    	config.set("allow-renamed-mobspawners", false);
