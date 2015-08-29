@@ -1,8 +1,11 @@
-name: floAuction
+name: ObsidianAuctions
 version: 3.0.14
 description: Auction plugin for economies.
 authors: [flobi, VirusTotal]
 softdepend: [Vault, SilkSpawners]
+
+#Fork of floAuctions, name has been changed to help with confusion
+#This plugin can be found publicly on spigot
 
 main: com.flobi.floAuction.floAuction
 database: false

@@ -25,7 +25,7 @@ public class MaterialUtil {
 		short dura = item.getDurability();
 		String name = "";
 
-		/*if(id == 397)
+		if(id == 397)
 		{
 			if(dura == 3)
 			{
@@ -34,10 +34,8 @@ public class MaterialUtil {
 				{
 					return skullMeta.getOwner() + "\'s" + " Head";
 				}
-			}
-			
-			
-		}*/
+			}	
+		}
 		
 		if(id == 52)
 		{
