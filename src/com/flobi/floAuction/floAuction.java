@@ -95,7 +95,13 @@ public class floAuction extends JavaPlugin {
 	
 	private static MessageManager messageManager = new AuctionMessageManager();
 	
+	/*Added values
+	 * 
+	 */
 	public static String guiQueueName;
+	public static List<String> itemBlacklist;
+	public static boolean itemBlackListEnabled;
+	
 	public HashMap<String,String> names = new HashMap<String,String>();
 	public MaterialUtil mUtil;
 	
@@ -430,6 +436,16 @@ public class floAuction extends JavaPlugin {
 			}
 	    }
 	    
+	    if(config.get("blacklist-enabled") == null) {
+	    	config.set("blacklist-enabled", false);
+	    	try {
+				config.save(new File(floAuction.dataFolder.getPath(),"config.yml"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	    
+	    
 	    //set whether or not to allow mob spawners in the config, default is no
 	    if(config.get("allow-renamed-mobspawners") == null){
 	    	config.set("allow-renamed-mobspawners", false);
@@ -538,6 +554,8 @@ public class floAuction extends JavaPlugin {
 	    
 	    //Gui queue inventory name
 	    floAuction.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
+	    floAuction.itemBlacklist = config.getStringList("name-blacklist");
+	    floAuction.itemBlackListEnabled = config.getBoolean("blacklist-enabled");
 	    
 	    //Get name from id
 	    for(String string : nameConfig.getKeys(false))

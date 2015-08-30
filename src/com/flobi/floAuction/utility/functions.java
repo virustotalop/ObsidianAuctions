@@ -141,7 +141,9 @@ public class functions {
 	public static String formatAmount(double unsafeMoney) {
 		if (floAuction.econ == null) return "-";
 		if (!floAuction.econ.isEnabled()) return "-";
-		return floAuction.econ.format(unsafeMoney);
+		String vaultFormat = floAuction.econ.format(unsafeMoney);
+		//DecimalFormat decFormat = new DecimalFormat("#,###.00");
+		return vaultFormat;//decFormat.format(vaultFormat);
 	}
 	
 	public static boolean withdrawPlayer(String playerName, long safeMoney) {

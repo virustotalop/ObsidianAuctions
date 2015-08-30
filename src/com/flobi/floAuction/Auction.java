@@ -605,26 +605,43 @@ public class Auction {
     	String displayName = items.getDisplayName(itemType);
     	if (displayName == null) displayName = "";
     	//Implementing allowing auctioned mob-spawners
-		if (!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) {
-			
-			if(floAuction.sUtil == null)
-			{
-				messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
-				lot = null;
-				return false;
-			}
-			else {
-				if(itemType.getType() == Material.MOB_SPAWNER && AuctionConfig.getBoolean("allow-renamed-mobspawners", scope))
-				{
-					//do nothing
-				}
-				else {
-					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
-					lot = null;
-					return false;
-				}
-			}
-		}
+    	//if display name is not empty do function if not fall through to next if
+    	if(!displayName.isEmpty())
+    	{
+    		if(floAuction.itemBlackListEnabled)
+    		{
+    			String lowerCaseDisplay = displayName.toLowerCase();
+    			for(String string : floAuction.itemBlacklist)
+    			{
+    				if(lowerCaseDisplay.contains(string))
+    				{
+    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-blacklist-name"), ownerName, this);
+    					return false;
+    				}
+    			}
+    		}
+    	}
+    	
+    	if (!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) {
+
+    		if(floAuction.sUtil == null)
+    		{
+    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
+    			lot = null;
+    			return false;
+    		}
+    		else {
+    			if(itemType.getType() == Material.MOB_SPAWNER && AuctionConfig.getBoolean("allow-renamed-mobspawners", scope))
+    			{
+    				//do nothing
+    			}
+    			else {
+    				messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
+    				lot = null;
+    				return false;
+    			}
+    		}
+    	}
 		
 		// Check lore:
 		String[] lore = items.getLore(heldItem);

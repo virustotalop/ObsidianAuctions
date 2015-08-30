@@ -93,6 +93,8 @@ auction-fail-renamed-item: '&6You cannot auction renamed items.'
 auction-fail-no-scope: '&6Auctioning is not possible at this location.'
 auction-fail-banned-lore: '&6This item contains banned lore.'
 auction-fail-blocked-by-other-plugin: '&6The auction was blocked by another plugin.'
+auction-fail-blacklist-name: "&6This item contains a blacklisted word."
+
 
 bid-success-no-challenger: '&b%B1&9 has bid &6%B3&9 on the %CB&4damaged %CB%C4&benchanted %C4&a%L1&9%C5 named &f"%L2"&9%C5&9.'
 bid-success-outbid: '&b%B1&9 raised the bid to &6%B3&9.'
@@ -164,7 +166,7 @@ auction-info:
 - '%N8%N6Min bid increment is &6%A5&9.' 
 - '%N8%CA--&1LORE&9--------------------'
 - '%N8%CA|  &5&o%R3'
-- '%N8%CA--------------------&1LORE&9--'
+- '%N8%CA--&1LORE&9--------------------'
 - '%C6&fThis is a SEALED auction, bids are hidden from other players.'
 
 auction-info-no-auction: 
