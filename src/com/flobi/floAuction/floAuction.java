@@ -71,10 +71,10 @@ public class floAuction extends JavaPlugin {
 	// Got to figure out a better way to store these:
 	public static int decimalPlaces = 0;
 	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
+	//decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
 	public static boolean loadedDecimalFromVault = false;
 	private static File auctionLog = null;
 	private static boolean suspendAllAuctions = false;
-	//public static boolean useWhatIsIt = true;
 	public static boolean isDamagedAllowed;
 	public static List<AuctionParticipant> auctionParticipants = new ArrayList<AuctionParticipant>();
 	public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
@@ -448,7 +448,7 @@ public class floAuction extends JavaPlugin {
 	    
 	    //set whether or not to allow mob spawners in the config, default is no
 	    if(config.get("allow-renamed-mobspawners") == null){
-	    	config.set("allow-renamed-mobspawners", false);
+	    	config.set("allow-renamed-mobspawners", true);
 	    	try {
 				config.save(new File(floAuction.dataFolder.getPath(),"config.yml"));
 			} catch (IOException e) {

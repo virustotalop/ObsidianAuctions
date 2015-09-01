@@ -1,6 +1,6 @@
 blacklist-enabled: false
 queue-gui-name: "&9floAuction Queue"
-allow-renamed-mobspawners: false
+allow-renamed-mobspawners: true
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
 log-auctions: false
