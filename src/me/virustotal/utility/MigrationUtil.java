@@ -76,6 +76,7 @@ public class MigrationUtil {
 			}
 		}
 	}
+
 	private static void copyFile(File sourceFile, File destFile) throws IOException 
 	{
 		if(!destFile.exists()) 

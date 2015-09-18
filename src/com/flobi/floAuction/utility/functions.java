@@ -11,13 +11,17 @@ import com.flobi.floAuction.floAuction;
 
 public class functions {
 
-	public static String formatTime(int seconds, AuctionScope auctionScope) {
+	public static String formatTime(int seconds, AuctionScope auctionScope) 
+	{
 		String returnTime = "-";
-		if (seconds >= 60) {
+		if (seconds >= 60) 
+		{
 			returnTime = AuctionConfig.getLanguageString("time-format-minsec", auctionScope);
 			returnTime = returnTime.replace("%s", Integer.toString(seconds % 60));
 			returnTime = returnTime.replace("%m", Integer.toString((seconds - (seconds % 60)) / 60));
-		} else {
+		} 
+		else 
+		{
 			returnTime = AuctionConfig.getLanguageString("time-format-seconly", auctionScope);
 			returnTime = returnTime.replace("%s", Integer.toString(seconds));
 		}

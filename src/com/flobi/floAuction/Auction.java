@@ -811,16 +811,30 @@ public class Auction {
 	 * 
 	 * @return if argument parsed correctly
 	 */
-	private Boolean parseArgStartingBid() {
+	private Boolean parseArgStartingBid() 
+	{
 		if (startingBid > 0) return true;
 		
-		if (args.length > 1) {
-			if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
+		if (args.length > 1) 
+		{
+			System.out.println(floAuction.decimalPlaces);
+			if(args[1].isEmpty())
+			{
+				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
+				return false;
+			}
+			else if(!args[1].matches(floAuction.decimalRegex))
+			{
+				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
+				return false;
+			}
+			startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
+			/*if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
 				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
 				return false;
-			}
+			}*/
 		} else {
 			startingBid = AuctionConfig.getSafeMoneyFromDouble("default-starting-bid", scope);
 		}

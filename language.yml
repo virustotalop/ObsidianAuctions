@@ -1,4 +1,4 @@
-chat-prefix: '&f[&7flo&9Auction&f] &9'
+chat-prefix: '&f[&7Obsidian&9Auctions&f] &9'
 
 plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
@@ -53,7 +53,7 @@ remote-plugin-prohibition-disabled: '&6%? has restored your ability to auction.'
 remote-plugin-prohibition-reminder: '&6%? has disabled your ability to auction.'
 
 parse-error-invalid-quantity: '&6The quantity you specified is invalid.'
-parse-error-invalid-starting-bid: '&6The staring bid you specified is invalid.'
+parse-error-invalid-starting-bid: '&6The starting bid you specified is invalid.'
 parse-error-invalid-bid-increment: '&6The bid increment you specified is invalid.'
 parse-error-invalid-time: '&6The time you specified is invalid.'
 parse-error-invalid-bid: '&6The bid amount you specified is invalid.'

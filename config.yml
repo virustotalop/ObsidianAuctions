@@ -1,5 +1,5 @@
 blacklist-enabled: false
-queue-gui-name: "&9floAuction Queue"
+queue-gui-name: "&9ObsidianAuction Queue"
 allow-renamed-mobspawners: true
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
@@ -129,13 +129,4 @@ name-blacklist:
 - "marijauna"
 - "mary"
 - "hump"
-- "yiffy"
-  
-  
-  
-  
-  
-  
-  
-  
-  
+- "yiffy" 

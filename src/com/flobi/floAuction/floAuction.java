@@ -70,8 +70,7 @@ public class floAuction extends JavaPlugin {
 
 	// Got to figure out a better way to store these:
 	public static int decimalPlaces = 0;
-	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
-	//decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
+	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{0,1})?$";
 	public static boolean loadedDecimalFromVault = false;
 	private static File auctionLog = null;
 	private static boolean suspendAllAuctions = false;
