@@ -1,11 +1,14 @@
 package me.virustotal.utility;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import com.flobi.floAuction.AuctionConfig;
 import com.flobi.floAuction.floAuction;
 
 public class MaterialUtil {
@@ -36,15 +39,7 @@ public class MaterialUtil {
 		}
 		else if(id == 52)
 		{
-			if(floAuction.sUtil != null)
-			{
-				if(AuctionConfig.getBoolean("allow-renamed-mobspawners", null))
-				{
-					short sid = floAuction.sUtil.getStoredSpawnerItemEntityID(item);
-					String creature = floAuction.sUtil.getCreatureName(sid);
-					return creature + " Spawner";
-				}
-			}
+			return MaterialUtil.getSpawnerType(item) + " Spawner";
 		}
 		else if(names.get(id + "," + dura) == null && floAuction.isDamagedAllowed)
 		{
@@ -66,5 +61,45 @@ public class MaterialUtil {
 			name = id + ":" + dura;
 		}
 		return name;
+	}
+	
+	private static String getSpawnerType(ItemStack item)
+	{
+		String type = "";
+		if(MaterialUtil.getVersion().contains("1_7"))
+		{
+			short dura = item.getDurability();
+			return EntityType.fromId(dura).getName();
+		}
+		else
+		{
+			try {
+				Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + getVersion() + ".inventory.CraftItemStack");
+				Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
+				Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
+				Object craftCopy = asCraftCopy.invoke(null, item);
+				Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
+				Method tagField = itemStack.getClass().getMethod("getTag");
+				Object tag  = tagField.invoke(itemStack);
+				Method getCompound = tag.getClass().getMethod("getCompound", String.class);
+				Object compound = getCompound.invoke(tag, "BlockEntityTag");
+				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+		return type;
+	}
+
+	private synchronized static String getVersion() 
+	{
+		String version = "";
+		if(Bukkit.getServer() == null)
+		{
+			return null;
+		}
+		String name = Bukkit.getServer().getClass().getPackage().getName();
+		version = name.substring(name.lastIndexOf('.') + 1);
+		return version;
 	}
 }

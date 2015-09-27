@@ -622,25 +622,19 @@ public class Auction {
     		}
     	}
     	
-    	if (!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) {
+    	if(itemType.getType() == Material.MOB_SPAWNER && !AuctionConfig.getBoolean("allow-mobspawners", scope))
+		{
+			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-spawner"), ownerName, this);
+			lot = null;
+			return false;
+		}
+    	
+    	if (!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) 
+    	{
 
-    		if(floAuction.sUtil == null)
-    		{
     			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
     			lot = null;
     			return false;
-    		}
-    		else {
-    			if(itemType.getType() == Material.MOB_SPAWNER && AuctionConfig.getBoolean("allow-renamed-mobspawners", scope))
-    			{
-    				//do nothing
-    			}
-    			else {
-    				messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
-    				lot = null;
-    				return false;
-    			}
-    		}
     	}
 		
 		// Check lore:

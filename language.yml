@@ -60,6 +60,7 @@ parse-error-invalid-bid: '&6The bid amount you specified is invalid.'
 parse-error-invalid-max-bid: '&6The max bid amount you specified is invalid.'
 parse-error-invalid-buynow: '&6The BuyNow amount you specified is invalid.'
 
+auction-fail-spawner: '&6You cannot auction mob spawners.'
 auction-fail-permissions: '&6You do not have permissions to start an auction.'
 auction-fail-arena: '&6You cannot start an auction in an arena.'
 auction-fail-banned: '&6You cannot auction this item.'
