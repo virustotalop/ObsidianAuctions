@@ -759,10 +759,7 @@ public class floAuction extends JavaPlugin {
     	    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-gamemode-creative"), playerName, (AuctionScope) null);
     	    			return true;
     	    		}
-    	    		if(!AuctionConfig.getBoolean("allow-mobspawners", userScope)) {
-    	    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-spawner"), playerName, (AuctionScope) null);
-    	    			return true;
-    	    		}
+    	    		
     	    		if (userScope == null) {
     	    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-scope"), playerName, (AuctionScope) null);
     	    			return true;
