@@ -2,7 +2,7 @@ name: ObsidianAuctions
 version: 3.0.16
 description: Updated fork of floAuctions.
 authors: [flobi, VirusTotal]
-softdepend: [Vault, SilkSpawners]
+softdepend: [Vault]
 loadbefore: [floAuction]
 
 #Fork of floAuction, name has been changed to help with confusion.
