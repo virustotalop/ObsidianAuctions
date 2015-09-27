@@ -811,7 +811,6 @@ public class Auction {
 		
 		if (args.length > 1) 
 		{
-			System.out.println(floAuction.decimalPlaces);
 			if(args[1].isEmpty())
 			{
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
