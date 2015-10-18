@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.flobi.floAuction.utility.functions;
+import com.flobi.floAuction.utilities.Functions;
 
 /**
  * Class for handling configuration and language values for floAuction using the AuctionScope preference.
@@ -22,7 +22,7 @@ public class AuctionConfig {
 	 * @return "safe money" from config
 	 */
 	public static long getSafeMoneyFromDouble(String path, AuctionScope auctionScope) {
-		return functions.getSafeMoney(getDouble(path, auctionScope));
+		return Functions.getSafeMoney(getDouble(path, auctionScope));
 	}
 	
 	/**

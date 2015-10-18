@@ -17,7 +17,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floAuction.utility.items;
+import com.flobi.floAuction.utilities.Items;
 
 /**
  * Structure to hold and process the items being auctioned.
@@ -66,10 +66,10 @@ public class AuctionLot implements java.io.Serializable {
 	 */
 	public boolean addItems(int addQuantity, boolean removeFromOwner) {
 		if (removeFromOwner) {
-			if (!items.hasAmount(ownerName, addQuantity, getTypeStack())) {
+			if (!Items.hasAmount(ownerName, addQuantity, getTypeStack())) {
 				return false;
 			}
-			items.remove(ownerName, addQuantity, getTypeStack());
+			Items.remove(ownerName, addQuantity, getTypeStack());
 		}
 		quantity += addQuantity;
 		return true;
@@ -105,10 +105,10 @@ public class AuctionLot implements java.io.Serializable {
 		int maxStackSize = lotTypeLock.getType().getMaxStackSize();
 		if (player != null && player.isOnline()) {
 			int amountToGive = 0;
-			if (items.hasSpace(player, quantity, lotTypeLock)) {
+			if (Items.hasSpace(player, quantity, lotTypeLock)) {
 				amountToGive = quantity;
 			} else {
-				amountToGive = items.getSpaceForItem(player, lotTypeLock);
+				amountToGive = Items.getSpaceForItem(player, lotTypeLock);
 			}
 			// Give whatever items space permits at this time.
 			ItemStack typeStack = getTypeStack();
@@ -121,7 +121,7 @@ public class AuctionLot implements java.io.Serializable {
 				quantity -= givingItems.getAmount();
 				
 //				player.getInventory().addItem();
-				items.saferItemGive(player.getInventory(), givingItems);
+				Items.saferItemGive(player.getInventory(), givingItems);
 				
 				amountToGive -= maxStackSize;
 			}
@@ -131,7 +131,7 @@ public class AuctionLot implements java.io.Serializable {
 				// Move items to drop lot.
 				while (quantity > 0) {
 					ItemStack cloneStack = typeStack.clone();
-					cloneStack.setAmount(Math.min(quantity, items.getMaxStackSize(typeStack)));
+					cloneStack.setAmount(Math.min(quantity, Items.getMaxStackSize(typeStack)));
 					quantity -= cloneStack.getAmount();
 					
 					// Drop lot.
@@ -183,18 +183,18 @@ public class AuctionLot implements java.io.Serializable {
 			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
 		for (Entry<Integer, Integer> enchantment : storedEnchantments.entrySet()) {
-			items.addStoredEnchantment(lotTypeLock, enchantment.getKey(), enchantment.getValue(), true);
+			Items.addStoredEnchantment(lotTypeLock, enchantment.getKey(), enchantment.getValue(), true);
 		}
 		lotTypeLock.setAmount(sourceStackQuantity);
-		items.setDisplayName(lotTypeLock, displayName);
-		items.setBookAuthor(lotTypeLock, bookAuthor);
-		items.setBookTitle(lotTypeLock, bookTitle);
-		items.setBookPages(lotTypeLock, bookPages);
-		items.setRepairCost(lotTypeLock, repairCost);
-		items.setHeadOwner(lotTypeLock, headOwner);
-		items.setFireworkPower(lotTypeLock, power);
-		items.setFireworkEffects(lotTypeLock, effects);
-		items.setLore(lotTypeLock, lore);
+		Items.setDisplayName(lotTypeLock, displayName);
+		Items.setBookAuthor(lotTypeLock, bookAuthor);
+		Items.setBookTitle(lotTypeLock, bookTitle);
+		Items.setBookPages(lotTypeLock, bookPages);
+		Items.setRepairCost(lotTypeLock, repairCost);
+		Items.setHeadOwner(lotTypeLock, headOwner);
+		Items.setFireworkPower(lotTypeLock, power);
+		Items.setFireworkEffects(lotTypeLock, effects);
+		Items.setLore(lotTypeLock, lore);
 		return lotTypeLock;
 	}
 	
@@ -220,19 +220,19 @@ public class AuctionLot implements java.io.Serializable {
 		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
 			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
 		}
-		enchantmentList = items.getStoredEnchantments(lotType);
+		enchantmentList = Items.getStoredEnchantments(lotType);
 		if (enchantmentList != null) for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
 			storedEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
 		}
-		displayName = items.getDisplayName(lotType);
-		bookAuthor = items.getBookAuthor(lotType);
-		bookTitle = items.getBookTitle(lotType);
-		bookPages = items.getBookPages(lotType);
-		repairCost = items.getRepairCost(lotType);
-		headOwner = items.getHeadOwner(lotType);
-		power = items.getFireworkPower(lotType);
-		effects = items.getFireworkEffects(lotType);
-		lore = items.getLore(lotType);
+		displayName = Items.getDisplayName(lotType);
+		bookAuthor = Items.getBookAuthor(lotType);
+		bookTitle = Items.getBookTitle(lotType);
+		bookPages = Items.getBookPages(lotType);
+		repairCost = Items.getRepairCost(lotType);
+		headOwner = Items.getHeadOwner(lotType);
+		power = Items.getFireworkPower(lotType);
+		effects = Items.getFireworkEffects(lotType);
+		lore = Items.getLore(lotType);
 	}
 	
 	/**

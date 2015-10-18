@@ -56,7 +56,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.FileUtil;
 
-import com.flobi.floAuction.utility.functions;
+import com.flobi.floAuction.utilities.Functions;
 
 /**
  * A Bukkit based Minecraft plugin to facilitate auctions.
@@ -810,7 +810,7 @@ public class floAuction extends JavaPlugin {
     				}
     				
     				// The function returns null and sends error on failure.
-    				String[] mergedArgs = functions.mergeInputArgs(playerName, args, true);
+    				String[] mergedArgs = Functions.mergeInputArgs(playerName, args, true);
     				
     				if (mergedArgs != null) {
 						floAuction.userSavedInputArgs.put(playerName, mergedArgs);

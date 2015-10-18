@@ -7,9 +7,12 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.flobi.floAuction.AuctionConfig;
 import com.flobi.floAuction.floAuction;
+import com.flobi.floAuction.utilities.Items;
 
 public class MaterialUtil {
 
@@ -40,6 +43,10 @@ public class MaterialUtil {
 		else if(id == 52)
 		{
 			return MaterialUtil.getSpawnerType(item) + " Spawner";
+		}
+		else if(AuctionConfig.getBoolean("allow-renamed-items", null) && Items.getDisplayName(item) != null)
+		{
+			return Items.getDisplayName(item);
 		}
 		else if(names.get(id + "," + dura) == null && floAuction.isDamagedAllowed)
 		{

@@ -8,8 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floAuction.utility.functions;
-import com.flobi.floAuction.utility.items;
+import com.flobi.floAuction.utilities.Functions;
+import com.flobi.floAuction.utilities.Items;
 
 /**
  * Structure to handle auction bids.
@@ -70,8 +70,8 @@ public class AuctionBid {
 		} else {
 			amountToReserve = maxBidAmount;
 		}
-		if (functions.withdrawPlayer(bidderName, amountToReserve)) {
-			reserve = functions.getUnsafeMoney(amountToReserve);
+		if (Functions.withdrawPlayer(bidderName, amountToReserve)) {
+			reserve = Functions.getUnsafeMoney(amountToReserve);
 			return true;
 		} else {
 			error = "bid-fail-cant-allocate-funds";
@@ -89,7 +89,7 @@ public class AuctionBid {
 			AuctionParticipant.addParticipant(getBidder(), auction.getScope());
 		} else {
 			// Refund reserve.
-			functions.depositPlayer(bidderName, reserve);
+			Functions.depositPlayer(bidderName, reserve);
 			reserve = 0;
 		}
 		
@@ -99,7 +99,7 @@ public class AuctionBid {
 	 * Process winning bid, gives winnings to auction owner, returns the remainder of the reserve and appropriates end of auction taxes.
 	 */
 	public void winBid() {
-		Double unsafeBidAmount = functions.getUnsafeMoney(bidAmount);
+		Double unsafeBidAmount = Functions.getUnsafeMoney(bidAmount);
 		
 		// Extract taxes:
 		Double taxes = 0D;
@@ -108,7 +108,7 @@ public class AuctionBid {
 
 		// TODO: Check this line for possible NULL
 		for (Map.Entry<String, String> entry : AuctionConfig.getStringStringMap("taxed-items", auction.getScope()).entrySet()) {
-			if (items.isSameItem(typeStack, entry.getKey())) {
+			if (Items.isSameItem(typeStack, entry.getKey())) {
 				if (entry.getValue().endsWith("%")) {
 					try {
 						taxPercent = Double.valueOf(entry.getValue().substring(0, entry.getValue().length() - 1));
@@ -237,7 +237,7 @@ public class AuctionBid {
 	private Boolean parseArgBid() {
 		if (args.length > 0) {
 			if (!args[0].isEmpty() && args[0].matches(floAuction.decimalRegex)) {
-				bidAmount = functions.getSafeMoney(Double.parseDouble(args[0]));
+				bidAmount = Functions.getSafeMoney(Double.parseDouble(args[0]));
 				/*Should fix the bug that allowed over-sized payments
 				 */
 				if(bidAmount > floAuction.econ.getBalance(this.bidderName))
@@ -300,7 +300,7 @@ public class AuctionBid {
 		}
 		if (args.length > 1) {
 			if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
-				maxBidAmount = functions.getSafeMoney(Double.parseDouble(args[1]));
+				maxBidAmount = Functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				error = "parse-error-invalid-max-bid";
 				return false;

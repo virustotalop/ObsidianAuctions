@@ -18,8 +18,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.flobi.floAuction.events.AuctionBidEvent;
 import com.flobi.floAuction.events.AuctionEndEvent;
 import com.flobi.floAuction.events.AuctionStartEvent;
-import com.flobi.floAuction.utility.functions;
-import com.flobi.floAuction.utility.items;
+import com.flobi.floAuction.utilities.Functions;
+import com.flobi.floAuction.utilities.Items;
 
 /**
  * Main auction class.
@@ -84,7 +84,7 @@ public class Auction {
 	 */
 	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) {
 		ownerName = auctionOwner.getName();
-		args = functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
+		args = Functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
 		this.plugin = plugin; 
 		this.scope = scope;
 		this.sealed = sealed;
@@ -145,7 +145,7 @@ public class Auction {
 		// Check banned items:
 		List<String> bannedItems = AuctionConfig.getStringList("banned-items", scope);
 		for (int i = 0; i < bannedItems.size(); i++) {
-			if (items.isSameItem(typeStack, bannedItems.get(i))) {
+			if (Items.isSameItem(typeStack, bannedItems.get(i))) {
 				messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-banned"), ownerName, this);
 				return false;
 			}
@@ -154,7 +154,7 @@ public class Auction {
 		Map<String, String> taxedItems = AuctionConfig.getStringStringMap("taxed-items", scope);
 		if (taxedItems != null) {
 			for (Map.Entry<String, String> entry : taxedItems.entrySet()) {
-				if (items.isSameItem(typeStack, entry.getKey())) {
+				if (Items.isSameItem(typeStack, entry.getKey())) {
 					String itemTax = entry.getValue();
 					
 					if (itemTax.endsWith("a")) {
@@ -264,7 +264,7 @@ public class Auction {
 		
 		ItemStack itemType = this.getLotType();
 		Map<Enchantment, Integer> enchantments = itemType.getEnchantments();
-		if (enchantments == null || enchantments.size() == 0) enchantments = items.getStoredEnchantments(itemType);
+		if (enchantments == null || enchantments.size() == 0) enchantments = Items.getStoredEnchantments(itemType);
 		if (!active) {
 			if (sender instanceof Player) {
 				messageManager.sendPlayerMessage(new CArrayList<String>("auction-info-no-auction"), playerName, this);
@@ -386,7 +386,7 @@ public class Auction {
 				if (buyNow == 0 || (currentBid != null && currentBid.getBidAmount() >= buyNow)) {
 					messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-buynow-expired"), playerName, this);
 				} else {
-					inputArgs[0] = Double.toString(functions.getUnsafeMoney(buyNow));
+					inputArgs[0] = Double.toString(Functions.getUnsafeMoney(buyNow));
 					if (inputArgs[0].endsWith(".0")) {
 						inputArgs[0] = inputArgs[0].substring(0, inputArgs[0].length() - 2);
 					}
@@ -399,7 +399,7 @@ public class Auction {
 						if (currentBid != null) bid.raiseOwnBid(currentBid);
 						
 						// Let other plugins figure out any reasons why this buy shouldn't happen.
-						AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
+						AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 						Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
 						if (auctionBidEvent.isCancelled()) {
 							failBid(bid, "bid-fail-blocked-by-other-plugin");
@@ -426,7 +426,7 @@ public class Auction {
 				return;
 			}
 			// Let other plugins figure out any reasons why this buy shouldn't happen.
-			AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
+			AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 			Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
 			if (auctionBidEvent.isCancelled()) {
 				failBid(bid, "bid-fail-blocked-by-other-plugin");
@@ -440,7 +440,7 @@ public class Auction {
 		if (currentBid.getBidder().equals(bidder.getName())) {
 			if (bid.raiseOwnBid(currentBid)) {
 				// Let other plugins figure out any reasons why this buy shouldn't happen.
-				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
+				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 				Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
 				if (auctionBidEvent.isCancelled()) {
 					failBid(bid, "bid-fail-blocked-by-other-plugin");
@@ -496,7 +496,7 @@ public class Auction {
 			// Did the new bid win?
 			if (winner.equals(bid)) {
 				// Let other plugins figure out any reasons why this buy shouldn't happen.
-				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, functions.getUnsafeMoney(bid.getBidAmount()), functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
+				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 				Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
 				if (auctionBidEvent.isCancelled()) {
 					failBid(bid, "bid-fail-blocked-by-other-plugin");
@@ -602,7 +602,7 @@ public class Auction {
 			return false;
 		}
 		
-    	String displayName = items.getDisplayName(itemType);
+    	String displayName = Items.getDisplayName(itemType);
     	if (displayName == null) displayName = "";
     	//Implementing allowing auctioned mob-spawners
     	//if display name is not empty do function if not fall through to next if
@@ -638,7 +638,7 @@ public class Auction {
     	}
 		
 		// Check lore:
-		String[] lore = items.getLore(heldItem);
+		String[] lore = Items.getLore(heldItem);
 		List<String> bannedLore = AuctionConfig.getStringList("banned-lore", scope);
 		if (lore != null && bannedLore != null) {
 			for (int i = 0; i < bannedLore.size(); i++) {
@@ -696,7 +696,7 @@ public class Auction {
 		
 		// TODO: Add config setting for max quantity.
 		
-		if (!items.hasAmount(ownerName, quantity, lot.getTypeStack())) {
+		if (!Items.hasAmount(ownerName, quantity, lot.getTypeStack())) {
 			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-insufficient-supply"), ownerName, this);
 			return false;
 		}
@@ -783,7 +783,7 @@ public class Auction {
 			if (args[0].equalsIgnoreCase("this") || args[0].equalsIgnoreCase("hand")) {
 				quantity = lotType.getAmount();
 			} else if (args[0].equalsIgnoreCase("all")) {
-				quantity = items.getAmount(ownerName, lotType);
+				quantity = Items.getAmount(ownerName, lotType);
 			} else if (args[0].matches("[0-9]{1,7}")) {
 				quantity = Integer.parseInt(args[0]);
 			} else {
@@ -821,7 +821,7 @@ public class Auction {
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
 				return false;
 			}
-			startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
+			startingBid = Functions.getSafeMoney(Double.parseDouble(args[1]));
 			/*if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
 				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
@@ -848,7 +848,7 @@ public class Auction {
 
 		if (args.length > 2) {
 			if (!args[2].isEmpty() && args[2].matches(floAuction.decimalRegex)) {
-				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args[2]));
+				minBidIncrement = Functions.getSafeMoney(Double.parseDouble(args[2]));
 			} else {
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-bid-increment"), ownerName, this);
 				return false;
@@ -904,7 +904,7 @@ public class Auction {
 
 		if (args.length > 4) {
 			if (!args[4].isEmpty() && args[4].matches(floAuction.decimalRegex)) {
-				this.buyNow = functions.getSafeMoney(Double.parseDouble(args[4]));
+				this.buyNow = Functions.getSafeMoney(Double.parseDouble(args[4]));
 			} else {
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-buynow"), ownerName, this);
 				return false;

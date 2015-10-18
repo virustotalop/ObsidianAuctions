@@ -20,8 +20,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floAuction.utility.functions;
-import com.flobi.floAuction.utility.items;
+import com.flobi.floAuction.utilities.Functions;
+import com.flobi.floAuction.utilities.Items;
 
 public class AuctionMessageManager extends MessageManager {
 	private static Map<String, Map<String, String>> replacementDefaults = new HashMap<String, Map<String, String>>();
@@ -279,15 +279,15 @@ public class AuctionMessageManager extends MessageManager {
     				replacements.put("%A2", auction.getOwnerDisplayName());
     	    		replacements.put("%A3", Integer.toString(auction.getLotQuantity()));
     	    		if (auction.getStartingBid() == 0) {
-        	    		replacements.put("%A4", functions.formatAmount(auction.getMinBidIncrement()));
+        	    		replacements.put("%A4", Functions.formatAmount(auction.getMinBidIncrement()));
     	    		} else {
-        	    		replacements.put("%A4", functions.formatAmount(auction.getStartingBid()));
+        	    		replacements.put("%A4", Functions.formatAmount(auction.getStartingBid()));
     	    		}
-    	    		replacements.put("%A5", functions.formatAmount(auction.getMinBidIncrement()));
-    	    		replacements.put("%A6", functions.formatAmount(auction.getBuyNow()));
-    	    		replacements.put("%A7", functions.formatTime(auction.getRemainingTime(), auctionScope));
-    	    		replacements.put("%A8", functions.formatAmount(auction.extractedPreTax));
-    	    		replacements.put("%A9", functions.formatAmount(auction.extractedPostTax));
+    	    		replacements.put("%A5", Functions.formatAmount(auction.getMinBidIncrement()));
+    	    		replacements.put("%A6", Functions.formatAmount(auction.getBuyNow()));
+    	    		replacements.put("%A7", Functions.formatTime(auction.getRemainingTime(), auctionScope));
+    	    		replacements.put("%A8", Functions.formatAmount(auction.extractedPreTax));
+    	    		replacements.put("%A9", Functions.formatAmount(auction.extractedPostTax));
     			}
 	    		break;
     		}
@@ -303,11 +303,11 @@ public class AuctionMessageManager extends MessageManager {
 	        		if (currentBid != null) {
 	    	    		replacements.put("%B1", currentBid.getBidder());
 	    				replacements.put("%B2", currentBid.getBidderDisplayName());
-	    	    		replacements.put("%B3", functions.formatAmount(currentBid.getBidAmount()));
-	    	    		replacements.put("%B4", functions.formatAmount(auction.getStartingBid()));
+	    	    		replacements.put("%B3", Functions.formatAmount(currentBid.getBidAmount()));
+	    	    		replacements.put("%B4", Functions.formatAmount(auction.getStartingBid()));
 	    			} else {
 	    				String bidderName = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-bidder-noone", auctionScope));
-	    				String startingBid = functions.formatAmount(auction.getStartingBid());
+	    				String startingBid = Functions.formatAmount(auction.getStartingBid());
 	    	    		replacements.put("%B1", bidderName);
 	    				replacements.put("%B2", bidderName);
 	    	    		replacements.put("%B3", startingBid);
@@ -326,19 +326,19 @@ public class AuctionMessageManager extends MessageManager {
     			if (auction != null) {
     		    	lot = auction.getLotType();
     				if (lot != null) {
-    		    		replacements.put("%L1", items.getItemName(lot));
-    					replacements.put("%L2", items.getDisplayName(lot));
+    		    		replacements.put("%L1", Items.getItemName(lot));
+    					replacements.put("%L2", Items.getDisplayName(lot));
     		    		if (replacements.get("%L2") == null || replacements.get("%L2").isEmpty()) {
     		    			replacements.put("%L2", replacements.get("%L1"));
     		    		}
-    		    		if (items.getFireworkPower(lot) != null) {
-        		    		replacements.put("%L3", Integer.toString(items.getFireworkPower(lot)));
+    		    		if (Items.getFireworkPower(lot) != null) {
+        		    		replacements.put("%L3", Integer.toString(Items.getFireworkPower(lot)));
     		    		}
-    		    		if (items.getBookAuthor(lot) != null) {
-        		    		replacements.put("%L4", items.getBookAuthor(lot));
+    		    		if (Items.getBookAuthor(lot) != null) {
+        		    		replacements.put("%L4", Items.getBookAuthor(lot));
     		    		}
-    		    		if (items.getBookTitle(lot) != null) {
-        		    		replacements.put("%L5", items.getBookTitle(lot));
+    		    		if (Items.getBookTitle(lot) != null) {
+        		    		replacements.put("%L5", Items.getBookTitle(lot));
     		    		}
     		    		if (lot.getType().getMaxDurability() > 0) {
     				        DecimalFormat decimalFormat = new DecimalFormat("#%");
@@ -346,14 +346,14 @@ public class AuctionMessageManager extends MessageManager {
     					}
     	        		Map<Enchantment, Integer> enchantments = lot.getEnchantments();
     	        		if (enchantments == null || enchantments.size() == 0) {
-    	        			enchantments = items.getStoredEnchantments(lot);
+    	        			enchantments = Items.getStoredEnchantments(lot);
     	        		}
     	        		if (enchantments != null) {
         					String enchantmentList = "";
         					String enchantmentSeparator = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-enchantment-separator", auctionScope));
         	        		for (Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
         	        			if (!enchantmentList.isEmpty()) enchantmentList += enchantmentSeparator;
-        	        			enchantmentList += items.getEnchantmentName(enchantment);
+        	        			enchantmentList += Items.getEnchantmentName(enchantment);
         	        		}
         	        		if (enchantmentList.isEmpty()) enchantmentList = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-enchantment-none", auctionScope));
         	        		replacements.put("%L7", enchantmentList);
@@ -373,7 +373,7 @@ public class AuctionMessageManager extends MessageManager {
     			if (player != null) {
 	    			String playerName = player.getName();
 	    			
-	    			String[] defaultStartArgs = functions.mergeInputArgs(playerName, new String[] {}, false);
+	    			String[] defaultStartArgs = Functions.mergeInputArgs(playerName, new String[] {}, false);
 					if (defaultStartArgs[0].equalsIgnoreCase("this") || defaultStartArgs[0].equalsIgnoreCase("hand")) {
 						replacements.put("%P1", ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("prep-amount-in-hand", auctionScope)));
 					} else if (defaultStartArgs[0].equalsIgnoreCase("all")) {
@@ -383,13 +383,13 @@ public class AuctionMessageManager extends MessageManager {
 					}
 					
 					replacements.put("%P2", defaultStartArgs[0]);
-		    		replacements.put("%P3", functions.formatAmount(Double.parseDouble(defaultStartArgs[1])));
+		    		replacements.put("%P3", Functions.formatAmount(Double.parseDouble(defaultStartArgs[1])));
 		    		replacements.put("%P4", defaultStartArgs[1]);
-		    		replacements.put("%P5", functions.formatAmount(Double.parseDouble(defaultStartArgs[2])));
+		    		replacements.put("%P5", Functions.formatAmount(Double.parseDouble(defaultStartArgs[2])));
 		    		replacements.put("%P6", defaultStartArgs[2]);
-		    		replacements.put("%P7", functions.formatTime(Integer.parseInt(defaultStartArgs[3]), auctionScope));
+		    		replacements.put("%P7", Functions.formatTime(Integer.parseInt(defaultStartArgs[3]), auctionScope));
 		    		replacements.put("%P8", defaultStartArgs[3]);
-		    		replacements.put("%P9", functions.formatAmount(Double.parseDouble(defaultStartArgs[4])));
+		    		replacements.put("%P9", Functions.formatAmount(Double.parseDouble(defaultStartArgs[4])));
 		    		replacements.put("%P0", defaultStartArgs[4]);
     			}
     			break;
@@ -424,13 +424,13 @@ public class AuctionMessageManager extends MessageManager {
     	    	conditionals.put("6", auction != null && auction.sealed);
     	    	conditionals.put("7", auction != null && !auction.sealed && auction.getCurrentBid() != null);
     	    	conditionals.put("8", isBroadcast);
-    	    	conditionals.put("9", lot != null && items.getBookTitle(lot) != null && !items.getBookTitle(lot).isEmpty());
-    	    	conditionals.put("0", lot != null && items.getBookAuthor(lot) != null && !items.getBookAuthor(lot).isEmpty());
-    	    	conditionals.put("A", lot != null && items.getLore(lot) != null && items.getLore(lot).length > 0);
+    	    	conditionals.put("9", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty());
+    	    	conditionals.put("0", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty());
+    	    	conditionals.put("A", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0);
     	    	conditionals.put("B", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0);
     	    	conditionals.put("C", lot != null && (lot.getType() == Material.FIREWORK || lot.getType() == Material.FIREWORK_CHARGE));
     	    	conditionals.put("D", auction != null && auction.getBuyNow() != 0);
-    	    	conditionals.put("E", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (items.getStoredEnchantments(lot) != null && items.getStoredEnchantments(lot).size() > 0)));
+    	    	conditionals.put("E", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0)));
     	    	conditionals.put("F", AuctionConfig.getBoolean("allow-max-bids", auctionScope));
     	    	conditionals.put("G", AuctionConfig.getBoolean("allow-buynow", auctionScope));
     	    	conditionals.put("H", AuctionConfig.getBoolean("allow-auto-bid", auctionScope));
@@ -470,19 +470,19 @@ public class AuctionMessageManager extends MessageManager {
             				// Stored enchantments and regular ones are treated identically.
             				Map<Enchantment, Integer> enchantments = lot.getEnchantments();
             				if (enchantments == null) {
-            					enchantments = items.getStoredEnchantments(lot);
+            					enchantments = Items.getStoredEnchantments(lot);
             				} else {
-            					Map<Enchantment, Integer> storedEnchantments = items.getStoredEnchantments(lot);
+            					Map<Enchantment, Integer> storedEnchantments = Items.getStoredEnchantments(lot);
             					if (storedEnchantments != null) enchantments.putAll(storedEnchantments);
             				}
             				if (enchantments != null && enchantments.size() > 0) {
             					for (Map.Entry<Enchantment, Integer> enchantmentEntry : enchantments.entrySet()) {
-            						if (message.length() > 0) newMessageList.add(chatPrep(message, auctionScope).replace("%R1", items.getEnchantmentName(enchantmentEntry)));
+            						if (message.length() > 0) newMessageList.add(chatPrep(message, auctionScope).replace("%R1", Items.getEnchantmentName(enchantmentEntry)));
             					}
             				}
             			}
             		} else if (message.contains("%R2")) { // Firework aspects
-    					FireworkEffect[] payloads = items.getFireworkEffects(lot);
+    					FireworkEffect[] payloads = Items.getFireworkEffects(lot);
     					if (payloads != null && payloads.length > 0) {
     						for (int j = 0; j < payloads.length; j++) {
     							FireworkEffect payload = payloads[j];
@@ -527,7 +527,7 @@ public class AuctionMessageManager extends MessageManager {
     					}
             		} else if (message.contains("%R3")) {
         				if (auction != null) {
-    	    				String[] lore = items.getLore(lot);
+    	    				String[] lore = Items.getLore(lot);
     	    				for (int j = 0; j < lore.length; j++) {
     	    					if (message.length() > 0) newMessageList.add(chatPrep(message, auctionScope).replace("%R3", lore[j]));
     	    				}
