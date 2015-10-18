@@ -444,6 +444,15 @@ public class floAuction extends JavaPlugin {
 			}
 	    }
 	    
+	    if(config.get("renamed-items-override") == null) {
+	    	config.set("renamed-items-override", false);
+	    	try {
+				config.save(new File(floAuction.dataFolder.getPath(),"config.yml"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	    
 	    
 	    // Look for defaults in the jar
 	    if (defConfigStream != null) {

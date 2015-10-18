@@ -1,6 +1,7 @@
 blacklist-enabled: false
 queue-gui-name: "&9ObsidianAuction Queue"
 allow-mobspawners: true
+renamed-items-override: false
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
 log-auctions: false

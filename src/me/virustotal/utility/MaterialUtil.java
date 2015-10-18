@@ -7,7 +7,6 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.flobi.floAuction.AuctionConfig;
@@ -40,11 +39,11 @@ public class MaterialUtil {
 				}
 			}	
 		}
-		else if(id == 52)
+		else if(id == 52 && AuctionConfig.getBoolean("allow-mobspawnerss", null))
 		{
 			return MaterialUtil.getSpawnerType(item) + " Spawner";
 		}
-		else if(AuctionConfig.getBoolean("allow-renamed-items", null) && Items.getDisplayName(item) != null)
+		else if(AuctionConfig.getBoolean("renamed-items-override", null) && Items.getDisplayName(item) != null && id != 52)
 		{
 			return Items.getDisplayName(item);
 		}
