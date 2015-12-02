@@ -1,4 +1,4 @@
-package me.virustotal.utility;
+package me.virustotal.floauction.utility;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

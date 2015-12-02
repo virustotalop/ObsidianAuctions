@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.virustotal.listeners.InventoryClickListener;
-import me.virustotal.utility.CArrayList;
-import me.virustotal.utility.MaterialUtil;
-import me.virustotal.utility.MigrationUtil;
+import me.virustotal.floauction.listeners.InventoryClickListener;
+import me.virustotal.floauction.utility.CArrayList;
+import me.virustotal.floauction.utility.MaterialUtil;
+import me.virustotal.floauction.utility.MigrationUtil;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;

@@ -1,4 +1,4 @@
-package me.virustotal.utility;
+package me.virustotal.floauction.utility;
 
 import java.util.ArrayList;
 import java.util.List;

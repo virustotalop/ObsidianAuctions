@@ -1,4 +1,4 @@
-package me.virustotal.utility;
+package me.virustotal.floauction.utility;
 
 public class FancifulUtil {
 	

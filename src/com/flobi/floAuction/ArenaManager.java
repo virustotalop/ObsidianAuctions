@@ -1,6 +1,6 @@
 package com.flobi.floAuction;
 
-import me.virustotal.utility.CArrayList;
+import me.virustotal.floauction.utility.CArrayList;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.api.PVPArenaAPI;
 import net.slipcor.pvparena.events.PAJoinEvent;

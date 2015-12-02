@@ -1,4 +1,4 @@
-package me.virustotal.listeners;
+package me.virustotal.floauction.listeners;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
