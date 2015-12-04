@@ -39,7 +39,7 @@ public class MaterialUtil {
 				}
 			}	
 		}
-		else if(id == 52 && AuctionConfig.getBoolean("allow-mobspawnerss", null))
+		else if(id == 52 && AuctionConfig.getBoolean("allow-mobspawners", null))
 		{
 			return MaterialUtil.getSpawnerType(item) + " Spawner";
 		}
