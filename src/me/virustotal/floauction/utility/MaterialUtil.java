@@ -15,15 +15,12 @@ import com.flobi.floAuction.utilities.Items;
 
 public class MaterialUtil {
 
-	private floAuction plugin;
-	public MaterialUtil(floAuction plugin)
+	public static String getName(ItemStack item)
 	{
-		this.plugin = plugin;
-	}
-
-	public String getName(ItemStack item)
-	{
-		HashMap<String,String> names = plugin.names;
+		if(item == null) //Even though it shouldn't happen
+			return "Air";
+		
+		HashMap<String,String> names = floAuction.plugin.names;
 		int id = item.getTypeId();
 		short dura = item.getDurability();
 		String name = "";
@@ -35,11 +32,13 @@ public class MaterialUtil {
 				SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
 				if(skullMeta.hasOwner())
 				{
-					return skullMeta.getOwner() + "\'s" + " Head";
+					if(skullMeta.getOwner() != null && !(skullMeta.equals("")))
+						return skullMeta.getOwner() + "\'s" + " Head";
 				}
 			}	
 		}
-		else if(id == 52 && AuctionConfig.getBoolean("allow-mobspawners", null))
+		
+		if(id == 52 && AuctionConfig.getBoolean("allow-mobspawners", null))
 		{
 			return MaterialUtil.getSpawnerType(item) + " Spawner";
 		}
@@ -55,7 +54,7 @@ public class MaterialUtil {
 			}
 			else 
 			{
-				name = id + ":" + dura;
+				name = MaterialUtil.getItemType(item) + ":" + dura;
 			}
 		}
 		else if(names.get(id + "," + dura) != null)
@@ -64,7 +63,7 @@ public class MaterialUtil {
 		}
 		else 
 		{
-			name = id + ":" + dura;
+			name = MaterialUtil.getItemType(item);
 		}
 		return name;
 	}
@@ -107,5 +106,29 @@ public class MaterialUtil {
 		String name = Bukkit.getServer().getClass().getPackage().getName();
 		version = name.substring(name.lastIndexOf('.') + 1);
 		return version;
+	}
+	
+	private  static String getItemType(ItemStack item)
+	{
+		char[] chars = item.getType().name().toCharArray();
+		chars[0] = Character.toUpperCase(chars[0]);
+		
+		for(int i = 1; i < chars.length; i++)
+		{
+			
+			if(chars[i] == '_')
+			{
+				chars[i] = ' ';
+				if(i + 1 <= chars.length - 1) //Even though this shouldn't occur it doesn't hurt to check so we don't go out of bounds
+				{
+					chars[i + 1] = Character.toUpperCase(chars[i + 1]);
+				}
+			}
+			else if(chars[i - 1] != ' ') //Check to make sure the character before is not a space to make upper case to lower case
+			{
+				chars[i] = Character.toLowerCase(chars[i]);
+			}
+		}
+		return new String(chars);
 	}
 }

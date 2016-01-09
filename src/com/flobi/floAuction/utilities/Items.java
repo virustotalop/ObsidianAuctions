@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import me.virustotal.floauction.utility.MaterialUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
@@ -569,13 +571,11 @@ public class Items {
 	
 	public static String getItemName(ItemStack typeStack) 
 	{
-		return floAuction.plugin.mUtil.getName(typeStack);
+		return MaterialUtil.getName(typeStack);
 	}
 	
-	public static String getEnchantmentName(Entry<Enchantment, Integer> enchantment) {
-		/*if (floAuction.useWhatIsIt) {
-			return WhatIsIt.enchantmentName(enchantment);
-		} else {*/
+	public static String getEnchantmentName(Entry<Enchantment, Integer> enchantment) 
+	{
 			int enchantmentId = enchantment.getKey().getId();
 			int enchantmentLevel = enchantment.getValue();
 			String enchantmentName = null;

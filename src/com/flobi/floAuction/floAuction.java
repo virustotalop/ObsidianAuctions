@@ -247,8 +247,6 @@ public class floAuction extends JavaPlugin {
 	public void onEnable() {
     	
     	MigrationUtil.migrateOldData(this);
-    	
-		this.mUtil = new MaterialUtil(this);
 		dataFolder = getDataFolder();
 		plugin = this;
     	auctionLog = new File(dataFolder, "auctions.log");
@@ -443,6 +441,15 @@ public class floAuction extends JavaPlugin {
 				e.printStackTrace();
 			}
 	    }
+	    
+	    /*if(config.get("item-type-override") == null) {
+	    	config.set("item-type-override", false);
+	    	try {
+	    		config.save(new File(floAuction.dataFolder.getPath(),"config.yml"));
+	    	} catch(IOException e) {
+	    		e.printStackTrace();
+	    	}
+	    }*/ //Decided to just do a fallback for items, might add in the future if an override is requested
 	    
 	    if(config.get("renamed-items-override") == null) {
 	    	config.set("renamed-items-override", false);
