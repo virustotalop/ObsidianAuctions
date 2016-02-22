@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,10 +60,10 @@ public class AuctionScope {
 	 */
 	private AuctionScope(String scopeId, ConfigurationSection config, ConfigurationSection textConfig) {
 		this.scopeId = scopeId;
-		name = config.getString("name");
+		this.name = config.getString("name");
 		if (name == null) name = scopeId;
 
-		type = config.getString("type");
+		this.type = config.getString("type");
 		this.config = config;
 		this.textConfig = textConfig;
 	}
@@ -74,19 +74,20 @@ public class AuctionScope {
 	 * @return true if valid location, false if invalid
 	 */
 	private boolean scopeLocationIsValid() {
-		if (locationChecked) return worlds != null || minHouseLocation != null || maxHouseLocation != null || regionId != null;
-		if (type.equalsIgnoreCase("worlds")) {
-			worlds = config.getStringList("worlds");
+		if (this.locationChecked) 
+			return worlds != null || this.minHouseLocation != null || this.maxHouseLocation != null || this.regionId != null;
+		if (this.type.equalsIgnoreCase("worlds")) {
+			this.worlds = config.getStringList("worlds");
 		} else if (type.equalsIgnoreCase("house")) {
 			String world = config.getString("house-world");
 			if (world == null || world.isEmpty()) {
-				minHouseLocation = null;
-				maxHouseLocation = null;
+				this.minHouseLocation = null;
+				this.maxHouseLocation = null;
 			} else {
-				minHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-min-x"), config.getDouble("house-min-y"), config.getDouble("house-min-z"));
-				maxHouseLocation = new Location(Bukkit.getWorld(world), config.getDouble("house-max-x"), config.getDouble("house-max-y"), config.getDouble("house-max-z"));
+				this.minHouseLocation = new Location(Bukkit.getWorld(world), this.config.getDouble("house-min-x"), this.config.getDouble("house-min-y"), this.config.getDouble("house-min-z"));
+				this.maxHouseLocation = new Location(Bukkit.getWorld(world), this.config.getDouble("house-max-x"), this.config.getDouble("house-max-y"), this.config.getDouble("house-max-z"));
 			}
-		} else if (type.equalsIgnoreCase("worldguardregion")) {
+		} else if (this.type.equalsIgnoreCase("worldguardregion")) {
 			if (worldGuardPlugin == null) {
 				// get the list of regions that contain the given location
 			    Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
@@ -96,10 +97,10 @@ public class AuctionScope {
 				    worldGuardPlugin = (WorldGuardPlugin) plugin;
 			    }
 			}
-			regionId = config.getString("region-id");
+			this.regionId = config.getString("region-id");
 		}
-		locationChecked = true;
-		return worlds != null || minHouseLocation != null || maxHouseLocation != null || regionId != null;
+		this.locationChecked = true;
+		return this.worlds != null || this.minHouseLocation != null || this.maxHouseLocation != null || this.regionId != null;
 	}
 	
 	/**
@@ -108,7 +109,7 @@ public class AuctionScope {
 	 * @return active auction instance
 	 */
 	public Auction getActiveAuction() {
-		return activeAuction;
+		return this.activeAuction;
 	}
 	
 	/**
@@ -117,7 +118,7 @@ public class AuctionScope {
 	 * @return length of auction queue
 	 */
 	public int getAuctionQueueLength() {
-		return auctionQueue.size();
+		return this.auctionQueue.size();
 	}
 	
 	/**
@@ -126,11 +127,11 @@ public class AuctionScope {
 	 * @param auction auction instance to set as active
 	 */
 	public void setActiveAuction(Auction auction) {
-		if (activeAuction != null && auction == null) {
-			lastAuctionDestroyTime = System.currentTimeMillis();
+		if (this.activeAuction != null && auction == null) {
+			this.lastAuctionDestroyTime = System.currentTimeMillis();
 			checkAuctionQueue();
 		}
-		activeAuction = auction;
+		this.activeAuction = auction;
 	}
 	
 	/**
@@ -160,7 +161,7 @@ public class AuctionScope {
 	    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-auction-exists"), playerName, auctionToQueue);
 				return;
 			}
-			if (activeAuction.getOwner().equalsIgnoreCase(playerName)) {
+			if (this.activeAuction.getOwner().equalsIgnoreCase(playerName)) {
 	    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-fail-current-auction"), playerName, auctionToQueue);
 				return;
 			}
@@ -169,20 +170,20 @@ public class AuctionScope {
 				return;
 			}
 		}
-		for(int i = 0; i < auctionQueue.size(); i++) {
-			if (auctionQueue.get(i) != null) {
-				Auction queuedAuction = auctionQueue.get(i);
+		for(int i = 0; i < this.auctionQueue.size(); i++) {
+			if (this.auctionQueue.get(i) != null) {
+				Auction queuedAuction = this.auctionQueue.get(i);
 				if (queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
 		    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-fail-in-queue"), playerName, auctionToQueue);
 					return;
 				}
 			}
 		}
-		if ((auctionQueue.size() == 0 && System.currentTimeMillis() - lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
-			auctionQueue.add(auctionToQueue);
+		if ((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
+			this.auctionQueue.add(auctionToQueue);
 			AuctionParticipant.addParticipant(playerName, this);
 			checkAuctionQueue();
-			if (auctionQueue.contains(auctionToQueue)) {
+			if (this.auctionQueue.contains(auctionToQueue)) {
 	    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-enter"), playerName, auctionToQueue);
 			}
 		}
@@ -192,13 +193,13 @@ public class AuctionScope {
      * Checks the auction queue to see if the next auction is ready to start. 
      */
 	private void checkThisAuctionQueue() {
-		if (activeAuction != null) {
+		if (this.activeAuction != null) {
 			return;
 		}
-		if (System.currentTimeMillis() - lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) {
+		if (System.currentTimeMillis() - this.lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) {
 			return;
 		}
-		if (auctionQueue.size() == 0) {
+		if (this.auctionQueue.size() == 0) {
 			return;
 		}
 		Auction auction = auctionQueue.remove(0);
@@ -223,16 +224,16 @@ public class AuctionScope {
 			return;
 		}
 		
-		if (!floAuction.perms.has(player, "auction.start")) {
+		if (!FloAuction.perms.has(player, "auction.start")) {
     		messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-permissions"), playerName, auction);
 			return;
 		}
 		if (!auction.isValid()) {
 			return;
 		}
-		activeAuction = auction;
+		this.activeAuction = auction;
 		if (!auction.start()) {
-			activeAuction = null;
+			this.activeAuction = null;
 		}
 	}
 	
@@ -259,23 +260,30 @@ public class AuctionScope {
 		if (world == null) return false;
 		String worldName = world.getName();
 		if (!scopeLocationIsValid()) return false;
-		if (type.equalsIgnoreCase("worlds")) {
+		if (this.type.equalsIgnoreCase("worlds")) {
 			for (int i = 0; i < worlds.size(); i++) {
-				if (worlds.get(i).equalsIgnoreCase(worldName) || worlds.get(i).equalsIgnoreCase("*")) return true;
+				if (this.worlds.get(i).equalsIgnoreCase(worldName) || this.worlds.get(i).equalsIgnoreCase("*")) return true;
 			}
-		} else if (type.equalsIgnoreCase("house")) {
-			if (minHouseLocation == null || maxHouseLocation == null) return false;
-			if (!location.getWorld().equals(minHouseLocation.getWorld())) return false;
-			if (location.getX() > Math.max(minHouseLocation.getX(), maxHouseLocation.getX()) || location.getX() < Math.min(minHouseLocation.getX(), maxHouseLocation.getX())) return false;
-			if (location.getZ() > Math.max(minHouseLocation.getZ(), maxHouseLocation.getZ()) || location.getZ() < Math.min(minHouseLocation.getZ(), maxHouseLocation.getZ())) return false;
-			if (location.getY() > Math.max(minHouseLocation.getY(), maxHouseLocation.getY()) || location.getY() < Math.min(minHouseLocation.getY(), maxHouseLocation.getY())) return false;
+		} else if (this.type.equalsIgnoreCase("house")) {
+			if (this.minHouseLocation == null || this.maxHouseLocation == null) 
+				return false;
+			if (!location.getWorld().equals(this.minHouseLocation.getWorld())) 
+				return false;
+			if (location.getX() > Math.max(minHouseLocation.getX(), maxHouseLocation.getX()) || location.getX() < Math.min(minHouseLocation.getX(), maxHouseLocation.getX())) 
+				return false;
+			if (location.getZ() > Math.max(minHouseLocation.getZ(), maxHouseLocation.getZ()) || location.getZ() < Math.min(minHouseLocation.getZ(), maxHouseLocation.getZ())) 
+				return false;
+			if (location.getY() > Math.max(minHouseLocation.getY(), maxHouseLocation.getY()) || location.getY() < Math.min(minHouseLocation.getY(), maxHouseLocation.getY())) 
+				return false;
 			return true;
 		} else if (type.equalsIgnoreCase("worldguardregion")) {
-			if (worldGuardPlugin == null) return false;
+			if (worldGuardPlugin == null) 
+				return false;
 			RegionManager regionManager =  worldGuardPlugin.getRegionManager( location.getWorld() );
 			ApplicableRegionSet applicableRegions = regionManager.getApplicableRegions(location);
 			for (ProtectedRegion region : applicableRegions) {
-				if (region.getId().equalsIgnoreCase(regionId)) return true;
+				if (region.getId().equalsIgnoreCase(this.regionId)) 
+					return true;
 			}
 		}
 		return false;
@@ -287,7 +295,7 @@ public class AuctionScope {
 	 * @return config for the scope
 	 */
 	public ConfigurationSection getConfig() {
-		return config.getConfigurationSection("config");
+		return this.config.getConfigurationSection("config");
 	}
 
 	/**
@@ -296,7 +304,7 @@ public class AuctionScope {
 	 * @return name of the scope
 	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 
@@ -306,7 +314,7 @@ public class AuctionScope {
 	 * @return id of the scope
 	 */
 	public String getScopeId() {
-		return scopeId;
+		return this.scopeId;
 	}
 
 	/**
@@ -315,7 +323,7 @@ public class AuctionScope {
 	 * @return language config for the scope
 	 */
 	public ConfigurationSection getTextConfig() {
-		return textConfig;
+		return this.textConfig;
 	}
 
 	/**
@@ -324,7 +332,7 @@ public class AuctionScope {
 	 * @return auction queue
 	 */
 	public ArrayList<Auction> getAuctionQueue() {
-		return auctionQueue;
+		return this.auctionQueue;
 	}
 	
 	/**
@@ -343,8 +351,8 @@ public class AuctionScope {
 	 * @return players position in queue or zero if not in queue
 	 */
 	public int getQueuePosition(String playerName) {
-		for (int t = 0; t < auctionQueue.size(); t++) {
-			Auction auction = auctionQueue.get(t);
+		for (int t = 0; t < this.auctionQueue.size(); t++) {
+			Auction auction = this.auctionQueue.get(t);
 			if (auction.getOwner().equalsIgnoreCase(playerName)) return t + 1;
 		}
 		return 0;
@@ -437,18 +445,18 @@ public class AuctionScope {
 	}
 
 	public int getOtherPluginsAuctionsLength() {
-		if (otherPluginsAuctions == null) return 0;
-		return otherPluginsAuctions.size();
+		if (this.otherPluginsAuctions == null) return 0;
+		return this.otherPluginsAuctions.size();
 	}
 
 	public static void sendFairwellMessages() {
-		Iterator<String> playerIterator = floAuction.playerScopeCache.keySet().iterator();
+		Iterator<String> playerIterator = FloAuction.playerScopeCache.keySet().iterator();
 		while (playerIterator.hasNext()) {
 			String playerName = playerIterator.next();
 			if (!AuctionParticipant.isParticipating(playerName)) {
 				Player player = Bukkit.getPlayer(playerName);
 				if (player != null && player.isOnline()) {
-					String oldScopeId = floAuction.playerScopeCache.get(playerName);
+					String oldScopeId = FloAuction.playerScopeCache.get(playerName);
 					AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
 					AuctionScope playerScope = AuctionScope.getPlayerScope(player);
 					String playerScopeId = null;
@@ -456,9 +464,9 @@ public class AuctionScope {
 						playerScopeId = playerScope.getScopeId();
 					}
 					if (playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
-							floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-fairwell"), playerName, oldScope);
+							FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-fairwell"), playerName, oldScope);
 							playerIterator.remove();
-							floAuction.playerScopeCache.remove(playerName);
+							FloAuction.playerScopeCache.remove(playerName);
 					}
 				}
 			}
@@ -480,15 +488,15 @@ public class AuctionScope {
 		String playerName = player.getName();
 		if (!AuctionParticipant.isParticipating(playerName)) {
 			AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-			String oldScopeId = floAuction.playerScopeCache.get(playerName);
+			String oldScopeId = FloAuction.playerScopeCache.get(playerName);
 			if (playerScope == null) {
 				if (oldScopeId != null) {
-					floAuction.playerScopeCache.remove(playerName);
+					FloAuction.playerScopeCache.remove(playerName);
 				}
 			} else {
 				if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
-					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(welcomeMessageKey), playerName, playerScope);
-					floAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
+					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(welcomeMessageKey), playerName, playerScope);
+					FloAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
 				}
 			}
 		}

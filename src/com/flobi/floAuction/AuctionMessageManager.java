@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -20,8 +20,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floAuction.utilities.Functions;
-import com.flobi.floAuction.utilities.Items;
+import com.flobi.floauction.utilities.Functions;
+import com.flobi.floauction.utilities.Items;
 
 public class AuctionMessageManager extends MessageManager {
 	private static Map<String, Map<String, String>> replacementDefaults = new HashMap<String, Map<String, String>>();
@@ -132,12 +132,12 @@ public class AuctionMessageManager extends MessageManager {
     	if (sender != null) {
 	    	if (sender instanceof Player) {
 	    		player = (Player) sender;
-		    	if (!fullBroadcast && floAuction.getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1) {
+		    	if (!fullBroadcast && FloAuction.getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1) {
 		    		// Don't send this user any messages.
 		    		return;
 				}
 	    	} else {
-		    	if (!fullBroadcast && floAuction.getVoluntarilyDisabledUsers().indexOf("*console*") != -1) {
+		    	if (!fullBroadcast && FloAuction.getVoluntarilyDisabledUsers().indexOf("*console*") != -1) {
 		    		// Don't send console any messages.
 		    		return;
 				}
@@ -152,17 +152,17 @@ public class AuctionMessageManager extends MessageManager {
 	    	for (String message : messages) {
 //				sendTellRaw(player.getName(), message);
 	    		player.sendMessage(message);
-	    		floAuction.log(player.getName(), message, auctionScope);
+	    		FloAuction.log(player.getName(), message, auctionScope);
 	    	}
     	} else if (sender != null) {
     		ConsoleCommandSender console = Bukkit.getConsoleSender();
 	    	for (String message : messages) {
 	    		console.sendMessage(ChatColor.stripColor(message));
-	    		floAuction.log("CONSOLE", message, auctionScope);
+	    		FloAuction.log("CONSOLE", message, auctionScope);
 	    	}
     	} else {
 	    	for (String message : messages) {
-	    		floAuction.log("NO TARGET!", message, auctionScope);
+	    		FloAuction.log("NO TARGET!", message, auctionScope);
 	    	}
     	}
     	
@@ -178,7 +178,7 @@ public class AuctionMessageManager extends MessageManager {
     	Player[] onlinePlayers = Bukkit.getOnlinePlayers();
     	
     	for (Player player : onlinePlayers) {
-        	if (floAuction.getVoluntarilyDisabledUsers().contains(player.getName())) continue;
+        	if (FloAuction.getVoluntarilyDisabledUsers().contains(player.getName())) continue;
     		if (auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) continue;
 //    		sendTellRaw(player.getName(), message);
 	    	for (String message : messages) {
@@ -186,7 +186,7 @@ public class AuctionMessageManager extends MessageManager {
 	    	}
     	}
     	
-    	if (auctionScope == null && floAuction.getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
+    	if (auctionScope == null && FloAuction.getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
 	    	for (String message : messages) {
 	    		message = ChatColor.stripColor(message);
 				Bukkit.getConsoleSender().sendMessage(message);
@@ -194,7 +194,7 @@ public class AuctionMessageManager extends MessageManager {
 		}
     	for (String message : messages) {
     		message = ChatColor.stripColor(message);
-    		floAuction.log("BROADCAST", message, auctionScope);
+    		FloAuction.log("BROADCAST", message, auctionScope);
     	}
     }
     
@@ -416,9 +416,9 @@ public class AuctionMessageManager extends MessageManager {
     	for (int l = 0; l < messageList.size(); l++) {
     		String message = messageList.get(l);
     		if (message.length() > 0 && (message.contains("%C") || message.contains("%N"))) {
-    	    	conditionals.put("1", player != null && floAuction.perms.has(player, "auction.admin"));
-    	    	conditionals.put("2", player != null && floAuction.perms.has(player, "auction.start"));
-    	    	conditionals.put("3", player != null && floAuction.perms.has(player, "auction.bid"));
+    	    	conditionals.put("1", player != null && FloAuction.perms.has(player, "auction.admin"));
+    	    	conditionals.put("2", player != null && FloAuction.perms.has(player, "auction.start"));
+    	    	conditionals.put("3", player != null && FloAuction.perms.has(player, "auction.bid"));
     	    	conditionals.put("4", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0);
     	    	conditionals.put("5", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0);
     	    	conditionals.put("6", auction != null && auction.sealed);

@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floAuction.utilities.Items;
+import com.flobi.floauction.utilities.Items;
 
 /**
  * Structure to hold and process the items being auctioned.
@@ -113,7 +113,7 @@ public class AuctionLot implements java.io.Serializable {
 			// Give whatever items space permits at this time.
 			ItemStack typeStack = getTypeStack();
 			if (amountToGive > 0) {
-				floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-give"), playerName, (AuctionScope) null);
+				FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-give"), playerName, (AuctionScope) null);
 			}
 			while (amountToGive > 0) {
 				ItemStack givingItems = lotTypeLock.clone();
@@ -138,7 +138,7 @@ public class AuctionLot implements java.io.Serializable {
 					Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
 					drop.setItemStack(cloneStack);
 				}
-				floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-drop"), playerName, (AuctionScope) null);
+				FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-drop"), playerName, (AuctionScope) null);
 			}
 		} else {
 			// Player is offline, queue lot for give on login.
@@ -150,7 +150,7 @@ public class AuctionLot implements java.io.Serializable {
 			quantity = 0;
 			
 			// Queue for distribution on space availability.
-			floAuction.saveOrphanLot(orphanLot);
+			FloAuction.saveOrphanLot(orphanLot);
 		}
 	}
 	

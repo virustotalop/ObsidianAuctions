@@ -1,4 +1,4 @@
-package com.flobi.floAuction.utilities;
+package com.flobi.floauction.utilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
-
-import com.flobi.floAuction.floAuction;
 
 public class Items {
 	private static Map<Integer, String> enchantmentNames =  new HashMap<Integer, String>();

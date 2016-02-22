@@ -4,7 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import com.flobi.floAuction.floAuction;
+import com.flobi.floauction.FloAuction;
 
 public class InventoryClickListener implements Listener {
 
@@ -17,9 +17,7 @@ public class InventoryClickListener implements Listener {
 			{
 				if(e.getWhoClicked().getOpenInventory() != null)
 				{
-					/*Shift clicking items into the gui was likely possible, this should fix that bug
-					 */
-					if(e.getWhoClicked().getOpenInventory().getTitle().equals(floAuction.guiQueueName))
+					if(e.getWhoClicked().getOpenInventory().getTitle().equals(FloAuction.guiQueueName))
 						e.setCancelled(true);
 				}
 			}

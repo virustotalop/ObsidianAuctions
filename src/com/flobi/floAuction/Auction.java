@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.flobi.floAuction.events.AuctionBidEvent;
-import com.flobi.floAuction.events.AuctionEndEvent;
-import com.flobi.floAuction.events.AuctionStartEvent;
-import com.flobi.floAuction.utilities.Functions;
-import com.flobi.floAuction.utilities.Items;
+import com.flobi.floauction.events.AuctionBidEvent;
+import com.flobi.floauction.events.AuctionEndEvent;
+import com.flobi.floauction.events.AuctionStartEvent;
+import com.flobi.floauction.utilities.Functions;
+import com.flobi.floauction.utilities.Items;
 
 /**
  * Main auction class.
@@ -27,7 +27,7 @@ import com.flobi.floAuction.utilities.Items;
  * @author Joshua "flobi" Hatfield
  */
 public class Auction {
-	protected floAuction plugin;
+	protected FloAuction plugin;
 	private String[] args;
 	private String ownerName;
 	private AuctionScope scope;
@@ -82,7 +82,7 @@ public class Auction {
 	 * @param scope        the hosting AuctionScope
 	 * @param sealed       whether or not it is a sealed auction
 	 */
-	public Auction(floAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) {
+	public Auction(FloAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) {
 		ownerName = auctionOwner.getName();
 		args = Functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
 		this.plugin = plugin; 
@@ -179,7 +179,7 @@ public class Auction {
 		}
 		
 		if (preAuctionTax > 0D) {
-			if (!floAuction.econ.has(ownerName, preAuctionTax)) {
+			if (!FloAuction.econ.has(ownerName, preAuctionTax)) {
 				messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-start-tax"), ownerName, this);
 				return false;
 			}
@@ -191,12 +191,12 @@ public class Auction {
 		}
 
 		if (preAuctionTax > 0D) {
-			if (floAuction.econ.has(ownerName, preAuctionTax)) {
-				floAuction.econ.withdrawPlayer(ownerName, preAuctionTax);
+			if (FloAuction.econ.has(ownerName, preAuctionTax)) {
+				FloAuction.econ.withdrawPlayer(ownerName, preAuctionTax);
 				extractedPreTax = preAuctionTax;
 				messageManager.sendPlayerMessage(new CArrayList<String>("auction-start-tax"), ownerName, this);
 				String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", scope);
-				if (!taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(taxDestinationUser, preAuctionTax);
+				if (!taxDestinationUser.isEmpty()) FloAuction.econ.depositPlayer(taxDestinationUser, preAuctionTax);
 			}
 		}
 		
@@ -608,10 +608,10 @@ public class Auction {
     	//if display name is not empty do function if not fall through to next if
     	if(!displayName.isEmpty())
     	{
-    		if(floAuction.itemBlackListEnabled)
+    		if(FloAuction.itemBlackListEnabled)
     		{
     			String lowerCaseDisplay = displayName.toLowerCase();
-    			for(String string : floAuction.itemBlacklist)
+    			for(String string : FloAuction.itemBlacklist)
     			{
     				if(lowerCaseDisplay.contains(string))
     				{
@@ -816,7 +816,7 @@ public class Auction {
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
 				return false;
 			}
-			else if(!args[1].matches(floAuction.decimalRegex))
+			else if(!args[1].matches(FloAuction.decimalRegex))
 			{
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
 				return false;
@@ -847,7 +847,7 @@ public class Auction {
 		if (minBidIncrement > 0) return true;
 
 		if (args.length > 2) {
-			if (!args[2].isEmpty() && args[2].matches(floAuction.decimalRegex)) {
+			if (!args[2].isEmpty() && args[2].matches(FloAuction.decimalRegex)) {
 				minBidIncrement = Functions.getSafeMoney(Double.parseDouble(args[2]));
 			} else {
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-bid-increment"), ownerName, this);
@@ -903,7 +903,7 @@ public class Auction {
 		if (getBuyNow() > 0) return true;
 
 		if (args.length > 4) {
-			if (!args[4].isEmpty() && args[4].matches(floAuction.decimalRegex)) {
+			if (!args[4].isEmpty() && args[4].matches(FloAuction.decimalRegex)) {
 				this.buyNow = Functions.getSafeMoney(Double.parseDouble(args[4]));
 			} else {
 				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-buynow"), ownerName, this);

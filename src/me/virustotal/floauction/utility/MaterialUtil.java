@@ -9,9 +9,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import com.flobi.floAuction.AuctionConfig;
-import com.flobi.floAuction.floAuction;
-import com.flobi.floAuction.utilities.Items;
+import com.flobi.floauction.AuctionConfig;
+import com.flobi.floauction.FloAuction;
+import com.flobi.floauction.utilities.Items;
 
 public class MaterialUtil {
 
@@ -20,7 +20,7 @@ public class MaterialUtil {
 		if(item == null) //Even though it shouldn't happen
 			return "Air";
 		
-		HashMap<String,String> names = floAuction.plugin.names;
+		HashMap<String,String> names = FloAuction.plugin.names;
 		int id = item.getTypeId();
 		short dura = item.getDurability();
 		String name = "";
@@ -46,7 +46,7 @@ public class MaterialUtil {
 		{
 			return Items.getDisplayName(item);
 		}
-		else if(names.get(id + "," + dura) == null && floAuction.isDamagedAllowed)
+		else if(names.get(id + "," + dura) == null && FloAuction.isDamagedAllowed)
 		{
 			if(names.get(id + "," + 0) != null)
 			{

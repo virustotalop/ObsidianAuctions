@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.flobi.floAuction.utilities.Functions;
+import com.flobi.floauction.utilities.Functions;
 
 /**
  * Class for handling configuration and language values for floAuction using the AuctionScope preference.
@@ -37,7 +37,7 @@ public class AuctionConfig {
 		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
 			result = auctionScope.getConfig().getDouble(path);
 		}
-		if (result == null) result = floAuction.config.getDouble(path);
+		if (result == null) result = FloAuction.config.getDouble(path);
 		return result;
 	}
 	
@@ -53,7 +53,7 @@ public class AuctionConfig {
 		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
 			result = auctionScope.getConfig().getInt(path);
 		}
-		if (result == null) result = floAuction.config.getInt(path);
+		if (result == null) result = FloAuction.config.getInt(path);
 		return result;
 	}
 	
@@ -69,7 +69,7 @@ public class AuctionConfig {
 		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
 			result = auctionScope.getConfig().getBoolean(path);
 		}
-		if (result == null) result = floAuction.config.getBoolean(path);
+		if (result == null) result = FloAuction.config.getBoolean(path);
 		return result;
 	}
 	
@@ -85,7 +85,7 @@ public class AuctionConfig {
 		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
 			result = auctionScope.getConfig().getStringList(path);
 		}
-		if (result == null) result = floAuction.config.getStringList(path);
+		if (result == null) result = FloAuction.config.getStringList(path);
 		return result;
 	}
 	
@@ -101,7 +101,7 @@ public class AuctionConfig {
 		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
 			result = auctionScope.getConfig().getString(path);
 		}
-		if (result == null) result = floAuction.config.getString(path);
+		if (result == null) result = FloAuction.config.getString(path);
 		return result;
 	}
 	
@@ -119,7 +119,7 @@ public class AuctionConfig {
 		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
 			section = auctionScope.getConfig().getConfigurationSection(path);
 		}
-		if (section == null) section = floAuction.config.getConfigurationSection(path);
+		if (section == null) section = FloAuction.config.getConfigurationSection(path);
 		
 		
 		result = new HashMap<String, String>();
@@ -143,7 +143,7 @@ public class AuctionConfig {
 		if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().contains(path)) {
 			result = auctionScope.getTextConfig().getString(path);
 		}
-		if (result == null) result = floAuction.textConfig.getString(path);
+		if (result == null) result = FloAuction.textConfig.getString(path);
 		return result;
 	}
 	
@@ -159,7 +159,7 @@ public class AuctionConfig {
 		if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().contains(path)) {
 			result = auctionScope.getTextConfig().getStringList(path);
 		}
-		if (result == null) result = floAuction.textConfig.getStringList(path);
+		if (result == null) result = FloAuction.textConfig.getStringList(path);
 		return result;
 	}
 }

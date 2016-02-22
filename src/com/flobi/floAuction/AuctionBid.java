@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import java.util.Map;
 
@@ -8,8 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floAuction.utilities.Functions;
-import com.flobi.floAuction.utilities.Items;
+import com.flobi.floauction.utilities.Functions;
+import com.flobi.floauction.utilities.Items;
 
 /**
  * Structure to handle auction bids.
@@ -130,14 +130,14 @@ public class AuctionBid {
 			auction.messageManager.sendPlayerMessage(new CArrayList<String>("auction-end-tax"), auction.getOwner(), auction);
 			unsafeBidAmount -= taxes;
 			String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", auction.getScope());
-			if (!taxDestinationUser.isEmpty()) floAuction.econ.depositPlayer(taxDestinationUser, taxes);
+			if (!taxDestinationUser.isEmpty()) FloAuction.econ.depositPlayer(taxDestinationUser, taxes);
 		}
 		
 		// Apply winnings to auction owner.
-		floAuction.econ.depositPlayer(auction.getOwner(), unsafeBidAmount);
+		FloAuction.econ.depositPlayer(auction.getOwner(), unsafeBidAmount);
 
 		// Refund remaining reserve.
-		floAuction.econ.depositPlayer(bidderName, reserve - unsafeBidAmount - taxes);
+		FloAuction.econ.depositPlayer(bidderName, reserve - unsafeBidAmount - taxes);
 		
 		reserve = 0;
 	}
@@ -236,11 +236,11 @@ public class AuctionBid {
 	 */
 	private Boolean parseArgBid() {
 		if (args.length > 0) {
-			if (!args[0].isEmpty() && args[0].matches(floAuction.decimalRegex)) {
+			if (!args[0].isEmpty() && args[0].matches(FloAuction.decimalRegex)) {
 				bidAmount = Functions.getSafeMoney(Double.parseDouble(args[0]));
 				/*Should fix the bug that allowed over-sized payments
 				 */
-				if(bidAmount > floAuction.econ.getBalance(this.bidderName))
+				if(bidAmount > FloAuction.econ.getBalance(this.bidderName))
 				{
 					this.error = "bid-fail-cant-allocate-funds";
 					return false;
@@ -299,7 +299,7 @@ public class AuctionBid {
 			return true;
 		}
 		if (args.length > 1) {
-			if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
+			if (!args[1].isEmpty() && args[1].matches(FloAuction.decimalRegex)) {
 				maxBidAmount = Functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
 				error = "parse-error-invalid-max-bid";

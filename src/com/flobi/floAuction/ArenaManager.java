@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import me.virustotal.floauction.utility.CArrayList;
 import net.slipcor.pvparena.PVPArena;
@@ -24,6 +24,7 @@ import com.tommytony.war.Warzone;
  * @author Joshua "flobi" Hatfield
  */
 public class ArenaManager {
+	
 	private static MobArena mobArena = null;
 	private static PVPArena pVPArena = null;
 	private static War war = null;
@@ -33,7 +34,7 @@ public class ArenaManager {
 	 * 
 	 * @param plugin the floAuction instance to pass into the listener
 	 */
-	public static void loadArenaListeners(floAuction plugin) {
+	public static void loadArenaListeners(FloAuction plugin) {
 		PluginManager pluginManager = Bukkit.getPluginManager();
 		// Load plugins
 		if (mobArena == null) mobArena = (MobArena) pluginManager.getPlugin("MobArena");
@@ -50,7 +51,7 @@ public class ArenaManager {
 				if (player == null) return;
 				String playerName = player.getName();
 				if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
+					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
 					event.setCancelled(true);
 				}
 			}
@@ -70,7 +71,7 @@ public class ArenaManager {
 				if (player == null) return;
 				String playerName = player.getName();
 				if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
+					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
 					event.setCancelled(true);
 				}
 			}

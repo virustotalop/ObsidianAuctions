@@ -5,13 +5,57 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
-import com.flobi.floAuction.floAuction;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.flobi.floauction.FloAuction;
 
 public class MigrationUtil {
-
-	public static void migrateOldData(floAuction plugin)
+	
+	public static void mapOldStrings()
+	{
+		HashMap<String, String> map = new HashMap<String, String>();
+		File mappingsFile = new File(FloAuction.plugin.getDataFolder().getPath(), "mappings.yml");
+		if(!mappingsFile.exists())
+		{
+			FloAuction.plugin.saveResource("mappings.yml", false);
+		}
+		FileConfiguration mapFile = YamlConfiguration.loadConfiguration(mappingsFile);
+		
+		List<String> mappings = mapFile.getStringList("mappings");
+		for(String m : mappings)
+		{
+			String[] split = m.split(",");
+			map.put(split[0], split[1]);
+		}
+		
+		FloAuction.plugin.getLogger().log(Level.INFO, "Checking to see if strings need to be mapped");
+		File languageFile = new File(FloAuction.plugin.getDataFolder().getPath(), "language.yml");
+		FileConfiguration language = YamlConfiguration.loadConfiguration(languageFile);
+		
+		for(String key : language.getKeys(false))
+		{
+			if(language.isString(key))
+			{
+				String str = language.getString(key);
+				for(String mString : map.values())
+				{
+					str = str.replace(mString, map.get(mString));
+				}
+				if(!language.getString(key).equals(str))
+				{
+					language.set(key, str);
+				}
+			}
+		}
+	}
+	
+	
+	public static void migrateOldData(FloAuction plugin)
 	{
 		String path = plugin.getDataFolder().getAbsolutePath();
 		String strippedPath = path.substring(0, path.lastIndexOf(File.separator));

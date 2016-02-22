@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import me.virustotal.floauction.utility.CArrayList;
 
@@ -107,7 +107,7 @@ public class AuctionParticipant {
 	 */
 	private void sendArenaWarning() {
 		if (sentArenaWarning) return;
-		floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("arena-warning"), playerName, (AuctionScope) null);
+		FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("arena-warning"), playerName, (AuctionScope) null);
 		sentArenaWarning = true;
 	}
 
@@ -116,7 +116,7 @@ public class AuctionParticipant {
 	 */
 	private void sendEscapeWarning() {
 		if (sentEscapeWarning) return;
-		floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-escape-warning"), playerName, (AuctionScope) null);
+		FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-escape-warning"), playerName, (AuctionScope) null);
 		sentEscapeWarning = true;
 	}
 
@@ -128,8 +128,8 @@ public class AuctionParticipant {
 	 */
 	public static boolean isParticipating(String playerName) {
 		boolean participating = false;
-		for (int i = 0; i < floAuction.auctionParticipants.size(); i++) {
-			AuctionParticipant participant = floAuction.auctionParticipants.get(i);
+		for (int i = 0; i < FloAuction.auctionParticipants.size(); i++) {
+			AuctionParticipant participant = FloAuction.auctionParticipants.get(i);
 			if (participant.isParticipating() && playerName.equalsIgnoreCase(participant.playerName)) {
 				participating = true;
 			}
@@ -148,7 +148,7 @@ public class AuctionParticipant {
 		if (AuctionParticipant.getParticipant(playerName) == null) {
 			AuctionParticipant participant = new AuctionParticipant(playerName, auctionScope);
 			participant.lastKnownGoodLocation = player.getLocation();
-			floAuction.auctionParticipants.add(participant);
+			FloAuction.auctionParticipants.add(participant);
 			participant.isParticipating();
 		}
 	}
@@ -160,8 +160,8 @@ public class AuctionParticipant {
 	 * @return participant instance
 	 */
 	private static AuctionParticipant getParticipant(String playerName) {
-		for (int i = 0; i < floAuction.auctionParticipants.size(); i++) {
-			AuctionParticipant participant = floAuction.auctionParticipants.get(i);
+		for (int i = 0; i < FloAuction.auctionParticipants.size(); i++) {
+			AuctionParticipant participant = FloAuction.auctionParticipants.get(i);
 			if (playerName.equalsIgnoreCase(participant.playerName)) {
 				return participant;
 			}
@@ -213,7 +213,7 @@ public class AuctionParticipant {
             }
 		}
 		
-		if (!participating) floAuction.auctionParticipants.remove(this);
+		if (!participating) FloAuction.auctionParticipants.remove(this);
 		return participating;
 	}
 
