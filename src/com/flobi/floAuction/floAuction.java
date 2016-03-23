@@ -595,9 +595,9 @@ public class FloAuction extends JavaPlugin {
 		textConfig = cleanTextConfig;
 		
 		// Here's an oppsie fix for a typo in 3.0.0.
-		if (textConfig.getString("bid-fail-under-starting-bid") != null && textConfig.getString("bid-fail-under-starting-bid").equals("&6The bidding must start at %A8.")) 
+		if (textConfig.getString("bid-fail-under-starting-bid") != null && textConfig.getString("bid-fail-under-starting-bid").equals("&6The bidding must start at %auction-pre-tax%.")) //%A8
 		{
-			textConfig.set("bid-fail-under-starting-bid", "&6The bidding must start at %A4.");
+			textConfig.set("bid-fail-under-starting-bid", "&6The bidding must start at %auction-bid-starting%."); //%A4
 		}
 
 		try 
@@ -883,10 +883,8 @@ public class FloAuction extends JavaPlugin {
     				}
 
 					return true;
-    			} else if (
-        				args[0].equalsIgnoreCase("prep") || 
-        				args[0].equalsIgnoreCase("p")
-    			) {
+    			} else if (args[0].equalsIgnoreCase("prep") || args[0].equalsIgnoreCase("p")) 
+    			{
     				// Save a users individual starting default values.
     	    		if (player == null) 
     	    		{
@@ -955,7 +953,8 @@ public class FloAuction extends JavaPlugin {
 						messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-not-owner-cancel"), playerName, (AuctionScope) null);
 					}
     				return true;
-    			} else if (args[0].equalsIgnoreCase("confiscate") || args[0].equalsIgnoreCase("impound")) 
+    			} 
+    			else if (args[0].equalsIgnoreCase("confiscate") || args[0].equalsIgnoreCase("impound")) 
     			{
     				if (auction == null) 
     				{

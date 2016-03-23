@@ -13,6 +13,7 @@ import org.bukkit.util.Vector;
  * @author Joshua "flobi" Hatfield
  */
 public class AuctionParticipant {
+	
 	private String playerName = null;
 	private AuctionScope auctionScope = null;
 	private Location lastKnownGoodLocation = null;
@@ -25,7 +26,8 @@ public class AuctionParticipant {
 	 * @param playerName player name to check
 	 * @return whether he is in the appropriate scope
 	 */
-	public static boolean checkLocation(String playerName) {
+	public static boolean checkLocation(String playerName) 
+	{
 		AuctionParticipant participant = AuctionParticipant.getParticipant(playerName);
 		if (participant == null) return true;
 		return (participant.auctionScope.equals(AuctionScope.getPlayerScope(Bukkit.getPlayer(playerName))));
@@ -38,9 +40,13 @@ public class AuctionParticipant {
 	 * @param location location to check
 	 * @return whether he would be in the appropriate scope
 	 */
-	public static boolean checkLocation(String playerName, Location location) {
+	public static boolean checkLocation(String playerName, Location location) 
+	{
 		AuctionParticipant participant = AuctionParticipant.getParticipant(playerName);
-		if (participant == null) return true;
+		if (participant == null) 
+		{
+			return true;
+		}
 		return (participant.auctionScope.equals(AuctionScope.getLocationScope(location)));
 	}
 
@@ -50,26 +56,34 @@ public class AuctionParticipant {
 	 * @param playerName player to force
 	 * @param locationForGaze location for gaze
 	 */
-	public static void forceLocation(String playerName, Location locationForGaze) {
+	public static void forceLocation(String playerName, Location locationForGaze) 
+	{
 		AuctionParticipant participant = AuctionParticipant.getParticipant(playerName);
-		if (participant == null) return;
-		if (!participant.isParticipating()) return;
+		if (participant == null)
+		{
+			return;
+		}
+		else if (!participant.isParticipating())
+		{
+			return;
+		}
 		
 		Player player = Bukkit.getPlayer(playerName);
 		Location location = player.getLocation();
-		if (locationForGaze != null) {
+		if (locationForGaze != null) 
+		{
 			location.setDirection(new Vector(0, 0, 0));
 			location.setPitch(locationForGaze.getPitch());
 			location.setYaw(locationForGaze.getYaw());
 		}
-		
-		if (!AuctionParticipant.checkLocation(playerName)) {
+		else if (!AuctionParticipant.checkLocation(playerName)) 
+		{
 			player.teleport(participant.lastKnownGoodLocation);
 			participant.sendEscapeWarning();
 			return;
 		}
-		
-		if (ArenaManager.isInArena(player)) {
+		else if (ArenaManager.isInArena(player)) 
+		{
 			player.teleport(participant.lastKnownGoodLocation);
 			participant.sendArenaWarning();
 			return;
@@ -85,17 +99,24 @@ public class AuctionParticipant {
 	 * @param location teleport destination to check
 	 * @return true if it IS okay to teleport this player
 	 */
-	public static boolean checkTeleportLocation(String playerName, Location location) {
+	public static boolean checkTeleportLocation(String playerName, Location location) 
+	{
 		AuctionParticipant participant = AuctionParticipant.getParticipant(playerName);
-		if (participant == null) return true;
-		if (!participant.isParticipating()) return true;
-		
-		if (!AuctionParticipant.checkLocation(playerName, location)) {
+		if (participant == null) 
+		{
+			return true;
+		}
+		else if (!participant.isParticipating())
+		{
+			return true;
+		}
+		else if (!AuctionParticipant.checkLocation(playerName, location)) 
+		{
 			participant.sendEscapeWarning();
 			return false;
 		}
-		
-		if (ArenaManager.isInArena(location)) {
+		else if (ArenaManager.isInArena(location)) 
+		{
 			participant.sendArenaWarning();
 			return false;
 		}
@@ -105,19 +126,27 @@ public class AuctionParticipant {
 	/**
 	 * Send a one time warning about attempting to enter an arena.
 	 */
-	private void sendArenaWarning() {
-		if (sentArenaWarning) return;
-		FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("arena-warning"), playerName, (AuctionScope) null);
-		sentArenaWarning = true;
+	private void sendArenaWarning() 
+	{
+		if (this.sentArenaWarning)
+		{
+			return;
+		}
+		FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("arena-warning"), this.playerName, (AuctionScope) null);
+		this.sentArenaWarning = true;
 	}
 
 	/**
 	 * Send a one time warning about attempting to escape the auction scope.
 	 */
-	private void sendEscapeWarning() {
-		if (sentEscapeWarning) return;
-		FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-escape-warning"), playerName, (AuctionScope) null);
-		sentEscapeWarning = true;
+	private void sendEscapeWarning() 
+	{
+		if (this.sentEscapeWarning) 
+		{
+			return;
+		}
+		FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-escape-warning"), this.playerName, (AuctionScope) null);
+		this.sentEscapeWarning = true;
 	}
 
 	/**
@@ -126,11 +155,14 @@ public class AuctionParticipant {
 	 * @param playerName player to check
 	 * @return whether the player is participating
 	 */
-	public static boolean isParticipating(String playerName) {
+	public static boolean isParticipating(String playerName) 
+	{
 		boolean participating = false;
-		for (int i = 0; i < FloAuction.auctionParticipants.size(); i++) {
+		for (int i = 0; i < FloAuction.auctionParticipants.size(); i++) 
+		{
 			AuctionParticipant participant = FloAuction.auctionParticipants.get(i);
-			if (participant.isParticipating() && playerName.equalsIgnoreCase(participant.playerName)) {
+			if (participant.isParticipating() && playerName.equalsIgnoreCase(participant.playerName)) 
+			{
 				participating = true;
 			}
 		}
@@ -143,9 +175,11 @@ public class AuctionParticipant {
 	 * @param playerName player to add
 	 * @param auctionScope scope for which to add player
 	 */
-	public static void addParticipant(String playerName, AuctionScope auctionScope) {
+	public static void addParticipant(String playerName, AuctionScope auctionScope) 
+	{
 		Player player = Bukkit.getPlayer(playerName);
-		if (AuctionParticipant.getParticipant(playerName) == null) {
+		if (AuctionParticipant.getParticipant(playerName) == null) 
+		{
 			AuctionParticipant participant = new AuctionParticipant(playerName, auctionScope);
 			participant.lastKnownGoodLocation = player.getLocation();
 			FloAuction.auctionParticipants.add(participant);
@@ -159,10 +193,13 @@ public class AuctionParticipant {
 	 * @param playerName name of participant
 	 * @return participant instance
 	 */
-	private static AuctionParticipant getParticipant(String playerName) {
-		for (int i = 0; i < FloAuction.auctionParticipants.size(); i++) {
+	private static AuctionParticipant getParticipant(String playerName) 
+	{
+		for (int i = 0; i < FloAuction.auctionParticipants.size(); i++) 
+		{
 			AuctionParticipant participant = FloAuction.auctionParticipants.get(i);
-			if (playerName.equalsIgnoreCase(participant.playerName)) {
+			if (playerName.equalsIgnoreCase(participant.playerName)) 
+			{
 				return participant;
 			}
 		}
@@ -175,7 +212,8 @@ public class AuctionParticipant {
 	 * @param playerName player name
 	 * @param auctionScope auction scope
 	 */
-	private AuctionParticipant(String playerName, AuctionScope auctionScope) {
+	private AuctionParticipant(String playerName, AuctionScope auctionScope) 
+	{
 		this.playerName = playerName;
 		this.auctionScope = auctionScope;
 	}
@@ -185,36 +223,48 @@ public class AuctionParticipant {
 	 * 
 	 * @return whether participant is actually participating
 	 */
-	public boolean isParticipating() {
+	public boolean isParticipating() 
+	{
 		boolean participating = false;
-		Auction scopeAuction = auctionScope.getActiveAuction();
-        if (scopeAuction != null) {
-            if (scopeAuction.getOwner().equalsIgnoreCase(playerName)) {
+		Auction scopeAuction = this.auctionScope.getActiveAuction();
+		
+        if (scopeAuction != null) 
+        {
+            if (scopeAuction.getOwner().equalsIgnoreCase(this.playerName)) 
+            {
             	participating = true;
             }
-            if (scopeAuction.getCurrentBid() != null && scopeAuction.getCurrentBid().getBidder().equalsIgnoreCase(playerName)) {
+            else if (scopeAuction.getCurrentBid() != null && scopeAuction.getCurrentBid().getBidder().equalsIgnoreCase(this.playerName)) 
+            {
             	participating = true;
             }
-            for (int i = 0; i < scopeAuction.sealedBids.size(); i++) {
-            	if (scopeAuction.sealedBids.get(i).getBidder().equalsIgnoreCase(playerName)) {
+            for (int i = 0; i < scopeAuction.sealedBids.size(); i++) 
+            {
+            	if (scopeAuction.sealedBids.get(i).getBidder().equalsIgnoreCase(playerName)) 
+            	{
                 	participating = true;
             	}
             }
         }
-		for (int i = 0; i < auctionScope.getAuctionQueueLength(); i++) {
-			Auction queuedAuction = auctionScope.getAuctionQueue().get(i);
-            if (queuedAuction != null) {
-                if (queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
+		for (int i = 0; i < this.auctionScope.getAuctionQueueLength(); i++) 
+		{
+			Auction queuedAuction = this.auctionScope.getAuctionQueue().get(i);
+            if (queuedAuction != null) 
+            {
+                if (queuedAuction.getOwner().equalsIgnoreCase(this.playerName)) 
+                {
                 	participating = true;
                 }
-                if (queuedAuction.getCurrentBid() != null && queuedAuction.getCurrentBid().getBidder().equalsIgnoreCase(playerName)) {
+                if (queuedAuction.getCurrentBid() != null && queuedAuction.getCurrentBid().getBidder().equalsIgnoreCase(this.playerName)) 
+                {
                 	participating = true;
                 }
             }
 		}
 		
 		if (!participating) FloAuction.auctionParticipants.remove(this);
-		return participating;
+		{
+			return participating;
+		}
 	}
-
 }

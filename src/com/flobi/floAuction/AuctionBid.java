@@ -34,8 +34,8 @@ public class AuctionBid {
 	 */
 	public AuctionBid(Auction auction, Player player, String[] inputArgs) {
 		this.auction = auction;
-		bidderName = player.getName();
-		args = inputArgs;
+		this.bidderName = player.getName();
+		this.args = inputArgs;
 		if (!validateBidder()) return;
 		if (!parseArgs()) return;
 		if (!reserveBidFunds()) return;
@@ -46,35 +46,47 @@ public class AuctionBid {
 	 * 
 	 * @return true if funds are reserved, false if an issue was encountered
 	 */
-	private boolean reserveBidFunds() {
+	private boolean reserveBidFunds() 
+	{
 		long amountToReserve = 0;
 		long previousSealedReserve = 0;
-		AuctionBid currentBid = auction.getCurrentBid();
+		AuctionBid currentBid = this.auction.getCurrentBid();
 		
-		for(int i = 0; i < auction.sealedBids.size(); i++) {
-			if (auction.sealedBids.get(i).getBidder().equalsIgnoreCase(this.getBidder())) {
-				previousSealedReserve += auction.sealedBids.get(i).getBidAmount();
-				auction.sealedBids.remove(i);
+		for(int i = 0; i < this.auction.sealedBids.size(); i++) 
+		{
+			if (this.auction.sealedBids.get(i).getBidder().equalsIgnoreCase(this.getBidder())) 
+			{
+				previousSealedReserve += this.auction.sealedBids.get(i).getBidAmount();
+				this.auction.sealedBids.remove(i);
 				i--;
 			}
 		}
 		
-		if (currentBid != null && currentBid.getBidder().equalsIgnoreCase(bidderName)) {
+		if (currentBid != null && currentBid.getBidder().equalsIgnoreCase(bidderName)) 
+		{
 			// Same bidder: only reserve difference.
-			if (maxBidAmount > currentBid.getMaxBidAmount() + previousSealedReserve) {
-				amountToReserve = maxBidAmount - currentBid.getMaxBidAmount() - previousSealedReserve;
-			} else {
+			if (this.maxBidAmount > currentBid.getMaxBidAmount() + previousSealedReserve) 
+			{
+				amountToReserve = this.maxBidAmount - currentBid.getMaxBidAmount() - previousSealedReserve;
+			} 
+			else 
+			{
 				// Nothing needing reservation.
 				return true;
 			}
-		} else {
-			amountToReserve = maxBidAmount;
+		} 
+		else 
+		{
+			amountToReserve = this.maxBidAmount;
 		}
-		if (Functions.withdrawPlayer(bidderName, amountToReserve)) {
-			reserve = Functions.getUnsafeMoney(amountToReserve);
+		if (Functions.withdrawPlayer(this.bidderName, amountToReserve)) 
+		{
+			this.reserve = Functions.getUnsafeMoney(amountToReserve);
 			return true;
-		} else {
-			error = "bid-fail-cant-allocate-funds";
+		} 
+		else 
+		{
+			this.error = "bid-fail-cant-allocate-funds";
 			return false;
 		}
 	}
@@ -82,15 +94,19 @@ public class AuctionBid {
 	/**
 	 * Refunds reserve for unsealed auctions or queues reserve refund for sealed auctions. 
 	 */
-	public void cancelBid() {
-		if (auction.sealed) {
+	public void cancelBid() 
+	{
+		if (this.auction.sealed) 
+		{
 			// Queue reserve refund.
-			auction.sealedBids.add(this);
-			AuctionParticipant.addParticipant(getBidder(), auction.getScope());
-		} else {
+			this.auction.sealedBids.add(this);
+			AuctionParticipant.addParticipant(getBidder(), this.auction.getScope());
+		} 
+		else 
+		{
 			// Refund reserve.
-			Functions.depositPlayer(bidderName, reserve);
-			reserve = 0;
+			Functions.depositPlayer(this.bidderName, this.reserve);
+			this.reserve = 0;
 		}
 		
 	}
@@ -98,24 +114,32 @@ public class AuctionBid {
 	/**
 	 * Process winning bid, gives winnings to auction owner, returns the remainder of the reserve and appropriates end of auction taxes.
 	 */
-	public void winBid() {
-		Double unsafeBidAmount = Functions.getUnsafeMoney(bidAmount);
+	public void winBid() 
+	{
+		Double unsafeBidAmount = Functions.getUnsafeMoney(this.bidAmount);
 		
 		// Extract taxes:
 		Double taxes = 0D;
-		double taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", auction.getScope()); 
-		ItemStack typeStack = auction.getLotType();
+		double taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", this.auction.getScope()); 
+		ItemStack typeStack = this.auction.getLotType();
 
 		// TODO: Check this line for possible NULL
-		for (Map.Entry<String, String> entry : AuctionConfig.getStringStringMap("taxed-items", auction.getScope()).entrySet()) {
-			if (Items.isSameItem(typeStack, entry.getKey())) {
-				if (entry.getValue().endsWith("%")) {
-					try {
+		for (Map.Entry<String, String> entry : AuctionConfig.getStringStringMap("taxed-items", this.auction.getScope()).entrySet()) 
+		{
+			if (Items.isSameItem(typeStack, entry.getKey())) 
+			{
+				if (entry.getValue().endsWith("%")) 
+				{
+					try 
+					{
 						taxPercent = Double.valueOf(entry.getValue().substring(0, entry.getValue().length() - 1));
-					} catch (Exception e) {
-						// Clearly this isn't a valid number, just forget about it.
-						// taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", auction.getScope());
-						// On second thought, this is already the value, so just keep it.
+					} 
+					catch (Exception e) 
+					{
+						/* Clearly this isn't a valid number, just forget about it.
+						   taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", auction.getScope());
+						   On second thought, this is already the value, so just keep it.
+						 */
 					}
 				}
 				break;
@@ -126,20 +150,20 @@ public class AuctionBid {
 		if (taxPercent > 0D) {
 			taxes = unsafeBidAmount * (taxPercent / 100D);
 			
-			auction.extractedPostTax = taxes;
-			auction.messageManager.sendPlayerMessage(new CArrayList<String>("auction-end-tax"), auction.getOwner(), auction);
+			this.auction.extractedPostTax = taxes;
+			this.auction.messageManager.sendPlayerMessage(new CArrayList<String>("auction-end-tax"), this.auction.getOwner(), this.auction);
 			unsafeBidAmount -= taxes;
-			String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", auction.getScope());
+			String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", this.auction.getScope());
 			if (!taxDestinationUser.isEmpty()) FloAuction.econ.depositPlayer(taxDestinationUser, taxes);
 		}
 		
 		// Apply winnings to auction owner.
-		FloAuction.econ.depositPlayer(auction.getOwner(), unsafeBidAmount);
+		FloAuction.econ.depositPlayer(this.auction.getOwner(), unsafeBidAmount);
 
 		// Refund remaining reserve.
-		FloAuction.econ.depositPlayer(bidderName, reserve - unsafeBidAmount - taxes);
+		FloAuction.econ.depositPlayer(this.bidderName, this.reserve - unsafeBidAmount - taxes);
 		
-		reserve = 0;
+		this.reserve = 0;
 	}
 	
 	/**
@@ -147,27 +171,28 @@ public class AuctionBid {
 	 * 
 	 * @return whether player can bid
 	 */
-	private Boolean validateBidder() {
-		if (bidderName == null) {
-			error = "bid-fail-no-bidder";
+	private Boolean validateBidder() 
+	{
+		if (this.bidderName == null) 
+		{
+			this.error = "bid-fail-no-bidder";
 			return false;
 		}
-
-		if (AuctionProhibition.isOnProhibition(bidderName, false)) {
-			error = "remote-plugin-prohibition-reminder";
+		else if (AuctionProhibition.isOnProhibition(this.bidderName, false)) 
+		{
+			this.error = "remote-plugin-prohibition-reminder";
 			return false;
 		}
-
-		if (!AuctionParticipant.checkLocation(bidderName)) {
-			error = "bid-fail-outside-auctionhouse";
+		else if (!AuctionParticipant.checkLocation(this.bidderName)) 
+		{
+			this.error = "bid-fail-outside-auctionhouse";
 			return false;
 		}
-		
-		if (bidderName.equalsIgnoreCase(auction.getOwner()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", auction.getScope())) {
-			error = "bid-fail-is-auction-owner";
+		else if (bidderName.equalsIgnoreCase(auction.getOwner()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", this.auction.getScope())) 
+		{
+			this.error = "bid-fail-is-auction-owner";
 			return false;
 		}
-
 		return true;
 	}
 	
@@ -176,9 +201,16 @@ public class AuctionBid {
 	 * 
 	 * @return whether args are acceptable
 	 */
-	private Boolean parseArgs() {
-		if (!parseArgBid()) return false;
-		if (!parseArgMaxBid()) return false;
+	private Boolean parseArgs() 
+	{
+		if (!parseArgBid()) 
+		{
+			return false;
+		}
+		else if (!parseArgMaxBid()) 
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -188,27 +220,33 @@ public class AuctionBid {
 	 * @param otherBid the previous bid
 	 * @return whether it's the same player bidding
 	 */
-	public Boolean raiseOwnBid(AuctionBid otherBid) {
-		if (bidderName.equalsIgnoreCase(otherBid.bidderName)) {
+	public Boolean raiseOwnBid(AuctionBid otherBid) 
+	{
+		if (this.bidderName.equalsIgnoreCase(otherBid.bidderName)) 
+		{
 			// Move reserve money here.
-			reserve = reserve + otherBid.reserve;
+			this.reserve = this.reserve + otherBid.reserve;
 			otherBid.reserve = 0;
 
 			// Maxbid only updates up.
-			maxBidAmount = Math.max(maxBidAmount, otherBid.maxBidAmount);
-			otherBid.maxBidAmount = maxBidAmount;
+			this.maxBidAmount = Math.max(this.maxBidAmount, otherBid.maxBidAmount);
+			otherBid.maxBidAmount = this.maxBidAmount;
 
-			if (bidAmount > otherBid.bidAmount) {
+			if (this.bidAmount > otherBid.bidAmount) 
+			{
 				// The bid has been raised.
 				return true;
-			} else {
+			}
+			else 
+			{
 				// Put the reserve on the other bid because we're cancelling this one.
-				otherBid.reserve = reserve;
-				reserve = 0;
-
+				otherBid.reserve = this.reserve;
+				this.reserve = 0;
 				return false;
 			}
-		} else {
+		} 
+		else 
+		{
 			// Don't take reserve unless it's the same person's money.
 			return false;
 		}
@@ -220,11 +258,15 @@ public class AuctionBid {
 	 * @param newBidAmount
 	 * @return success of raising bid
 	 */
-	public Boolean raiseBid(Long newBidAmount) {
-		if (newBidAmount <= maxBidAmount && newBidAmount >= bidAmount) {
-			bidAmount = newBidAmount;
+	public Boolean raiseBid(Long newBidAmount) 
+	{
+		if (newBidAmount <= this.maxBidAmount && newBidAmount >= this.bidAmount) 
+		{
+			this.bidAmount = newBidAmount;
 			return true;
-		} else {
+		} 
+		else 
+		{
 			return false;
 		}
 	}
@@ -234,54 +276,71 @@ public class AuctionBid {
 	 * 
 	 * @return acceptability of bid argument
 	 */
-	private Boolean parseArgBid() {
-		if (args.length > 0) {
-			if (!args[0].isEmpty() && args[0].matches(FloAuction.decimalRegex)) {
-				bidAmount = Functions.getSafeMoney(Double.parseDouble(args[0]));
+	private Boolean parseArgBid() 
+	{
+		if (this.args.length > 0) 
+		{
+			if (!this.args[0].isEmpty() && args[0].matches(FloAuction.decimalRegex)) 
+			{
+				this.bidAmount = Functions.getSafeMoney(Double.parseDouble(this.args[0]));
 				/*Should fix the bug that allowed over-sized payments
 				 */
-				if(bidAmount > FloAuction.econ.getBalance(this.bidderName))
+				if(this.bidAmount > FloAuction.econ.getBalance(this.bidderName))
 				{
 					this.error = "bid-fail-cant-allocate-funds";
 					return false;
 				}
-
-				if (bidAmount == 0) {
-					error = "parse-error-invalid-bid";
+				else if (this.bidAmount == 0) 
+				{
+					this.error = "parse-error-invalid-bid";
 					return false;
 				}
-			} else {
-				error = "parse-error-invalid-bid";
+			} 
+			else 
+			{
+				this.error = "parse-error-invalid-bid";
 				return false;
 			}
-		} else {
-			if (auction.sealed || !AuctionConfig.getBoolean("allow-auto-bid", auction.getScope())) {
-				error = "bid-fail-bid-required";
+		} 
+		else 
+		{
+			if (this.auction.sealed || !AuctionConfig.getBoolean("allow-auto-bid", this.auction.getScope())) 
+			{
+				this.error = "bid-fail-bid-required";
 				return false;
-			} else {
+			} 
+			else 
+			{
 				// Leaving it up to automatic:
-				bidAmount = 0;
+				this.bidAmount = 0;
 			}
 		}
 		// If the person bids 0, make it automatically the next increment (unless it's the current bidder).
-		if (bidAmount == 0) {
-			AuctionBid currentBid = auction.getCurrentBid();
-			if (currentBid == null) {
+		if (this.bidAmount == 0) 
+		{
+			AuctionBid currentBid = this.auction.getCurrentBid();
+			if (currentBid == null) 
+			{
 				// Use the starting bid if no one has bid yet.
-				bidAmount = auction.getStartingBid();
-				if (bidAmount == 0) {
+				this.bidAmount = auction.getStartingBid();
+				if (this.bidAmount == 0) 
+				{
 					// Unless the starting bid is 0, then use the minimum bid increment.
-					bidAmount = auction.getMinBidIncrement();
+					this.bidAmount = auction.getMinBidIncrement();
 				}
-			} else if (currentBid.getBidder().equalsIgnoreCase(bidderName)) {
+			} else if (currentBid.getBidder().equalsIgnoreCase(this.bidderName)) 
+			{
 				// We are the current bidder, so use previous.  Don't auto-up our own bid.
-				bidAmount = currentBid.bidAmount;
-			} else {
-				bidAmount = currentBid.getBidAmount() + auction.getMinBidIncrement();
+				this.bidAmount = currentBid.bidAmount;
+			} 
+			else 
+			{
+				this.bidAmount = currentBid.getBidAmount() + this.auction.getMinBidIncrement();
 			}
 		}
-		if (bidAmount <= 0) {
-			error = "parse-error-invalid-bid";
+		if (this.bidAmount <= 0) 
+		{
+			this.error = "parse-error-invalid-bid";
 			return false;
 		}
 		return true;
@@ -292,23 +351,29 @@ public class AuctionBid {
 	 * 
 	 * @return acceptability of max bid
 	 */
-	private Boolean parseArgMaxBid() {
-		if (!AuctionConfig.getBoolean("allow-max-bids", auction.getScope()) || auction.sealed) {
+	private Boolean parseArgMaxBid() 
+	{
+		if (!AuctionConfig.getBoolean("allow-max-bids", this.auction.getScope()) || this.auction.sealed) 
+		{
 			// Just ignore it.
-			maxBidAmount = bidAmount;
+			this.maxBidAmount = this.bidAmount;
 			return true;
 		}
-		if (args.length > 1) {
-			if (!args[1].isEmpty() && args[1].matches(FloAuction.decimalRegex)) {
-				maxBidAmount = Functions.getSafeMoney(Double.parseDouble(args[1]));
-			} else {
-				error = "parse-error-invalid-max-bid";
+		if (this.args.length > 1) 
+		{
+			if (!args[1].isEmpty() && args[1].matches(FloAuction.decimalRegex)) 
+			{
+				this.maxBidAmount = Functions.getSafeMoney(Double.parseDouble(this.args[1]));
+			} 
+			else 
+			{
+				this.error = "parse-error-invalid-max-bid";
 				return false;
 			}
 		}
-		maxBidAmount = Math.max(bidAmount, maxBidAmount);
-		if (maxBidAmount <= 0) {
-			error = "parse-error-invalid-max-bid";
+		this.maxBidAmount = Math.max(this.bidAmount, this.maxBidAmount);
+		if (this.maxBidAmount <= 0) {
+			this.error = "parse-error-invalid-max-bid";
 			return false;
 		}
 		return true;
@@ -319,24 +384,30 @@ public class AuctionBid {
 	 * 
 	 * @return the error
 	 */
-	public String getError() {
-		return error;
+	public String getError() 
+	{
+		return this.error;
 	}
 	
 	/**
 	 * Gets the name of the bidder.
 	 * @return name of bidder
 	 */
-	public String getBidder() {
-		return bidderName;
+	public String getBidder() 
+	{
+		return this.bidderName;
 	}
 	
-	public String getBidderDisplayName() {
-		Player bidderPlayer = Bukkit.getPlayer(bidderName);
-		if (bidderPlayer != null) {
+	public String getBidderDisplayName() 
+	{
+		Player bidderPlayer = Bukkit.getPlayer(this.bidderName);
+		if (bidderPlayer != null) 
+		{
 			return bidderPlayer.getDisplayName();
-		} else {
-			return bidderName;
+		} 
+		else 
+		{
+			return this.bidderName;
 		}
 	}
 
@@ -345,8 +416,9 @@ public class AuctionBid {
 	 * 
 	 * @return
 	 */
-	public long getBidAmount() {
-		return bidAmount;
+	public long getBidAmount() 
+	{
+		return this.bidAmount;
 	}
 	
 	/**
@@ -354,7 +426,8 @@ public class AuctionBid {
 	 * 
 	 * @return
 	 */
-	public long getMaxBidAmount() {
-		return maxBidAmount;
+	public long getMaxBidAmount() 
+	{
+		return this.maxBidAmount;
 	}
 }

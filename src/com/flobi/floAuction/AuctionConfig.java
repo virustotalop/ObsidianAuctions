@@ -21,7 +21,8 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return "safe money" from config
 	 */
-	public static long getSafeMoneyFromDouble(String path, AuctionScope auctionScope) {
+	public static long getSafeMoneyFromDouble(String path, AuctionScope auctionScope) 
+	{
 		return Functions.getSafeMoney(getDouble(path, auctionScope));
 	}
 	
@@ -32,12 +33,17 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return double from the config
 	 */
-	public static double getDouble(String path, AuctionScope auctionScope) {
+	public static double getDouble(String path, AuctionScope auctionScope) 
+	{
 		Double result = null; 
-		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) 
+		{
 			result = auctionScope.getConfig().getDouble(path);
 		}
-		if (result == null) result = FloAuction.config.getDouble(path);
+		if (result == null) 
+		{
+			result = FloAuction.config.getDouble(path);
+		}
 		return result;
 	}
 	
@@ -48,12 +54,17 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return integer from the config
 	 */
-	public static int getInt(String path, AuctionScope auctionScope) {
+	public static int getInt(String path, AuctionScope auctionScope) 
+	{
 		Integer result = null; 
-		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) 
+		{
 			result = auctionScope.getConfig().getInt(path);
 		}
-		if (result == null) result = FloAuction.config.getInt(path);
+		if (result == null) 
+		{
+			result = FloAuction.config.getInt(path);
+		}
 		return result;
 	}
 	
@@ -64,12 +75,17 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return boolean from the config
 	 */
-	public static boolean getBoolean(String path, AuctionScope auctionScope) {
+	public static boolean getBoolean(String path, AuctionScope auctionScope) 
+	{
 		Boolean result = null; 
-		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) 
+		{
 			result = auctionScope.getConfig().getBoolean(path);
 		}
-		if (result == null) result = FloAuction.config.getBoolean(path);
+		if (result == null) 
+		{
+			result = FloAuction.config.getBoolean(path);
+		}
 		return result;
 	}
 	
@@ -80,12 +96,17 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return string list from the config
 	 */
-	public static List<String> getStringList(String path, AuctionScope auctionScope) {
+	public static List<String> getStringList(String path, AuctionScope auctionScope) 
+	{
 		List<String> result = null; 
-		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) 
+		{
 			result = auctionScope.getConfig().getStringList(path);
 		}
-		if (result == null) result = FloAuction.config.getStringList(path);
+		if (result == null) 
+		{
+			result = FloAuction.config.getStringList(path);
+		}
 		return result;
 	}
 	
@@ -96,12 +117,17 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return string from the config
 	 */
-	public static String getString(String path, AuctionScope auctionScope) {
+	public static String getString(String path, AuctionScope auctionScope) 
+	{
 		String result = null; 
-		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) 
+		{
 			result = auctionScope.getConfig().getString(path);
 		}
-		if (result == null) result = FloAuction.config.getString(path);
+		if (result == null) 
+		{
+			result = FloAuction.config.getString(path);
+		}
 		return result;
 	}
 	
@@ -112,19 +138,25 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return string to string map from the config
 	 */
-	public static Map<String, String> getStringStringMap(String path, AuctionScope auctionScope) {
+	public static Map<String, String> getStringStringMap(String path, AuctionScope auctionScope) 
+	{
 		Map<String, String> result = new HashMap<String, String>();
 
 		ConfigurationSection section = null;
-		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+		if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) 
+		{
 			section = auctionScope.getConfig().getConfigurationSection(path);
 		}
-		if (section == null) section = FloAuction.config.getConfigurationSection(path);
-		
+		if (section == null) 
+		{
+			section = FloAuction.config.getConfigurationSection(path);
+		}
 		
 		result = new HashMap<String, String>();
-		if (section != null) {
-			for (String itemCode : section.getKeys(false)) {
+		if (section != null) 
+		{
+			for (String itemCode : section.getKeys(false)) 
+			{
 				result.put(itemCode, section.getString(itemCode));
 			}
 		}
@@ -138,12 +170,17 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return string from language file
 	 */
-	public static String getLanguageString(String path, AuctionScope auctionScope) {
+	public static String getLanguageString(String path, AuctionScope auctionScope) 
+	{
 		String result = null; 
-		if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().contains(path)) {
+		if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().contains(path)) 
+		{
 			result = auctionScope.getTextConfig().getString(path);
 		}
-		if (result == null) result = FloAuction.textConfig.getString(path);
+		if (result == null) 
+		{
+			result = FloAuction.textConfig.getString(path);
+		}
 		return result;
 	}
 	
@@ -154,12 +191,17 @@ public class AuctionConfig {
 	 * @param auctionScope the preferred AuctionScope for retrieval
 	 * @return string list from language file
 	 */
-	public static List<String> getLanguageStringList(String path, AuctionScope auctionScope) {
+	public static List<String> getLanguageStringList(String path, AuctionScope auctionScope) 
+	{
 		List<String> result = null; 
-		if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().contains(path)) {
+		if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().contains(path)) 
+		{
 			result = auctionScope.getTextConfig().getStringList(path);
 		}
-		if (result == null) result = FloAuction.textConfig.getStringList(path);
+		if (result == null) 
+		{
+			result = FloAuction.textConfig.getStringList(path);
+		}
 		return result;
 	}
 }

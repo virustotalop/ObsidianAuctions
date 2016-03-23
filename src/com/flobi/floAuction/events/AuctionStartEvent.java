@@ -14,29 +14,35 @@ public class AuctionStartEvent extends Event implements Cancellable {
     private Player player;
     private Auction auction;
     
-    public AuctionStartEvent(Player player, Auction auction) {
+    public AuctionStartEvent(Player player, Auction auction) 
+    {
     	this.player = player;
     	this.auction = auction;
     	this.cancelled = false;
     }
     
-	public HandlerList getHandlers() {
+	public HandlerList getHandlers() 
+	{
 		return handlers;
 	}
 
-	public boolean isCancelled() {
-		return cancelled;
+	public boolean isCancelled() 
+	{
+		return this.cancelled;
 	}
 
-	public void setCancelled(boolean cancelled) {
+	public void setCancelled(boolean cancelled) 
+	{
 		this.cancelled = cancelled;
 	}
 	
-	public Player getPlayer() {
-		return player;
+	public Player getPlayer() 
+	{
+		return this.player;
 	}
 	
-	public Auction getAuction() {
-		return auction;
+	public Auction getAuction() 
+	{
+		return this.auction;
 	}
 }

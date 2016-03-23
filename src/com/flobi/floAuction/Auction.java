@@ -27,6 +27,7 @@ import com.flobi.floauction.utilities.Items;
  * @author Joshua "flobi" Hatfield
  */
 public class Auction {
+	
 	protected FloAuction plugin;
 	private String[] args;
 	private String ownerName;
@@ -59,19 +60,15 @@ public class Auction {
 	
 	public MessageManager messageManager = null;
 	
-	
-	
 	/**
 	 * Gets the AuctionScope which hosts this auction.
 	 * 
 	 * @return the hosting AuctionScope
 	 */
-	public AuctionScope getScope() {
-		return scope;
+	public AuctionScope getScope() 
+	{
+		return this.scope;
 	}
-	
-	
-	
 	
 	/**
 	 * Instantiates an auction instance.
@@ -82,9 +79,10 @@ public class Auction {
 	 * @param scope        the hosting AuctionScope
 	 * @param sealed       whether or not it is a sealed auction
 	 */
-	public Auction(FloAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) {
-		ownerName = auctionOwner.getName();
-		args = Functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
+	public Auction(FloAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) 
+	{
+		this.ownerName = auctionOwner.getName();
+		this.args = Functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
 		this.plugin = plugin; 
 		this.scope = scope;
 		this.sealed = sealed;
@@ -104,7 +102,8 @@ public class Auction {
 				itemMeta.setLore(lore);
 				this.guiItem.setItemMeta(itemMeta);
 			}
-			else {
+			else 
+			{
 				List<String> lore = new ArrayList<String>();
 				lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
 				//lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
@@ -114,7 +113,8 @@ public class Auction {
 				this.guiItem.setItemMeta(itemMeta);
 			}
 		}
-		else {
+		else 
+		{
 			List<String> lore = new ArrayList<String>();
 			lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
 			//lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
@@ -131,46 +131,61 @@ public class Auction {
 	 * 
 	 * @return whether or not the auction start succeeded
 	 */
-	public Boolean start() {
-		Player owner = Bukkit.getPlayer(ownerName);
+	public Boolean start() 
+	{
+		Player owner = Bukkit.getPlayer(this.ownerName);
 		
-		if (ArenaManager.isInArena(owner)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-arena"), ownerName, this);
+		if (ArenaManager.isInArena(owner)) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-arena"), this.ownerName, this);
 			return false;
 		}
 		
-		ItemStack typeStack = lot.getTypeStack();
-		double preAuctionTax = AuctionConfig.getDouble("auction-start-tax", scope);
+		ItemStack typeStack = this.lot.getTypeStack();
+		double preAuctionTax = AuctionConfig.getDouble("auction-start-tax", this.scope);
 		
 		// Check banned items:
-		List<String> bannedItems = AuctionConfig.getStringList("banned-items", scope);
-		for (int i = 0; i < bannedItems.size(); i++) {
-			if (Items.isSameItem(typeStack, bannedItems.get(i))) {
-				messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-banned"), ownerName, this);
+		List<String> bannedItems = AuctionConfig.getStringList("banned-items", this.scope);
+		for (int i = 0; i < bannedItems.size(); i++) 
+		{
+			if (Items.isSameItem(typeStack, bannedItems.get(i))) 
+			{
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-banned"), this.ownerName, this);
 				return false;
 			}
 		}
 		
-		Map<String, String> taxedItems = AuctionConfig.getStringStringMap("taxed-items", scope);
-		if (taxedItems != null) {
-			for (Map.Entry<String, String> entry : taxedItems.entrySet()) {
+		Map<String, String> taxedItems = AuctionConfig.getStringStringMap("taxed-items", this.scope);
+		if (taxedItems != null) 
+		{
+			for (Map.Entry<String, String> entry : taxedItems.entrySet()) 
+			{
 				if (Items.isSameItem(typeStack, entry.getKey())) {
 					String itemTax = entry.getValue();
 					
-					if (itemTax.endsWith("a")) {
-						try {
+					if (itemTax.endsWith("a")) 
+					{
+						try 
+						{
 							preAuctionTax = Double.valueOf(itemTax.substring(0, itemTax.length() - 1));
-						} catch (Exception e) {
+						} 
+						catch (Exception e) 
+						{
 							// Clearly this isn't a valid number, just forget about it.
-							preAuctionTax = AuctionConfig.getDouble("auction-start-tax", scope);
+							preAuctionTax = AuctionConfig.getDouble("auction-start-tax", this.scope);
 						}
-					} else if (!itemTax.endsWith("%")) {
-						try {
+					} 
+					else if (!itemTax.endsWith("%")) 
+					{
+						try 
+						{
 							preAuctionTax = Double.valueOf(itemTax);
-							preAuctionTax *= quantity;
-						} catch (Exception e) {
+							preAuctionTax *= this.quantity;
+						} 
+						catch (Exception e) 
+						{
 							// Clearly this isn't a valid number, just forget about it.
-							preAuctionTax = AuctionConfig.getDouble("auction-start-tax", scope);
+							preAuctionTax = AuctionConfig.getDouble("auction-start-tax", this.scope);
 						}
 					}
 					break;
@@ -178,75 +193,97 @@ public class Auction {
 			}		
 		}
 		
-		if (preAuctionTax > 0D) {
-			if (!FloAuction.econ.has(ownerName, preAuctionTax)) {
-				messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-start-tax"), ownerName, this);
+		if (preAuctionTax > 0D) 
+		{
+			if (!FloAuction.econ.has(this.ownerName, preAuctionTax)) 
+			{
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-start-tax"), this.ownerName, this);
 				return false;
 			}
 		}
 		
-		if (!lot.addItems(quantity, true)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-insufficient-supply"), ownerName, this);
+		if (!this.lot.addItems(this.quantity, true)) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-insufficient-supply"), this.ownerName, this);
 			return false;
 		}
 
-		if (preAuctionTax > 0D) {
-			if (FloAuction.econ.has(ownerName, preAuctionTax)) {
-				FloAuction.econ.withdrawPlayer(ownerName, preAuctionTax);
-				extractedPreTax = preAuctionTax;
-				messageManager.sendPlayerMessage(new CArrayList<String>("auction-start-tax"), ownerName, this);
+		if (preAuctionTax > 0D) 
+		{
+			if (FloAuction.econ.has(this.ownerName, preAuctionTax)) 
+			{
+				FloAuction.econ.withdrawPlayer(this.ownerName, preAuctionTax);
+				this.extractedPreTax = preAuctionTax;
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-start-tax"), this.ownerName, this);
 				String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", scope);
-				if (!taxDestinationUser.isEmpty()) FloAuction.econ.depositPlayer(taxDestinationUser, preAuctionTax);
+				if (!taxDestinationUser.isEmpty()) 
+				{
+					FloAuction.econ.depositPlayer(taxDestinationUser, preAuctionTax);
+				}
 			}
 		}
 		
-		if (buyNow < getStartingBid()) {
-			buyNow = 0;
+		if (this.buyNow < getStartingBid()) 
+		{
+			this.buyNow = 0;
 		}
 
 		// Check to see if any other plugins have a reason...or they can forever hold their piece.
 		AuctionStartEvent auctionStartEvent = new AuctionStartEvent(owner, this);
 		Bukkit.getServer().getPluginManager().callEvent(auctionStartEvent);
 		
-		if (auctionStartEvent.isCancelled()) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-blocked-by-other-plugin"), ownerName, this);
-		} else {
-			active = true;
-			messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-start"), this);
+		if (auctionStartEvent.isCancelled()) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-blocked-by-other-plugin"), this.ownerName, this);
+		} 
+		else 
+		{
+			this.active = true;
+			this.messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-start"), this);
 			
 			// Set timer:
 			final Auction thisAuction = this;
-			countdown = time;
+			this.countdown = this.time;
 			
-			countdownTimer = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			    public void run() {
-			    	if (thisAuction.nextTickTime > System.currentTimeMillis()) return;
+			this.countdownTimer = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() 
+			{
+			    public void run() 
+			    {
+			    	if (thisAuction.nextTickTime > System.currentTimeMillis()) 
+			    	{
+			    		return;
+			    	}
 			    	thisAuction.nextTickTime = thisAuction.nextTickTime + 1000;
 			    	
 			    	thisAuction.countdown--;
-			    	if (thisAuction.countdown <= 0) {
+			    	if (thisAuction.countdown <= 0) 
+			    	{
 			    		thisAuction.end();
 			    		return;
 			    	}
-			    	if (!AuctionConfig.getBoolean("suppress-countdown", scope)){
-				    	if (thisAuction.countdown < 4) {
+			    	if (!AuctionConfig.getBoolean("suppress-countdown", scope))
+			    	{
+				    	if (thisAuction.countdown < 4) 
+				    	{
 				    		messageManager.broadcastAuctionMessage(new CArrayList<String>("timer-countdown-notification"), thisAuction);
 					    	return;
 				    	}
-				    	if (thisAuction.time >= 20) {
-				    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
+				    	if (thisAuction.time >= 20) 
+				    	{
+				    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) 
+				    		{
 				    			messageManager.broadcastAuctionMessage(new CArrayList<String>("timer-countdown-notification"), thisAuction);
 				    		}
 				    	}
 			    	}
 			    }
 			}, 1L, 1L);
-			nextTickTime = System.currentTimeMillis() + 1000;
+			this.nextTickTime = System.currentTimeMillis() + 1000;
 	
 			info(null, true);
 		}
 
-		return active;
+		return this.active;
 	}
 	
 	/**
@@ -255,40 +292,60 @@ public class Auction {
 	 * @param sender the CommandSender initiating the request
 	 * @param fullBroadcast whether to send the message to everyone in the hosting AuctionScope
 	 */
-	public void info(CommandSender sender, boolean fullBroadcast) {
+	public void info(CommandSender sender, boolean fullBroadcast) 
+	{
 		List<String> messageKeys = new ArrayList<String>();
 		String playerName = null;
-		if (sender instanceof Player) {
+		if (sender instanceof Player) 
+		{
 			playerName = ((Player)sender).getName();
 		}
 		
 		ItemStack itemType = this.getLotType();
 		Map<Enchantment, Integer> enchantments = itemType.getEnchantments();
-		if (enchantments == null || enchantments.size() == 0) enchantments = Items.getStoredEnchantments(itemType);
-		if (!active) {
-			if (sender instanceof Player) {
-				messageManager.sendPlayerMessage(new CArrayList<String>("auction-info-no-auction"), playerName, this);
+		if (enchantments == null || enchantments.size() == 0) 
+		{
+			enchantments = Items.getStoredEnchantments(itemType);
+		}
+		if (!this.active) 
+		{
+			if (sender instanceof Player) 
+			{
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-info-no-auction"), playerName, this);
 			}
 			return;
-		} else {
+		} 
+		else 
+		{
 			messageKeys.add("auction-info");
 		}
-		if (fullBroadcast) {
-			messageManager.broadcastAuctionMessage(messageKeys, this);
-		} else {
-			messageManager.sendPlayerMessage(messageKeys, playerName, this);
+		if (fullBroadcast) 
+		{
+			this.messageManager.broadcastAuctionMessage(messageKeys, this);
+		}
+		else 
+		{
+			this.messageManager.sendPlayerMessage(messageKeys, playerName, this);
 		}
 	}
 	
 	/**
 	 * Cancels the Auction instance and disposes of it normally.
 	 */
-	public void cancel() {
+	public void cancel() 
+	{
 		Bukkit.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
-		messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-cancel"), this);
-		if (lot != null) lot.cancelLot();
-		if (currentBid != null) currentBid.cancelBid();
-		dispose();
+		this.messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-cancel"), this);
+		
+		if (this.lot != null) 
+		{
+			this.lot.cancelLot();
+		}
+		if (this.currentBid != null) 
+		{
+			this.currentBid.cancelBid();
+		}
+		this.dispose();
 	}
 	
 	/**
@@ -297,53 +354,77 @@ public class Auction {
 	 * 
 	 * @param authority the name of a player authorized to confiscate auctions
 	 */
-	public void confiscate(Player authority) {
+	public void confiscate(Player authority) 
+	{
 		Bukkit.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
-		ownerName = authority.getName();
-		messageManager.broadcastAuctionMessage(new CArrayList<String>("confiscate-success"), this);
-		if (lot != null) {
-			lot.winLot(authority.getName());
+		this.ownerName = authority.getName();
+		this.messageManager.broadcastAuctionMessage(new CArrayList<String>("confiscate-success"), this);
+		if (this.lot != null) 
+		{
+			this.lot.winLot(authority.getName());
 		}
-		if (currentBid != null) currentBid.cancelBid();
-		dispose();
+		if (this.currentBid != null)
+		{
+			this.currentBid.cancelBid();
+		}
+		this.dispose();
 	}
-	
+
 	/**
 	 * Ends an auction normally sending money and goods to their earned destinations.
 	 */
-	public void end() {
+	public void end() 
+	{
 		AuctionEndEvent auctionEndEvent = new AuctionEndEvent(this, false);
 		Bukkit.getServer().getPluginManager().callEvent(auctionEndEvent);
-		if (auctionEndEvent.isCancelled()) {
-			messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-cancel"), this);
-			if (lot != null) lot.cancelLot();
-			if (currentBid != null) currentBid.cancelBid();
-		} else {
-			if (currentBid == null || lot == null) {
-				messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-end-nobids"), this);
-				if (lot != null) lot.cancelLot();
-				if (currentBid != null) currentBid.cancelBid();
-			} else {
-				messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-end"), this);
-				lot.winLot(currentBid.getBidder());
-				currentBid.winBid();
+		if (auctionEndEvent.isCancelled()) 
+		{
+			this.messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-cancel"), this);
+			if (this.lot != null)
+			{
+				this.lot.cancelLot();
+			}
+			if (this.currentBid != null)
+			{
+				this.currentBid.cancelBid();
+			}
+		} 
+		else 
+		{
+			if (this.currentBid == null || this.lot == null) 
+			{
+				this.messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-end-nobids"), this);
+				if (this.lot != null)
+				{
+					this.lot.cancelLot();
+				}
+				if (this.currentBid != null) 
+				{
+					this.currentBid.cancelBid();
+				}
+			} 
+			else 
+			{
+				this.messageManager.broadcastAuctionMessage(new CArrayList<String>("auction-end"), this);
+				this.lot.winLot(currentBid.getBidder());
+				this.currentBid.winBid();
 			}
 		}
-		dispose();
+		this.dispose();
 	}
-	
+
 	/**
 	 * Disposes of the remains of a terminated auction, purging the timer, refunding sealed bid losers and removing self from host scope.
 	 */
-	private void dispose() {
-		plugin.getServer().getScheduler().cancelTask(countdownTimer);
-
-		sealed = false;
-		for(int i = 0; i < sealedBids.size(); i++) {
-			sealedBids.get(i).cancelBid();
+	private void dispose() 
+	{
+		this.plugin.getServer().getScheduler().cancelTask(countdownTimer);
+		this.sealed = false;
+		for(int i = 0; i < this.sealedBids.size(); i++) 
+		{
+			this.sealedBids.get(i).cancelBid();
 		}
-		
-		scope.setActiveAuction(null);
+		this.scope.setActiveAuction(null);
 	}
 	
 	/**
@@ -351,15 +432,40 @@ public class Auction {
 	 * 
 	 * @return whether the auction can begin
 	 */
-	public Boolean isValid() {
-		if (!isValidOwner()) return false;
-		if (!parseHeldItem()) return false;
-		if (!parseArgs()) return false;
-		if (!isValidAmount()) return false;
-		if (!isValidStartingBid()) return false;
-		if (!isValidIncrement()) return false;
-		if (!isValidTime()) return false;
-		if (!isValidBuyNow()) return false;
+	public Boolean isValid() 
+	{
+		if (!isValidOwner()) 
+		{
+			return false;
+		}
+		else if (!parseHeldItem())
+		{
+			return false;
+		}
+		else if (!parseArgs())
+		{
+			return false;
+		}
+		else if (!isValidAmount()) 
+		{
+			return false;
+		}
+		else if (!isValidStartingBid()) 
+		{
+			return false;
+		}
+		else if (!isValidIncrement())
+		{
+			return false;
+		}
+		else if (!isValidTime()) 
+		{
+			return false;
+		}
+		else if (!isValidBuyNow()) 
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -369,43 +475,63 @@ public class Auction {
 	 * @param bidder Player attempting to bid
 	 * @param inputArgs parameters entered in chat
 	 */
-	public void Bid(Player bidder, String[] inputArgs) {
+	public void Bid(Player bidder, String[] inputArgs) 
+	{
 
-		if (bidder == null) return;
+		if (bidder == null)
+		{
+			return;
+		}
 		String playerName = bidder.getName();
 		
-		if (ArenaManager.isInArena(bidder)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-arena"), playerName, this);
+		if (ArenaManager.isInArena(bidder)) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-arena"), playerName, this);
 			return;
 		}
 		
 		// BuyNow
-		if (AuctionConfig.getBoolean("allow-buynow", scope) && inputArgs.length > 0) {
-			if (inputArgs[0].equalsIgnoreCase("buy")) {
+		if (AuctionConfig.getBoolean("allow-buynow", scope) && inputArgs.length > 0) 
+		{
+			if (inputArgs[0].equalsIgnoreCase("buy")) 
+			{
 
-				if (buyNow == 0 || (currentBid != null && currentBid.getBidAmount() >= buyNow)) {
-					messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-buynow-expired"), playerName, this);
-				} else {
-					inputArgs[0] = Double.toString(Functions.getUnsafeMoney(buyNow));
-					if (inputArgs[0].endsWith(".0")) {
+				if (this.buyNow == 0 || (this.currentBid != null && currentBid.getBidAmount() >= this.buyNow)) 
+				{
+					this.messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-buynow-expired"), playerName, this);
+				} 
+				else 
+				{
+					inputArgs[0] = Double.toString(Functions.getUnsafeMoney(this.buyNow));
+					if (inputArgs[0].endsWith(".0")) 
+					{
 						inputArgs[0] = inputArgs[0].substring(0, inputArgs[0].length() - 2);
 					}
 					AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
-					if (bid.getError() != null) {
+					if (bid.getError() != null) 
+					{
 						failBid(bid, bid.getError());
 						return;
-					} else {
+					} 
+					else 
+					{
 						// raisOwnBid does nothing if it's not the current bidder.
-						if (currentBid != null) bid.raiseOwnBid(currentBid);
+						if (this.currentBid != null) 
+						{
+							bid.raiseOwnBid(this.currentBid);
+						}
 						
 						// Let other plugins figure out any reasons why this buy shouldn't happen.
 						AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 						Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
-						if (auctionBidEvent.isCancelled()) {
-							failBid(bid, "bid-fail-blocked-by-other-plugin");
-						} else {
-							setNewBid(bid, null);
-							end();
+						if (auctionBidEvent.isCancelled()) 
+						{
+							this.failBid(bid, "bid-fail-blocked-by-other-plugin");
+						} 
+						else 
+						{
+							this.setNewBid(bid, null);
+							this.end();
 						}
 					}
 				}
@@ -415,109 +541,151 @@ public class Auction {
 		
 		// Normal bid
 		AuctionBid bid = new AuctionBid(this, bidder, inputArgs);
-		if (bid.getError() != null) {
-			failBid(bid, bid.getError());
+		if (bid.getError() != null) 
+		{
+			this.failBid(bid, bid.getError());
 			return;
 		}
 		
-		if (currentBid == null) {
-			if (bid.getBidAmount() < getStartingBid()) {
-				failBid(bid, "bid-fail-under-starting-bid");
+		if (this.currentBid == null) 
+		{
+			if (bid.getBidAmount() < getStartingBid()) 
+			{
+				this.failBid(bid, "bid-fail-under-starting-bid");
 				return;
 			}
 			// Let other plugins figure out any reasons why this buy shouldn't happen.
 			AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 			Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
-			if (auctionBidEvent.isCancelled()) {
+			if (auctionBidEvent.isCancelled()) 
+			{
 				failBid(bid, "bid-fail-blocked-by-other-plugin");
-			} else {
+			} 
+			else 
+			{
 				setNewBid(bid, "bid-success-no-challenger");
 			}
 			return;
 		}
-		long previousBidAmount = currentBid.getBidAmount();
-		long previousMaxBidAmount = currentBid.getMaxBidAmount();
-		if (currentBid.getBidder().equals(bidder.getName())) {
-			if (bid.raiseOwnBid(currentBid)) {
+		
+		long previousBidAmount = this.currentBid.getBidAmount();
+		long previousMaxBidAmount = this.currentBid.getMaxBidAmount();
+		if (this.currentBid.getBidder().equals(bidder.getName())) {
+			if (bid.raiseOwnBid(this.currentBid)) {
 				// Let other plugins figure out any reasons why this buy shouldn't happen.
 				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 				Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
-				if (auctionBidEvent.isCancelled()) {
-					failBid(bid, "bid-fail-blocked-by-other-plugin");
-				} else {
-					setNewBid(bid, "bid-success-update-own-bid");
+				if (auctionBidEvent.isCancelled()) 
+				{
+					this.failBid(bid, "bid-fail-blocked-by-other-plugin");
+				} 
+				else 
+				{
+					this.setNewBid(bid, "bid-success-update-own-bid");
 				}
-			} else {
-				if (previousMaxBidAmount < currentBid.getMaxBidAmount()) {
-					failBid(bid, "bid-success-update-own-maxbid");
-				} else {
-					failBid(bid, "bid-fail-already-current-bidder");
+			} 
+			else 
+			{
+				if (previousMaxBidAmount < currentBid.getMaxBidAmount()) 
+				{
+					this.failBid(bid, "bid-success-update-own-maxbid");
+				} 
+				else 
+				{
+					this.failBid(bid, "bid-fail-already-current-bidder");
 				}
 			}
 			return;
 		}
+		
 		AuctionBid winner = null;
 		AuctionBid loser = null;
 		
-		if (AuctionConfig.getBoolean("use-old-bid-logic", scope)) {
-			if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
+		if (AuctionConfig.getBoolean("use-old-bid-logic", this.scope)) 
+		{
+			if (bid.getMaxBidAmount() > this.currentBid.getMaxBidAmount()) 
+			{
 				winner = bid;
-				loser = currentBid;
-			} else {
-				winner = currentBid;
+				loser = this.currentBid;
+			} else 
+			{
+				winner = this.currentBid;
 				loser = bid;
 			}
-			winner.raiseBid(Math.max(winner.getBidAmount(), Math.min(winner.getMaxBidAmount(), loser.getBidAmount() + minBidIncrement)));
-		} else {
+			winner.raiseBid(Math.max(winner.getBidAmount(), Math.min(winner.getMaxBidAmount(), loser.getBidAmount() + this.minBidIncrement)));
+		}
+		else 
+		{
 			// If you follow what this does, congratulations.  
 			long baseBid = 0;
-			if (bid.getBidAmount() >= currentBid.getBidAmount() + minBidIncrement) {
+			if (bid.getBidAmount() >= this.currentBid.getBidAmount() + this.minBidIncrement) 
+			{
 				baseBid = bid.getBidAmount();
-			} else {
-				baseBid = currentBid.getBidAmount() + minBidIncrement;
+			} 
+			else 
+			{
+				baseBid = this.currentBid.getBidAmount() + this.minBidIncrement;
 			}
 			
-			Integer prevSteps = (int) Math.floor((double)(currentBid.getMaxBidAmount() - baseBid + minBidIncrement) / minBidIncrement / 2);
-			Integer newSteps = (int) Math.floor((double)(bid.getMaxBidAmount() - baseBid) / minBidIncrement / 2);
+			Integer prevSteps = (int) Math.floor((double)(this.currentBid.getMaxBidAmount() - baseBid + this.minBidIncrement) / this.minBidIncrement / 2);
+			Integer newSteps = (int) Math.floor((double)(bid.getMaxBidAmount() - baseBid) / this.minBidIncrement / 2);
 
-			if (newSteps >= prevSteps) {
+			if (newSteps >= prevSteps) 
+			{
 				winner = bid;
-				winner.raiseBid(baseBid + (Math.max(0, prevSteps) * minBidIncrement * 2));
-				loser = currentBid;
-			} else {
-				winner = currentBid;
-				winner.raiseBid(baseBid + (Math.max(0, newSteps + 1) * minBidIncrement * 2) - minBidIncrement);
+				winner.raiseBid(baseBid + (Math.max(0, prevSteps) * this.minBidIncrement * 2));
+				loser = this.currentBid;
+			} 
+			else 
+			{
+				winner = this.currentBid;
+				winner.raiseBid(baseBid + (Math.max(0, newSteps + 1) * this.minBidIncrement * 2) - this.minBidIncrement);
 				loser = bid;
-			}
-			
+			}	
 		}
 
-		if (previousBidAmount <= winner.getBidAmount()) {
+		if (previousBidAmount <= winner.getBidAmount()) 
+		{
 			// Did the new bid win?
-			if (winner.equals(bid)) {
+			if (winner.equals(bid)) 
+			{
 				// Let other plugins figure out any reasons why this buy shouldn't happen.
 				AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
 				Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
-				if (auctionBidEvent.isCancelled()) {
+				if (auctionBidEvent.isCancelled()) 
+				{
 					failBid(bid, "bid-fail-blocked-by-other-plugin");
-				} else {
+				} 
+				else 
+				{
 					setNewBid(bid, "bid-success-outbid");
 				}
-			} else {
+			} 
+			else 
+			{
 				// Did the old bid have to raise the bid to stay winner?
-				if (previousBidAmount < winner.getBidAmount()) {
-					if (!this.sealed && !AuctionConfig.getBoolean("broadcast-bid-updates", scope)) {
-						messageManager.broadcastAuctionMessage(new CArrayList<String>("bid-auto-outbid"), this);
+				if (previousBidAmount < winner.getBidAmount()) 
+				{
+					if (!this.sealed && !AuctionConfig.getBoolean("broadcast-bid-updates", scope)) 
+					{
+						this.messageManager.broadcastAuctionMessage(new CArrayList<String>("bid-auto-outbid"), this);
 					}
 					failBid(bid, "bid-fail-auto-outbid");
-				} else {
-					if (!this.sealed) messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-too-low"), bid.getBidder(), this);
-					failBid(bid, null);
+				} 
+				else 
+				{
+					if (!this.sealed) 
+					{
+						this.messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-too-low"), bid.getBidder(), this);
+					}
+					this.failBid(bid, null);
 				}
 			}
-		} else {
+		} 
+		else 
+		{
 			// Seriously don't know what could cause this, but might as well take care of it.
-			messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-too-low"), bid.getBidder(), this);
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-too-low"), bid.getBidder(), this);
 		}
 	}
 	
@@ -527,12 +695,16 @@ public class Auction {
 	 * @param attemptedBid the attempted bid
 	 * @param reason message key to send to looser
 	 */
-	private void failBid(AuctionBid attemptedBid, String reason) {
+	private void failBid(AuctionBid attemptedBid, String reason) 
+	{
 		attemptedBid.cancelBid();
-		if (this.sealed && (attemptedBid.getError() == null || attemptedBid.getError().isEmpty())) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("bid-success-sealed"), attemptedBid.getBidder(), this);
-		} else {
-			messageManager.sendPlayerMessage(new CArrayList<String>(reason), attemptedBid.getBidder(), this);
+		if (this.sealed && (attemptedBid.getError() == null || attemptedBid.getError().isEmpty())) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("bid-success-sealed"), attemptedBid.getBidder(), this);
+		} 
+		else 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>(reason), attemptedBid.getBidder(), this);
 		}
 	}
 	
@@ -542,34 +714,47 @@ public class Auction {
 	 * @param newBid the new bid
 	 * @param reason message key to broadcast
 	 */
-	private void setNewBid(AuctionBid newBid, String reason) {
-		AuctionBid prevBid = currentBid;
+	private void setNewBid(AuctionBid newBid, String reason) 
+	{
+		AuctionBid prevBid = this.currentBid;
 		
-		if (AuctionConfig.getBoolean("expire-buynow-at-first-bid", scope)) this.buyNow = 0;
-		
-		if (currentBid != null) {
-			currentBid.cancelBid();
+		if (AuctionConfig.getBoolean("expire-buynow-at-first-bid", this.scope)) 
+		{
+			this.buyNow = 0;
 		}
-		currentBid = newBid;
-		if (this.sealed) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("bid-success-sealed"), newBid.getBidder(), this);
-		} else if (AuctionConfig.getBoolean("broadcast-bid-updates", scope)) {
-			messageManager.broadcastAuctionMessage(new CArrayList<String>(reason), this);
-		} else {
-			messageManager.sendPlayerMessage(new CArrayList<String>(reason), newBid.getBidder(), this);
-			if (prevBid != null && newBid.getBidder().equalsIgnoreCase(prevBid.getBidder())) {
-				messageManager.sendPlayerMessage(new CArrayList<String>(reason), prevBid.getBidder(), this);
+		
+		if (this.currentBid != null) 
+		{
+			this.currentBid.cancelBid();
+		}
+		this.currentBid = newBid;
+		if (this.sealed) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("bid-success-sealed"), newBid.getBidder(), this);
+		} 
+		else if (AuctionConfig.getBoolean("broadcast-bid-updates", this.scope)) 
+		{
+			this.messageManager.broadcastAuctionMessage(new CArrayList<String>(reason), this);
+		} 
+		else 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>(reason), newBid.getBidder(), this);
+			if (prevBid != null && newBid.getBidder().equalsIgnoreCase(prevBid.getBidder())) 
+			{
+				this.messageManager.sendPlayerMessage(new CArrayList<String>(reason), prevBid.getBidder(), this);
 			}
 		}
-		AuctionParticipant.addParticipant(newBid.getBidder(), scope);
-		if (currentBid.getBidAmount() >= buyNow) {
-			buyNow = 0;
+		AuctionParticipant.addParticipant(newBid.getBidder(), this.scope);
+		if (this.currentBid.getBidAmount() >= this.buyNow) 
+		{
+			this.buyNow = 0;
 		}
 		
         // see if antisnipe is enabled...
-        if (!this.sealed && AuctionConfig.getBoolean("anti-snipe", scope) == true && this.getRemainingTime() <= AuctionConfig.getInt("anti-snipe-prevention-seconds", scope)) {
-        	this.addToRemainingTime(AuctionConfig.getInt("anti-snipe-prevention-seconds", scope));
-			messageManager.broadcastAuctionMessage(new CArrayList<String>("anti-snipe-time-added"), this);
+        if (!this.sealed && AuctionConfig.getBoolean("anti-snipe", this.scope) == true && this.getRemainingTime() <= AuctionConfig.getInt("anti-snipe-prevention-seconds", this.scope)) 
+        {
+        	this.addToRemainingTime(AuctionConfig.getInt("anti-snipe-prevention-seconds", this.scope));
+        	this.messageManager.broadcastAuctionMessage(new CArrayList<String>("anti-snipe-time-added"), this);
         }
 	}
 	
@@ -578,32 +763,35 @@ public class Auction {
 	 * 
 	 * @return acceptability of held item for auctioning
 	 */
-	private Boolean parseHeldItem() {
-		Player owner = Bukkit.getPlayer(ownerName);
-		if (lot != null) {
+	private Boolean parseHeldItem() 
+	{
+		Player owner = Bukkit.getPlayer(this.ownerName);
+		if (this.lot != null) 
+		{
 			return true;
 		}
 		ItemStack heldItem = owner.getItemInHand();
-		if (heldItem == null || heldItem.getAmount() == 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-hand-is-empty"), ownerName, this);
+		if (heldItem == null || heldItem.getAmount() == 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-hand-is-empty"), this.ownerName, this);
 			return false;
 		}
-		lot = new AuctionLot(heldItem, ownerName);
+		this.lot = new AuctionLot(heldItem, this.ownerName);
 		
-		ItemStack itemType = lot.getTypeStack();
+		ItemStack itemType = this.lot.getTypeStack();
 		
-		if (
-				!AuctionConfig.getBoolean("allow-damaged-items", scope) &&
-				itemType.getType().getMaxDurability() > 0 &&
-				itemType.getDurability() > 0
-		) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-damaged-item"), ownerName, this);
-			lot = null;
+		if (!AuctionConfig.getBoolean("allow-damaged-items", scope) && itemType.getType().getMaxDurability() > 0 && itemType.getDurability() > 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-damaged-item"), this.ownerName, this);
+			this.lot = null;
 			return false;
 		}
 		
     	String displayName = Items.getDisplayName(itemType);
-    	if (displayName == null) displayName = "";
+    	if (displayName == null) 
+    	{
+    		displayName = "";
+    	}
     	//Implementing allowing auctioned mob-spawners
     	//if display name is not empty do function if not fall through to next if
     	if(!displayName.isEmpty())
@@ -615,7 +803,7 @@ public class Auction {
     			{
     				if(lowerCaseDisplay.contains(string))
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-blacklist-name"), ownerName, this);
+    					this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-blacklist-name"), ownerName, this);
     					return false;
     				}
     			}
@@ -624,28 +812,31 @@ public class Auction {
     	
     	if(itemType.getType() == Material.MOB_SPAWNER && !AuctionConfig.getBoolean("allow-mobspawners", scope))
 		{
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-spawner"), ownerName, this);
-			lot = null;
+    		this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-spawner"), ownerName, this);
+    		this.lot = null;
 			return false;
 		}
     	
     	if (!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) 
     	{
-
-    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
-    			lot = null;
+    			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-renamed-item"), ownerName, this);
+    			this.lot = null;
     			return false;
     	}
 		
 		// Check lore:
 		String[] lore = Items.getLore(heldItem);
 		List<String> bannedLore = AuctionConfig.getStringList("banned-lore", scope);
-		if (lore != null && bannedLore != null) {
-			for (int i = 0; i < bannedLore.size(); i++) {
-				for (int j = 0; j < lore.length; j++) {
-					if (lore[j].toLowerCase().contains(bannedLore.get(i).toLowerCase())) {
-						messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-banned-lore"), ownerName, this);
-						lot = null;
+		if (lore != null && bannedLore != null) 
+		{
+			for (int i = 0; i < bannedLore.size(); i++) 
+			{
+				for (int j = 0; j < lore.length; j++) 
+				{
+					if (lore[j].toLowerCase().contains(bannedLore.get(i).toLowerCase())) 
+					{
+						this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-banned-lore"), this.ownerName, this);
+						this.lot = null;
 						return false;
 					}
 				}
@@ -660,13 +851,29 @@ public class Auction {
 	 * 
 	 * @return acceptability of entered arguments
 	 */
-	private Boolean parseArgs() {
+	private Boolean parseArgs() 
+	{
 		// (amount) (starting price) (increment) (time) (buynow)
-		if (!parseArgAmount()) return false;
-		if (!parseArgStartingBid()) return false;
-		if (!parseArgIncrement()) return false;
-		if (!parseArgTime()) return false;
-		if (!parseArgBuyNow()) return false;
+		if (!parseArgAmount()) 
+		{
+			return false;
+		}
+		else if (!parseArgStartingBid())
+		{
+			return false;
+		}
+		else if (!parseArgIncrement())
+		{
+			return false;
+		}
+		else if (!parseArgTime())
+		{
+			return false;
+		}
+		else if (!parseArgBuyNow())
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -675,9 +882,11 @@ public class Auction {
 	 * 
 	 * @return acceptability of starter auctioning
 	 */
-	private Boolean isValidOwner() {
-		if (ownerName == null) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-invalid-owner"), null, this);
+	private Boolean isValidOwner() 
+	{
+		if (this.ownerName == null) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-invalid-owner"), null, this);
 			return false;
 		}
 		return true;
@@ -688,16 +897,19 @@ public class Auction {
 	 * 
 	 * @return acceptability of lot quantity
 	 */
-	private Boolean isValidAmount() {
-		if (quantity <= 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-quantity-too-low"), ownerName, this);
+	private Boolean isValidAmount() 
+	{
+		if (this.quantity <= 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-quantity-too-low"), this.ownerName, this);
 			return false;
 		}
 		
 		// TODO: Add config setting for max quantity.
 		
-		if (!Items.hasAmount(ownerName, quantity, lot.getTypeStack())) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-insufficient-supply"), ownerName, this);
+		if (!Items.hasAmount(this.ownerName, this.quantity, this.lot.getTypeStack())) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-insufficient-supply"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -708,12 +920,16 @@ public class Auction {
 	 * 
 	 * @return if starting bid is ok
 	 */
-	private Boolean isValidStartingBid() {
-		if (startingBid < 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-starting-bid-too-low"), ownerName, this);
+	private Boolean isValidStartingBid() 
+	{
+		if (this.startingBid < 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-starting-bid-too-low"), this.ownerName, this);
 			return false;
-		} else if (startingBid > AuctionConfig.getSafeMoneyFromDouble("max-starting-bid", scope)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-starting-bid-too-high"), ownerName, this);
+		} 
+		else if (this.startingBid > AuctionConfig.getSafeMoneyFromDouble("max-starting-bid", scope)) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-starting-bid-too-high"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -724,13 +940,15 @@ public class Auction {
 	 * 
 	 * @return if minimum bid increment is okay
 	 */
-	private Boolean isValidIncrement() {
-		if (getMinBidIncrement() < AuctionConfig.getSafeMoneyFromDouble("min-bid-increment", scope)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-increment-too-low"), ownerName, this);
+	private Boolean isValidIncrement() 
+	{
+		if (getMinBidIncrement() < AuctionConfig.getSafeMoneyFromDouble("min-bid-increment", this.scope)) {
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-increment-too-low"), this.ownerName, this);
 			return false;
 		}
-		if (getMinBidIncrement() > AuctionConfig.getSafeMoneyFromDouble("max-bid-increment", scope)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-increment-too-high"), ownerName, this);
+		if (getMinBidIncrement() > AuctionConfig.getSafeMoneyFromDouble("max-bid-increment", scope)) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-increment-too-high"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -741,13 +959,16 @@ public class Auction {
 	 * 
 	 * @return if BuyNow amount is okay
 	 */
-	private Boolean isValidBuyNow() {
-		if (getBuyNow() < 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-buynow-too-low"), ownerName, this);
+	private Boolean isValidBuyNow() 
+	{
+		if (getBuyNow() < 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-buynow-too-low"), this.ownerName, this);
 			return false;
 		}
-		if (getBuyNow() > AuctionConfig.getSafeMoneyFromDouble("max-buynow", scope)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-buynow-too-high"), ownerName, this);
+		else if (getBuyNow() > AuctionConfig.getSafeMoneyFromDouble("max-buynow", scope)) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-buynow-too-high"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -758,13 +979,16 @@ public class Auction {
 	 * 
 	 * @return if auction time limit is okiedokie
 	 */
-	private Boolean isValidTime() {
-		if (time < AuctionConfig.getInt("min-auction-time", scope)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-time-too-low"), ownerName, this);
+	private Boolean isValidTime() 
+	{
+		if (this.time < AuctionConfig.getInt("min-auction-time", this.scope)) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-time-too-low"), this.ownerName, this);
 			return false;
 		}
-		if (time > AuctionConfig.getInt("max-auction-time", scope)) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-time-too-high"), ownerName, this);
+		else if (this.time > AuctionConfig.getInt("max-auction-time", this.scope)) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-time-too-high"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -776,25 +1000,39 @@ public class Auction {
 	 * @return if quantity argument parsed correctly
 	 */
 	private Boolean parseArgAmount() {
-		if (quantity > 0) return true;
+		if (this.quantity > 0) 
+		{
+			return true;
+		}
 
-		ItemStack lotType = lot.getTypeStack();
-		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("this") || args[0].equalsIgnoreCase("hand")) {
-				quantity = lotType.getAmount();
-			} else if (args[0].equalsIgnoreCase("all")) {
-				quantity = Items.getAmount(ownerName, lotType);
-			} else if (args[0].matches("[0-9]{1,7}")) {
-				quantity = Integer.parseInt(args[0]);
-			} else {
-				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-quantity"), ownerName, this);
+		ItemStack lotType = this.lot.getTypeStack();
+		if (this.args.length > 0) 
+		{
+			if (this.args[0].equalsIgnoreCase("this") || this.args[0].equalsIgnoreCase("hand")) 
+			{
+				this.quantity = lotType.getAmount();
+			} 
+			else if (this.args[0].equalsIgnoreCase("all")) 
+			{
+				this.quantity = Items.getAmount(this.ownerName, lotType);
+			} 
+			else if (args[0].matches("[0-9]{1,7}")) 
+			{
+				this.quantity = Integer.parseInt(this.args[0]);
+			} 
+			else 
+			{
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-quantity"), this.ownerName, this);
 				return false;
 			}
-		} else {
-			quantity = lotType.getAmount();
+		} 
+		else 
+		{
+			this.quantity = lotType.getAmount();
 		}
-		if (quantity < 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-quantity"), ownerName, this);
+		if (this.quantity < 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-quantity"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -807,32 +1045,32 @@ public class Auction {
 	 */
 	private Boolean parseArgStartingBid() 
 	{
-		if (startingBid > 0) return true;
-		
-		if (args.length > 1) 
+		if (this.startingBid > 0)
 		{
-			if(args[1].isEmpty())
+			return true;
+		}
+		
+		if (this.args.length > 1) 
+		{
+			if(this.args[1].isEmpty())
 			{
-				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), this.ownerName, this);
 				return false;
 			}
 			else if(!args[1].matches(FloAuction.decimalRegex))
 			{
-				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), this.ownerName, this);
 				return false;
 			}
-			startingBid = Functions.getSafeMoney(Double.parseDouble(args[1]));
-			/*if (!args[1].isEmpty() && args[1].matches(floAuction.decimalRegex)) {
-				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
-			} else {
-				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
-				return false;
-			}*/
-		} else {
-			startingBid = AuctionConfig.getSafeMoneyFromDouble("default-starting-bid", scope);
+			this.startingBid = Functions.getSafeMoney(Double.parseDouble(args[1]));
+		} 
+		else 
+		{
+			this.startingBid = AuctionConfig.getSafeMoneyFromDouble("default-starting-bid", this.scope);
 		}
-		if (startingBid < 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), ownerName, this);
+		if (this.startingBid < 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-starting-bid"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -843,21 +1081,32 @@ public class Auction {
 	 * 
 	 * @return if minimum bid increment parsed correctly
 	 */
-	private Boolean parseArgIncrement() {
-		if (minBidIncrement > 0) return true;
+	private Boolean parseArgIncrement() 
+	{
+		if (this.minBidIncrement > 0)
+		{
+			return true;
+		}
 
-		if (args.length > 2) {
-			if (!args[2].isEmpty() && args[2].matches(FloAuction.decimalRegex)) {
-				minBidIncrement = Functions.getSafeMoney(Double.parseDouble(args[2]));
-			} else {
-				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-bid-increment"), ownerName, this);
+		if (this.args.length > 2) 
+		{
+			if (!this.args[2].isEmpty() && args[2].matches(FloAuction.decimalRegex)) 
+			{
+				this.minBidIncrement = Functions.getSafeMoney(Double.parseDouble(this.args[2]));
+			} 
+			else 
+			{
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-bid-increment"), this.ownerName, this);
 				return false;
 			}
-		} else {
-			minBidIncrement = AuctionConfig.getSafeMoneyFromDouble("default-bid-increment", scope);
+		} 
+		else 
+		{
+			this.minBidIncrement = AuctionConfig.getSafeMoneyFromDouble("default-bid-increment", this.scope);
 		}
-		if (minBidIncrement < 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-bid-increment"), ownerName, this);
+		if (this.minBidIncrement < 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-bid-increment"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -868,26 +1117,37 @@ public class Auction {
 	 * 
 	 * @return if time argument parsed correctly
 	 */
-	private Boolean parseArgTime() {
-		if (time > 0) return true;
+	private Boolean parseArgTime() 
+	{
+		if (this.time > 0) 
+		{
+			return true;
+		}
 
-		if (args.length > 3) {
-			if (args[3].matches("[0-9]{1,7}")) {
-				time = Integer.parseInt(args[3]);
-			} else {
-				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-time"), ownerName, this);
+		if (this.args.length > 3) 
+		{
+			if (this.args[3].matches("[0-9]{1,7}")) 
+			{
+				this.time = Integer.parseInt(this.args[3]);
+			} 
+			else 
+			{
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-time"), this.ownerName, this);
 				return false;
 			}
-		} else {
-			time = AuctionConfig.getInt("default-auction-time", scope);
+		} 
+		else 
+		{
+			this.time = AuctionConfig.getInt("default-auction-time", this.scope);
 		}
-		if (time < 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-time"), ownerName, this);
+		if (this.time < 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-time"), this.ownerName, this);
 			return false;
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Parses BuyNow argument.
 	 * 
@@ -895,25 +1155,35 @@ public class Auction {
 	 */
 	private Boolean parseArgBuyNow() {
 		
-		if (this.sealed || !AuctionConfig.getBoolean("allow-buynow", scope)) {
+		if (this.sealed || !AuctionConfig.getBoolean("allow-buynow", this.scope)) 
+		{
 			this.buyNow = 0;
 			return true;
 		}
 
-		if (getBuyNow() > 0) return true;
+		if (getBuyNow() > 0)
+		{
+			return true;
+		}
 
-		if (args.length > 4) {
-			if (!args[4].isEmpty() && args[4].matches(FloAuction.decimalRegex)) {
+		if (this.args.length > 4) 
+		{
+			if (!this.args[4].isEmpty() && this.args[4].matches(FloAuction.decimalRegex)) 
+			{
 				this.buyNow = Functions.getSafeMoney(Double.parseDouble(args[4]));
-			} else {
-				messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-buynow"), ownerName, this);
+			} else 
+			{
+				this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-buynow"), this.ownerName, this);
 				return false;
 			}
-		} else {
+		} 
+		else 
+		{
 			this.buyNow = 0;
 		}
-		if (getBuyNow() < 0) {
-			messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-buynow"), ownerName, this);
+		if (getBuyNow() < 0) 
+		{
+			this.messageManager.sendPlayerMessage(new CArrayList<String>("parse-error-invalid-buynow"), this.ownerName, this);
 			return false;
 		}
 		return true;
@@ -924,8 +1194,9 @@ public class Auction {
 	 * 
 	 * @return minimum bid increment
 	 */
-	public long getMinBidIncrement() {
-		return minBidIncrement;
+	public long getMinBidIncrement() 
+	{
+		return this.minBidIncrement;
 	}
 	
 	/**
@@ -933,11 +1204,13 @@ public class Auction {
 	 * 
 	 * @return stack of example items
 	 */
-	public ItemStack getLotType() {
-		if (lot == null) {
+	public ItemStack getLotType() 
+	{
+		if (this.lot == null) 
+		{
 			return null;
 		}
-		return lot.getTypeStack();
+		return this.lot.getTypeStack();
 	}
 	
 	/**
@@ -945,11 +1218,13 @@ public class Auction {
 	 * 
 	 * @return amount being auctioned
 	 */
-	public int getLotQuantity() {
-		if (lot == null) {
+	public int getLotQuantity() 
+	{
+		if (this.lot == null) 
+		{
 			return 0;
 		}
-		return lot.getQuantity();
+		return this.lot.getQuantity();
 	}
 	
 	/**
@@ -957,10 +1232,11 @@ public class Auction {
 	 * 
 	 * @return lowest possible starting bid in floAuction's proprietary "safe money"
 	 */
-	public long getStartingBid() {
-		long effectiveStartingBid = startingBid;
+	public long getStartingBid() 
+	{
+		long effectiveStartingBid = this.startingBid;
 		if (effectiveStartingBid == 0) {
-			effectiveStartingBid = minBidIncrement; 
+			effectiveStartingBid = this.minBidIncrement; 
 		}
 		return effectiveStartingBid;
 	}
@@ -970,8 +1246,9 @@ public class Auction {
 	 * 
 	 * @return AuctionBid object of leader
 	 */
-	public AuctionBid getCurrentBid() {
-		return currentBid;
+	public AuctionBid getCurrentBid() 
+	{
+		return this.currentBid;
 	}
 	
 	/**
@@ -979,8 +1256,9 @@ public class Auction {
 	 * 
 	 * @return auction owner name
 	 */
-	public String getOwner() {
-		return ownerName;
+	public String getOwner() 
+	{
+		return this.ownerName;
 	}
 	
 	/**
@@ -988,8 +1266,9 @@ public class Auction {
 	 * 
 	 * @return number of seconds remaining in auction
 	 */
-	public int getRemainingTime() {
-		return countdown;
+	public int getRemainingTime() 
+	{
+		return this.countdown;
 	}
 	
 	/**
@@ -997,8 +1276,9 @@ public class Auction {
 	 * 
 	 * @return original auction length in seconds
 	 */
-	public int getTotalTime() {
-		return time;
+	public int getTotalTime() 
+	{
+		return this.time;
 	}
 
 	/**
@@ -1007,9 +1287,10 @@ public class Auction {
 	 * @param secondsToAdd
 	 * @return
 	 */
-    public int addToRemainingTime(int secondsToAdd) {
-            countdown += secondsToAdd;
-            return countdown;
+    public int addToRemainingTime(int secondsToAdd) 
+    {
+    	this.countdown += secondsToAdd;
+        return this.countdown;
     }
 
     /**
@@ -1017,16 +1298,21 @@ public class Auction {
      * 
      * @return BuyNow amount in floAuction's proprietary "safe money"
      */
-	public long getBuyNow() {
-		return buyNow;
+	public long getBuyNow() 
+	{
+		return this.buyNow;
 	}
 
-	public String getOwnerDisplayName() {
-		Player ownerPlayer = Bukkit.getPlayer(ownerName);
-		if (ownerPlayer != null) {
+	public String getOwnerDisplayName() 
+	{
+		Player ownerPlayer = Bukkit.getPlayer(this.ownerName);
+		if (ownerPlayer != null) 
+		{
 			return ownerPlayer.getDisplayName();
-		} else {
-			return ownerName;
+		} 
+		else 
+		{
+			return this.ownerName;
 		}
 	}
 	
