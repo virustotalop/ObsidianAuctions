@@ -78,7 +78,7 @@
 %R3 ➔ %repeatable-lore%
 
 
-%C1 ➔ %conditional-true%
+%C ➔ %conditional-true%
 
 %N ➔ %conditional-false%
 
