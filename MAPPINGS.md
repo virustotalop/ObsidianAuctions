@@ -80,100 +80,100 @@
 
 %C1 ➔ %conditional-true%%is-admin%
 
-%N1 ➔ %conditional-false %%is-admin%
+%N1 ➔ %conditional-false%%is-admin%
 
-%C2 ➔ %conditional-true%  
+%C2 ➔ %conditional-true%%can-start%
 
-%N2 ➔ %conditional-false%  
+%N2 ➔ %conditional-false%%can-start%  
 
-%C3 ➔ %conditional-true%  
+%C3 ➔ %conditional-true%%can-bid%  
 
-%N3 ➔ %conditional-false%  
+%N3 ➔ %conditional-false%%can-bid%  
 
-%C4 ➔ %conditional-true%  
+%C4 ➔ %conditional-true%%has-enchantment%  
 
-%N4 ➔ %conditional-false%  
+%N4 ➔ %conditional-false%%has-enchantment%  
 
-%C5 ➔ %conditional-true%  
+%C5 ➔ %conditional-true%%has-enchantment%  
 
-%N5 ➔ %conditional-false%  
+%N5 ➔ %conditional-false%%has-enchantment%  
 
-%C6 ➔ %conditional-true%  
+%C6 ➔ %conditional-true%%is-sealed%  
 
-%N6 ➔ %conditional-false%  
+%N6 ➔ %conditional-false%%is-sealed%  
 
-%C7 ➔ %conditional-true%  
+%C7 ➔ %conditional-true%%not-sealed%  
 
-%N7 ➔ %conditional-false%  
+%N7 ➔ %conditional-false%%not-sealed%  
 
-%C8 ➔ %conditional-true%  
+%C8 ➔ %conditional-true%%is-broadcast%  
 
-%N8 ➔ %conditional-false%  
+%N8 ➔ %conditional-false%%is-broadcast%  
 
-%C9 ➔ %conditional-true%  
+%C9 ➔ %conditional-true%%has-book-title%  
 
-%N9 ➔ %conditional-false%  
+%N9 ➔ %conditional-false%%has-book-title%  
 
-%C0 ➔ %conditional-true%  
+%C0 ➔ %conditional-true%%has-book-author%  
 
-%N0 ➔ %conditional-false%  
+%N0 ➔ %conditional-false%%has-book-author%  
 
-%CA ➔ %conditional-true%  
+%CA ➔ %conditional-true%%item-has-lore%  
 
-%NA ➔ %conditional-false%  
+%NA ➔ %conditional-false%%item-has-lore%  
 
-%CB ➔ %conditional-true%  
+%CB ➔ %conditional-true%%has-durability%  
 
-%NB ➔ %conditional-false%  
+%NB ➔ %conditional-false%%has-durability%  
 
-%CC ➔ %conditional-true%  
+%CC ➔ %conditional-true%%is-firework%  
 
-%NC ➔ %conditional-false%  
+%NC ➔ %conditional-false%%is-firework%  
 
-%CD ➔ %conditional-true%  
+%CD ➔ %conditional-true%%is-buynow%  
 
-%ND ➔ %conditional-false%  
+%ND ➔ %conditional-false%%is-buynow%  
 
-%CE ➔ %conditional-true%  
+%CE ➔ %conditional-true%%has-enchantments%  
 
-%NE ➔ %conditional-false%  
+%NE ➔ %conditional-false%%has-enchantments%  
 
-%CF ➔ %conditional-true%  
+%CF ➔ %conditional-true%%allow-max-bids%  
 
-%NF ➔ %conditional-false%  
+%NF ➔ %conditional-false%%allow-max-bids%  
 
-%CG ➔ %conditional-true%  
+%CG ➔ %conditional-true%%allow-buynow%  
 
-%NG ➔ %conditional-false%  
+%NG ➔ %conditional-false%%allow-buynow%  
 
-%CH ➔ %conditional-true%  
+%CH ➔ %conditional-true%%allow-auto-bid%  
 
-%NH ➔ %conditional-false%  
+%NH ➔ %conditional-false%%allow-auto-bid%  
 
-%CI ➔ %conditional-true%  
+%CI ➔ %conditional-true%%allow-early-bid%  
 
-%NI ➔ %conditional-false%  
+%NI ➔ %conditional-false%%allow-early-bid%  
 
-%CJ ➔ %conditional-true%  
+%CJ ➔ %conditional-true%%cancel-prevention-percent%  
 
-%NJ ➔ %conditional-false%  
+%NJ ➔ %conditional-false%%cancel-prevention-percent%  
 
-%CK ➔ %conditional-true%  
+%CK ➔ %conditional-true%%allow-unsealed-auctions%  
 
-%NK ➔ %conditional-false%  
+%NK ➔ %conditional-false%%allow-unsealed-auctions%
 
-%CL ➔ %conditional-true%  
+%CL ➔ %conditional-true%%allow-sealed-auctions%  
 
-%NL ➔ %conditional-false%  
+%NL ➔ %conditional-false%%allow-sealed-auctions%  
 
-%CM ➔ %conditional-true%  
+%CM ➔ %conditional-true%%is-item-logic%  
 
-%NM ➔ %conditional-false%  
+%NM ➔ %conditional-false%%is-item-logic%  
 
-%CN ➔ %conditional-true%  
+%CN ➔ %conditional-true%%get-active-auction%  
 
-%NN ➔ %conditional-false%  
+%NN ➔ %conditional-false%%get-active-auction%  
 
-%CO ➔ %conditional-true%  
+%CO ➔ %conditional-true%%item-is-in-queue%  
 
-%NO ➔ %conditional-false%  
+%NO ➔ %conditional-false%%item-is-in-queue%  
