@@ -78,50 +78,102 @@
 %R3 ➔ %repeatable-lore%
 
 
-%C ➔ %conditional-true%
+%C1 ➔ %conditional-true%%is-admin%
 
-%N ➔ %conditional-false%
+%N1 ➔ %conditional-false %%is-admin%
 
-```java
-/*
-Conditionals are a bit odd and I haven't used them.
-If you use them tell me and if you can give me a description what you use them for.
-*/
+%C2 ➔ %conditional-true%  
 
-Map<String, Boolean> conditionals = new HashMap<String, Boolean>();
-    	for (int l = 0; l < messageList.size(); l++) {
-    		String message = messageList.get(l);
-    		if (message.length() > 0 && (message.contains("%C") || message.contains("%N"))) {
-    	    	conditionals.put("1", player != null && floAuction.perms.has(player, "auction.admin"));
-    	    	conditionals.put("2", player != null && floAuction.perms.has(player, "auction.start"));
-    	    	conditionals.put("3", player != null && floAuction.perms.has(player, "auction.bid"));
-    	    	conditionals.put("4", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0);
-    	    	conditionals.put("5", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0);
-    	    	conditionals.put("6", auction != null && auction.sealed);
-    	    	conditionals.put("7", auction != null && !auction.sealed && auction.getCurrentBid() != null);
-    	    	conditionals.put("8", isBroadcast);
-    	    	conditionals.put("9", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty());
-    	    	conditionals.put("0", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty());
-    	    	conditionals.put("A", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0);
-    	    	conditionals.put("B", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0);
-    	    	conditionals.put("C", lot != null && (lot.getType() == Material.FIREWORK || lot.getType() == Material.FIREWORK_CHARGE));
-    	    	conditionals.put("D", auction != null && auction.getBuyNow() != 0);
-    	    	conditionals.put("E", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0)));
-    	    	conditionals.put("F", AuctionConfig.getBoolean("allow-max-bids", auctionScope));
-    	    	conditionals.put("G", AuctionConfig.getBoolean("allow-buynow", auctionScope));
-    	    	conditionals.put("H", AuctionConfig.getBoolean("allow-auto-bid", auctionScope));
-    	    	conditionals.put("I", AuctionConfig.getBoolean("allow-early-end", auctionScope));
-    	    	conditionals.put("J", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100);
-    	    	conditionals.put("K", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope));
-    	    	conditionals.put("L", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope));
-    	    	conditionals.put("M", conditionals.get("K") || conditionals.get("L"));
-    	    	conditionals.put("N", auctionScope != null && auctionScope.getActiveAuction() != null);
-    	    	conditionals.put("O", auctionScope != null && auctionScope.getAuctionQueueLength() > 0);
-    			break;
-    		}
+%N2 ➔ %conditional-false%  
 
-```
+%C3 ➔ %conditional-true%  
 
+%N3 ➔ %conditional-false%  
 
+%C4 ➔ %conditional-true%  
 
+%N4 ➔ %conditional-false%  
 
+%C5 ➔ %conditional-true%  
+
+%N5 ➔ %conditional-false%  
+
+%C6 ➔ %conditional-true%  
+
+%N6 ➔ %conditional-false%  
+
+%C7 ➔ %conditional-true%  
+
+%N7 ➔ %conditional-false%  
+
+%C8 ➔ %conditional-true%  
+
+%N8 ➔ %conditional-false%  
+
+%C9 ➔ %conditional-true%  
+
+%N9 ➔ %conditional-false%  
+
+%C0 ➔ %conditional-true%  
+
+%N0 ➔ %conditional-false%  
+
+%CA ➔ %conditional-true%  
+
+%NA ➔ %conditional-false%  
+
+%CB ➔ %conditional-true%  
+
+%NB ➔ %conditional-false%  
+
+%CC ➔ %conditional-true%  
+
+%NC ➔ %conditional-false%  
+
+%CD ➔ %conditional-true%  
+
+%ND ➔ %conditional-false%  
+
+%CE ➔ %conditional-true%  
+
+%NE ➔ %conditional-false%  
+
+%CF ➔ %conditional-true%  
+
+%NF ➔ %conditional-false%  
+
+%CG ➔ %conditional-true%  
+
+%NG ➔ %conditional-false%  
+
+%CH ➔ %conditional-true%  
+
+%NH ➔ %conditional-false%  
+
+%CI ➔ %conditional-true%  
+
+%NI ➔ %conditional-false%  
+
+%CJ ➔ %conditional-true%  
+
+%NJ ➔ %conditional-false%  
+
+%CK ➔ %conditional-true%  
+
+%NK ➔ %conditional-false%  
+
+%CL ➔ %conditional-true%  
+
+%NL ➔ %conditional-false%  
+
+%CM ➔ %conditional-true%  
+
+%NM ➔ %conditional-false%  
+
+%CN ➔ %conditional-true%  
+
+%NN ➔ %conditional-false%  
+
+%CO ➔ %conditional-true%  
+
+%NO ➔ %conditional-false%  
