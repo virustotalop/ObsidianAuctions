@@ -41,6 +41,7 @@ public class ArenaManager {
 		{
 			mobArena = (MobArena) pluginManager.getPlugin("MobArena");
 		}
+		
 		if (ArenaManager.mobArena != null) 
 		{
 			if(!ArenaManager.mobArenaListenerEnabled)
@@ -49,10 +50,12 @@ public class ArenaManager {
 				ArenaManager.mobArenaListenerEnabled = true;
 			}
 		}
+		
 		if (ArenaManager.pvpArena == null)
 		{
 			ArenaManager.pvpArena = (PVPArena) pluginManager.getPlugin("pvparena");
 		}
+		
 		if (ArenaManager.pvpArena != null)
 		{
 			if(!ArenaManager.pvpArenaListenerEnabled)

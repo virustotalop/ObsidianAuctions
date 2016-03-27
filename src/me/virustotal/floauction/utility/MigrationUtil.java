@@ -16,9 +16,13 @@ import com.flobi.floauction.FloAuction;
 
 public class MigrationUtil {
 	
+	private static HashMap<String, String> map;
+	
 	public static void mapOldStrings()
 	{
-		HashMap<String, String> map = new HashMap<String, String>();
+		if(MigrationUtil.map == null)
+			MigrationUtil.map =  new HashMap<String, String>();
+		
 		File mappingsFile = new File(FloAuction.plugin.getDataFolder().getPath(), "mappings.yml");
 		if(!mappingsFile.exists())
 		{
@@ -41,22 +45,55 @@ public class MigrationUtil {
 			return;
 		}
 		FileConfiguration language = YamlConfiguration.loadConfiguration(languageFile);
-		
+
 		for(String key : language.getKeys(false))
 		{
 			if(language.isString(key))
 			{
 				String str = language.getString(key);
-				for(String mString : map.values())
-				{
-					str = str.replace(mString, map.get(mString));
-				}
+				
+				if(str != null)
+					str = MigrationUtil.updateString(str);
 				if(!language.getString(key).equals(str))
 				{
-					language.set(key, str);
+						language.set(key, str);
 				}
 			}
+			else if(language.isList(key))
+			{
+				
+				if(!(language.getList(key).get(0) instanceof String))
+					continue;
+				List<String> list = (List<String>) language.getList(key);
+				
+				for(int i = 0; i < list.size(); i++)
+				{
+					String str = list.get(i);
+					str = MigrationUtil.updateString(str);
+					list.set(i, str);
+				}
+				language.set(key, list);
+			}
 		}
+		try 
+		{
+			language.save(languageFile);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private static String updateString(String mString)
+	{
+		if(mString == null)
+			return null;
+		for(String str : map.keySet())
+		{
+			mString = mString.replace(str, map.get(str));
+		}
+		return mString;
 	}
 	
 	

@@ -534,7 +534,7 @@ public class AuctionMessageManager extends MessageManager {
     	    	conditionals.put("%cancel-prevention-percent%", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100); //J
     	    	conditionals.put("%allow-unsealed-auctions%", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope)); //K
     	    	conditionals.put("%allow-sealed-auctions%", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope)); //L
-    	    	conditionals.put("%is-item-logic%", conditionals.get("K") || conditionals.get("L")); //M //Not really sure what this does
+    	    	conditionals.put("%is-item-logic%", conditionals.get("%allow-unsealed-auctions%") || conditionals.get("%allow-sealed-auctions%")); //L or K
     	    	conditionals.put("%get-active-auction%", auctionScope != null && auctionScope.getActiveAuction() != null); //N
     	    	conditionals.put("%item-is-in-queue%", auctionScope != null && auctionScope.getAuctionQueueLength() > 0); //O
     			break;
