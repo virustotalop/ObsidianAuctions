@@ -35,6 +35,11 @@ public class MigrationUtil {
 		
 		FloAuction.plugin.getLogger().log(Level.INFO, "Checking to see if strings need to be mapped");
 		File languageFile = new File(FloAuction.plugin.getDataFolder().getPath(), "language.yml");
+		if(!languageFile.exists())
+		{
+			FloAuction.plugin.getLogger().log(Level.INFO, "Since the language file does not exist nothing needs to be mapped");
+			return;
+		}
 		FileConfiguration language = YamlConfiguration.loadConfiguration(languageFile);
 		
 		for(String key : language.getKeys(false))

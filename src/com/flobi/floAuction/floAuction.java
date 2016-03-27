@@ -422,6 +422,7 @@ public class FloAuction extends JavaPlugin {
 	 */
     private static void loadConfig() 
     {
+    	MigrationUtil.mapOldStrings(); //Used to map the old config strings to new strings, check mappings.yml
 		File configFile = new File(dataFolder, "config.yml");
     	InputStream defConfigStream = plugin.getResource("config.yml");;
     	File textConfigFile = new File(dataFolder, "language.yml");
@@ -631,7 +632,6 @@ public class FloAuction extends JavaPlugin {
 	    configFile = null;
         defTextConfig = null;
 	    textConfigFile = null;
-	    MigrationUtil.mapOldStrings(); //Used to map the old config strings to new strings, check mappings.yml
 	    
     }
     

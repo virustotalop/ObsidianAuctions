@@ -512,31 +512,31 @@ public class AuctionMessageManager extends MessageManager {
     		String message = messageList.get(l);
     		if (message.length() > 0 && (message.contains("%conditional-true%") || message.contains("%conditional-false%"))) //%C    %N
     		{
-    	    	conditionals.put("%admin%", player != null && FloAuction.perms.has(player, "auction.admin")); //1
-    	    	conditionals.put("%start%", player != null && FloAuction.perms.has(player, "auction.start")); //2
-    	    	conditionals.put("3", player != null && FloAuction.perms.has(player, "auction.bid")); //3
+    	    	conditionals.put("%is-admin%", player != null && FloAuction.perms.has(player, "auction.admin")); //1
+    	    	conditionals.put("%can-start%", player != null && FloAuction.perms.has(player, "auction.start")); //2
+    	    	conditionals.put("%can-bid%", player != null && FloAuction.perms.has(player, "auction.bid")); //3
     	    	conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //4
     	    	conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
     	    	conditionals.put("%is-sealed%", auction != null && auction.sealed); //6
     	    	conditionals.put("%not-sealed%", auction != null && !auction.sealed && auction.getCurrentBid() != null); //7
     	    	conditionals.put("%is-broadcast%", isBroadcast); //8
-    	    	conditionals.put("9", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty()); //9
-    	    	conditionals.put("0", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty()); //0
-    	    	conditionals.put("A", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0); //A
-    	    	conditionals.put("B", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0); //B
-    	    	conditionals.put("C", lot != null && (lot.getType() == Material.FIREWORK || lot.getType() == Material.FIREWORK_CHARGE)); //C
-    	    	conditionals.put("D", auction != null && auction.getBuyNow() != 0); //D
-    	    	conditionals.put("E", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0))); //E
-    	    	conditionals.put("F", AuctionConfig.getBoolean("allow-max-bids", auctionScope)); //F
-    	    	conditionals.put("G", AuctionConfig.getBoolean("allow-buynow", auctionScope)); //G
-    	    	conditionals.put("H", AuctionConfig.getBoolean("allow-auto-bid", auctionScope)); //H
-    	    	conditionals.put("I", AuctionConfig.getBoolean("allow-early-end", auctionScope)); //I
-    	    	conditionals.put("J", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100); //J
-    	    	conditionals.put("K", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope)); //K
-    	    	conditionals.put("L", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope)); //L
-    	    	conditionals.put("M", conditionals.get("K") || conditionals.get("L")); //M
-    	    	conditionals.put("N", auctionScope != null && auctionScope.getActiveAuction() != null); //N
-    	    	conditionals.put("O", auctionScope != null && auctionScope.getAuctionQueueLength() > 0); //O
+    	    	conditionals.put("%has-book-title%", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty()); //9
+    	    	conditionals.put("%has-book-author%", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty()); //0
+    	    	conditionals.put("%item-has-lore%", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0); //A
+    	    	conditionals.put("%has-durability%", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0); //B
+    	    	conditionals.put("%is-firework%", lot != null && (lot.getType() == Material.FIREWORK || lot.getType() == Material.FIREWORK_CHARGE)); //C
+    	    	conditionals.put("%is-buynow%", auction != null && auction.getBuyNow() != 0); //D
+    	    	conditionals.put("%has-enchantments%", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0))); //E
+    	    	conditionals.put("%allow-max-bids%", AuctionConfig.getBoolean("allow-max-bids", auctionScope)); //F
+    	    	conditionals.put("%allow-buynow%", AuctionConfig.getBoolean("allow-buynow", auctionScope)); //G
+    	    	conditionals.put("%allow-auto-bid%", AuctionConfig.getBoolean("allow-auto-bid", auctionScope)); //H
+    	    	conditionals.put("%allow-early-bid%", AuctionConfig.getBoolean("allow-early-end", auctionScope)); //I
+    	    	conditionals.put("%cancel-prevention-percent%", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100); //J
+    	    	conditionals.put("%allow-unsealed-auctions%", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope)); //K
+    	    	conditionals.put("%allow-sealed-auctions%", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope)); //L
+    	    	conditionals.put("%is-item-logic%", conditionals.get("K") || conditionals.get("L")); //M //Not really sure what this does
+    	    	conditionals.put("%get-active-auction%", auctionScope != null && auctionScope.getActiveAuction() != null); //N
+    	    	conditionals.put("%item-is-in-queue%", auctionScope != null && auctionScope.getAuctionQueueLength() > 0); //O
     			break;
     		}
     	}
@@ -567,10 +567,10 @@ public class AuctionMessageManager extends MessageManager {
         		}
         		
         		// Only one repeatable can be processed per line.
-        		if (message.contains("%R")) 
+        		if (message.contains("%repeatable")) 
         		{
         			// Mental note: I'm not caching these because there is no reason to use them more than once per message.
-            		if (message.contains("%R1")) // Enchantments
+            		if (message.contains("%repeatable-enchantments%")) // Enchantments
             		{ 
             			if (lot != null) 
             			{
@@ -594,13 +594,13 @@ public class AuctionMessageManager extends MessageManager {
             					{
             						if (message.length() > 0) 
             						{
-            							newMessageList.add(chatPrep(message, auctionScope).replace("%R1", Items.getEnchantmentName(enchantmentEntry)));
+            							newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-enchantment%", Items.getEnchantmentName(enchantmentEntry)));
             						}
             					}
             				}
             			}
             		} 
-            		else if (message.contains("%R2")) 
+            		else if (message.contains("%repeatable-firework-payload%")) 
             		{ // Firework aspects
     					FireworkEffect[] payloads = Items.getFireworkEffects(lot);
     					if (payloads != null && payloads.length > 0) 
@@ -665,13 +665,13 @@ public class AuctionMessageManager extends MessageManager {
     							}
     							if (message.length() > 0)
     							{
-    								newMessageList.add(chatPrep(message, auctionScope).replace("%R2", payloadAspects));
+    								newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
     							}
     						}
     						continue;
     					}
             		} 
-            		else if (message.contains("%R3")) 
+            		else if (message.contains("%repeatable-lore%")) 
             		{
         				if (auction != null) 
         				{
@@ -680,7 +680,7 @@ public class AuctionMessageManager extends MessageManager {
     	    				{
     	    					if (message.length() > 0)
     	    					{
-    	    						newMessageList.add(chatPrep(message, auctionScope).replace("%R3", lore[j]));
+    	    						newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-lore%", lore[j]));
     	    					}
     	    				}
         				}
