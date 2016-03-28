@@ -89,15 +89,16 @@ public class MaterialUtil {
 				Object tag  = tagField.invoke(itemStack);
 				Method getCompound = tag.getClass().getMethod("getCompound", String.class);
 				Object compound = getCompound.invoke(tag, "BlockEntityTag");
-				if(getCompound.invoke(compound, "SpawnData") != null)
+				if(MaterialUtil.getVersion().contains("1_8"))
+				{
+					type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
+				}
+				else if(MaterialUtil.getVersion().contains("1_9"))
 				{
 					Object spawnData = getCompound.invoke(compound, "SpawnData");
 					type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
 				}
-				else
-				{
-					type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
-				}	
+					
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();
 			}
