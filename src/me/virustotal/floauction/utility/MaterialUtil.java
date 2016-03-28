@@ -78,7 +78,8 @@ public class MaterialUtil {
 		}
 		else
 		{
-			try {
+			try 
+			{
 				Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + getVersion() + ".inventory.CraftItemStack");
 				Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
 				Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
@@ -88,7 +89,15 @@ public class MaterialUtil {
 				Object tag  = tagField.invoke(itemStack);
 				Method getCompound = tag.getClass().getMethod("getCompound", String.class);
 				Object compound = getCompound.invoke(tag, "BlockEntityTag");
-				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
+				if(getCompound.invoke(compound, "SpawnData") != null)
+				{
+					Object spawnData = getCompound.invoke(compound, "SpawnData");
+					type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
+				}
+				else
+				{
+					type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
+				}	
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();
 			}
