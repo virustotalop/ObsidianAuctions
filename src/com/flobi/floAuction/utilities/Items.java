@@ -21,9 +21,9 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
 
 public class Items {
+	
 	private static Map<Integer, String> enchantmentNames =  new HashMap<Integer, String>();
 	private static Map<Integer, String> enchantmentLevels = new HashMap<Integer, String>();
-	
 	
     private static int firstPartial(ItemStack item, ItemStack[] inventory) 
     {

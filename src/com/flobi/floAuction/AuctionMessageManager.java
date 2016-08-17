@@ -188,10 +188,10 @@ public class AuctionMessageManager extends MessageManager {
     	{
 	    	for (String message : messages) 
 	    	{
-	    		if(FloAuction.enableChatMessages)
+	    		//if(FloAuction.enableChatMessages)
 	    			player.sendMessage(message);
-	    		if(FloAuction.titleManagerEnabled && FloAuction.enableActionbarMessages)
-	    			new ActionbarTitleObject(message).send(player);
+	    		//if(FloAuction.titleManagerEnabled && FloAuction.enableActionbarMessages)
+	    		//	new ActionbarTitleObject(message).send(player);
 	    		
 	    		FloAuction.log(player.getName(), message, auctionScope);
 	    	}
