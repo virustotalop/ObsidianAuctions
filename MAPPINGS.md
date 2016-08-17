@@ -78,50 +78,102 @@
 %R3 ➔ %repeatable-lore%
 
 
-%C1 ➔ %conditional-true%
+%C1 ➔ %conditional-true%%is-admin%
 
-%N ➔ %conditional-false%
+%N1 ➔ %conditional-false%%is-admin%
 
-```java
-/*
-Conditionals are a bit odd and I haven't used them.
-If you use them tell me and if you can give me a description what you use them for.
-*/
+%C2 ➔ %conditional-true%%can-start%
 
-Map<String, Boolean> conditionals = new HashMap<String, Boolean>();
-    	for (int l = 0; l < messageList.size(); l++) {
-    		String message = messageList.get(l);
-    		if (message.length() > 0 && (message.contains("%C") || message.contains("%N"))) {
-    	    	conditionals.put("1", player != null && floAuction.perms.has(player, "auction.admin"));
-    	    	conditionals.put("2", player != null && floAuction.perms.has(player, "auction.start"));
-    	    	conditionals.put("3", player != null && floAuction.perms.has(player, "auction.bid"));
-    	    	conditionals.put("4", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0);
-    	    	conditionals.put("5", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0);
-    	    	conditionals.put("6", auction != null && auction.sealed);
-    	    	conditionals.put("7", auction != null && !auction.sealed && auction.getCurrentBid() != null);
-    	    	conditionals.put("8", isBroadcast);
-    	    	conditionals.put("9", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty());
-    	    	conditionals.put("0", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty());
-    	    	conditionals.put("A", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0);
-    	    	conditionals.put("B", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0);
-    	    	conditionals.put("C", lot != null && (lot.getType() == Material.FIREWORK || lot.getType() == Material.FIREWORK_CHARGE));
-    	    	conditionals.put("D", auction != null && auction.getBuyNow() != 0);
-    	    	conditionals.put("E", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0)));
-    	    	conditionals.put("F", AuctionConfig.getBoolean("allow-max-bids", auctionScope));
-    	    	conditionals.put("G", AuctionConfig.getBoolean("allow-buynow", auctionScope));
-    	    	conditionals.put("H", AuctionConfig.getBoolean("allow-auto-bid", auctionScope));
-    	    	conditionals.put("I", AuctionConfig.getBoolean("allow-early-end", auctionScope));
-    	    	conditionals.put("J", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100);
-    	    	conditionals.put("K", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope));
-    	    	conditionals.put("L", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope));
-    	    	conditionals.put("M", conditionals.get("K") || conditionals.get("L"));
-    	    	conditionals.put("N", auctionScope != null && auctionScope.getActiveAuction() != null);
-    	    	conditionals.put("O", auctionScope != null && auctionScope.getAuctionQueueLength() > 0);
-    			break;
-    		}
+%N2 ➔ %conditional-false%%can-start%  
 
-```
+%C3 ➔ %conditional-true%%can-bid%  
 
+%N3 ➔ %conditional-false%%can-bid%  
 
+%C4 ➔ %conditional-true%%has-enchantment%  
 
+%N4 ➔ %conditional-false%%has-enchantment%  
 
+%C5 ➔ %conditional-true%%has-enchantment%  
+
+%N5 ➔ %conditional-false%%has-enchantment%  
+
+%C6 ➔ %conditional-true%%is-sealed%  
+
+%N6 ➔ %conditional-false%%is-sealed%  
+
+%C7 ➔ %conditional-true%%not-sealed%  
+
+%N7 ➔ %conditional-false%%not-sealed%  
+
+%C8 ➔ %conditional-true%%is-broadcast%  
+
+%N8 ➔ %conditional-false%%is-broadcast%  
+
+%C9 ➔ %conditional-true%%has-book-title%  
+
+%N9 ➔ %conditional-false%%has-book-title%  
+
+%C0 ➔ %conditional-true%%has-book-author%  
+
+%N0 ➔ %conditional-false%%has-book-author%  
+
+%CA ➔ %conditional-true%%item-has-lore%  
+
+%NA ➔ %conditional-false%%item-has-lore%  
+
+%CB ➔ %conditional-true%%has-durability%  
+
+%NB ➔ %conditional-false%%has-durability%  
+
+%CC ➔ %conditional-true%%is-firework%  
+
+%NC ➔ %conditional-false%%is-firework%  
+
+%CD ➔ %conditional-true%%is-buynow%  
+
+%ND ➔ %conditional-false%%is-buynow%  
+
+%CE ➔ %conditional-true%%has-enchantments%  
+
+%NE ➔ %conditional-false%%has-enchantments%  
+
+%CF ➔ %conditional-true%%allow-max-bids%  
+
+%NF ➔ %conditional-false%%allow-max-bids%  
+
+%CG ➔ %conditional-true%%allow-buynow%  
+
+%NG ➔ %conditional-false%%allow-buynow%  
+
+%CH ➔ %conditional-true%%allow-auto-bid%  
+
+%NH ➔ %conditional-false%%allow-auto-bid%  
+
+%CI ➔ %conditional-true%%allow-early-bid%  
+
+%NI ➔ %conditional-false%%allow-early-bid%  
+
+%CJ ➔ %conditional-true%%cancel-prevention-percent%  
+
+%NJ ➔ %conditional-false%%cancel-prevention-percent%  
+
+%CK ➔ %conditional-true%%allow-unsealed-auctions%  
+
+%NK ➔ %conditional-false%%allow-unsealed-auctions%
+
+%CL ➔ %conditional-true%%allow-sealed-auctions%  
+
+%NL ➔ %conditional-false%%allow-sealed-auctions%  
+
+%CM ➔ %conditional-true%%is-item-logic%  
+
+%NM ➔ %conditional-false%%is-item-logic%  
+
+%CN ➔ %conditional-true%%get-active-auction%  
+
+%NN ➔ %conditional-false%%get-active-auction%  
+
+%CO ➔ %conditional-true%%item-is-in-queue%  
+
+%NO ➔ %conditional-false%%item-is-in-queue%  

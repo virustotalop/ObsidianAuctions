@@ -4,14 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import com.flobi.floAuction.AuctionConfig;
-import com.flobi.floAuction.floAuction;
-import com.flobi.floAuction.utilities.Items;
+import com.flobi.floauction.AuctionConfig;
+import com.flobi.floauction.FloAuction;
+import com.flobi.floauction.utilities.Items;
 
 public class MaterialUtil {
 
@@ -20,8 +19,8 @@ public class MaterialUtil {
 		if(item == null) //Even though it shouldn't happen
 			return "Air";
 		
-		HashMap<String,String> names = floAuction.plugin.names;
-		int id = item.getTypeId();
+		HashMap<String,String> names = FloAuction.plugin.names;
+		int id = item.getTypeId(); //Code needs to be updated eventually, waiting for dura to be completely removed
 		short dura = item.getDurability();
 		String name = "";
 
@@ -37,6 +36,10 @@ public class MaterialUtil {
 				}
 			}	
 		}
+		else if(id == 383) //mob eggs
+		{
+			return MaterialUtil.getMobEggType(item) + " Spawn Egg";
+		}
 		
 		if(id == 52 && AuctionConfig.getBoolean("allow-mobspawners", null))
 		{
@@ -46,7 +49,7 @@ public class MaterialUtil {
 		{
 			return Items.getDisplayName(item);
 		}
-		else if(names.get(id + "," + dura) == null && floAuction.isDamagedAllowed)
+		else if(names.get(id + "," + dura) == null && FloAuction.isDamagedAllowed)
 		{
 			if(names.get(id + "," + 0) != null)
 			{
@@ -68,18 +71,19 @@ public class MaterialUtil {
 		return name;
 	}
 	
-	private static String getSpawnerType(ItemStack item)
+	private static String getMobEggType(ItemStack item)
 	{
 		String type = "";
-		if(MaterialUtil.getVersion().contains("1_7"))
+		try 
 		{
-			short dura = item.getDurability();
-			return EntityType.fromId(dura).getName();
-		}
-		else
-		{
-			try {
-				Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + getVersion() + ".inventory.CraftItemStack");
+			if(VersionUtil.getVersion().contains("1_8"))
+			{
+				String entityType = EntityType.fromId(item.getDurability()).getName();
+				type = (Character.toUpperCase(entityType.charAt(0)) + entityType.toLowerCase().substring(1)).replace("_", "");
+			}
+			else //Should work for 1.9 and above, needs to be tested
+			{
+				Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
 				Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
 				Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
 				Object craftCopy = asCraftCopy.invoke(null, item);
@@ -87,25 +91,55 @@ public class MaterialUtil {
 				Method tagField = itemStack.getClass().getMethod("getTag");
 				Object tag  = tagField.invoke(itemStack);
 				Method getCompound = tag.getClass().getMethod("getCompound", String.class);
-				Object compound = getCompound.invoke(tag, "BlockEntityTag");
-				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
+				Object compound = getCompound.invoke(tag, "EntityTag");
+				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "id");
 			}
+
+
+		} 
+		catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) 
+		{
+			e.printStackTrace();
 		}
 		return type;
 	}
-
-	private synchronized static String getVersion() 
+	
+	private static String getSpawnerType(ItemStack item)
 	{
-		String version = "";
-		if(Bukkit.getServer() == null)
+		String type = ""; //Support is dropped for 1.7
+		try 
 		{
-			return null;
+			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
+			Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
+			Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
+			Object craftCopy = asCraftCopy.invoke(null, item);
+			Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
+			Method tagField = itemStack.getClass().getMethod("getTag");
+			Object tag  = tagField.invoke(itemStack);
+			Method getCompound = tag.getClass().getMethod("getCompound", String.class);
+			Object compound = getCompound.invoke(tag, "BlockEntityTag");
+			if(VersionUtil.getVersion().contains("1_8"))
+			{
+				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
+			}
+			else if(VersionUtil.getVersion().contains("1_9"))
+			{
+				Object spawnData = getCompound.invoke(compound, "SpawnData");
+				type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
+			}
+			else //Should work for 1.10 and above, needs to be tested
+			{
+				Object spawnData = getCompound.invoke(compound, "SpawnData");
+				type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
+			}
+
+
+		} 
+		catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) 
+		{
+			e.printStackTrace();
 		}
-		String name = Bukkit.getServer().getClass().getPackage().getName();
-		version = name.substring(name.lastIndexOf('.') + 1);
-		return version;
+		return type;
 	}
 	
 	private  static String getItemType(ItemStack item)

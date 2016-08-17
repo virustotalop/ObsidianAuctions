@@ -1,5 +1,7 @@
-package com.flobi.floAuction.utilities;
+package com.flobi.floauction.utilities;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import me.virustotal.floauction.utility.MaterialUtil;
+import me.virustotal.floauction.utility.VersionUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
@@ -17,29 +20,34 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
 
-import com.flobi.floAuction.floAuction;
-
 public class Items {
+	
 	private static Map<Integer, String> enchantmentNames =  new HashMap<Integer, String>();
 	private static Map<Integer, String> enchantmentLevels = new HashMap<Integer, String>();
 	
-	
-    private static int firstPartial(ItemStack item, ItemStack[] inventory) {
-        if (item == null) {
+    private static int firstPartial(ItemStack item, ItemStack[] inventory) 
+    {
+        if (item == null) 
+        {
             return -1;
         }
-        for (int i = 0; i < inventory.length; i++) {
+        for (int i = 0; i < inventory.length; i++) 
+        {
             ItemStack cItem = inventory[i];
-            if (cItem != null && cItem.getAmount() < cItem.getMaxStackSize() && isSameItem(item, cItem)) {
+            if (cItem != null && cItem.getAmount() < cItem.getMaxStackSize() && isSameItem(item, cItem)) 
+            {
                 return i;
             }
         }
         return -1;
     }
 
-    private static int firstEmpty(ItemStack[] inventory) {
-        for (int i = 0; i < inventory.length; i++) {
-            if (inventory[i] == null) {
+    private static int firstEmpty(ItemStack[] inventory) 
+    {
+        for (int i = 0; i < inventory.length; i++) 
+        {
+            if (inventory[i] == null) 
+            {
                 return i;
             }
         }
@@ -47,24 +55,30 @@ public class Items {
     }
 
     // Most of this function was copied from CraftBukkit.  The above functions too.
-    public static void saferItemGive(PlayerInventory playerInventory, ItemStack item) {
+    public static void saferItemGive(PlayerInventory playerInventory, ItemStack item) 
+    {
     	// After bukkit is fixed:
     	// player.getInventory().addItem(givingItems);
 		
-        while (true) {
+        while (true) 
+        {
             // Do we already have a stack of it?
             int firstPartial = firstPartial(item, (ItemStack[])playerInventory.getContents());
 
             // Drat! no partial stack
-            if (firstPartial == -1) {
+            if (firstPartial == -1) 
+            {
                 // Find a free spot!
                 int firstFree = firstEmpty((ItemStack[])playerInventory.getContents());
 
-                if (firstFree == -1) {
+                if (firstFree == -1) 
+                {
                     // No space at all!
                     // Bukkit returns unplaced items, but floAuction only calls this after checking for space.
                     break;
-                } else {
+                } 
+                else 
+                {
                 	// Again, floAuction checks for this elsewhere before calling this...technically this would never occur, no reason to code for it.
                 	
                     // More than a single stack!
@@ -79,7 +93,9 @@ public class Items {
                         break;
 //                    }
                 }
-            } else {
+            } 
+            else 
+            {
                 // So, apparently it might only partially fit, well lets do just that
                 ItemStack partialItem = playerInventory.getItem(firstPartial);
 
@@ -101,20 +117,23 @@ public class Items {
 		
 	}
     
-	public static String[] getLore(ItemStack item) {
+	public static String[] getLore(ItemStack item) 
+	{
 		if (item == null) return null;
 		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta == null) return null;
 		List<String> pageList = itemMeta.getLore();
 		if (pageList == null) return null;
 		String[] pages = new String[pageList.size()];
-		for(int i = 0; i < pageList.size(); i++){
+		for(int i = 0; i < pageList.size(); i++)
+		{
 			pages[i] = pageList.get(i);
 		}
 		return pages;
 	}
 	
-	public static void setLore(ItemStack item, String[] pages) {
+	public static void setLore(ItemStack item, String[] pages) 
+	{
 		if (item == null || pages == null) return;
 		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta == null) return;
@@ -126,62 +145,103 @@ public class Items {
 		item.setItemMeta(itemMeta);
     }
 
-    public static Map<Enchantment, Integer> getStoredEnchantments(ItemStack item) {
-		if (item == null) return null;
+    public static Map<Enchantment, Integer> getStoredEnchantments(ItemStack item) 
+    {
+		if (item == null) 
+		{
+			return null;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return null;
-		if (itemMeta instanceof EnchantmentStorageMeta) {
+		if (itemMeta == null) 
+		{
+			return null;
+		}
+		if (itemMeta instanceof EnchantmentStorageMeta) 
+		{
 			return ((EnchantmentStorageMeta)itemMeta).getStoredEnchants();
 		}
 		return null;
     }
     
-    public static void addStoredEnchantment(ItemStack item, Integer enchantment, Integer level, boolean ignoreLevelRestriction) {
-		if (item == null) return;
+    public static void addStoredEnchantment(ItemStack item, Integer enchantment, Integer level, boolean ignoreLevelRestriction) 
+    {
+		if (item == null) 
+		{
+			return;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return;
-		if (itemMeta instanceof EnchantmentStorageMeta) {
+		if (itemMeta == null)
+		{
+			return;
+		}
+		if (itemMeta instanceof EnchantmentStorageMeta) 
+		{
 			EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta)itemMeta; 
 			storageMeta.addStoredEnchant(new EnchantmentWrapper(enchantment), level, ignoreLevelRestriction);
 			item.setItemMeta(storageMeta);
 		}
-		return;
     }
     
-	public static Integer getFireworkPower(ItemStack item) {
-		if (item == null) return null;
+	public static Integer getFireworkPower(ItemStack item) 
+	{
+		if (item == null)
+		{
+			return null;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return null;
-		if (itemMeta instanceof FireworkMeta) {
+		if (itemMeta == null)
+		{
+			return null;
+		}
+		else if (itemMeta instanceof FireworkMeta) 
+		{
 			return ((FireworkMeta)itemMeta).getPower();
 		}
 		return null;
 	}
 	
-	public static void setFireworkPower(ItemStack item, Integer power) {
-		if (item == null) return;
+	public static void setFireworkPower(ItemStack item, Integer power) 
+	{
+		if (item == null) 
+		{
+			return;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return;
-		if (itemMeta instanceof FireworkMeta) {
+		if (itemMeta == null)
+		{
+			return;
+		}
+		else if (itemMeta instanceof FireworkMeta) 
+		{
 			FireworkMeta fireworkMeta = ((FireworkMeta)itemMeta);
 			fireworkMeta.setPower(power);
 			item.setItemMeta(fireworkMeta);
 		}
-		return;
 	}
 	
-	public static FireworkEffect[] getFireworkEffects(ItemStack item) {
-		if (item == null) return null;
+	public static FireworkEffect[] getFireworkEffects(ItemStack item) 
+	{
+		if (item == null) 
+		{
+			return null;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return null;
-		if (itemMeta instanceof FireworkMeta) {
+		if (itemMeta == null)
+		{
+			return null;
+		}
+		else if (itemMeta instanceof FireworkMeta) 
+		{
 			List<FireworkEffect> effectList = ((FireworkMeta)itemMeta).getEffects();
 			FireworkEffect[] effects = new FireworkEffect[effectList.size()];
-			for(int i = 0; i < effectList.size(); i++){
+			for(int i = 0; i < effectList.size(); i++)
+			{
 				effects[i] = effectList.get(i);
 			}
 			return effects;
-		} else if (itemMeta instanceof FireworkEffectMeta) {
+		} 
+		else if (itemMeta instanceof FireworkEffectMeta) 
+		{
 			FireworkEffect[] effects = new FireworkEffect[1];
 			effects[0] = ((FireworkEffectMeta)itemMeta).getEffect();
 			return effects;
@@ -189,16 +249,27 @@ public class Items {
 		return null;
 	}
 	
-	public static void setFireworkEffects(ItemStack item, FireworkEffect[] effects) {
-		if (item == null || effects == null) return;
+	public static void setFireworkEffects(ItemStack item, FireworkEffect[] effects) 
+	{
+		if (item == null || effects == null)
+		{
+			return;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return;
-		if (itemMeta instanceof FireworkMeta) {
+		if (itemMeta == null)
+		{
+			return;
+		}
+		else if (itemMeta instanceof FireworkMeta) 
+		{
 			FireworkMeta fireworkMeta = ((FireworkMeta)itemMeta);
 			fireworkMeta.addEffects(effects);
 			item.setItemMeta(fireworkMeta);
-		} else if (itemMeta instanceof FireworkEffectMeta) {
-			if (effects.length > 0) {
+		}
+		else if (itemMeta instanceof FireworkEffectMeta) 
+		{
+			if (effects.length > 0) 
+			{
 				FireworkEffectMeta fireworkEffectMeta = ((FireworkEffectMeta)itemMeta);
 				fireworkEffectMeta.setEffect(effects[0]);
 				item.setItemMeta(fireworkEffectMeta);
@@ -206,33 +277,74 @@ public class Items {
 		}
     }
 
+	public static Object getNbtTag(ItemStack item) 
+	{
+		Object tag = null;
+		try 
+		{
+			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
+			Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
+			Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
+			Object craftCopy = asCraftCopy.invoke(null, item);
+			Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
+			Method tagField = itemStack.getClass().getMethod("getTag");
+			tag  = tagField.invoke(itemStack);
+		} 
+		catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) 
+		{
+			e.printStackTrace();
+		}
+		return tag;
+	}
+	
 	public static String getHeadOwner(ItemStack item) {
-		if (item == null) return null;
+		if (item == null)
+		{
+			return null;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return null;
+		if (itemMeta == null)
+		{
+			return null;
+		}
 		if (itemMeta instanceof SkullMeta) {
 			return ((SkullMeta)itemMeta).getOwner();
 		}
 		return null;
 	}
 	
-	public static void setHeadOwner(ItemStack item, String headName) {
-		if (item == null) return;
+	public static void setHeadOwner(ItemStack item, String headName) 
+	{
+		if (item == null)
+		{
+			return;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return;
-		if (itemMeta instanceof SkullMeta) {
+		if (itemMeta == null)
+		{
+			return;
+		}
+		else if (itemMeta instanceof SkullMeta) 
+		{
 			SkullMeta skullMeta = ((SkullMeta)itemMeta);
 			skullMeta.setOwner(headName);
 			item.setItemMeta(skullMeta);
 		}
-		return;
 	}
 	
-	public static Integer getRepairCost(ItemStack item) {
-		if (item == null) return null;
+	public static Integer getRepairCost(ItemStack item) 
+	{
+		if (item == null) 
+		{
+			return null;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if (itemMeta == null) return null;
-		if (itemMeta instanceof Repairable) {
+		if(itemMeta == null)
+		{
+			return null;
+		}
+		else if(itemMeta instanceof Repairable) 
+		{
 			return ((Repairable)itemMeta).getRepairCost();
 		}
 		return null;
@@ -391,6 +503,14 @@ public class Items {
 		if (!isSame(getStoredEnchantments(item1), getStoredEnchantments(item2))) return false;
 		if (!isSame(getLore(item1), getLore(item2))) return false;
 
+		//For 1.7 and above even though 1.7 is no longer supported
+		Object tagOne = getNbtTag(item1);
+		Object tagTwo = getNbtTag(item2);
+		if(tagOne != null && tagTwo != null)
+		{
+			if(!(tagOne.equals(tagTwo))) return false;
+		}
+		
 		// Book author, title and contents must be identical.
 		if (!isSame(getBookAuthor(item1), getBookAuthor(item2))) return false;
 		if (!isSame(getBookTitle(item1), getBookTitle(item2))) return false;

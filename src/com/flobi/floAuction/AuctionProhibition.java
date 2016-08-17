@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,7 @@ import org.bukkit.plugin.Plugin;
  * @author Joshua "flobi" Hatfield
  */
 public class AuctionProhibition {
+	
 	private Plugin prohibiterPlugin = null;
 	private String playerName = null;
 	private String enableMessage = null;
@@ -29,10 +30,13 @@ public class AuctionProhibition {
 	 * @param playerName prohibited player
 	 * @return prohibition instance
 	 */
-	private static AuctionProhibition getProhibition(Plugin prohibiterPlugin, String playerName) {
-		for (int i = 0; i < involuntarilyDisabledUsers.size(); i++) {
-			AuctionProhibition auctionProhibition = involuntarilyDisabledUsers.get(i);
-			if (auctionProhibition.playerName.equalsIgnoreCase(playerName) && auctionProhibition.prohibiterPlugin.equals(prohibiterPlugin)) {
+	private static AuctionProhibition getProhibition(Plugin prohibiterPlugin, String playerName) 
+	{
+		for (int i = 0; i < AuctionProhibition.involuntarilyDisabledUsers.size(); i++) 
+		{
+			AuctionProhibition auctionProhibition = AuctionProhibition.involuntarilyDisabledUsers.get(i);
+			if (auctionProhibition.playerName.equalsIgnoreCase(playerName) && auctionProhibition.prohibiterPlugin.equals(prohibiterPlugin)) 
+			{
 				return auctionProhibition;
 			}
 		}
@@ -45,10 +49,13 @@ public class AuctionProhibition {
 	 * @param playerName prohibited player
 	 * @return prohibition instance
 	 */
-	private static AuctionProhibition getProhibition(String playerName) {
-		for (int i = 0; i < involuntarilyDisabledUsers.size(); i++) {
-			AuctionProhibition auctionProhibition = involuntarilyDisabledUsers.get(i);
-			if (auctionProhibition.playerName.equalsIgnoreCase(playerName)) {
+	private static AuctionProhibition getProhibition(String playerName) 
+	{
+		for (int i = 0; i < AuctionProhibition.involuntarilyDisabledUsers.size(); i++) 
+		{
+			AuctionProhibition auctionProhibition = AuctionProhibition.involuntarilyDisabledUsers.get(i);
+			if (auctionProhibition.playerName.equalsIgnoreCase(playerName)) 
+			{
 				return auctionProhibition;
 			}
 		}
@@ -62,21 +69,31 @@ public class AuctionProhibition {
 	 * @param sendReminderMessage whether to remind
 	 * @return whether they're prohibited
 	 */
-	public static boolean isOnProhibition(String playerName, boolean sendReminderMessage) {
+	public static boolean isOnProhibition(String playerName, boolean sendReminderMessage) 
+	{
 		AuctionProhibition auctionProhibition = AuctionProhibition.getProhibition(playerName);
-		if (auctionProhibition != null) {
-			if (sendReminderMessage) {
+		if (auctionProhibition != null) 
+		{
+			if (sendReminderMessage) 
+			{
 				Player player = Bukkit.getPlayer(playerName);
-				if (player == null) return true;
+				if (player == null) 
+				{
+					return true;
+				}
 				if (auctionProhibition.reminderMessage == null) {
 					// Send stock message.
-					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
-				} else {
+					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
+				} 
+				else 
+				{
 					player.sendMessage(auctionProhibition.reminderMessage);
 				}
 			}
 			return true;
-		} else {
+		} 
+		else 
+		{
 			return false;
 		}
 	}
@@ -89,21 +106,32 @@ public class AuctionProhibition {
 	 * @param sendReminderMessage whether to remind
 	 * @return whether they're prohibited
 	 */
-	public static boolean isOnProhibition(Plugin prohibiterPlugin, String playerName, boolean sendReminderMessage) {
+	public static boolean isOnProhibition(Plugin prohibiterPlugin, String playerName, boolean sendReminderMessage) 
+	{
 		AuctionProhibition auctionProhibition = AuctionProhibition.getProhibition(prohibiterPlugin, playerName);
-		if (auctionProhibition != null) {
-			if (sendReminderMessage) {
+		if (auctionProhibition != null) 
+		{
+			if (sendReminderMessage) 
+			{
 				Player player = Bukkit.getPlayer(playerName);
-				if (player == null) return true;
-				if (auctionProhibition.reminderMessage == null) {
+				if (player == null) 
+				{
+					return true;
+				}
+				if (auctionProhibition.reminderMessage == null) 
+				{
 					// Send stock message.
-					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
-				} else {
+					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
+				} 
+				else 
+				{
 					player.sendMessage(auctionProhibition.reminderMessage);
 				}
 			}
 			return true;
-		} else {
+		} 
+		else 
+		{
 			return false;
 		}
 	}
@@ -115,8 +143,9 @@ public class AuctionProhibition {
 	 * @param playerName player being prohibited
 	 * @return success as prohibiting
 	 */
-	public static boolean prohibitPlayer(Plugin prohibiterPlugin, String playerName) {
-		return prohibitPlayer(prohibiterPlugin, playerName, null, null, null);
+	public static boolean prohibitPlayer(Plugin prohibiterPlugin, String playerName) 
+	{
+		return AuctionProhibition.prohibitPlayer(prohibiterPlugin, playerName, null, null, null);
 	}
 	
 	/**
@@ -131,12 +160,18 @@ public class AuctionProhibition {
 	 * @param disableMessage message to send when ending prohibition
 	 * @return success as prohibiting
 	 */
-	public static boolean prohibitPlayer(Plugin prohibiterPlugin, String playerName, String enableMessage, String reminderMessage, String disableMessage) {
-		if (AuctionParticipant.isParticipating(playerName)) return false;
-		
-		if (AuctionProhibition.isOnProhibition(prohibiterPlugin, playerName, false)) return true;
-		
-		if (AuctionProhibition.getProhibition(playerName) != null) {
+	public static boolean prohibitPlayer(Plugin prohibiterPlugin, String playerName, String enableMessage, String reminderMessage, String disableMessage) 
+	{
+		if (AuctionParticipant.isParticipating(playerName)) 
+		{
+			return false;
+		}
+		else if (AuctionProhibition.isOnProhibition(prohibiterPlugin, playerName, false)) 
+		{
+			return true;
+		}
+		else if (AuctionProhibition.getProhibition(playerName) != null) 
+		{
 			AuctionProhibition.prohibitPlayer(prohibiterPlugin, playerName, disableMessage, reminderMessage, enableMessage);
 			return true;
 		}
@@ -144,11 +179,17 @@ public class AuctionProhibition {
 		AuctionProhibition.prohibitPlayer(prohibiterPlugin, playerName, disableMessage, reminderMessage, enableMessage);
 		
 		Player player = Bukkit.getPlayer(playerName);
-		if (player == null) return true;
-		if (enableMessage == null) {
+		if (player == null) 
+		{
+			return true;
+		}
+		if (enableMessage == null) 
+		{
 			// Send stock message.
-			floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
-		} else {
+			FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
+		} 
+		else 
+		{
 			player.sendMessage(enableMessage);
 		}
 		return true;
@@ -160,31 +201,43 @@ public class AuctionProhibition {
 	 * @param prohibiterPlugin plugin which requested prohibition
 	 * @param playerName prohibited player
 	 */
-	public static void removeProhibition(Plugin prohibiterPlugin, String playerName) {
+	public static void removeProhibition(Plugin prohibiterPlugin, String playerName) 
+	{
 		Player player = Bukkit.getPlayer(playerName);
-		for (int i = 0; i < involuntarilyDisabledUsers.size(); i++) {
+		for (int i = 0; i < AuctionProhibition.involuntarilyDisabledUsers.size(); i++) 
+		{
 			AuctionProhibition auctionProhibition = involuntarilyDisabledUsers.get(i);
-			if (auctionProhibition.playerName.equalsIgnoreCase(playerName) && auctionProhibition.prohibiterPlugin.equals(prohibiterPlugin)) {
-				if (player != null) {
-					if (auctionProhibition.disableMessage == null) {
+			if (auctionProhibition.playerName.equalsIgnoreCase(playerName) && auctionProhibition.prohibiterPlugin.equals(prohibiterPlugin)) 
+			{
+				if (player != null) 
+				{
+					if (auctionProhibition.disableMessage == null) 
+					{
 						// Send stock message.
-						floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-disabled"), playerName, (AuctionScope) null);
-					} else {
+						FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-disabled"), playerName, (AuctionScope) null);
+					} 
+					else 
+					{
 						player.sendMessage(auctionProhibition.disableMessage);
 					}
 				}
-				involuntarilyDisabledUsers.remove(i);
+				AuctionProhibition.involuntarilyDisabledUsers.remove(i);
 				i--;
 			}
 		}
 		
 		AuctionProhibition auctionProhibition = getProhibition(playerName);
-		if (auctionProhibition != null) {
-			if (player != null) {
-				if (auctionProhibition.enableMessage == null) {
+		if (auctionProhibition != null) 
+		{
+			if (player != null) 
+			{
+				if (auctionProhibition.enableMessage == null) 
+				{
 					// Send stock message.
-					floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
-				} else {
+					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
+				} 
+				else 
+				{
 					player.sendMessage(auctionProhibition.enableMessage);
 				}
 			}
@@ -200,7 +253,8 @@ public class AuctionProhibition {
 	 * @param reminderMessage message to send when reminding player of prohibition
 	 * @param disableMessage message to send when ending prohibition
 	 */
-	private AuctionProhibition(Plugin prohibiterPlugin, String playerName, String enableMessage, String reminderMessage, String disableMessage) {
+	private AuctionProhibition(Plugin prohibiterPlugin, String playerName, String enableMessage, String reminderMessage, String disableMessage) 
+	{
 		this.prohibiterPlugin = prohibiterPlugin;
 		this.playerName = playerName;
 		this.enableMessage = enableMessage;

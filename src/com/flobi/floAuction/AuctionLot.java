@@ -1,4 +1,4 @@
-package com.flobi.floAuction;
+package com.flobi.floauction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floAuction.utilities.Items;
+import com.flobi.floauction.utilities.Items;
 
 /**
  * Structure to hold and process the items being auctioned.
@@ -25,6 +25,7 @@ import com.flobi.floAuction.utilities.Items;
  * @author Joshua "flobi" Hatfield
  */
 public class AuctionLot implements java.io.Serializable {
+	
 	private static final long serialVersionUID = -1764290458703647129L;
 	private String ownerName;
 	private int quantity = 0;
@@ -42,7 +43,6 @@ public class AuctionLot implements java.io.Serializable {
 	private Integer power = 0;
 	private FireworkEffect[] effects = null;
 	private String[] lore = null;
-//	private Map<String, Object> itemSerialized = null;
 	private String itemSerialized = null;
 	
 	/**
@@ -51,9 +51,10 @@ public class AuctionLot implements java.io.Serializable {
 	 * @param lotType
 	 * @param lotOwner
 	 */
-	public AuctionLot(ItemStack lotType, String lotOwner) {
+	public AuctionLot(ItemStack lotType, String lotOwner) 
+	{
 		// Lots can only have one type of item per lot.
-		ownerName = lotOwner;
+		this.ownerName = lotOwner;
 		setLotType(lotType);
 	}
 	
@@ -64,14 +65,17 @@ public class AuctionLot implements java.io.Serializable {
 	 * @param removeFromOwner player to take items from
 	 * @return whether the items were moved
 	 */
-	public boolean addItems(int addQuantity, boolean removeFromOwner) {
-		if (removeFromOwner) {
-			if (!Items.hasAmount(ownerName, addQuantity, getTypeStack())) {
+	public boolean addItems(int addQuantity, boolean removeFromOwner) 
+	{
+		if (removeFromOwner) 
+		{
+			if (!Items.hasAmount(this.ownerName, addQuantity, getTypeStack())) 
+			{
 				return false;
 			}
-			Items.remove(ownerName, addQuantity, getTypeStack());
+			Items.remove(this.ownerName, addQuantity, getTypeStack());
 		}
-		quantity += addQuantity;
+		this.quantity += addQuantity;
 		return true;
 	}
 	
@@ -80,15 +84,17 @@ public class AuctionLot implements java.io.Serializable {
 	 * 
 	 * @param winnerName who receives the items
 	 */
-	public void winLot(String winnerName) {
-		giveLot(winnerName);
+	public void winLot(String winnerName) 
+	{
+		this.giveLot(winnerName);
 	}
 	
 	/**
 	 * Cancels the lot by giving the items to the lots original owner.
 	 */
-	public void cancelLot() {
-		giveLot(ownerName);
+	public void cancelLot() 
+	{
+		this.giveLot(this.ownerName);
 	}
 	
 	/**
@@ -96,61 +102,73 @@ public class AuctionLot implements java.io.Serializable {
 	 * 
 	 * @param playerName who receives the items
 	 */
-	private void giveLot(String playerName) {
-		ownerName = playerName;
-		if (quantity == 0) return;
+	private void giveLot(String playerName) 
+	{
+		this.ownerName = playerName;
+		if (this.quantity == 0) 
+		{
+			return;
+		}
 		ItemStack lotTypeLock = getTypeStack();
 		Player player = Bukkit.getPlayer(playerName);
 		
 		int maxStackSize = lotTypeLock.getType().getMaxStackSize();
-		if (player != null && player.isOnline()) {
+		if (player != null && player.isOnline()) 
+		{
 			int amountToGive = 0;
-			if (Items.hasSpace(player, quantity, lotTypeLock)) {
-				amountToGive = quantity;
-			} else {
+			if (Items.hasSpace(player, this.quantity, lotTypeLock)) 
+			{
+				amountToGive = this.quantity;
+			} 
+			else 
+			{
 				amountToGive = Items.getSpaceForItem(player, lotTypeLock);
 			}
 			// Give whatever items space permits at this time.
 			ItemStack typeStack = getTypeStack();
-			if (amountToGive > 0) {
-				floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-give"), playerName, (AuctionScope) null);
+			if (amountToGive > 0) 
+			{
+				FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-give"), playerName, (AuctionScope) null);
 			}
-			while (amountToGive > 0) {
+			while (amountToGive > 0) 
+			{
 				ItemStack givingItems = lotTypeLock.clone();
 				givingItems.setAmount(Math.min(maxStackSize, amountToGive));
-				quantity -= givingItems.getAmount();
-				
-//				player.getInventory().addItem();
+				this.quantity -= givingItems.getAmount();
 				Items.saferItemGive(player.getInventory(), givingItems);
 				
 				amountToGive -= maxStackSize;
 			}
-			if (quantity > 0) {
+			if (this.quantity > 0) 
+			{
 				// Drop items at player's feet.
 				
 				// Move items to drop lot.
-				while (quantity > 0) {
+				while (this.quantity > 0) 
+				{
 					ItemStack cloneStack = typeStack.clone();
-					cloneStack.setAmount(Math.min(quantity, Items.getMaxStackSize(typeStack)));
+					cloneStack.setAmount(Math.min(this.quantity, Items.getMaxStackSize(typeStack)));
 					quantity -= cloneStack.getAmount();
 					
 					// Drop lot.
 					Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
 					drop.setItemStack(cloneStack);
 				}
-				floAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-drop"), playerName, (AuctionScope) null);
+				FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-drop"), playerName, (AuctionScope) null);
 			}
-		} else {
+		} 
+		else 
+		{
 			// Player is offline, queue lot for give on login.
 			// Create orphaned lot to try to give when inventory clears up.
 			final AuctionLot orphanLot = new AuctionLot(lotTypeLock, playerName);
 			
 			// Move items to orphan lot
-			orphanLot.addItems(quantity, false);
-			quantity = 0;
+			orphanLot.addItems(this.quantity, false);
+			this.quantity = 0;
 			
 			// Queue for distribution on space availability.
-			floAuction.saveOrphanLot(orphanLot);
+			FloAuction.saveOrphanLot(orphanLot);
 		}
 	}
 	
@@ -160,41 +178,47 @@ public class AuctionLot implements java.io.Serializable {
 	 * @return item stack of one item
 	 */
 	@SuppressWarnings("deprecation")
-	public ItemStack getTypeStack() {
+	public ItemStack getTypeStack() 
+	{
 		ItemStack lotTypeLock = null;
-		if (this.itemSerialized != null) {
+		if (this.itemSerialized != null) 
+		{
 //			lotTypeLock = ItemStack.deserialize(this.itemSerialized);
 			FileConfiguration tmpconfig = new YamlConfiguration();
-			try {
+			try 
+			{
 				tmpconfig.loadFromString(this.itemSerialized);
-				if (tmpconfig.isItemStack("itemstack")) {
+				if (tmpconfig.isItemStack("itemstack")) 
+				{
 					return tmpconfig.getItemStack("itemstack");
 				}
-			} catch (InvalidConfigurationException e) {
+			} 
+			catch (InvalidConfigurationException e) 
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
 		// The rest of this remains for backward compatibility.
-		lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability);
+		lotTypeLock = new ItemStack(this.lotTypeId, 1, this.lotDurability);
 		
-		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
+		for (Entry<Integer, Integer> enchantment : this.lotEnchantments.entrySet()) {
 			lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
 		}
-		for (Entry<Integer, Integer> enchantment : storedEnchantments.entrySet()) {
+		for (Entry<Integer, Integer> enchantment : this.storedEnchantments.entrySet()) {
 			Items.addStoredEnchantment(lotTypeLock, enchantment.getKey(), enchantment.getValue(), true);
 		}
-		lotTypeLock.setAmount(sourceStackQuantity);
-		Items.setDisplayName(lotTypeLock, displayName);
-		Items.setBookAuthor(lotTypeLock, bookAuthor);
-		Items.setBookTitle(lotTypeLock, bookTitle);
-		Items.setBookPages(lotTypeLock, bookPages);
-		Items.setRepairCost(lotTypeLock, repairCost);
-		Items.setHeadOwner(lotTypeLock, headOwner);
-		Items.setFireworkPower(lotTypeLock, power);
-		Items.setFireworkEffects(lotTypeLock, effects);
-		Items.setLore(lotTypeLock, lore);
+		lotTypeLock.setAmount(this.sourceStackQuantity);
+		Items.setDisplayName(lotTypeLock, this.displayName);
+		Items.setBookAuthor(lotTypeLock, this.bookAuthor);
+		Items.setBookTitle(lotTypeLock, this.bookTitle);
+		Items.setBookPages(lotTypeLock, this.bookPages);
+		Items.setRepairCost(lotTypeLock, this.repairCost);
+		Items.setHeadOwner(lotTypeLock, this.headOwner);
+		Items.setFireworkPower(lotTypeLock, this.power);
+		Items.setFireworkEffects(lotTypeLock, this.effects);
+		Items.setLore(lotTypeLock, this.lore);
 		return lotTypeLock;
 	}
 	
@@ -204,35 +228,41 @@ public class AuctionLot implements java.io.Serializable {
 	 * @param lotType
 	 */
 	@SuppressWarnings("deprecation")
-	private void setLotType(ItemStack lotType) {
+	private void setLotType(ItemStack lotType) 
+	{
 //		this.itemSerialized = lotType.serialize();
 		FileConfiguration tmpconfig = new YamlConfiguration();
 		tmpconfig.set("itemstack", lotType);
-		itemSerialized = tmpconfig.saveToString();
+		this.itemSerialized = tmpconfig.saveToString();
 
 		// The rest of this remains for backward compatibility.
-		lotTypeId = lotType.getTypeId();
-		lotDurability = lotType.getDurability();
-		sourceStackQuantity = lotType.getAmount();
-		lotEnchantments = new HashMap<Integer, Integer>();
-		storedEnchantments = new HashMap<Integer, Integer>();
+		this.lotTypeId = lotType.getTypeId();
+		this.lotDurability = lotType.getDurability();
+		this.sourceStackQuantity = lotType.getAmount();
+		this.lotEnchantments = new HashMap<Integer, Integer>();
+		this.storedEnchantments = new HashMap<Integer, Integer>();
 		Map<Enchantment, Integer> enchantmentList = lotType.getEnchantments();
-		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
-			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
+		
+		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) 
+		{
+			this.lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
 		}
+		
 		enchantmentList = Items.getStoredEnchantments(lotType);
-		if (enchantmentList != null) for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
-			storedEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
+		if (enchantmentList != null) for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) 
+		{
+			this.storedEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
 		}
-		displayName = Items.getDisplayName(lotType);
-		bookAuthor = Items.getBookAuthor(lotType);
-		bookTitle = Items.getBookTitle(lotType);
-		bookPages = Items.getBookPages(lotType);
-		repairCost = Items.getRepairCost(lotType);
-		headOwner = Items.getHeadOwner(lotType);
-		power = Items.getFireworkPower(lotType);
-		effects = Items.getFireworkEffects(lotType);
-		lore = Items.getLore(lotType);
+		
+		this.displayName = Items.getDisplayName(lotType);
+		this.bookAuthor = Items.getBookAuthor(lotType);
+		this.bookTitle = Items.getBookTitle(lotType);
+		this.bookPages = Items.getBookPages(lotType);
+		this.repairCost = Items.getRepairCost(lotType);
+		this.headOwner = Items.getHeadOwner(lotType);
+		this.power = Items.getFireworkPower(lotType);
+		this.effects = Items.getFireworkEffects(lotType);
+		this.lore = Items.getLore(lotType);
 	}
 	
 	/**
@@ -240,8 +270,9 @@ public class AuctionLot implements java.io.Serializable {
 	 * 
 	 * @return name of lot owner
 	 */
-	public String getOwner() {
-		return ownerName;
+	public String getOwner() 
+	{
+		return this.ownerName;
 	}
 	
 	/**
@@ -249,7 +280,8 @@ public class AuctionLot implements java.io.Serializable {
 	 * 
 	 * @return quantity of items in lot
 	 */
-	public int getQuantity() {
-		return quantity;
+	public int getQuantity() 
+	{
+		return this.quantity;
 	}
 }

@@ -1,10 +1,10 @@
-package com.flobi.floAuction.events;
+package com.flobi.floauction.events;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.flobi.floAuction.Auction;
+import com.flobi.floauction.Auction;
 
 public class AuctionEndEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -12,24 +12,29 @@ public class AuctionEndEvent extends Event implements Cancellable {
     private boolean cancelled;
     private Auction auction;
     
-    public AuctionEndEvent(Auction auction, boolean cancelled) {
+    public AuctionEndEvent(Auction auction, boolean cancelled) 
+    {
     	this.auction = auction;
     	this.cancelled = cancelled;
     }
     
-	public HandlerList getHandlers() {
+	public HandlerList getHandlers() 
+	{
 		return handlers;
 	}
 
-	public boolean isCancelled() {
-		return cancelled;
+	public boolean isCancelled() 
+	{
+		return this.cancelled;
 	}
 
-	public void setCancelled(boolean cancelled) {
+	public void setCancelled(boolean cancelled) 
+	{
 		this.cancelled = cancelled;
 	}
 	
-	public Auction getAuction() {
-		return auction;
+	public Auction getAuction() 
+	{
+		return this.auction;
 	}
 }
