@@ -77,7 +77,7 @@ public class MaterialUtil {
 		String type = "";
 		try 
 		{
-			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + getVersion() + ".inventory.CraftItemStack");
+			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
 			Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
 			Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
 			Object craftCopy = asCraftCopy.invoke(null, item);
@@ -86,7 +86,7 @@ public class MaterialUtil {
 			Object tag  = tagField.invoke(itemStack);
 			Method getCompound = tag.getClass().getMethod("getCompound", String.class);
 			Object compound = getCompound.invoke(tag, "EntityTag");
-			if(MaterialUtil.getVersion().contains("1_8"))
+			if(VersionUtil.getVersion().contains("1_8"))
 			{
 				String entityType = EntityType.fromId(item.getDurability()).getName();
 				type = (Character.toUpperCase(entityType.charAt(0)) + entityType.toLowerCase().substring(1)).replace("_", "");
@@ -110,7 +110,7 @@ public class MaterialUtil {
 		String type = ""; //Support is dropped for 1.7
 		try 
 		{
-			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + getVersion() + ".inventory.CraftItemStack");
+			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
 			Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
 			Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
 			Object craftCopy = asCraftCopy.invoke(null, item);
@@ -119,11 +119,11 @@ public class MaterialUtil {
 			Object tag  = tagField.invoke(itemStack);
 			Method getCompound = tag.getClass().getMethod("getCompound", String.class);
 			Object compound = getCompound.invoke(tag, "BlockEntityTag");
-			if(MaterialUtil.getVersion().contains("1_8"))
+			if(VersionUtil.getVersion().contains("1_8"))
 			{
 				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
 			}
-			else if(MaterialUtil.getVersion().contains("1_9"))
+			else if(VersionUtil.getVersion().contains("1_9"))
 			{
 				Object spawnData = getCompound.invoke(compound, "SpawnData");
 				type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
@@ -141,18 +141,6 @@ public class MaterialUtil {
 			e.printStackTrace();
 		}
 		return type;
-	}
-
-	private synchronized static String getVersion() 
-	{
-		String version = "";
-		if(Bukkit.getServer() == null)
-		{
-			return null;
-		}
-		String name = Bukkit.getServer().getClass().getPackage().getName();
-		version = name.substring(name.lastIndexOf('.') + 1);
-		return version;
 	}
 	
 	private  static String getItemType(ItemStack item)

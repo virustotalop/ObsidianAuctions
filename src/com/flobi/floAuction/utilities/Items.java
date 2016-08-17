@@ -1,5 +1,7 @@
 package com.flobi.floauction.utilities;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import me.virustotal.floauction.utility.MaterialUtil;
+import me.virustotal.floauction.utility.VersionUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
@@ -274,6 +277,23 @@ public class Items {
 		}
     }
 
+	public static Object getNbtTag(ItemStack item) {
+		Object tag = null;
+		try 
+		{
+			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
+			Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
+			Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
+			Object craftCopy = asCraftCopy.invoke(null, item);
+			Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
+			Method tagField = itemStack.getClass().getMethod("getTag");
+			tag  = tagField.invoke(itemStack);
+		} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+		return tag;
+	}
+	
 	public static String getHeadOwner(ItemStack item) {
 		if (item == null)
 		{
@@ -480,6 +500,9 @@ public class Items {
 		if (!isSame(getStoredEnchantments(item1), getStoredEnchantments(item2))) return false;
 		if (!isSame(getLore(item1), getLore(item2))) return false;
 
+		//For 1.7 and above even though 1.7 is no longer supported
+		if(getNbtTag(item1) != getNbtTag(item2)) return false;
+		
 		// Book author, title and contents must be identical.
 		if (!isSame(getBookAuthor(item1), getBookAuthor(item2))) return false;
 		if (!isSame(getBookTitle(item1), getBookTitle(item2))) return false;
