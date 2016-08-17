@@ -501,7 +501,7 @@ public class Items {
 		if (!isSame(getLore(item1), getLore(item2))) return false;
 
 		//For 1.7 and above even though 1.7 is no longer supported
-		if(getNbtTag(item1) != getNbtTag(item2)) return false;
+		//if(getNbtTag(item1) != getNbtTag(item2)) return false;
 		
 		// Book author, title and contents must be identical.
 		if (!isSame(getBookAuthor(item1), getBookAuthor(item2))) return false;
