@@ -8,7 +8,7 @@ Provide as much detail as possible to resolve the bug the fastest.
 If you have any programming experience if you could take a look at the code and see if you can find the possible fix it would be appreciated, as the project is just maintained by myself virustotalop and contributions code or otherwise are very much appreciated.
 
 # How to submit a pull request
-Make a fork of master and submit a pull request making sure that the code compiles against 1.8+.
+Make a fork of master and submit a pull request into the refactor branch making sure that the code compiles against spigot 1.8+.
 If any of the code does not compile the pull request will either be rejected or you will be asked to update the code.
 For any new classes follow the [allman style of formatting](https://en.wikipedia.org/wiki/Indent_style#Allman_style) other classes follow the style that is there as a majority of the code needs to be refactored into allman anyways.
 
