@@ -1,8 +1,8 @@
 name: ObsidianAuctions
-version: 4.0.2
+version: 4.1.0
 description: Updated fork of floAuctions.
 authors: [flobi, VirusTotal]
-softdepend: [Vault]
+softdepend: [Vault, PlaceholderAPI]
 loadbefore: [floAuction]
 
 #Fork of floAuction, name has been changed to help with confusion.

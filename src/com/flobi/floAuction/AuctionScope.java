@@ -31,6 +31,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
  */
 
 public class AuctionScope {
+	
 	private Auction activeAuction = null;
 	private List<Auction> otherPluginsAuctions = null;
 	private String scopeId = null;
@@ -52,7 +53,6 @@ public class AuctionScope {
 	public static List<String> auctionScopesOrder = new ArrayList<String>();
 	public static Map<String, AuctionScope> auctionScopes = new HashMap<String, AuctionScope>();
 	private static WorldGuardPlugin worldGuardPlugin = null;
-
 	/**
 	 * Constructor to make new scopes from the name, config and language config files.
 	 * 

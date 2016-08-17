@@ -62,6 +62,7 @@ import com.flobi.floauction.utilities.Functions;
  * @author Joshua "flobi" Hatfield
  */
 public class FloAuction extends JavaPlugin {
+	
 	private static final Logger log = Logger.getLogger("Minecraft");
 
 	public static int decimalPlaces = 0;
@@ -89,13 +90,22 @@ public class FloAuction extends JavaPlugin {
 	
 	private static MessageManager messageManager = new AuctionMessageManager();
 	
+	
+	
 	/*Added values
 	 * 
 	 */
 	public static String guiQueueName;
 	public static List<String> itemBlacklist;
 	public static boolean itemBlackListEnabled;
+	public static boolean enableChatMessages;
+	public static boolean enableActionbarMessages;
 	
+	/* Check if addon plugins are enabled
+	 * 
+	 */
+	public static boolean placeHolderApiEnabled = false;
+	public static boolean titleManagerEnabled = false;
 	public HashMap<String,String> names = new HashMap<String,String>();
 	
 	/**
@@ -276,6 +286,16 @@ public class FloAuction extends JavaPlugin {
 		this.setupEconomy();
 		this.setupPermissions();
 
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+		{
+			FloAuction.placeHolderApiEnabled = true;
+		}
+		
+		if(Bukkit.getPluginManager().getPlugin("TitleManager") != null)
+		{
+			FloAuction.titleManagerEnabled = true;
+		}
+		
 		if (econ == null) 
 		{
 			logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
@@ -286,7 +306,7 @@ public class FloAuction extends JavaPlugin {
 		ArenaManager.loadArenaListeners(this);
 		
 		//Load in inventory click listener
-		Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);
+		Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);	
 		
 		Bukkit.getPluginManager().registerEvents(new Listener() 
 		{
@@ -466,6 +486,24 @@ public class FloAuction extends JavaPlugin {
 			}
 	    }
 	    
+	    if(config.get("enable-actionbar-messages") == null) {
+	    	config.set("enable-actionbar-messages", true);
+	    	try {
+				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	    
+	    if(config.get("enable-chat-messages") == null) {
+	    	config.set("enable-chat-messages", true);
+	    	try {
+				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	    
 	    if(config.get("blacklist-enabled") == null) {
 	    	config.set("blacklist-enabled", false);
 	    	try {
@@ -617,6 +655,8 @@ public class FloAuction extends JavaPlugin {
 	    FloAuction.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
 	    FloAuction.itemBlacklist = config.getStringList("name-blacklist");
 	    FloAuction.itemBlackListEnabled = config.getBoolean("blacklist-enabled");
+	    FloAuction.enableChatMessages = config.getBoolean("enable-chat-messages");
+	    FloAuction.enableActionbarMessages = config.getBoolean("enable-actionbar-messages");
 	    
 	    //Get name from id
 	    for(String string : nameConfig.getKeys(false))

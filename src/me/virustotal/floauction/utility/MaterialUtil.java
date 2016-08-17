@@ -21,7 +21,7 @@ public class MaterialUtil {
 			return "Air";
 		
 		HashMap<String,String> names = FloAuction.plugin.names;
-		int id = item.getTypeId();
+		int id = item.getTypeId(); //Code needs to be updated eventually, waiting for dura to be completely removed
 		short dura = item.getDurability();
 		String name = "";
 
@@ -98,6 +98,12 @@ public class MaterialUtil {
 					Object spawnData = getCompound.invoke(compound, "SpawnData");
 					type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
 				}
+				else //Should work for 1.10 and above, needs to be tested
+				{
+					Object spawnData = getCompound.invoke(compound, "SpawnData");
+					type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
+				}
+				
 					
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();

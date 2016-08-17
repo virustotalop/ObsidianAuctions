@@ -1,5 +1,7 @@
 package com.flobi.floauction;
 
+import io.puharesource.mc.titlemanager.api.ActionbarTitleObject;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import me.clip.placeholderapi.PlaceholderAPI;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -184,7 +188,11 @@ public class AuctionMessageManager extends MessageManager {
     	{
 	    	for (String message : messages) 
 	    	{
-	    		player.sendMessage(message);
+	    		if(FloAuction.enableChatMessages)
+	    			player.sendMessage(message);
+	    		if(FloAuction.titleManagerEnabled && FloAuction.enableActionbarMessages)
+	    			new ActionbarTitleObject(message).send(player);
+	    		
 	    		FloAuction.log(player.getName(), message, auctionScope);
 	    	}
     	} 
@@ -214,7 +222,8 @@ public class AuctionMessageManager extends MessageManager {
      */
     private static void broadcastMessage(List<String> messages, AuctionScope auctionScope) 
     {
-    	Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+    	Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
+    	
     	
     	for (Player player : onlinePlayers) 
     	{
@@ -228,7 +237,10 @@ public class AuctionMessageManager extends MessageManager {
     		}
 	    	for (String message : messages) 
 	    	{
-	    		player.sendMessage(message);
+	    		if(FloAuction.enableChatMessages)
+	    			player.sendMessage(message);
+	    		if(FloAuction.titleManagerEnabled && FloAuction.enableActionbarMessages)
+	    			new ActionbarTitleObject(message).send(player);
 	    	}
     	}
     	
@@ -694,8 +706,19 @@ public class AuctionMessageManager extends MessageManager {
         		}
     		}
     	}
-		
-		return newMessageList;
+
+    	if(newMessageList != null)
+    	{
+    		if(FloAuction.placeHolderApiEnabled)
+    		{
+    			for(int i = 0; i < newMessageList.size(); i++)
+    			{
+    				newMessageList.set(i, PlaceholderAPI.setPlaceholders(player, newMessageList.get(i)));
+    			}
+    		}
+    	}
+
+    	return newMessageList;
 	}
 
 	/**

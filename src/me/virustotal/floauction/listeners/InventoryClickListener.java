@@ -11,7 +11,7 @@ public class InventoryClickListener implements Listener {
 	@EventHandler
 	public void invClick(InventoryClickEvent e)
 	{
-		if(e.getClickedInventory() != null)
+		if(e.getInventory() != null)
 		{
 			if(e.getClick() != null)
 			{
