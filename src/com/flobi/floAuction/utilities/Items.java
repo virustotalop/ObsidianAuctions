@@ -277,7 +277,8 @@ public class Items {
 		}
     }
 
-	public static Object getNbtTag(ItemStack item) {
+	public static Object getNbtTag(ItemStack item) 
+	{
 		Object tag = null;
 		try 
 		{
@@ -288,7 +289,9 @@ public class Items {
 			Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
 			Method tagField = itemStack.getClass().getMethod("getTag");
 			tag  = tagField.invoke(itemStack);
-		} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+		} 
+		catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) 
+		{
 			e.printStackTrace();
 		}
 		return tag;
@@ -501,7 +504,12 @@ public class Items {
 		if (!isSame(getLore(item1), getLore(item2))) return false;
 
 		//For 1.7 and above even though 1.7 is no longer supported
-		//if(getNbtTag(item1) != getNbtTag(item2)) return false;
+		Object tagOne = getNbtTag(item1);
+		Object tagTwo = getNbtTag(item2);
+		if(tagOne != null && tagTwo != null)
+		{
+			if(!(tagOne.equals(tagTwo))) return false;
+		}
 		
 		// Book author, title and contents must be identical.
 		if (!isSame(getBookAuthor(item1), getBookAuthor(item2))) return false;

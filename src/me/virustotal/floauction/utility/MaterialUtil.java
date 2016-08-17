@@ -77,15 +77,6 @@ public class MaterialUtil {
 		String type = "";
 		try 
 		{
-			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
-			Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
-			Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
-			Object craftCopy = asCraftCopy.invoke(null, item);
-			Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
-			Method tagField = itemStack.getClass().getMethod("getTag");
-			Object tag  = tagField.invoke(itemStack);
-			Method getCompound = tag.getClass().getMethod("getCompound", String.class);
-			Object compound = getCompound.invoke(tag, "EntityTag");
 			if(VersionUtil.getVersion().contains("1_8"))
 			{
 				String entityType = EntityType.fromId(item.getDurability()).getName();
@@ -93,6 +84,15 @@ public class MaterialUtil {
 			}
 			else //Should work for 1.9 and above, needs to be tested
 			{
+				Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
+				Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
+				Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
+				Object craftCopy = asCraftCopy.invoke(null, item);
+				Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
+				Method tagField = itemStack.getClass().getMethod("getTag");
+				Object tag  = tagField.invoke(itemStack);
+				Method getCompound = tag.getClass().getMethod("getCompound", String.class);
+				Object compound = getCompound.invoke(tag, "EntityTag");
 				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "id");
 			}
 
