@@ -37,6 +37,10 @@ public class MaterialUtil {
 				}
 			}	
 		}
+		else if(id == 383) //mob eggs
+		{
+			return MaterialUtil.getMobEggType(item) + " Spawn Egg";
+		}
 		
 		if(id == 52 && AuctionConfig.getBoolean("allow-mobspawners", null))
 		{
@@ -68,46 +72,73 @@ public class MaterialUtil {
 		return name;
 	}
 	
-	private static String getSpawnerType(ItemStack item)
+	private static String getMobEggType(ItemStack item)
 	{
 		String type = "";
-		if(MaterialUtil.getVersion().contains("1_7"))
+		try 
 		{
-			short dura = item.getDurability();
-			return EntityType.fromId(dura).getName();
-		}
-		else
-		{
-			try 
+			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + getVersion() + ".inventory.CraftItemStack");
+			Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
+			Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
+			Object craftCopy = asCraftCopy.invoke(null, item);
+			Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
+			Method tagField = itemStack.getClass().getMethod("getTag");
+			Object tag  = tagField.invoke(itemStack);
+			Method getCompound = tag.getClass().getMethod("getCompound", String.class);
+			Object compound = getCompound.invoke(tag, "EntityTag");
+			if(MaterialUtil.getVersion().contains("1_8"))
 			{
-				Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + getVersion() + ".inventory.CraftItemStack");
-				Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
-				Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
-				Object craftCopy = asCraftCopy.invoke(null, item);
-				Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
-				Method tagField = itemStack.getClass().getMethod("getTag");
-				Object tag  = tagField.invoke(itemStack);
-				Method getCompound = tag.getClass().getMethod("getCompound", String.class);
-				Object compound = getCompound.invoke(tag, "BlockEntityTag");
-				if(MaterialUtil.getVersion().contains("1_8"))
-				{
-					type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
-				}
-				else if(MaterialUtil.getVersion().contains("1_9"))
-				{
-					Object spawnData = getCompound.invoke(compound, "SpawnData");
-					type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
-				}
-				else //Should work for 1.10 and above, needs to be tested
-				{
-					Object spawnData = getCompound.invoke(compound, "SpawnData");
-					type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
-				}
-				
-					
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
+				String entityType = EntityType.fromId(item.getDurability()).getName();
+				type = (Character.toUpperCase(entityType.charAt(0)) + entityType.toLowerCase().substring(1)).replace("_", "");
 			}
+			else //Should work for 1.9 and above, needs to be tested
+			{
+				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "id");
+			}
+
+
+		} 
+		catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) 
+		{
+			e.printStackTrace();
+		}
+		return type;
+	}
+	
+	private static String getSpawnerType(ItemStack item)
+	{
+		String type = ""; //Support is dropped for 1.7
+		try 
+		{
+			Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + getVersion() + ".inventory.CraftItemStack");
+			Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", new Class[] {ItemStack.class});
+			Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", new Class[] {ItemStack.class});
+			Object craftCopy = asCraftCopy.invoke(null, item);
+			Object itemStack = asNMSCopy.invoke(null, (ItemStack)craftCopy);
+			Method tagField = itemStack.getClass().getMethod("getTag");
+			Object tag  = tagField.invoke(itemStack);
+			Method getCompound = tag.getClass().getMethod("getCompound", String.class);
+			Object compound = getCompound.invoke(tag, "BlockEntityTag");
+			if(MaterialUtil.getVersion().contains("1_8"))
+			{
+				type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "EntityId");	
+			}
+			else if(MaterialUtil.getVersion().contains("1_9"))
+			{
+				Object spawnData = getCompound.invoke(compound, "SpawnData");
+				type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
+			}
+			else //Should work for 1.10 and above, needs to be tested
+			{
+				Object spawnData = getCompound.invoke(compound, "SpawnData");
+				type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
+			}
+
+
+		} 
+		catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) 
+		{
+			e.printStackTrace();
 		}
 		return type;
 	}
