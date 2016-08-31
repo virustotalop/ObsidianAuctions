@@ -100,6 +100,7 @@ public class FloAuction extends JavaPlugin {
 	public static boolean itemBlackListEnabled;
 	public static boolean enableChatMessages;
 	public static boolean enableActionbarMessages;
+	public static boolean allowRenamedItems;
 	
 	/* Check if addon plugins are enabled
 	 * 
@@ -541,6 +542,18 @@ public class FloAuction extends JavaPlugin {
 			}
 	    }
 	    
+	    if(config.get("allow-renamed-items") == null)
+	    {
+	    	config.set("allow-renamed-items", true);
+	    	try 
+	    	{
+				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
+			} 
+	    	catch (IOException e) 
+	    	{
+				e.printStackTrace();
+			}
+	    }
 	    
 	    // Look for defaults in the jar
 	    if (defConfigStream != null) 

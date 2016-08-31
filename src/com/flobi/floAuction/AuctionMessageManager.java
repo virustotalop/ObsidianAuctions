@@ -188,10 +188,7 @@ public class AuctionMessageManager extends MessageManager {
     	{
 	    	for (String message : messages) 
 	    	{
-	    		//if(FloAuction.enableChatMessages)
-	    			player.sendMessage(message);
-	    		//if(FloAuction.titleManagerEnabled && FloAuction.enableActionbarMessages)
-	    		//	new ActionbarTitleObject(message).send(player);
+	    		player.sendMessage(message);
 	    		
 	    		FloAuction.log(player.getName(), message, auctionScope);
 	    	}
@@ -527,7 +524,8 @@ public class AuctionMessageManager extends MessageManager {
     	    	conditionals.put("%is-admin%", player != null && FloAuction.perms.has(player, "auction.admin")); //1
     	    	conditionals.put("%can-start%", player != null && FloAuction.perms.has(player, "auction.start")); //2
     	    	conditionals.put("%can-bid%", player != null && FloAuction.perms.has(player, "auction.bid")); //3
-    	    	conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //4
+    	    	conditionals.put("%has-display-name%", lot != null && FloAuction.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().getDisplayName() != null);
+    	    	//conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //4 -> probably not needed
     	    	conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
     	    	conditionals.put("%is-sealed%", auction != null && auction.sealed); //6
     	    	conditionals.put("%not-sealed%", auction != null && !auction.sealed && auction.getCurrentBid() != null); //7
