@@ -1,7 +1,6 @@
 package com.flobi.floauction;
 
-import io.puharesource.mc.titlemanager.api.ActionbarTitleObject;
-
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.virustotal.floauction.utility.ActionBarUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -220,32 +220,41 @@ public class AuctionMessageManager extends MessageManager {
     private static void broadcastMessage(List<String> messages, AuctionScope auctionScope) 
     {
     	Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
-    	
-    	
+
+
     	for (Player player : onlinePlayers) 
     	{
-        	if (FloAuction.getVoluntarilyDisabledUsers().contains(player.getName())) 
-        	{
-        		continue;
-        	}
+    		if (FloAuction.getVoluntarilyDisabledUsers().contains(player.getName())) 
+    		{
+    			continue;
+    		}
     		if (auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) 
     		{
     			continue;
     		}
-	    	for (String message : messages) 
-	    	{
-	    		if(FloAuction.enableChatMessages)
-	    			player.sendMessage(message);
-	    		if(FloAuction.titleManagerEnabled && FloAuction.enableActionbarMessages)
-	    			new ActionbarTitleObject(message).send(player);
-	    	}
+    		for (String message : messages) 
+    		{
+    			if(FloAuction.enableChatMessages)
+    				player.sendMessage(message);
+    			if(FloAuction.enableActionbarMessages)
+    			{
+    				try 
+    				{
+    					ActionBarUtil.sendMessage(player, message);
+    				} 
+    				catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | NoSuchFieldException e) 
+    				{
+    					e.printStackTrace();
+    				}
+    			}
+    		}
     	}
-    	
+
     	if (auctionScope == null && FloAuction.getVoluntarilyDisabledUsers().indexOf("*console*") == -1) 
     	{
-	    	for (String message : messages) 
-	    	{
-	    		message = ChatColor.stripColor(message);
+    		for (String message : messages) 
+    		{
+    			message = ChatColor.stripColor(message);
 				Bukkit.getConsoleSender().sendMessage(message);
 	    	}
 		}
@@ -268,33 +277,33 @@ public class AuctionMessageManager extends MessageManager {
     	message = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("chat-prefix", auctionScope)) + message;
     	return message;
     }
-    
+
     /**
      * Sends via raw message wrapped in json.  This is currently a placeholder sending normally instead.
      * 
      * @param playerName
      * @param message
      */
-/*    private static void sendTellRaw(String playerName, String message) {
+    /*    private static void sendTellRaw(String playerName, String message) {
     	Bukkit.getPlayer(playerName).sendMessage(message);
     	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "tellraw " + playerName + " {text:\"" + escapeJSONString(message) + "\"}");
     }
-    
+
     private static String escapeJSONString(String message) {
     	return message.replace("'", "\\'").replace("\"", "\\\"").replace("\\", "\\\\");
     }*/
-    
-	/**
-	 * Gets the messages from the language.yml file based on the keys passed in.
-	 * 
-	 * @param messageKeys Keys specified in the language.yml file
-	 * @param auctionScope A scope to check for local messages
-	 * @return List of actual messages to send
-	 */
-	private List<String> parseMessages(List<String> messageKeys, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) 
-	{
-		List<String> messageList = new ArrayList<String>();
-		
+
+    /**
+     * Gets the messages from the language.yml file based on the keys passed in.
+     * 
+     * @param messageKeys Keys specified in the language.yml file
+     * @param auctionScope A scope to check for local messages
+     * @return List of actual messages to send
+     */
+    private List<String> parseMessages(List<String> messageKeys, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) 
+    {
+    	List<String> messageList = new ArrayList<String>();
+
     	for (int l = 0; l < messageKeys.size(); l++) 
     	{
     		String messageKey = messageKeys.get(l);
@@ -521,10 +530,11 @@ public class AuctionMessageManager extends MessageManager {
     		String message = messageList.get(l);
     		if (message.length() > 0 && (message.contains("%conditional-true%") || message.contains("%conditional-false%"))) //%C    %N
     		{
+    			conditionals.put("%always-true%", true);
     	    	conditionals.put("%is-admin%", player != null && FloAuction.perms.has(player, "auction.admin")); //1
     	    	conditionals.put("%can-start%", player != null && FloAuction.perms.has(player, "auction.start")); //2
     	    	conditionals.put("%can-bid%", player != null && FloAuction.perms.has(player, "auction.bid")); //3
-    	    	conditionals.put("%has-display-name%", lot != null && FloAuction.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().getDisplayName() != null);
+    	    	conditionals.put("%has-display-name%", lot != null && FloAuction.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
     	    	//conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //4 -> probably not needed
     	    	conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
     	    	conditionals.put("%is-sealed%", auction != null && auction.sealed); //6

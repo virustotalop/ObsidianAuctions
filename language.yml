@@ -20,7 +20,7 @@ auctionscope-welcome:
 - '&2Entering auction area: &f%auction-scope-name%.'
 - '%conditional-true%%get-active-auction%&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
   %conditional-true%%has-durability%&4damaged %conditional-true%%has-durability%%conditional-true%%has-enchantment%&benchanted
-  %conditional-true%%has-enchantment%&a%item-material-name%&9%conditional-true%%has-enchantment%
+  %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
   named &f"%item-display-name%"&9%conditional-true%%has-enchantment% for &c%auction-remaining-time%&9.
   Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
   %conditional-true%%is-buynow%Buy now: &6%auction-buy-now%&9. %conditional-true%%is-buynow%Type
@@ -32,7 +32,7 @@ auctionscope-welcome:
 auctionscope-welcome-onjoin:
 - '%conditional-true%%get-active-auction%&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
   %conditional-true%%has-durability%&4damaged %conditional-true%%has-durability%%conditional-true%%has-enchantment%&benchanted
-  %conditional-true%%has-enchantment%&a%item-material-name%&9%conditional-true%%has-enchantment%
+  %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
   named &f"%item-display-name%"&9%conditional-true%%has-enchantment% for &c%auction-remaining-time%&9.
   Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
   %conditional-true%%is-buynow%Buy now: &6%auction-buy-now%&9. %conditional-true%%is-buynow%Type
@@ -109,7 +109,7 @@ auction-fail-blocked-by-other-plugin: '&6The auction was blocked by another plug
 auction-fail-blacklist-name: '&6This item contains a blacklisted word.'
 bid-success-no-challenger: '&b%current-bid-name%&9 has bid &6%current-bid-amount%&9
   on the %conditional-true%%has-durability%&4damaged %conditional-true%%has-durability%%conditional-true%%has-enchantment%&benchanted
-  %conditional-true%%has-enchantment%&a%item-material-name%&9%conditional-true%%has-enchantment%
+  %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
   named &f"%item-display-name%"&9%conditional-true%%has-enchantment%&9.'
 bid-success-outbid: '&b%current-bid-name%&9 raised the bid to &6%current-bid-amount%&9.'
 bid-success-update-own-bid: '&b%current-bid-name%&9 raised the bid to &6%current-bid-amount%&9.'
@@ -185,7 +185,7 @@ auction-end-tax: An auction tax of %auction-post-tax% has been extracted from yo
 auction-info:
 - '&b%auction-owner-name%&9 is auctioning &f%auction-quantity% %conditional-true%%has-durability%&4damaged
   %conditional-true%%has-durability%%conditional-true%%has-enchantment%&benchanted
-  %conditional-true%%has-enchantment%&a%item-material-name%&9%conditional-true%%has-enchantment%
+  %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
   named &f"%item-display-name%"&9%conditional-true%%has-enchantment% for &c%auction-remaining-time%&9.%conditional-true%%is-broadcast%
   Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
   %conditional-true%%is-buynow%Buy now: &6%auction-buy-now%&9. %conditional-true%%is-buynow%Type

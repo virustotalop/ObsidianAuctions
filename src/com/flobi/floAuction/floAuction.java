@@ -106,7 +106,6 @@ public class FloAuction extends JavaPlugin {
 	 * 
 	 */
 	public static boolean placeHolderApiEnabled = false;
-	public static boolean titleManagerEnabled = false;
 	public HashMap<String,String> names = new HashMap<String,String>();
 	
 	/**
@@ -291,12 +290,7 @@ public class FloAuction extends JavaPlugin {
 		{
 			FloAuction.placeHolderApiEnabled = true;
 		}
-		
-		if(Bukkit.getPluginManager().getPlugin("TitleManager") != null)
-		{
-			FloAuction.titleManagerEnabled = true;
-		}
-		
+	
 		if (econ == null) 
 		{
 			logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
@@ -318,13 +312,13 @@ public class FloAuction extends JavaPlugin {
         	    FloAuction.killOrphan(player);
         	    AuctionScope.sendWelcomeMessage(player, true);
             }
-            @EventHandler
+            @EventHandler(priority = EventPriority.LOWEST)
             public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
             {
             	// Hopefully the teleport and portal things I just added will make this obsolete, but I figure I'll keep it just to make sure.
         		AuctionParticipant.forceLocation(event.getPlayer().getName(), null);
             }
-            @EventHandler
+            @EventHandler(priority = EventPriority.LOWEST)
             public void onPlayerChangedGameMode(PlayerGameModeChangeEvent event)
             {
             	if (event.isCancelled()) return;
@@ -388,13 +382,13 @@ public class FloAuction extends JavaPlugin {
         		if (event.isCancelled()) return;
         		AuctionParticipant.forceLocation(event.getPlayer().getName(), event.getTo());
         	}
-        	@EventHandler()
+        	@EventHandler(priority = EventPriority.LOWEST)
         	public void onPlayerTeleport(PlayerTeleportEvent event) 
         	{
         		if (event.isCancelled()) return;
         		if (!AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo())) event.setCancelled(true);
         	}
-        	@EventHandler()
+        	@EventHandler(priority = EventPriority.LOWEST)
         	public void onPlayerPortalEvent(PlayerPortalEvent event) 
         	{
         		if (event.isCancelled()) return;
@@ -477,39 +471,55 @@ public class FloAuction extends JavaPlugin {
 			}
 	    }
 	    
-	    if(config.get("name-blacklist") == null){
+	    if(config.get("name-blacklist") == null)
+	    {
 	    	List<String> blackListDefault = FloAuction.plugin.getConfig().getDefaults().getStringList("name-blacklist");
 	    	config.set("name-blacklist", blackListDefault);
-	    	try {
+	    	try 
+	    	{
 				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
-			} catch (IOException e) {
+			} 
+	    	catch (IOException e) 
+	    	{
 				e.printStackTrace();
 			}
 	    }
 	    
-	    if(config.get("enable-actionbar-messages") == null) {
+	    if(config.get("enable-actionbar-messages") == null) 
+	    {
 	    	config.set("enable-actionbar-messages", true);
-	    	try {
+	    	try 
+	    	{
 				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
-			} catch (IOException e) {
+			} 
+	    	catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 	    }
 	    
-	    if(config.get("enable-chat-messages") == null) {
+	    if(config.get("enable-chat-messages") == null) 
+	    {
 	    	config.set("enable-chat-messages", true);
-	    	try {
+	    	try 
+	    	{
 				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
-			} catch (IOException e) {
+			}
+	    	catch (IOException e) 
+	    	{
 				e.printStackTrace();
 			}
 	    }
 	    
-	    if(config.get("blacklist-enabled") == null) {
+	    if(config.get("blacklist-enabled") == null) 
+	    {
 	    	config.set("blacklist-enabled", false);
-	    	try {
+	    	try 
+	    	{
 				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
-			} catch (IOException e) {
+			} 
+	    	catch (IOException e) 
+	    	{
 				e.printStackTrace();
 			}
 	    }
