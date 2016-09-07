@@ -29,6 +29,7 @@ import com.flobi.floauction.utilities.Functions;
 import com.flobi.floauction.utilities.Items;
 
 public class AuctionMessageManager extends MessageManager {
+	
 	private static Map<String, Map<String, String>> replacementDefaults = new HashMap<String, Map<String, String>>();
 	
 	public AuctionMessageManager() 
@@ -228,14 +229,17 @@ public class AuctionMessageManager extends MessageManager {
     		{
     			continue;
     		}
+    		
     		if (auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) 
     		{
     			continue;
     		}
+    		
     		for (String message : messages) 
     		{
     			if(FloAuction.enableChatMessages)
     				player.sendMessage(message);
+    			
     			if(FloAuction.enableActionbarMessages)
     			{
     				try 
@@ -277,21 +281,6 @@ public class AuctionMessageManager extends MessageManager {
     	message = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("chat-prefix", auctionScope)) + message;
     	return message;
     }
-
-    /**
-     * Sends via raw message wrapped in json.  This is currently a placeholder sending normally instead.
-     * 
-     * @param playerName
-     * @param message
-     */
-    /*    private static void sendTellRaw(String playerName, String message) {
-    	Bukkit.getPlayer(playerName).sendMessage(message);
-    	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "tellraw " + playerName + " {text:\"" + escapeJSONString(message) + "\"}");
-    }
-
-    private static String escapeJSONString(String message) {
-    	return message.replace("'", "\\'").replace("\"", "\\\"").replace("\\", "\\\\");
-    }*/
 
     /**
      * Gets the messages from the language.yml file based on the keys passed in.
