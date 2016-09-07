@@ -8,6 +8,7 @@ import org.bukkit.event.HandlerList;
 import com.flobi.floauction.Auction;
 
 public class AuctionStartEvent extends Event implements Cancellable {
+	
     private static final HandlerList handlers = new HandlerList();
     
     private boolean cancelled;
@@ -44,5 +45,10 @@ public class AuctionStartEvent extends Event implements Cancellable {
 	public Auction getAuction() 
 	{
 		return this.auction;
+	}
+	
+	public static HandlerList getHandlerList()
+	{
+		return AuctionStartEvent.handlers;
 	}
 }
