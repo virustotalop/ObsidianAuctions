@@ -25,7 +25,7 @@ public class ActionBarUtil {
 		
 		if(ActionBarUtil.iChatClass == null)
 		{
-			ActionBarUtil.iChatClass = Class.forName("net.minecraft.server." + VersionUtil.getVersion() + ".IChatBaseComponent");
+			ActionBarUtil.iChatClass = Class.forName("net.minecraft.server." + VersionUtil.getVersion() + ".IChatBaseComponent").getDeclaredClasses()[0];
 		}
 		
 		if(ActionBarUtil.packetClass == null)
@@ -45,13 +45,13 @@ public class ActionBarUtil {
 		
 		if(ActionBarUtil.packetConstructor == null)
 		{
-			ActionBarUtil.packetConstructor = ActionBarUtil.chatPacketClass.getConstructor(ActionBarUtil.iChatClass, byte.class);
+			ActionBarUtil.packetConstructor = ActionBarUtil.chatPacketClass.getDeclaredConstructor(Class.forName("net.minecraft.server." + VersionUtil.getVersion() + ".IChatBaseComponent"), byte.class);
 		}
 		
 		
 		String json = "{\"text\":\"" + ChatColor.translateAlternateColorCodes('&', message) + "\"}";
 		Object chatObject = ActionBarUtil.iChatMethod.invoke(null, json);
-		Object chatPacketObject = ActionBarUtil.packetConstructor.newInstance(chatObject, (byte)1);
+		Object chatPacketObject = ActionBarUtil.packetConstructor.newInstance(chatObject, (byte)2);
 		Object handleObject = ActionBarUtil.getHandle.invoke(player);
 		Object playerConnectionObject = handleObject.getClass().getField("playerConnection").get(handleObject);
 		playerConnectionObject.getClass().getMethod("sendPacket", ActionBarUtil.packetClass).invoke(playerConnectionObject, chatPacketObject);

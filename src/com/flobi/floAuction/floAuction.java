@@ -680,6 +680,7 @@ public class FloAuction extends JavaPlugin {
 	    FloAuction.itemBlackListEnabled = config.getBoolean("blacklist-enabled");
 	    FloAuction.enableChatMessages = config.getBoolean("enable-chat-messages");
 	    FloAuction.enableActionbarMessages = config.getBoolean("enable-actionbar-messages");
+	    FloAuction.allowRenamedItems = config.getBoolean("allow-renamed-items");
 	    
 	    //Get name from id
 	    for(String string : nameConfig.getKeys(false))
