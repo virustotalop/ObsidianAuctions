@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
@@ -23,12 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import me.virustotal.floauction.listeners.InventoryClickListener;
-import me.virustotal.floauction.utility.CArrayList;
-import me.virustotal.floauction.utility.MigrationUtil;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -55,6 +50,12 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.FileUtil;
 
 import com.flobi.floauction.utilities.Functions;
+
+import me.virustotal.floauction.listeners.InventoryClickListener;
+import me.virustotal.floauction.utility.CArrayList;
+import me.virustotal.floauction.utility.MigrationUtil;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 /**
  * A Bukkit based Minecraft plugin to facilitate auctions.
@@ -568,7 +569,7 @@ public class FloAuction extends JavaPlugin {
 	    // Look for defaults in the jar
 	    if (defConfigStream != null) 
 	    {
-	        defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+	        defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
 	        defConfigStream = null;
 	    }
 	    if (defConfig != null) 
@@ -578,7 +579,7 @@ public class FloAuction extends JavaPlugin {
 	    
 	    textConfig = null;
 	    
-	    // Check to see if this needs converstion from floAuction version 2:
+	    // Check to see if this needs converstion from FloAuction version 2:
 	    // suppress-auction-start-info was added in 2.6 and removed in 3.0.
 	    if (config.contains("suppress-auction-start-info")) 
 	    {
@@ -617,7 +618,7 @@ public class FloAuction extends JavaPlugin {
 	    // Look for defaults in the jar
 	    if (defTextConfigStream != null) 
 	    {
-	        defTextConfig = YamlConfiguration.loadConfiguration(defTextConfigStream);
+	        defTextConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defTextConfigStream));
 	        defTextConfigStream = null;
 	    }
 	    if (defTextConfig != null) 
@@ -688,7 +689,7 @@ public class FloAuction extends JavaPlugin {
 	    	FloAuction.plugin.names.put(string, nameConfig.getString(string));
 	    }
 	    
-	    //Setup additional floAuction values
+	    //Setup additional FloAuction values
 	    FloAuction.isDamagedAllowed = defConfig.getBoolean("allow-damaged-items");
 	    
 	    //make values null at the end
@@ -715,7 +716,7 @@ public class FloAuction extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
     	// Make sure the decimalPlaces loaded correctly.
-    	// Sometimes the econ loads after floAuction.
+    	// Sometimes the econ loads after FloAuction.
 	    if (!loadedDecimalFromVault && econ.isEnabled()) 
 	    {
 	    	loadedDecimalFromVault = true;
@@ -1152,7 +1153,7 @@ public class FloAuction extends JavaPlugin {
     }
     
     /**
-     * Log data to the floAuction log file if logging is enabled.
+     * Log data to the FloAuction log file if logging is enabled.
      * 
      * @param sender who is initiating the logged event
      * @param message message to save

@@ -174,7 +174,7 @@ public class Functions {
 			FloAuction.plugin.getLogger().log(Level.WARNING, "Economy cannot be null!");
 			return "-";
 		}
-		//if (!floAuction.econ.isEnabled()) return "-";
+		//if (!FloAuction.econ.isEnabled()) return "-";
 		String vaultFormat = FloAuction.econ.format(unsafeMoney);
 		//DecimalFormat decFormat = new DecimalFormat("#,###.00");
 		return vaultFormat;//decFormat.format(vaultFormat);

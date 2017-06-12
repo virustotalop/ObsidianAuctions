@@ -151,7 +151,7 @@ public class AuctionProhibition {
 	/**
 	 * Mark a player as prohibited from auctioning.  Will return false if unable to prohibit user.  Plugin instituted prohibitions cannot be instituted while a player is participating in an auction.
 	 * <p>
-	 * Optional messages can be set to override floAuction's normal notification.  Set these to null to use the floAuction's normal messages.
+	 * Optional messages can be set to override FloAuction's normal notification.  Set these to null to use the FloAuction's normal messages.
 	 * 
 	 * @param prohibiterPlugin plugin requesting prohibition
 	 * @param playerName player being prohibited

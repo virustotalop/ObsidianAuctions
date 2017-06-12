@@ -74,12 +74,12 @@ public class Items {
                 if (firstFree == -1) 
                 {
                     // No space at all!
-                    // Bukkit returns unplaced items, but floAuction only calls this after checking for space.
+                    // Bukkit returns unplaced items, but FloAuction only calls this after checking for space.
                     break;
                 } 
                 else 
                 {
-                	// Again, floAuction checks for this elsewhere before calling this...technically this would never occur, no reason to code for it.
+                	// Again, FloAuction checks for this elsewhere before calling this...technically this would never occur, no reason to code for it.
                 	
                     // More than a single stack!
 /*                    if (item.getAmount() > getMaxStackSize(item)) {
