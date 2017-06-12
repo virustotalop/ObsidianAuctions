@@ -73,7 +73,7 @@ public class Auction {
 	/**
 	 * Instantiates an auction instance.
 	 * 
-	 * @param plugin       the active floAuction plugin instance
+	 * @param plugin       the active FloAuction plugin instance
 	 * @param auctionOwner the player who is starting the auction
 	 * @param inputArgs    the command parameters entered in chat
 	 * @param scope        the hosting AuctionScope
@@ -1230,7 +1230,7 @@ public class Auction {
 	/**
 	 * Gets the lowest amount first bid can be.
 	 * 
-	 * @return lowest possible starting bid in floAuction's proprietary "safe money"
+	 * @return lowest possible starting bid in FloAuction's proprietary "safe money"
 	 */
 	public long getStartingBid() 
 	{
@@ -1296,7 +1296,7 @@ public class Auction {
     /**
      * Gets the amount specified for BuyNow.
      * 
-     * @return BuyNow amount in floAuction's proprietary "safe money"
+     * @return BuyNow amount in FloAuction's proprietary "safe money"
      */
 	public long getBuyNow() 
 	{

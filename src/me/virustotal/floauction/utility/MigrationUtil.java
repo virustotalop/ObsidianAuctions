@@ -107,9 +107,9 @@ public class MigrationUtil {
 			if(file.isFile())
 			{
 				String fileName = file.getName();
-				if(fileName.contains("floAuction") && fileName.endsWith(".jar"))
+				if(fileName.contains("FloAuction") && fileName.endsWith(".jar"))
 				{
-					plugin.getLogger().log(Level.INFO, "Disabling floAuction");
+					plugin.getLogger().log(Level.INFO, "Disabling FloAuction");
 					try 
 					{
 						MigrationUtil.copyFile(file, new File(file.getAbsolutePath() + ".dis"));
@@ -134,7 +134,7 @@ public class MigrationUtil {
 		else
 		{
 
-			String floAuctionPath = strippedPath + File.separator + "floAuction";
+			String floAuctionPath = strippedPath + File.separator + "FloAuction";
 			File floAuctionFolder = new File(floAuctionPath);
 			if(floAuctionFolder.exists())
 			{

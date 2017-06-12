@@ -1,6 +1,6 @@
 package com.flobi.floauction;
 
-import me.virustotal.floauction.listeners.MobArenaListener;
+import me.virustotal.floauction.listeners.MobArenaListener; 
 import me.virustotal.floauction.listeners.PvpArenaListener;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.api.PVPArenaAPI;
@@ -31,7 +31,7 @@ public class ArenaManager {
 	/**
 	 * Loads listeners for the Arena plugins.
 	 * 
-	 * @param plugin the floAuction instance to pass into the listener
+	 * @param plugin the FloAuction instance to pass into the listener
 	 */
 	public static void loadArenaListeners(FloAuction plugin) 
 	{

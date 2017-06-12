@@ -412,7 +412,7 @@ public class AuctionBid {
 	}
 
 	/**
-	 * Gets the amount currently bid in floAuction's proprietary "safe money."
+	 * Gets the amount currently bid in FloAuction's proprietary "safe money."
 	 * 
 	 * @return
 	 */
@@ -422,7 +422,7 @@ public class AuctionBid {
 	}
 	
 	/**
-	 * Gets the amount maximum bid for this instance in floAuction's proprietary "safe money."
+	 * Gets the amount maximum bid for this instance in FloAuction's proprietary "safe money."
 	 * 
 	 * @return
 	 */

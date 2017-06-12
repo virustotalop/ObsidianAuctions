@@ -9,13 +9,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.flobi.floauction.utilities.Functions;
 
 /**
- * Class for handling configuration and language values for floAuction using the AuctionScope preference.
+ * Class for handling configuration and language values for FloAuction using the AuctionScope preference.
  * 
  * @author Joshua "flobi" Hatfield
  */
 public class AuctionConfig {
 	/**
-	 * Gets a double from the config converted to floAuction's proprietary "safe money."
+	 * Gets a double from the config converted to FloAuction's proprietary "safe money."
 	 * 
 	 * @param path the location in the config of the value
 	 * @param auctionScope the preferred AuctionScope for retrieval
