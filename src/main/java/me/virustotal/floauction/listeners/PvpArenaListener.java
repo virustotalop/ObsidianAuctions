@@ -1,7 +1,7 @@
 package me.virustotal.floauction.listeners;
 
 import me.virustotal.floauction.utility.CArrayList;
-import net.slipcor.pvparena.events.PAJoinEvent;
+//import net.slipcor.pvparena.events.PAJoinEvent;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +14,7 @@ import com.flobi.floauction.FloAuction;
 
 public class PvpArenaListener implements Listener {
 	
-	@EventHandler
+	/*@EventHandler
 	public void onPAPlayerJoin(PAJoinEvent event) 
 	{
 		if (event.isCancelled()) 
@@ -32,5 +32,5 @@ public class PvpArenaListener implements Listener {
 			FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
 			event.setCancelled(true);
 		}
-	}
+	}*/
 }
