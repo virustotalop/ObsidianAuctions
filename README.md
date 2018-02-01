@@ -16,6 +16,6 @@ For any new classes follow the [allman style of formatting](https://en.wikipedia
 * What is ObsidianAuctions?
  * Obsidian auctions is a fork of FloAuctions an auction plugin that was originally being used for my server [ClubObsidian](www.clubobsidian.com). I forked the plugin because I liked it, there was a bug and the maintainer was inactive.
 * I have a bug can you fix it?
- * File an issue and I'll see what I can do refer to above to see how to file a bug report.
+  * File an issue and I'll see what I can do refer to above to see how to file a bug report.
 * I have a feature can you put it in?
- * It depends on the complexity and if I have time to complete it. If I don't think it fits with the vision of ObsidianAuctions I will reject it. You may however fork this project and add it yourself. Alternatively if its a feature I don't have time to implement it I welcome pull requests. 
+  * It depends on the complexity and if I have time to complete it. If I don't think it fits with the vision of ObsidianAuctions I will reject it. You may however fork this project and add it yourself. Alternatively if its a feature I don't have time to implement it I welcome pull requests. 
