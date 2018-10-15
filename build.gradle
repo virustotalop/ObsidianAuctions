@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.github.jengelman.gradle.plugins:shadow:shadow:4.0.1'
+    classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
   }
 }
 
@@ -15,12 +15,6 @@ apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-shadowJar {
-   baseName = 'ObsidianAuctions'
-   classifier = null
-   version = null
-}
 
 repositories {
     mavenCentral()
