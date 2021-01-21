@@ -20,7 +20,6 @@ import org.bukkit.plugin.PluginManager;
 public class ArenaManager {
 	
 	private static MobArena mobArena = null;
-	//private static PVPArena pvpArena = null;
 	private static War war = null;
 	private static boolean mobArenaListenerEnabled = false;
 	private static boolean pvpArenaListenerEnabled = false;
@@ -47,20 +46,6 @@ public class ArenaManager {
 				ArenaManager.mobArenaListenerEnabled = true;
 			}
 		}
-		
-		/*if (ArenaManager.pvpArena == null)
-		{
-			ArenaManager.pvpArena = (PVPArena) pluginManager.getPlugin("pvparena");
-		}
-		
-		if (ArenaManager.pvpArena != null)
-		{
-			if(!ArenaManager.pvpArenaListenerEnabled)
-			{
-				pluginManager.registerEvents(new PvpArenaListener(), plugin);
-				ArenaManager.pvpArenaListenerEnabled = true;
-			}
-		}*/
 	}
 
 	/**
@@ -74,10 +59,6 @@ public class ArenaManager {
 		{
 			mobArena = (MobArena) pluginManager.getPlugin("MobArena");
 		}
-		/*if (pvpArena == null)
-		{
-			pvpArena = (PVPArena) pluginManager.getPlugin("pvparena");
-		}*/
 		if (war == null)
 		{
 			war = (War) pluginManager.getPlugin("MobDungeon");
@@ -88,10 +69,6 @@ public class ArenaManager {
 		{
 			mobArena = null;
 		}
-		/*if (pvpArena != null && !pvpArena.isEnabled())
-		{
-			pvpArena = null;
-		}*/
 		if (war != null && !war.isEnabled())
 		{
 			war = null;
@@ -105,7 +82,6 @@ public class ArenaManager {
 	public static void unloadArenaPlugins() 
 	{
 		mobArena = null;
-		//pvpArena = null;
 		war = null;
 	}
 	
@@ -131,10 +107,6 @@ public class ArenaManager {
 		{
 			return true;
 		}
-		/*else if (pvpArena != null && !PVPArenaAPI.getArenaName(player).equals("")) 
-		{
-			return true;
-		}*/
 		else if (war != null && Warzone.getZoneByLocation(player) != null) 
 		{
 			return true;
@@ -165,10 +137,6 @@ public class ArenaManager {
 		{
 			return true;
 		}
-		/*else if (pvpArena != null && !PVPArenaAPI.getArenaNameByLocation(location).equals(""))
-		{
-			return true;
-		}*/
 		else if (war != null && Warzone.getZoneByLocation(location) != null) 
 		{
 			return true;
