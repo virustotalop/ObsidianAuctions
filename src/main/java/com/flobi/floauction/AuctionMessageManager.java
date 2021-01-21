@@ -223,8 +223,6 @@ public class AuctionMessageManager extends MessageManager {
     private static void broadcastMessage(List<String> messages, AuctionScope auctionScope) 
     {
     	Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
-
-
     	for (Player player : onlinePlayers) 
     	{
     		if (FloAuction.getVoluntarilyDisabledUsers().contains(player.getName())) 
@@ -239,18 +237,12 @@ public class AuctionMessageManager extends MessageManager {
     		for (String message : messages) 
     		{
     			if(FloAuction.enableChatMessages)
-    				player.sendMessage(message);
-    			
+				{
+					player.sendMessage(message);
+				}
     			if(FloAuction.enableActionbarMessages)
     			{
-    				try 
-    				{
-    					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
-    				} 
-    				catch (SecurityException | IllegalArgumentException e)
-    				{
-    					e.printStackTrace();
-    				}
+    				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     			}
     		}
     	}
