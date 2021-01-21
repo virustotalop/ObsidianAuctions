@@ -1,9 +1,9 @@
 name: ObsidianAuctions
-version: 4.1.1
+version: 5.0.0
 description: Updated fork of floAuctions.
 authors: [flobi, VirusTotal]
 softdepend: [Vault, PlaceholderAPI]
-loadbefore: [floAuction]
+api-version: "1.13"
 
 #Fork of floAuction, name has been changed to help with confusion.
 #This plugin can be found publicly on spigot here: https://www.spigotmc.org/resources/obsidianauctions.5595/

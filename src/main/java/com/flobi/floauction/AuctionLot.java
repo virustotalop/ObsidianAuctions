@@ -1,5 +1,6 @@
 package com.flobi.floauction;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,9 +25,10 @@ import com.flobi.floauction.util.Items;
  * 
  * @author Joshua "flobi" Hatfield
  */
-public class AuctionLot implements java.io.Serializable {
+public class AuctionLot implements Serializable {
 	
 	private static final long serialVersionUID = -1764290458703647129L;
+
 	private String ownerName;
 	private int quantity = 0;
 	private int lotTypeId;
