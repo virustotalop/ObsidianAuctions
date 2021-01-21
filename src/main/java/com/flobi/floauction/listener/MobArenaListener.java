@@ -14,21 +14,14 @@ import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
 
 public class MobArenaListener implements Listener {
 	
-	@EventHandler
-	public void onMAPlayerJoin(ArenaPlayerJoinEvent event) 
-	{
-		if (event.isCancelled()) 
-		{
-			return;
-		}
+	@EventHandler(ignoreCancelled = true)
+	public void onArenaJoin(ArenaPlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		if (player == null)
-		{
+		if (player == null) {
 			return;
 		}
 		String playerName = player.getName();
-		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) 
-		{
+		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
 			FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
 			event.setCancelled(true);
 		}

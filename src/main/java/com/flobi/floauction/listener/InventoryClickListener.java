@@ -9,16 +9,13 @@ import com.flobi.floauction.FloAuction;
 public class InventoryClickListener implements Listener {
 
 	@EventHandler
-	public void invClick(InventoryClickEvent e)
-	{
-		if(e.getInventory() != null)
-		{
-			if(e.getClick() != null)
-			{
-				if(e.getWhoClicked().getOpenInventory() != null)
-				{
-					if(e.getWhoClicked().getOpenInventory().getTitle().equals(FloAuction.guiQueueName))
+	public void inventoryClick(InventoryClickEvent e) {
+		if(e.getInventory() != null) {
+			if(e.getClick() != null) {
+				if(e.getWhoClicked().getOpenInventory() != null) {
+					if(e.getWhoClicked().getOpenInventory().getTitle().equals(FloAuction.guiQueueName)) {
 						e.setCancelled(true);
+					}
 				}
 			}
 		}
