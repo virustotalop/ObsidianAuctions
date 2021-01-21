@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import me.virustotal.floauction.utility.CArrayList;
+import com.flobi.floauction.util.CArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
@@ -17,7 +17,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floauction.utilities.Items;
+import com.flobi.floauction.util.Items;
 
 /**
  * Structure to hold and process the items being auctioned.

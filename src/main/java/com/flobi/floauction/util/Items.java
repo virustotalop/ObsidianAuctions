@@ -1,4 +1,4 @@
-package com.flobi.floauction.utilities;
+package com.flobi.floauction.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import me.virustotal.floauction.utility.MaterialUtil;
-import me.virustotal.floauction.utility.VersionUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;

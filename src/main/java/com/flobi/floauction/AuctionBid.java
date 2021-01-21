@@ -2,14 +2,14 @@ package com.flobi.floauction;
 
 import java.util.Map;
 
-import me.virustotal.floauction.utility.CArrayList;
+import com.flobi.floauction.util.CArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floauction.utilities.Functions;
-import com.flobi.floauction.utilities.Items;
+import com.flobi.floauction.util.Functions;
+import com.flobi.floauction.util.Items;
 
 /**
  * Structure to handle auction bids.

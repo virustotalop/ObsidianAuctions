@@ -1,17 +1,10 @@
-package me.virustotal.floauction.utility;
+package com.flobi.floauction.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.bukkit.entity.Player;
 
-
-/*
- * Work around for PlaceHolderAPI's license
- * Since PlaceHolderAPI does not want versions distributed and
- * my reluctance to use 3rd party spigot plugin repo's this reflection
- * should accomplish the same thing as calling the api directly.
-*/
 public class PlaceholderAPIUtil {
 
 	private static Class<?> placeholderAPI;

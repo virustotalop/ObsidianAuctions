@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import me.virustotal.floauction.utility.CArrayList;
+import com.flobi.floauction.util.CArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

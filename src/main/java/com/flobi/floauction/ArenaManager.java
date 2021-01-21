@@ -4,8 +4,7 @@ import com.garbagemule.MobArena.MobArena;
 import com.tommytony.war.War;
 import com.tommytony.war.Warzone;
 
-import me.virustotal.floauction.listeners.MobArenaListener;
-import me.virustotal.floauction.listeners.PvpArenaListener;
+import com.flobi.floauction.listener.MobArenaListener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

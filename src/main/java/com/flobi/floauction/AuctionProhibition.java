@@ -2,7 +2,7 @@ package com.flobi.floauction;
 
 import java.util.ArrayList;
 
-import me.virustotal.floauction.utility.CArrayList;
+import com.flobi.floauction.util.CArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

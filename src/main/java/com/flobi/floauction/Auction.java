@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import me.virustotal.floauction.utility.CArrayList;
+import com.flobi.floauction.util.CArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.flobi.floauction.events.AuctionBidEvent;
-import com.flobi.floauction.events.AuctionEndEvent;
-import com.flobi.floauction.events.AuctionStartEvent;
-import com.flobi.floauction.utilities.Functions;
-import com.flobi.floauction.utilities.Items;
+import com.flobi.floauction.event.AuctionBidEvent;
+import com.flobi.floauction.event.AuctionEndEvent;
+import com.flobi.floauction.event.AuctionStartEvent;
+import com.flobi.floauction.util.Functions;
+import com.flobi.floauction.util.Items;
 
 /**
  * Main auction class.

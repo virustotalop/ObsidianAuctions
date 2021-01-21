@@ -1,4 +1,4 @@
-package me.virustotal.floauction.utility;
+package com.flobi.floauction.util;
 
 import org.bukkit.Bukkit;
 

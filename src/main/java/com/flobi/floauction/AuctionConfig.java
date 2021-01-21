@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.flobi.floauction.utilities.Functions;
+import com.flobi.floauction.util.Functions;
 
 /**
  * Class for handling configuration and language values for floAuction using the AuctionScope preference.

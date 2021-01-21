@@ -1,16 +1,8 @@
-package me.virustotal.floauction.listeners;
+package com.flobi.floauction.listener;
 
-import me.virustotal.floauction.utility.CArrayList;
 //import net.slipcor.pvparena.events.PAJoinEvent;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.AuctionParticipant;
-import com.flobi.floauction.AuctionScope;
-import com.flobi.floauction.FloAuction;
 
 public class PvpArenaListener implements Listener {
 	

@@ -1,4 +1,4 @@
-package com.flobi.floauction.events;
+package com.flobi.floauction.event;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

@@ -1,6 +1,6 @@
-package me.virustotal.floauction.listeners;
+package com.flobi.floauction.listener;
 
-import me.virustotal.floauction.utility.CArrayList;
+import com.flobi.floauction.util.CArrayList;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

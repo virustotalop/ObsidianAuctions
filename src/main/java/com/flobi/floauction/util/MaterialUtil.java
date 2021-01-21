@@ -1,4 +1,4 @@
-package me.virustotal.floauction.utility;
+package com.flobi.floauction.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,7 +10,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import com.flobi.floauction.AuctionConfig;
 import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.utilities.Items;
 
 public class MaterialUtil {
 

@@ -11,8 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-import me.virustotal.floauction.utility.ActionBarUtil;
-import me.virustotal.floauction.utility.PlaceholderAPIUtil;
+import com.flobi.floauction.util.PlaceholderAPIUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,8 +25,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.flobi.floauction.utilities.Functions;
-import com.flobi.floauction.utilities.Items;
+import com.flobi.floauction.util.Functions;
+import com.flobi.floauction.util.Items;
 
 public class AuctionMessageManager extends MessageManager {
 	

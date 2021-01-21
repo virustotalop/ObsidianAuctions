@@ -25,9 +25,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.virustotal.floauction.listeners.InventoryClickListener;
-import me.virustotal.floauction.utility.CArrayList;
-import me.virustotal.floauction.utility.MigrationUtil;
+import com.flobi.floauction.listener.InventoryClickListener;
+import com.flobi.floauction.util.CArrayList;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -56,7 +55,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.FileUtil;
 
-import com.flobi.floauction.utilities.Functions;
+import com.flobi.floauction.util.Functions;
 
 /**
  * A Bukkit based Minecraft plugin to facilitate auctions.
@@ -270,8 +269,6 @@ public class FloAuction extends JavaPlugin {
      */
     @Override
 	public void onEnable() {
-    	
-    	MigrationUtil.migrateOldData(this);
 		dataFolder = getDataFolder();
 		plugin = this;
     	auctionLog = new File(dataFolder, "auctions.log");
@@ -439,7 +436,6 @@ public class FloAuction extends JavaPlugin {
 	 */
     private static void loadConfig() 
     {
-    	MigrationUtil.mapOldStrings(); //Used to map the old config strings to new strings, check mappings.yml
 		File configFile = new File(dataFolder, "config.yml");
     	InputStream defConfigStream = plugin.getResource("config.yml");;
     	File textConfigFile = new File(dataFolder, "language.yml");

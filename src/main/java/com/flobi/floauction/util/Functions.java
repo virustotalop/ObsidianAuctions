@@ -1,9 +1,8 @@
-package com.flobi.floauction.utilities;
+package com.flobi.floauction.util;
 
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 
-import me.virustotal.floauction.utility.CArrayList;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import com.flobi.floauction.AuctionConfig;
