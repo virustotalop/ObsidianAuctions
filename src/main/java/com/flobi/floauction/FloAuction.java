@@ -1170,8 +1170,10 @@ public class FloAuction extends JavaPlugin {
     /**
      * Log data to the floAuction log file if logging is enabled.
      * 
-     * @param sender who is initiating the logged event
+     * @param playerName who is initiating the logged event
      * @param message message to save
+	 * @param auctionScope the auction scope being referenced if any
+	 *
      */
     static void log(String playerName, String message, AuctionScope auctionScope) 
     {

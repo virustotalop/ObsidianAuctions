@@ -45,7 +45,7 @@ public class Auction {
 	
 	private AuctionLot lot;
 	private AuctionBid currentBid = null;
-	public ArrayList<AuctionBid> sealedBids = new ArrayList<AuctionBid>(); 
+	public ArrayList<AuctionBid> sealedBids = new ArrayList<>();
 	
 	public boolean sealed = false;
 	

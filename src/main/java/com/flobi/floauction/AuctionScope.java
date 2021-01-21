@@ -56,7 +56,7 @@ public class AuctionScope {
 	/**
 	 * Constructor to make new scopes from the name, config and language config files.
 	 * 
-	 * @param name name of scope
+	 * @param scopeId name of scope
 	 * @param config configuration
 	 * @param textConfig language config
 	 */
@@ -160,8 +160,6 @@ public class AuctionScope {
 	 * Adds an auction instance to the auction queue for this scope.
 	 * 
 	 * @param auctionToQueue auction instance to queue
-	 * @param player player initiating queue request
-	 * @param currentAuction the auction that's currently running
 	 */
 	public void queueAuction(Auction auctionToQueue) 
 	{
@@ -473,7 +471,7 @@ public class AuctionScope {
 	/**
 	 * Gets the AuctionScope instance in which the location is.
 	 * 
-	 * @param player location to check
+	 * @param location the location to check
 	 * @return scope where the location is
 	 */
 	public static AuctionScope getLocationScope(Location location) 

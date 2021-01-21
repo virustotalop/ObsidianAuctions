@@ -14,10 +14,10 @@ public abstract class MessageManager {
 	
 	/**
 	 * Sends a message to a player.
-	 * 
+	 *
+	 * @param messageKeys list of message keys used by floAuction
 	 * @param playerName username of player or null for console
-	 * @param auction the auction being referenced if any
-	 * @param messageKeys list of message keys used by floAuction 
+	 * @param auctionScope the auction scope being referenced if any
 	 */
 	public abstract void sendPlayerMessage(List<String> messageKeys, String playerName, AuctionScope auctionScope);
 	
