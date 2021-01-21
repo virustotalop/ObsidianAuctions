@@ -13,34 +13,28 @@ public class AuctionEndEvent extends Event implements Cancellable {
     private boolean cancelled;
     private Auction auction;
     
-    public AuctionEndEvent(Auction auction, boolean cancelled) 
-    {
+    public AuctionEndEvent(Auction auction, boolean cancelled) {
     	this.auction = auction;
     	this.cancelled = cancelled;
     }
-    
-	public HandlerList getHandlers() 
-	{
-		return handlers;
+	
+	public Auction getAuction() {
+		return this.auction;
 	}
 
-	public boolean isCancelled() 
-	{
+	public boolean isCancelled() {
 		return this.cancelled;
 	}
 
-	public void setCancelled(boolean cancelled) 
-	{
+	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}
-	
-	public Auction getAuction() 
-	{
-		return this.auction;
+
+	public HandlerList getHandlers() {
+		return handlers;
 	}
 	
-	public static HandlerList getHandlerList()
-	{
+	public static HandlerList getHandlerList() {
 		return AuctionEndEvent.handlers;
 	}
 }

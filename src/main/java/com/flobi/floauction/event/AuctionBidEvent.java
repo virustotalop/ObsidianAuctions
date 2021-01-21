@@ -18,8 +18,7 @@ public class AuctionBidEvent extends Event implements Cancellable {
     private double hiddenMaxBid;
     private boolean isBuy;
     
-    public AuctionBidEvent(Player player, Auction auction, double bidAmount, double hiddenMaxBid, boolean isBuy)
-	{
+    public AuctionBidEvent(Player player, Auction auction, double bidAmount, double hiddenMaxBid, boolean isBuy) {
     	this.player = player;
     	this.auction = auction;
     	this.bidAmount = bidAmount;
@@ -27,49 +26,40 @@ public class AuctionBidEvent extends Event implements Cancellable {
     	this.isBuy = isBuy;
     	this.cancelled = false;
     }
-
-	public boolean isCancelled() 
-	{
-		return this.cancelled;
-	}
-
-	public void setCancelled(boolean cancelled) 
-	{
-		this.cancelled = cancelled;
-	}
 	
-	public Player getPlayer() 
-	{
+	public Player getPlayer() {
 		return this.player;
 	}
 	
-	public Auction getAuction() 
-	{
+	public Auction getAuction() {
 		return this.auction;
 	}
 	
-	public double getBidAmount() 
-	{
+	public double getBidAmount() {
 		return this.bidAmount;
 	}
 	
-	public double getHiddenMaxBid() 
-	{
+	public double getHiddenMaxBid() {
 		return this.hiddenMaxBid;
 	}
 	
-	public boolean getIsBuy() 
-	{
+	public boolean getIsBuy() {
 		return this.isBuy;
 	}
 
-	public HandlerList getHandlers()
-	{
+	public boolean isCancelled() {
+		return this.cancelled;
+	}
+
+	public void setCancelled(boolean cancelled) {
+		this.cancelled = cancelled;
+	}
+
+	public HandlerList getHandlers() {
 		return handlers;
 	}
 
-	public static HandlerList getHandlerList()
-	{
+	public static HandlerList getHandlerList() {
 		return AuctionBidEvent.handlers;
 	}
 }
