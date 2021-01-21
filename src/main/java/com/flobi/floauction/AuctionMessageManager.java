@@ -13,6 +13,8 @@ import java.util.Map.Entry;
 
 import com.flobi.floauction.util.PlaceholderAPIUtil;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -144,7 +146,7 @@ public class AuctionMessageManager extends MessageManager {
      * Sends a message to a player or scope.
      * 
      * @param messageKeys keys to message in language.yml
-     * @param player focused player
+     * @param sender focused player
      * @param auctionScope focused scope
      * @param fullBroadcast whether to broadcast or send to player
      */
@@ -215,7 +217,7 @@ public class AuctionMessageManager extends MessageManager {
     /**
      * Broadcast a message to everyone in an auctionscope.
      * 
-     * @param message message to send
+     * @param messages messages to send
      * @param auctionScope scope to send it to
      */
     private static void broadcastMessage(List<String> messages, AuctionScope auctionScope) 
@@ -229,8 +231,7 @@ public class AuctionMessageManager extends MessageManager {
     		{
     			continue;
     		}
-    		
-    		if (auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) 
+    		else if (auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player)))
     		{
     			continue;
     		}
@@ -244,9 +245,9 @@ public class AuctionMessageManager extends MessageManager {
     			{
     				try 
     				{
-    					ActionBarUtil.sendMessage(player, message);
+    					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     				} 
-    				catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | NoSuchFieldException e) 
+    				catch (SecurityException | IllegalArgumentException e)
     				{
     					e.printStackTrace();
     				}
