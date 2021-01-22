@@ -19,7 +19,7 @@ public class MaterialUtil {
 			return "Air";
 		}
 
-		String id = item.getType().toString();
+		String id = item.getType().name();
 		short dura = item.getDurability();
 		String name = null;
 
@@ -58,6 +58,7 @@ public class MaterialUtil {
 			Method getCompound = tag.getClass().getMethod("getCompound", String.class);
 			Object compound = getCompound.invoke(tag, "EntityTag");
 			type = (String) compound.getClass().getMethod("getString", String.class).invoke(compound, "id");
+			type = formatName(type.substring(type.indexOf(":") + 1));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -78,6 +79,7 @@ public class MaterialUtil {
 			Object compound = getCompound.invoke(tag, "BlockEntityTag");
 			Object spawnData = getCompound.invoke(compound, "SpawnData");
 			type = (String) spawnData.getClass().getMethod("getString", String.class).invoke(spawnData, "id");
+			type = formatName(type);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -85,7 +87,12 @@ public class MaterialUtil {
 	}
 	
 	private static String getItemType(ItemStack item) {
-		char[] chars = item.getType().name().toCharArray();
+		String name = item.getType().name();
+		return formatName(name);
+	}
+
+	private static String formatName(String name) {
+		char[] chars = name.toCharArray();
 		chars[0] = Character.toUpperCase(chars[0]);
 		for(int i = 1; i < chars.length; i++) {
 			if(chars[i] == '_') {
