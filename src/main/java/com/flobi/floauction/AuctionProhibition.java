@@ -2,8 +2,6 @@ package com.flobi.floauction;
 
 import java.util.ArrayList;
 
-import com.flobi.floauction.util.CArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -83,7 +81,7 @@ public class AuctionProhibition {
 				}
 				if (auctionProhibition.reminderMessage == null) {
 					// Send stock message.
-					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
+					FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-reminder", playerName, (AuctionScope) null);
 				} 
 				else 
 				{
@@ -121,7 +119,7 @@ public class AuctionProhibition {
 				if (auctionProhibition.reminderMessage == null) 
 				{
 					// Send stock message.
-					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-reminder"), playerName, (AuctionScope) null);
+					FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-reminder", playerName, (AuctionScope) null);
 				} 
 				else 
 				{
@@ -186,7 +184,7 @@ public class AuctionProhibition {
 		if (enableMessage == null) 
 		{
 			// Send stock message.
-			FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
+			FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-enabled", playerName, (AuctionScope) null);
 		} 
 		else 
 		{
@@ -214,7 +212,7 @@ public class AuctionProhibition {
 					if (auctionProhibition.disableMessage == null) 
 					{
 						// Send stock message.
-						FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-disabled"), playerName, (AuctionScope) null);
+						FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-disabled", playerName, (AuctionScope) null);
 					} 
 					else 
 					{
@@ -234,7 +232,7 @@ public class AuctionProhibition {
 				if (auctionProhibition.enableMessage == null) 
 				{
 					// Send stock message.
-					FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("remote-plugin-prohibition-enabled"), playerName, (AuctionScope) null);
+					FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-enabled", playerName, (AuctionScope) null);
 				} 
 				else 
 				{

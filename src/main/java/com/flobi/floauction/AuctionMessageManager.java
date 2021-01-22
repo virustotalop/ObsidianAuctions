@@ -85,7 +85,16 @@ public class AuctionMessageManager extends MessageManager {
 		sReplacments.put("%auction-scope-id%", "-"); //%S4
 		replacementDefaults.put("s", sReplacments);
 	}
-	
+
+	@Override
+	public void sendPlayerMessage(String messageKey, String playerName, Auction auction)
+	{
+		List<String> messageKeys = new ArrayList<>();
+		messageKeys.add(messageKey);
+		this.sendPlayerMessage(messageKeys, playerName, auction);
+	}
+
+	@Override
 	public void sendPlayerMessage(List<String> messageKeys, String playerName, Auction auction) 
 	{
 		CommandSender recipient = null;
@@ -108,7 +117,16 @@ public class AuctionMessageManager extends MessageManager {
 		}
 		this.sendMessage(messageKeys, recipient, auctionScope, false);
 	}
-	
+
+	@Override
+	public void sendPlayerMessage(String messageKey, String playerName, AuctionScope auctionScope)
+	{
+		List<String> messageKeys = new ArrayList<>();
+		messageKeys.add(messageKey);
+		this.sendPlayerMessage(messageKeys, playerName, auctionScope);
+	}
+
+	@Override
 	public void sendPlayerMessage(List<String> messageKeys, String playerName, AuctionScope auctionScope) 
 	{
 		CommandSender recipient = null;
@@ -126,7 +144,16 @@ public class AuctionMessageManager extends MessageManager {
 		}
 		this.sendMessage(messageKeys, recipient, auctionScope, false);
 	}
-	
+
+	@Override
+	public void broadcastAuctionMessage(String messageKey, Auction auction)
+	{
+		List<String> messageKeys = new ArrayList<>();
+		messageKeys.add(messageKey);
+		this.broadcastAuctionMessage(messageKeys, auction);
+	}
+
+	@Override
 	public void broadcastAuctionMessage(List<String> messageKeys, Auction auction) 
 	{
 		if (auction == null) 
@@ -136,7 +163,16 @@ public class AuctionMessageManager extends MessageManager {
 		AuctionScope auctionScope = auction.getScope();
 		this.sendMessage(messageKeys, null, auctionScope, true);
 	}
-	
+
+	@Override
+	public void broadcastAuctionScopeMessage(String messageKey, AuctionScope auctionScope)
+	{
+		List<String> messageKeys = new ArrayList<>();
+		messageKeys.add(messageKey);
+		this.broadcastAuctionScopeMessage(messageKeys, auctionScope);
+	}
+
+	@Override
 	public void broadcastAuctionScopeMessage(List<String> messageKeys, AuctionScope auctionScope) 
 	{
 		this.sendMessage(messageKeys, null, auctionScope, true);
@@ -703,7 +739,6 @@ public class AuctionMessageManager extends MessageManager {
     		{
     			for(int i = 0; i < newMessageList.size(); i++)
     			{
-    				//See PlaceholderAPIUtil, this is a work around for distributing the PlaceholderAPI plugin
     				newMessageList.set(i, PlaceholderAPIUtil.setPlaceHolders(player, newMessageList.get(i)));
     			}
     		}

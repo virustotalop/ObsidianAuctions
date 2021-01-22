@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.flobi.floauction.util.CArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -130,7 +128,7 @@ public class AuctionLot implements Serializable {
 			ItemStack typeStack = getTypeStack();
 			if (amountToGive > 0) 
 			{
-				FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-give"), playerName, (AuctionScope) null);
+				FloAuction.getMessageManager().sendPlayerMessage("lot-give", playerName, (AuctionScope) null);
 			}
 			while (amountToGive > 0) 
 			{
@@ -156,7 +154,7 @@ public class AuctionLot implements Serializable {
 					Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
 					drop.setItemStack(cloneStack);
 				}
-				FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("lot-drop"), playerName, (AuctionScope) null);
+				FloAuction.getMessageManager().sendPlayerMessage("lot-drop", playerName, (AuctionScope) null);
 			}
 		} 
 		else 

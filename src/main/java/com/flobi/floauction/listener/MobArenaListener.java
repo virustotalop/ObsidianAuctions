@@ -1,7 +1,5 @@
 package com.flobi.floauction.listener;
 
-import com.flobi.floauction.util.CArrayList;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +20,7 @@ public class MobArenaListener implements Listener {
 		}
 		String playerName = player.getName();
 		if (!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-			FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>(new String[] {"arena-warning"}), playerName, (AuctionScope) null);
+			FloAuction.getMessageManager().sendPlayerMessage("arena-warning", playerName, (AuctionScope) null);
 			event.setCancelled(true);
 		}
 	}

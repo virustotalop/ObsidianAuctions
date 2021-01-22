@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import com.flobi.floauction.listener.InventoryClickListener;
-import com.flobi.floauction.util.CArrayList;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -327,7 +326,7 @@ public class FloAuction extends JavaPlugin {
             	if (AuctionParticipant.isParticipating(playerName)) 
             	{
                 	event.setCancelled(true);
-                	messageManager.sendPlayerMessage(new CArrayList<String>("gamemodechange-fail-participating"), playerName, (AuctionScope) null);
+                	messageManager.sendPlayerMessage("gamemodechange-fail-participating", playerName, (AuctionScope) null);
             	}
             }
             @EventHandler(priority = EventPriority.LOWEST)
@@ -350,7 +349,7 @@ public class FloAuction extends JavaPlugin {
         			if (disabledCommand.isEmpty()) continue;
         			if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
     	            	event.setCancelled(true);
-    	            	messageManager.sendPlayerMessage(new CArrayList<String>("disabled-command-inscope"), playerName, (AuctionScope) null);
+    	            	messageManager.sendPlayerMessage("disabled-command-inscope", playerName, (AuctionScope) null);
         				return;
         			}
         		}
@@ -367,7 +366,7 @@ public class FloAuction extends JavaPlugin {
         			if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) 
         			{
     	            	event.setCancelled(true);
-    	            	messageManager.sendPlayerMessage(new CArrayList<String>("disabled-command-participating"), playerName, (AuctionScope) null);
+    	            	messageManager.sendPlayerMessage("disabled-command-participating", playerName, (AuctionScope) null);
         				return;
         			}
         		}
@@ -425,7 +424,7 @@ public class FloAuction extends JavaPlugin {
 		suspendedUsers = loadArrayListString("suspendedUsers.ser");
 		userSavedInputArgs = loadMapStringStringArray("userSavedInputArgs.ser");
 
-        messageManager.sendPlayerMessage(new CArrayList<String>("plugin-enabled"), null, (AuctionScope) null);
+        messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
 		
 	}
     /**
@@ -771,7 +770,7 @@ public class FloAuction extends JavaPlugin {
 			if (index != -1) {
 				getVoluntarilyDisabledUsers().remove(index);
 			}
-			messageManager.sendPlayerMessage(new CArrayList<String>("auction-enabled"), playerName, (AuctionScope) null);
+			messageManager.sendPlayerMessage("auction-enabled", playerName, (AuctionScope) null);
 			saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
 			return true;
 		}
@@ -779,7 +778,7 @@ public class FloAuction extends JavaPlugin {
     	if (getVoluntarilyDisabledUsers().contains(playerName)) 
     	{
     		getVoluntarilyDisabledUsers().remove(getVoluntarilyDisabledUsers().indexOf(playerName));
-    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-disabled"), playerName, (AuctionScope) null);
+    		messageManager.sendPlayerMessage("auction-fail-disabled", playerName, (AuctionScope) null);
 			getVoluntarilyDisabledUsers().add(playerName);
 			saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
 			return true;
@@ -797,17 +796,17 @@ public class FloAuction extends JavaPlugin {
 				{
     				if (player != null && !perms.has(player, "auction.admin")) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("plugin-reload-fail-permissions"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("plugin-reload-fail-permissions", playerName, (AuctionScope) null);
     	    			return true;
     				}
     				else if (AuctionScope.areAuctionsRunning()) // Don't reload if any auctions are running.
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("plugin-reload-fail-auctions-running"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("plugin-reload-fail-auctions-running", playerName, (AuctionScope) null);
 						return true;
     				}
 
     				loadConfig();
-    				messageManager.sendPlayerMessage(new CArrayList<String>("plugin-reloaded"), playerName, (AuctionScope) null);
+    				messageManager.sendPlayerMessage("plugin-reloaded", playerName, (AuctionScope) null);
     				return true;
     			} 
 				else if (args[0].equalsIgnoreCase("resume")) 
@@ -816,45 +815,45 @@ public class FloAuction extends JavaPlugin {
 			    	{
 						if (player != null && !perms.has(player, "auction.admin")) 
 						{
-							messageManager.sendPlayerMessage(new CArrayList<String>("unsuspension-fail-permissions"), playerName, (AuctionScope) null);
+							messageManager.sendPlayerMessage("unsuspension-fail-permissions", playerName, (AuctionScope) null);
 			    			return true;
 						}
 						// Resume globally:
 						suspendAllAuctions = false;
-						messageManager.broadcastAuctionScopeMessage(new CArrayList<String>("unsuspension-global"), (AuctionScope) null);
+						messageManager.broadcastAuctionScopeMessage("unsuspension-global", (AuctionScope) null);
 						return true;
     		    	}
     		    	
     				if (player != null && !perms.has(player, "auction.admin")) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("unsuspension-fail-permissions"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("unsuspension-fail-permissions", playerName, (AuctionScope) null);
     	    			return true;
     				}
 
 					if (!suspendedUsers.contains(args[1].toLowerCase())) 
 					{
-						messageManager.sendPlayerMessage(new CArrayList<String>("unsuspension-user-fail-not-suspended"), playerName, (AuctionScope) null);
+						messageManager.sendPlayerMessage("unsuspension-user-fail-not-suspended", playerName, (AuctionScope) null);
 		    			return true;
 					}
 
 					suspendedUsers.remove(args[1].toLowerCase());
 					saveObject(suspendedUsers, "suspendedUsers.ser");
-					messageManager.sendPlayerMessage(new CArrayList<String>("unsuspension-user"), args[1], (AuctionScope) null);
-			    	messageManager.sendPlayerMessage(new CArrayList<String>("unsuspension-user-success"), playerName, (AuctionScope) null);
+					messageManager.sendPlayerMessage("unsuspension-user", args[1], (AuctionScope) null);
+			    	messageManager.sendPlayerMessage("unsuspension-user-success", playerName, (AuctionScope) null);
     				
     				return true;
     			} 
     			else if (args[0].equalsIgnoreCase("suspend")) {
     				if (player != null && !perms.has(player, "auction.admin")) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("suspension-fail-permissions"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("suspension-fail-permissions", playerName, (AuctionScope) null);
     	    			return true;
     				}
     				if (args.length > 1) {
     					// Suspend a player:
     					if (suspendedUsers.contains(args[1].toLowerCase())) 
     					{
-    						messageManager.sendPlayerMessage(new CArrayList<String>("suspension-user-fail-already-suspended"), playerName, (AuctionScope) null);
+    						messageManager.sendPlayerMessage("suspension-user-fail-already-suspended", playerName, (AuctionScope) null);
     		    			return true;
     					}
     					
@@ -862,20 +861,20 @@ public class FloAuction extends JavaPlugin {
     					
     					if (playerToSuspend == null || !playerToSuspend.isOnline()) 
     					{
-    						messageManager.sendPlayerMessage(new CArrayList<String>("suspension-user-fail-is-offline"), playerName, (AuctionScope) null);
+    						messageManager.sendPlayerMessage("suspension-user-fail-is-offline", playerName, (AuctionScope) null);
     		    			return true;
     					}
     					
     					if (perms.has(playerToSuspend, "auction.admin")) 
     					{
-    						messageManager.sendPlayerMessage(new CArrayList<String>("suspension-user-fail-is-admin"), playerName, (AuctionScope) null);
+    						messageManager.sendPlayerMessage("suspension-user-fail-is-admin", playerName, (AuctionScope) null);
     		    			return true;
     					}
     					
     					suspendedUsers.add(args[1].toLowerCase());
     					saveObject(suspendedUsers, "suspendedUsers.ser");
-    					messageManager.sendPlayerMessage(new CArrayList<String>("suspension-user"), playerToSuspend.getName(), (AuctionScope) null);
-    			    	messageManager.sendPlayerMessage(new CArrayList<String>("suspension-user-success"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("suspension-user", playerToSuspend.getName(), (AuctionScope) null);
+    			    	messageManager.sendPlayerMessage("suspension-user-success", playerName, (AuctionScope) null);
     					
     					return true;
     				}
@@ -884,7 +883,7 @@ public class FloAuction extends JavaPlugin {
     				
     				AuctionScope.cancelAllAuctions();
 
-    		    	messageManager.broadcastAuctionScopeMessage(new CArrayList<String>("suspension-global"), null);
+    		    	messageManager.broadcastAuctionScopeMessage("suspension-global", null);
 
 	    			return true;
     			} else if (
@@ -896,46 +895,46 @@ public class FloAuction extends JavaPlugin {
         				args[0].matches("[0-9]+")
     			) {
     		    	if (suspendAllAuctions) {
-    			    	messageManager.sendPlayerMessage(new CArrayList<String>("suspension-global"), playerName, (AuctionScope) null);
+    			    	messageManager.sendPlayerMessage("suspension-global", playerName, (AuctionScope) null);
     		    		return true;
     		    	}
     		    	if (player != null && suspendedUsers.contains(playerName.toLowerCase())) {
-    		    		messageManager.sendPlayerMessage(new CArrayList<String>("suspension-user"), playerName, (AuctionScope) null);
+    		    		messageManager.sendPlayerMessage("suspension-user", playerName, (AuctionScope) null);
     					return true;
     		    	}
 
     				// Start new auction!
     	    		if (player == null) 
     	    		{
-    	    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-console"), playerName, (AuctionScope) null);
+    	    			messageManager.sendPlayerMessage("auction-fail-console", playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     	    		if (!AuctionConfig.getBoolean("allow-gamemode-creative", userScope) && player.getGameMode() == GameMode.CREATIVE) {
-    	    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-gamemode-creative"), playerName, (AuctionScope) null);
+    	    			messageManager.sendPlayerMessage("auction-fail-gamemode-creative", playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     	    		
     	    		if (userScope == null) 
     	    		{
-    	    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-scope"), playerName, (AuctionScope) null);
+    	    			messageManager.sendPlayerMessage("auction-fail-no-scope", playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     	    			
     				if (!perms.has(player, "auction.start")) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-permissions"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-permissions", playerName, (AuctionScope) null);
     	    			return true;
     				}
     				
     				if (!AuctionConfig.getBoolean("allow-sealed-auctions", userScope) && !AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-auctions-allowed"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-no-auctions-allowed", playerName, (AuctionScope) null);
     					return true;
     				}
     				
     				if(player.getInventory().getItemInHand() == null || player.getInventory().getItemInHand().getAmount() == 0) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-hand-is-empty"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-hand-is-empty", playerName, (AuctionScope) null);
     					return true;
     				}
     				
@@ -946,7 +945,7 @@ public class FloAuction extends JavaPlugin {
     						userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, player.getItemInHand().clone()));
     					} else 
     					{
-    						messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-sealed-auctions"), playerName, (AuctionScope) null);
+    						messageManager.sendPlayerMessage("auction-fail-no-sealed-auctions", playerName, (AuctionScope) null);
     					}
     				} else 
     				{
@@ -965,12 +964,12 @@ public class FloAuction extends JavaPlugin {
     				// Save a users individual starting default values.
     	    		if (player == null) 
     	    		{
-    	    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-console"), playerName, (AuctionScope) null);
+    	    			messageManager.sendPlayerMessage("auction-fail-console", playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     				if (!perms.has(player, "auction.start")) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-permissions"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-permissions", playerName, (AuctionScope) null);
     	    			return true;
     				}
     				
@@ -981,7 +980,7 @@ public class FloAuction extends JavaPlugin {
     				{
 						FloAuction.userSavedInputArgs.put(playerName, mergedArgs);
 						FloAuction.saveObject(FloAuction.userSavedInputArgs, "userSavedInputArgs.ser");
-						messageManager.sendPlayerMessage(new CArrayList<String>("prep-save-success"), playerName, (AuctionScope) null);
+						messageManager.sendPlayerMessage("prep-save-success", playerName, (AuctionScope) null);
     				}
 
 					return true;
@@ -990,12 +989,12 @@ public class FloAuction extends JavaPlugin {
     			{
     	    		if (userScope == null) 
     	    		{
-    	    			messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-scope"), playerName, (AuctionScope) null);
+    	    			messageManager.sendPlayerMessage("auction-fail-no-scope", playerName, (AuctionScope) null);
     	    			return true;
     	    		}
     				if (userScope.getActiveAuction() == null && userScope.getAuctionQueueLength() == 0) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-auction-exists"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerName, (AuctionScope) null);
     					return true;
     				}
     				
@@ -1005,21 +1004,21 @@ public class FloAuction extends JavaPlugin {
     					if (auctionQueue.get(i).getOwner().equalsIgnoreCase(playerName)) 
     					{
     						auctionQueue.remove(i);
-    						messageManager.sendPlayerMessage(new CArrayList<String>("auction-cancel-queued"), playerName, (AuctionScope) null);
+    						messageManager.sendPlayerMessage("auction-cancel-queued", playerName, (AuctionScope) null);
     						return true;
     					}
     				}
     				
     				if (auction == null) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-auction-exists"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerName, (AuctionScope) null);
     					return true;
     				}
     				
 					if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || perms.has(player, "auction.admin")) 
 					{
 						if (AuctionConfig.getInt("cancel-prevention-seconds", userScope) > auction.getRemainingTime() || AuctionConfig.getDouble("cancel-prevention-percent", userScope) > (double)auction.getRemainingTime() / (double)auction.getTotalTime() * 100D) {
-							messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-cancel-prevention"), playerName, (AuctionScope) null);
+							messageManager.sendPlayerMessage("auction-fail-cancel-prevention", playerName, (AuctionScope) null);
 						} 
 						else 
 						{
@@ -1027,7 +1026,7 @@ public class FloAuction extends JavaPlugin {
 						}
 					} else 
 					{
-						messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-not-owner-cancel"), playerName, (AuctionScope) null);
+						messageManager.sendPlayerMessage("auction-fail-not-owner-cancel", playerName, (AuctionScope) null);
 					}
     				return true;
     			} 
@@ -1035,23 +1034,23 @@ public class FloAuction extends JavaPlugin {
     			{
     				if (auction == null) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-auction-exists"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerName, (AuctionScope) null);
     					return true;
     				}
     				
     				if (player == null) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("confiscate-fail-console"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("confiscate-fail-console", playerName, (AuctionScope) null);
     					return true;
     				}
 					if (!perms.has(player, "auction.admin")) 
 					{
-						messageManager.sendPlayerMessage(new CArrayList<String>("confiscate-fail-permissions"), playerName, (AuctionScope) null);
+						messageManager.sendPlayerMessage("confiscate-fail-permissions", playerName, (AuctionScope) null);
     					return true;
 					}
 					if (playerName.equalsIgnoreCase(auction.getOwner())) 
 					{
-						messageManager.sendPlayerMessage(new CArrayList<String>("confiscate-fail-self"), playerName, (AuctionScope) null);
+						messageManager.sendPlayerMessage("confiscate-fail-self", playerName, (AuctionScope) null);
     					return true;
 					}
 					auction.confiscate(player);
@@ -1061,12 +1060,12 @@ public class FloAuction extends JavaPlugin {
     			{
     				if (auction == null) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-auction-exists"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerName, (AuctionScope) null);
         				return true;
     				}
     				if (!AuctionConfig.getBoolean("allow-early-end", userScope)) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-no-early-end"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-fail-no-early-end", playerName, (AuctionScope) null);
         				return true;
     				}
 					if (player.getName().equalsIgnoreCase(auction.getOwner())) 
@@ -1075,7 +1074,7 @@ public class FloAuction extends JavaPlugin {
 					} 
 					else 
 					{
-						messageManager.sendPlayerMessage(new CArrayList<String>("auction-fail-not-owner-end"), playerName, (AuctionScope) null);
+						messageManager.sendPlayerMessage("auction-fail-not-owner-end", playerName, (AuctionScope) null);
 					}
     				return true;
     			} else if (
@@ -1088,7 +1087,7 @@ public class FloAuction extends JavaPlugin {
     			) {
     				if (getVoluntarilyDisabledUsers().indexOf(playerName) == -1) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-disabled"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-disabled", playerName, (AuctionScope) null);
     					getVoluntarilyDisabledUsers().add(playerName);
     					saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
     				}
@@ -1098,7 +1097,7 @@ public class FloAuction extends JavaPlugin {
     			{
     				if (auction == null) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-info-no-auction"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-info-no-auction", playerName, (AuctionScope) null);
     					return true;
     				}
 					auction.info(sender, false);
@@ -1109,7 +1108,7 @@ public class FloAuction extends JavaPlugin {
     				ArrayList<Auction> auctionQueue = userScope.getAuctionQueue();
     				if (auctionQueue.isEmpty()) 
     				{
-    					messageManager.sendPlayerMessage(new CArrayList<String>("auction-queue-status-not-in-queue"), playerName, (AuctionScope) null);
+    					messageManager.sendPlayerMessage("auction-queue-status-not-in-queue", playerName, (AuctionScope) null);
     					return true;
     				}
     				Inventory inv = Bukkit.createInventory(null, 18, FloAuction.guiQueueName);
@@ -1123,39 +1122,39 @@ public class FloAuction extends JavaPlugin {
     				return true;
     			}
     		}
-    		messageManager.sendPlayerMessage(new CArrayList<String>("auction-help"), playerName, (AuctionScope) null);
+    		messageManager.sendPlayerMessage("auction-help", playerName, (AuctionScope) null);
     		return true;
     	} 
     	else if (cmd.getName().equalsIgnoreCase("bid")) 
     	{
         	if (suspendAllAuctions) 
         	{
-        		messageManager.sendPlayerMessage(new CArrayList<String>("suspension-global"), playerName, (AuctionScope) null);
+        		messageManager.sendPlayerMessage("suspension-global", playerName, (AuctionScope) null);
         		return true;
         	}
         	else if (player != null && suspendedUsers.contains(playerName.toLowerCase())) 
         	{
-        		messageManager.sendPlayerMessage(new CArrayList<String>("suspension-user"), playerName, (AuctionScope) null);
+        		messageManager.sendPlayerMessage("suspension-user", playerName, (AuctionScope) null);
     			return true;
         	}
         	else if (player == null) 
     		{
-    			messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-console"), playerName, (AuctionScope) null);
+    			messageManager.sendPlayerMessage("bid-fail-console", playerName, (AuctionScope) null);
     			return true;
     		} 
         	else if (!AuctionConfig.getBoolean("allow-gamemode-creative", userScope) && player.getGameMode().equals(GameMode.CREATIVE)) 
     		{
-    			messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-gamemode-creative"), playerName, (AuctionScope) null);
+    			messageManager.sendPlayerMessage("bid-fail-gamemode-creative", playerName, (AuctionScope) null);
     			return true;
     		}
         	else if (!perms.has(player, "auction.bid")) 
 			{
-				messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-permissions"), playerName, (AuctionScope) null);
+				messageManager.sendPlayerMessage("bid-fail-permissions", playerName, (AuctionScope) null);
     			return true;
 			}
         	else if (auction == null) 
     		{
-    			messageManager.sendPlayerMessage(new CArrayList<String>("bid-fail-no-auction"), playerName, (AuctionScope) null);
+    			messageManager.sendPlayerMessage("bid-fail-no-auction", playerName, (AuctionScope) null);
     			return true;
     		}
     		auction.Bid(player, args);

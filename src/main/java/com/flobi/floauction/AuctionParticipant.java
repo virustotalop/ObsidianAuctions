@@ -1,7 +1,5 @@
 package com.flobi.floauction;
 
-import com.flobi.floauction.util.CArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -132,7 +130,7 @@ public class AuctionParticipant {
 		{
 			return;
 		}
-		FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("arena-warning"), this.playerName, (AuctionScope) null);
+		FloAuction.getMessageManager().sendPlayerMessage("arena-warning", this.playerName, (AuctionScope) null);
 		this.sentArenaWarning = true;
 	}
 
@@ -145,7 +143,7 @@ public class AuctionParticipant {
 		{
 			return;
 		}
-		FloAuction.getMessageManager().sendPlayerMessage(new CArrayList<String>("auctionscope-escape-warning"), this.playerName, (AuctionScope) null);
+		FloAuction.getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerName, (AuctionScope) null);
 		this.sentEscapeWarning = true;
 	}
 

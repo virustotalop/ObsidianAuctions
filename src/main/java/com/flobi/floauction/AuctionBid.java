@@ -2,8 +2,6 @@ package com.flobi.floauction;
 
 import java.util.Map;
 
-import com.flobi.floauction.util.CArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -151,7 +149,7 @@ public class AuctionBid {
 			taxes = unsafeBidAmount * (taxPercent / 100D);
 			
 			this.auction.extractedPostTax = taxes;
-			this.auction.messageManager.sendPlayerMessage(new CArrayList<String>("auction-end-tax"), this.auction.getOwner(), this.auction);
+			this.auction.messageManager.sendPlayerMessage("auction-end-tax", this.auction.getOwner(), this.auction);
 			unsafeBidAmount -= taxes;
 			String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", this.auction.getScope());
 			if (!taxDestinationUser.isEmpty()) FloAuction.econ.depositPlayer(taxDestinationUser, taxes);
