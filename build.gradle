@@ -1,32 +1,36 @@
-buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
-  }
+import org.apache.tools.ant.filters.ReplaceTokens;
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id 'eclipse'
+    id 'idea'
 }
 
-apply plugin: 'java'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'jacoco'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
+group = 'com.flobi'
+version = '5.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+processResources {
+    from(sourceSets.main.resources) {
+        include 'plugin.yml'
+        filter(ReplaceTokens, tokens: ['VERSION' : project.version])
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('ObsidianAuctions')
+    archiveClassifier.set('')
+}
+
 repositories {
+    flatDir { dirs 'libs' }
     mavenCentral()
     maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
     jcenter()
-}
-
-repositories {
-   flatDir {
-       dirs 'libs'
-   }
 }
 
 dependencies {
