@@ -1,5 +1,7 @@
-package com.flobi.floauction;
+package com.flobi.floauction.auc;
 
+import com.flobi.floauction.FloAuction;
+import com.flobi.floauction.area.AreaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -80,7 +82,7 @@ public class AuctionParticipant {
 			participant.sendEscapeWarning();
 			return;
 		}
-		else if (ArenaManager.isInArena(player)) 
+		else if (AreaManager.isInArena(player))
 		{
 			player.teleport(participant.lastKnownGoodLocation);
 			participant.sendArenaWarning();
@@ -113,7 +115,7 @@ public class AuctionParticipant {
 			participant.sendEscapeWarning();
 			return false;
 		}
-		else if (ArenaManager.isInArena(location)) 
+		else if (AreaManager.isInArena(location))
 		{
 			participant.sendArenaWarning();
 			return false;

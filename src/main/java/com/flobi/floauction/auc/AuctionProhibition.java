@@ -1,7 +1,8 @@
-package com.flobi.floauction;
+package com.flobi.floauction.auc;
 
 import java.util.ArrayList;
 
+import com.flobi.floauction.FloAuction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

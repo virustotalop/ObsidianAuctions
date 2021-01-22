@@ -1,4 +1,4 @@
-package com.flobi.floauction;
+package com.flobi.floauction.auc;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.flobi.floauction.AuctionConfig;
+import com.flobi.floauction.FloAuction;
 import com.flobi.floauction.message.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -169,7 +171,7 @@ public class AuctionScope {
 		{
 			// Queuing because of interval not yet timed out.
 			// Allow a queue of 1 to override if 0 for this condition.
-			if (Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= this.auctionQueue.size()) 
+			if (Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= this.auctionQueue.size())
 			{
 				messageManager.sendPlayerMessage("auction-queue-fail-full", playerName, auctionToQueue);
 				return;
@@ -257,7 +259,7 @@ public class AuctionScope {
 			messageManager.sendPlayerMessage("auction-fail-gamemode-creative", playerName, auction);
 			return;
 		}
-		else if (!FloAuction.perms.has(player, "auction.start")) 
+		else if (!FloAuction.perms.has(player, "auction.start"))
 		{
 			messageManager.sendPlayerMessage("auction-fail-permissions", playerName, auction);
 			return;
@@ -564,7 +566,7 @@ public class AuctionScope {
 
 	public static void sendFairwellMessages() 
 	{
-		Iterator<String> playerIterator = FloAuction.playerScopeCache.keySet().iterator();
+		Iterator<String> playerIterator = FloAuction.getPlayerScopeCache().keySet().iterator();
 		while (playerIterator.hasNext()) 
 		{
 			String playerName = playerIterator.next();
@@ -573,7 +575,7 @@ public class AuctionScope {
 				Player player = Bukkit.getPlayer(playerName);
 				if (player != null && player.isOnline()) 
 				{
-					String oldScopeId = FloAuction.playerScopeCache.get(playerName);
+					String oldScopeId = FloAuction.getPlayerScopeCache().get(playerName);
 					AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
 					AuctionScope playerScope = AuctionScope.getPlayerScope(player);
 					String playerScopeId = null;
@@ -585,7 +587,7 @@ public class AuctionScope {
 					{
 						FloAuction.getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerName, oldScope);
 						playerIterator.remove();
-						FloAuction.playerScopeCache.remove(playerName);
+						FloAuction.getPlayerScopeCache().remove(playerName);
 					}
 				}
 			}
@@ -612,12 +614,12 @@ public class AuctionScope {
 		if (!AuctionParticipant.isParticipating(playerName)) 
 		{
 			AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-			String oldScopeId = FloAuction.playerScopeCache.get(playerName);
+			String oldScopeId = FloAuction.getPlayerScopeCache().get(playerName);
 			if (playerScope == null) 
 			{
 				if (oldScopeId != null) 
 				{
-					FloAuction.playerScopeCache.remove(playerName);
+					FloAuction.getPlayerScopeCache().remove(playerName);
 				}
 			} 
 			else 
@@ -625,7 +627,7 @@ public class AuctionScope {
 				if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) 
 				{
 					FloAuction.getMessageManager().sendPlayerMessage(welcomeMessageKey, playerName, playerScope);
-					FloAuction.playerScopeCache.put(playerName, playerScope.getScopeId());
+					FloAuction.getPlayerScopeCache().put(playerName, playerScope.getScopeId());
 				}
 			}
 		}

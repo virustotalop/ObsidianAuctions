@@ -1,7 +1,9 @@
-package com.flobi.floauction;
+package com.flobi.floauction.auc;
 
 import java.util.Map;
 
+import com.flobi.floauction.AuctionConfig;
+import com.flobi.floauction.FloAuction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -118,7 +120,7 @@ public class AuctionBid {
 		
 		// Extract taxes:
 		Double taxes = 0D;
-		double taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", this.auction.getScope()); 
+		double taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", this.auction.getScope());
 		ItemStack typeStack = this.auction.getLotType();
 
 		// TODO: Check this line for possible NULL

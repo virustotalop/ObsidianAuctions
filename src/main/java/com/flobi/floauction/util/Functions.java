@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.AuctionScope;
+import com.flobi.floauction.auc.AuctionScope;
 import com.flobi.floauction.FloAuction;
 
 public class Functions {

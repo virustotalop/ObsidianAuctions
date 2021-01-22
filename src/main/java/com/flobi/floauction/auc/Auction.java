@@ -1,9 +1,12 @@
-package com.flobi.floauction;
+package com.flobi.floauction.auc;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.flobi.floauction.AuctionConfig;
+import com.flobi.floauction.FloAuction;
+import com.flobi.floauction.area.AreaManager;
 import com.flobi.floauction.message.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -134,7 +137,7 @@ public class Auction {
 	{
 		Player owner = Bukkit.getPlayer(this.ownerName);
 		
-		if (ArenaManager.isInArena(owner)) 
+		if (AreaManager.isInArena(owner))
 		{
 			this.messageManager.sendPlayerMessage("auction-fail-arena", this.ownerName, this);
 			return false;
@@ -483,7 +486,7 @@ public class Auction {
 		}
 		String playerName = bidder.getName();
 		
-		if (ArenaManager.isInArena(bidder)) 
+		if (AreaManager.isInArena(bidder))
 		{
 			this.messageManager.sendPlayerMessage("bid-fail-arena", playerName, this);
 			return;

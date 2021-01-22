@@ -11,6 +11,9 @@ import java.util.Map.Entry;
 
 
 import com.flobi.floauction.*;
+import com.flobi.floauction.auc.Auction;
+import com.flobi.floauction.auc.AuctionBid;
+import com.flobi.floauction.auc.AuctionScope;
 import com.flobi.floauction.util.PlaceholderAPIUtil;
 
 import net.md_5.bungee.api.ChatMessageType;

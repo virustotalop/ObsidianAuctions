@@ -5,8 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.AuctionParticipant;
-import com.flobi.floauction.AuctionScope;
+import com.flobi.floauction.auc.AuctionParticipant;
+import com.flobi.floauction.auc.AuctionScope;
 import com.flobi.floauction.FloAuction;
 import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
 

@@ -1,10 +1,11 @@
-package com.flobi.floauction;
+package com.flobi.floauction.auc;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.flobi.floauction.FloAuction;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.InvalidConfigurationException;

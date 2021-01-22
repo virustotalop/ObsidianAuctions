@@ -15,15 +15,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
+import com.flobi.floauction.area.AreaManager;
+import com.flobi.floauction.auc.Auction;
+import com.flobi.floauction.auc.AuctionLot;
+import com.flobi.floauction.auc.AuctionParticipant;
+import com.flobi.floauction.auc.AuctionScope;
 import com.flobi.floauction.listener.InventoryClickListener;
 
 import com.flobi.floauction.message.AuctionMessageManager;
@@ -81,7 +80,7 @@ public class FloAuction extends JavaPlugin {
 	public static FloAuction plugin;
 	
 	private static int playerScopeCheckTimer;
-	protected static Map<String, String> playerScopeCache = new HashMap<String, String>();
+	private static Map<String, String> playerScopeCache = new HashMap<>();
 	
 	private static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();
 	private static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
@@ -294,7 +293,7 @@ public class FloAuction extends JavaPlugin {
             return;
 		}
         
-		ArenaManager.loadArenaListeners(this);
+		AreaManager.loadArenaListeners(this);
 		
 		//Load in inventory click listener
 		Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);	
@@ -1237,6 +1236,10 @@ public class FloAuction extends JavaPlugin {
 	public static ArrayList<String> getVoluntarilyDisabledUsers() 
 	{
 		return voluntarilyDisabledUsers;
+	}
+
+	public static Map<String, String> getPlayerScopeCache() {
+		return playerScopeCache;
 	}
     
     /**

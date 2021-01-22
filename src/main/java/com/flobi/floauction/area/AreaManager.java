@@ -1,5 +1,8 @@
-package com.flobi.floauction;
+package com.flobi.floauction.area;
 
+import com.flobi.floauction.AuctionConfig;
+import com.flobi.floauction.auc.AuctionScope;
+import com.flobi.floauction.FloAuction;
 import com.garbagemule.MobArena.MobArena;
 import com.tommytony.war.War;
 import com.tommytony.war.Warzone;
@@ -17,7 +20,7 @@ import org.bukkit.plugin.PluginManager;
  * 
  * @author Joshua "flobi" Hatfield
  */
-public class ArenaManager {
+public class AreaManager {
 	
 	private static MobArena mobArena = null;
 	private static War war = null;
@@ -29,21 +32,21 @@ public class ArenaManager {
 	 * 
 	 * @param plugin the floAuction instance to pass into the listener
 	 */
-	public static void loadArenaListeners(FloAuction plugin) 
+	public static void loadArenaListeners(FloAuction plugin)
 	{
 		PluginManager pluginManager = Bukkit.getPluginManager();
 		// Load plugins
-		if (ArenaManager.mobArena == null)
+		if (AreaManager.mobArena == null)
 		{
 			mobArena = (MobArena) pluginManager.getPlugin("MobArena");
 		}
 		
-		if (ArenaManager.mobArena != null) 
+		if (AreaManager.mobArena != null)
 		{
-			if(!ArenaManager.mobArenaListenerEnabled)
+			if(!AreaManager.mobArenaListenerEnabled)
 			{
 				pluginManager.registerEvents(new MobArenaListener(), plugin);
-				ArenaManager.mobArenaListenerEnabled = true;
+				AreaManager.mobArenaListenerEnabled = true;
 			}
 		}
 	}
