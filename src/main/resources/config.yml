@@ -1,7 +1,6 @@
 enable-chat-messages: true
 enable-actionbar-messages: true
-blacklist-enabled: false
-queue-gui-name: "&9ObsidianAuction Queue"
+queue-gui-name: "&9ObsidianAuctions Queue"
 allow-mobspawners: true
 renamed-items-override: false
 use-old-bid-logic: false
@@ -80,7 +79,9 @@ auction-scopes:
       - '*'
     config:
       disabled-commands-inscope: {}
-  
+
+#Name blacklist for items, if an item contains one of these it will not allowed to be auctioned
+name-blacklist-enabled: true
  #Modified list from here: https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/blob/master/en
 name-blacklist:
 - "porn"

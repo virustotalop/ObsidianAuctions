@@ -796,7 +796,7 @@ public class Auction {
     	//if display name is not empty do function if not fall through to next if
     	if(!displayName.isEmpty())
     	{
-    		if(FloAuction.itemBlackListEnabled)
+    		if(FloAuction.itemNameBlackListEnabled)
     		{
     			String lowerCaseDisplay = displayName.toLowerCase();
     			for(String string : FloAuction.itemBlacklist)

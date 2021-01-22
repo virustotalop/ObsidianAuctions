@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.flobi.floauction.listener.InventoryClickListener;
 import com.flobi.floauction.util.CArrayList;
@@ -96,7 +95,7 @@ public class FloAuction extends JavaPlugin {
 	 */
 	public static String guiQueueName;
 	public static List<String> itemBlacklist;
-	public static boolean itemBlackListEnabled;
+	public static boolean itemNameBlackListEnabled;
 	public static boolean enableChatMessages;
 	public static boolean enableActionbarMessages;
 	public static boolean allowRenamedItems;
@@ -691,7 +690,7 @@ public class FloAuction extends JavaPlugin {
 	    //Gui queue inventory name
 	    FloAuction.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
 	    FloAuction.itemBlacklist = config.getStringList("name-blacklist");
-	    FloAuction.itemBlackListEnabled = config.getBoolean("blacklist-enabled");
+	    FloAuction.itemNameBlackListEnabled = config.getBoolean("name-blacklist-enabled");
 	    FloAuction.enableChatMessages = config.getBoolean("enable-chat-messages");
 	    FloAuction.enableActionbarMessages = config.getBoolean("enable-actionbar-messages");
 	    FloAuction.allowRenamedItems = config.getBoolean("allow-renamed-items");
