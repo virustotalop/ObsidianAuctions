@@ -1,8 +1,8 @@
 package com.flobi.floauction.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class PlaceholderAPIUtil {
@@ -13,7 +13,7 @@ public class PlaceholderAPIUtil {
 		try {
 			if(setPlaceHolders == null) {
 				Class<?> placeholderAPI = Class.forName("me.clip.placeholderapi.PlaceholderAPI");
-				setPlaceHolders = placeholderAPI.getDeclaredMethod("setPlaceHolders", new Class[] {Player.class, String.class});
+				setPlaceHolders = placeholderAPI.getDeclaredMethod("setPlaceholders", OfflinePlayer.class, String.class);
 				setPlaceHolders.setAccessible(true);
 			}
 			return (String) setPlaceHolders.invoke(null, player, message);

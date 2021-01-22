@@ -1,6 +1,5 @@
-package com.flobi.floauction;
+package com.flobi.floauction.message;
 
-import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
+import com.flobi.floauction.*;
 import com.flobi.floauction.util.PlaceholderAPIUtil;
 
 import net.md_5.bungee.api.ChatMessageType;
@@ -201,7 +201,7 @@ public class AuctionMessageManager extends MessageManager {
 	    	if (sender instanceof Player) 
 	    	{
 	    		player = (Player) sender;
-		    	if (!fullBroadcast && FloAuction.getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1) 
+		    	if (!fullBroadcast && FloAuction.getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1)
 		    	{
 		    		// Don't send this user any messages.
 		    		return;

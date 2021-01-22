@@ -26,6 +26,8 @@ import java.util.logging.Level;
 
 import com.flobi.floauction.listener.InventoryClickListener;
 
+import com.flobi.floauction.message.AuctionMessageManager;
+import com.flobi.floauction.message.MessageManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -1171,7 +1173,7 @@ public class FloAuction extends JavaPlugin {
 	 * @param auctionScope the auction scope being referenced if any
 	 *
      */
-    static void log(String playerName, String message, AuctionScope auctionScope) 
+    public static void log(String playerName, String message, AuctionScope auctionScope)
     {
     	if (AuctionConfig.getBoolean("log-auctions", auctionScope)) {
     		String scopeId = null;

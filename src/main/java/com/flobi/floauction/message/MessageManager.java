@@ -1,4 +1,7 @@
-package com.flobi.floauction;
+package com.flobi.floauction.message;
+
+import com.flobi.floauction.Auction;
+import com.flobi.floauction.AuctionScope;
 
 import java.util.List;
 
