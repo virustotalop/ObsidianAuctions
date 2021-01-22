@@ -63,8 +63,6 @@ import com.flobi.floauction.util.Functions;
  * @author Joshua "flobi" Hatfield
  */
 public class FloAuction extends JavaPlugin {
-	
-	private static final Logger log = Logger.getLogger("Minecraft");
 
 	public static int decimalPlaces = 0;
 	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{0,1})?$";
@@ -434,7 +432,7 @@ public class FloAuction extends JavaPlugin {
     /**
 	 * Loads config.yml and language.yml configuration files.
 	 */
-    private static void loadConfig() 
+    private void loadConfig()
     {
 		File configFile = new File(dataFolder, "config.yml");
     	InputStream defConfigStream = plugin.getResource("config.yml");;
@@ -655,7 +653,7 @@ public class FloAuction extends JavaPlugin {
 		} 
     	catch(IOException ex) 
 		{
-			log.severe("Cannot save config.yml");
+			this.getLogger().log(Level.SEVERE, "Cannot save config.yml");
 		}
 	    
 	    // Another typo fix from 3.0.0
@@ -683,7 +681,7 @@ public class FloAuction extends JavaPlugin {
     		textConfig.save(textConfigFile);
 		} catch(IOException ex) 
 		{
-			log.severe("Cannot save language.yml");
+			this.getLogger().log(Level.SEVERE, "Cannot save language.yml");
 		}
 
 	    
@@ -1204,7 +1202,7 @@ public class FloAuction extends JavaPlugin {
 				out.close();
 
 			} catch (IOException e) {
-				
+				e.printStackTrace();
 			}
     	}
 	}
@@ -1309,7 +1307,7 @@ public class FloAuction extends JavaPlugin {
     	for (Iterator<String> i = messageList.iterator(); i.hasNext(); ) 
     	{
     		String messageListItem = i.next();
-    		log.log(level, chatPrepClean(messageListItem, null));
+    		this.getLogger().log(level, chatPrepClean(messageListItem, null));
     	}
     }
 }
