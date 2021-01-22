@@ -19,37 +19,26 @@ public class MaterialUtil {
 			return "Air";
 		}
 
-		Map<String, String> names = FloAuction.plugin.names;
-		int id = item.getTypeId(); //Code needs to be updated eventually, waiting for dura to be completely removed
+		String id = item.getType().toString();
 		short dura = item.getDurability();
-		String name = "";
+		String name = null;
 
-		if(id == 397) {
-			if(dura == 3) {
-				SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-				if(skullMeta.hasOwner()) {
-					if(skullMeta.getOwner() != null && !(skullMeta.equals(""))) {
-						return skullMeta.getOwner() + "\'s" + " Head";
-					}
+		if(id.equalsIgnoreCase("SKULL_ITEM") || id.equals("PLAYER_HEAD") && dura == 3) {
+			SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
+			if (skullMeta.hasOwner()) {
+				if (skullMeta.getOwner() != null && !(skullMeta.equals(""))) {
+					return skullMeta.getOwner() + "\'s" + " Head";
 				}
-			}	
-		} else if(id == 383) { //mob eggs
-			return MaterialUtil.getMobEggType(item) + " Spawn Egg";
-		}
-		
-		if(id == 52 && AuctionConfig.getBoolean("allow-mobspawners", null)) {
-			return MaterialUtil.getSpawnerType(item) + " Spawner";
-		} else if(AuctionConfig.getBoolean("renamed-items-override", null) && Items.getDisplayName(item) != null && id != 52) {
-			return Items.getDisplayName(item);
-		} else if(names.get(id + "," + dura) == null && FloAuction.isDamagedAllowed) {
-			if(names.get(id + "," + 0) != null) {
-				name = names.get(id + "," + 0);
-			} else {
-				name = MaterialUtil.getItemType(item) + ":" + dura;
 			}
-		} else if(names.get(id + "," + dura) != null) {
-			name = names.get(id + "," + dura);
-		} else {
+		} else if(id.equals("MONSTER_EGG") || id.endsWith("_SPAWN_EGG")) { //mob eggs
+			return MaterialUtil.getMobEggType(item) + " Spawn Egg";
+		} else if(id.equals("MOB_SPAWNER") || id.equals("SPAWNER")) {
+			name = MaterialUtil.getSpawnerType(item) + " Spawner";
+		} else if(AuctionConfig.getBoolean("renamed-items-override", null) && Items.getDisplayName(item) != null) {
+			name = Items.getDisplayName(item);
+		}
+
+		if(name == null) {
 			name = MaterialUtil.getItemType(item);
 		}
 		return name;
@@ -95,7 +84,7 @@ public class MaterialUtil {
 		return type;
 	}
 	
-	private  static String getItemType(ItemStack item) {
+	private static String getItemType(ItemStack item) {
 		char[] chars = item.getType().name().toCharArray();
 		chars[0] = Character.toUpperCase(chars[0]);
 		for(int i = 1; i < chars.length; i++) {

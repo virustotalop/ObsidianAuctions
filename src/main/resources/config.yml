@@ -1,7 +1,6 @@
 enable-chat-messages: true
 enable-actionbar-messages: true
 queue-gui-name: "&9ObsidianAuctions Queue"
-allow-mobspawners: true
 renamed-items-override: false
 use-old-bid-logic: false
 allow-bid-on-own-auction: false

@@ -105,7 +105,6 @@ public class FloAuction extends JavaPlugin {
 	 * 
 	 */
 	public static boolean placeHolderApiEnabled = false;
-	public HashMap<String,String> names = new HashMap<String,String>();
 	
 	/**
 	 * Used by AuctinLot to store auction lots which could not be given to players because they were offline.
@@ -438,21 +437,12 @@ public class FloAuction extends JavaPlugin {
     	InputStream defConfigStream = plugin.getResource("config.yml");;
     	File textConfigFile = new File(dataFolder, "language.yml");
     	InputStream defTextConfigStream = plugin.getResource("language.yml");
-    	File nameConfigFile = new File(dataFolder, "names.yml");
-    	
-    	if(!nameConfigFile.exists())
-    	{
-    		FloAuction.plugin.saveResource("names.yml", false);
-    	}
-    		
     		
     	YamlConfiguration defConfig = null;
     	YamlConfiguration defTextConfig = null;
-		YamlConfiguration nameConfig = null;
 		
 		config = null;
 	    config = YamlConfiguration.loadConfiguration(configFile);
-	    nameConfig = YamlConfiguration.loadConfiguration(nameConfigFile);
 	    
 	    if(config.get("queue-gui-name") == null)
 	    {
@@ -510,21 +500,6 @@ public class FloAuction extends JavaPlugin {
 	    if(config.get("blacklist-enabled") == null) 
 	    {
 	    	config.set("blacklist-enabled", false);
-	    	try 
-	    	{
-				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
-			} 
-	    	catch (IOException e) 
-	    	{
-				e.printStackTrace();
-			}
-	    }
-	    
-	    
-	    //set whether or not to allow mob spawners in the config, default is no
-	    if(config.get("allow-mobspawners") == null)
-	    {
-	    	config.set("allow-mobspawners", true);
 	    	try 
 	    	{
 				config.save(new File(FloAuction.dataFolder.getPath(),"config.yml"));
@@ -695,12 +670,6 @@ public class FloAuction extends JavaPlugin {
 	    FloAuction.enableChatMessages = config.getBoolean("enable-chat-messages");
 	    FloAuction.enableActionbarMessages = config.getBoolean("enable-actionbar-messages");
 	    FloAuction.allowRenamedItems = config.getBoolean("allow-renamed-items");
-	    
-	    //Get name from id
-	    for(String string : nameConfig.getKeys(false))
-	    {
-	    	FloAuction.plugin.names.put(string, nameConfig.getString(string));
-	    }
 	    
 	    //Setup additional floAuction values
 	    FloAuction.isDamagedAllowed = defConfig.getBoolean("allow-damaged-items");

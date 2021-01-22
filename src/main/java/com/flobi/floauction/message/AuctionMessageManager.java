@@ -32,7 +32,7 @@ import com.flobi.floauction.util.Items;
 
 public class AuctionMessageManager extends MessageManager {
 	
-	private static Map<String, Map<String, String>> replacementDefaults = new HashMap<String, Map<String, String>>();
+	private static Map<String, Map<String, String>> replacementDefaults = new HashMap<>();
 	
 	public AuctionMessageManager() 
 	{
