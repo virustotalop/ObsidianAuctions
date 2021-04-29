@@ -1,0 +1,11 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.bukkit:bukkit
+    versions:
+    - "> 1.12.2-R0.1-SNAPSHOT"
