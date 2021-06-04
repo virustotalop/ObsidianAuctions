@@ -153,31 +153,30 @@ auction-disabled: '&bAuctioning disabled.'
 auction-enabled: '&bAuctioning enabled.'
 auction-start: '&cAttention, an auction is beginning!'
 auction-help:
-- '%conditional-true%%can-start%%conditional-true%%allow-unsealed-auctions%&b/auction&4|&bauc
-  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]%conditional-true%%allow-buynow% [BUYNOW]%conditional-true%%allow-buynow%&9
+- '%can-start%%end%%!allow-unsealed-auctions%%end%&b/auction&4|&bauc
+  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]%allow-buynow% [BUYNOW]%end-allow-buynow%&9
   - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9
-  with an enforced increase of &6[INC]&9 between bids%conditional-true%%allow-buynow%
-  and an option to buy item for &6[BUYNOW]%conditional-true%%allow-buynow%&9. &a("&4|&a"
-  means "or" meaning you can any option in &4|&a lists)'
-- '%conditional-true%%can-start%%conditional-true%%allow-sealed-auctions%&b/%conditional-true%%allow-unsealed-auctions%s%conditional-true%%allow-unsealed-auctions%auction&4|&b%conditional-true%%allow-unsealed-auctions%s%conditional-true%%allow-unsealed-auctions%auc
+  with an enforced increase of &6[INC]&9 between bids%allow-buynow%
+  and an option to buy item for &6[BUYNOW]%end-allow-buynow%&9.'
+- '%can-start%%end%%conditional-true%%allow-sealed-auctions%&b/%conditional-true%%allow-unsealed-auctions%s%conditional-true%%allow-unsealed-auctions%auction&4|&b%conditional-true%%allow-unsealed-auctions%s%conditional-true%%allow-unsealed-auctions%auc
   start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction%conditional-true%%allow-unsealed-auctions%.%conditional-true%%allow-unsealed-auctions%%conditional-false%%allow-unsealed-auctions%
   for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced
   increase of &6[INC]&9 between bids&9. &a("&4|&a" means "or" meaning you can any
   option in &4|&a lists)'
-- '%conditional-true%%can-start%%conditional-true%%is-item-logic%&b/auction&4|&bauc
-  prep&4|&bp &6[QTY] [PRICE] [INC] [TIME]%conditional-true%%allow-buynow% [BUYNOW]%conditional-true%%allow-buynow%&9
+- '%can-start%%end%%is-item-logic%%end%&b/auction&4|&bauc
+  prep&4|&bp &6[QTY] [PRICE] [INC] [TIME]%allow-buynow% [BUYNOW]%end-allow-buynow%&9
   - Assigns your default values when placing auctions.'
-- '%conditional-true%%can-start%%conditional-true%%is-item-logic%%conditional-true%%allow-early-bid%&b/auction&4|&bauc
+- '%can-start%%end%%is-item-logic%%end%%conditional-true%%allow-early-bid%&b/auction&4|&bauc
   end&4|&be&4|&bstop&9 - Ends current auction'
-- '%conditional-true%%can-start%%conditional-true%%is-item-logic%%conditional-true%%cancel-prevention-percent%&b/auction&4|&bauc
+- '%can-start%%end%%is-item-logic%%end%%cancel-prevention-percent%%end%&b/auction&4|&bauc
   cancel&4|&bc&9 - Cancels current auction'
-- '%conditional-true%%can-start%%conditional-true%%is-item-logic%&b/auction&4|&bauc
+- '%can-start%%end%%is-item-logic%%end%&b/auction&4|&bauc
   info&4|&bi&9 - Returns current auction info.'
-- '%conditional-true%%can-bid%%conditional-true%%is-item-logic%&b/bid &6[BID]%conditional-true%%allow-max-bids%
-  [MAXBID]%conditional-true%%allow-max-bids%&9 - Bids on auction. %conditional-true%%allow-max-bids%If
+- '%can-bid%%end%%is-item-logic%%end%&b/bid &6[BID]%allow-max-bids%
+  [MAXBID]%end-allow-max-bids%&9 - Bids on auction. %allow-max-bids%If
   you set a &6[MAXBID]&9 and the &6[BID]&9 is greater than the current, you will outbit
-  that bid if it''s lower than your maximum. %conditional-true%%allow-max-bids%%conditional-true%%allow-auto-bid%If
-  you omit a &6[BID]&9 the lowest allowable bid will be used.%conditional-true%%allow-auto-bid%'
+  that bid if it''s lower than your maximum. %end-allow-max-bids%%allow-auto-bid%If
+  you omit a &6[BID]&9 the lowest allowable bid will be used.'
 - '&b/auction&4|&bauc stfu&4|&bignore&4|&bquiet&4|&boff&4|&bsilent&4|&bsilence&9 -
   Opt out of auction participation and announcements.'
 auction-start-tax: You have been charged an auction tax of %auction-pre-tax%.
