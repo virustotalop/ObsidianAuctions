@@ -847,7 +847,7 @@ public class FloAuction extends JavaPlugin {
                         return true;
                     }
 
-                    ArrayList<Auction> auctionQueue = userScope.getAuctionQueue();
+                    List<Auction> auctionQueue = userScope.getAuctionQueue();
                     for(int i = 0; i < auctionQueue.size(); i++) {
                         if(auctionQueue.get(i).getOwner().equalsIgnoreCase(playerName)) {
                             auctionQueue.remove(i);
@@ -928,7 +928,7 @@ public class FloAuction extends JavaPlugin {
                     auction.info(sender, false);
                     return true;
                 } else if(args[0].equalsIgnoreCase("queue") || args[0].equalsIgnoreCase("q")) {
-                    ArrayList<Auction> auctionQueue = userScope.getAuctionQueue();
+                    List<Auction> auctionQueue = userScope.getAuctionQueue();
                     if(auctionQueue.isEmpty()) {
                         messageManager.sendPlayerMessage("auction-queue-status-not-in-queue", playerName, (AuctionScope) null);
                         return true;

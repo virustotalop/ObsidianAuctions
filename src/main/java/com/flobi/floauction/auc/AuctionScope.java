@@ -328,7 +328,7 @@ public class AuctionScope {
      *
      * @return auction queue
      */
-    public ArrayList<Auction> getAuctionQueue() {
+    public List<Auction> getAuctionQueue() {
         return this.auctionQueue;
     }
 

@@ -36,7 +36,7 @@ public class AuctionMessageManager extends MessageManager {
     private static final Map<String, Map<String, String>> replacementDefaults = new HashMap<>();
 
     public AuctionMessageManager() {
-        Map<String, String> aReplacments = new HashMap<String, String>();
+        Map<String, String> aReplacments = new HashMap<>();
         aReplacments.put("%auction-owner-name%", "-"); //%A1
         aReplacments.put("%auction-owner-display-name%", "-"); //%A2
         aReplacments.put("%auction-quantity%", "-"); //%A3
@@ -55,7 +55,7 @@ public class AuctionMessageManager extends MessageManager {
         bReplacments.put("%auction-bid-starting%", "-"); //%B4
         replacementDefaults.put("b", bReplacments);
 
-        Map<String, String> lReplacments = new HashMap<String, String>();
+        Map<String, String> lReplacments = new HashMap<>();
         lReplacments.put("%item-material-name%", "-"); //%L1
         lReplacments.put("%item-display-name%", "-"); //%L2
         lReplacments.put("%item-firework-power%", "-"); //%L3
@@ -65,7 +65,7 @@ public class AuctionMessageManager extends MessageManager {
         lReplacments.put("%item-enchantments%", "-"); //%L7
         replacementDefaults.put("l", lReplacments);
 
-        Map<String, String> pReplacments = new HashMap<String, String>();
+        Map<String, String> pReplacments = new HashMap<>();
         pReplacments.put("%auction-prep-amount-other%", "-"); //%P1
         pReplacments.put("%auction-prep-amount-other%", "-"); //%P2
         pReplacments.put("%auction-prep-price-formatted%", "-"); //%P3
@@ -78,7 +78,7 @@ public class AuctionMessageManager extends MessageManager {
         pReplacments.put("%auction-prep-buynow%", "-"); //%P0
         replacementDefaults.put("p", pReplacments);
 
-        Map<String, String> sReplacments = new HashMap<String, String>();
+        Map<String, String> sReplacments = new HashMap<>();
         sReplacments.put("%player-auction-queue-position%", "-"); //%S1
         sReplacments.put("%auction-queue-length%", "-"); //%S2
         sReplacments.put("%auction-scope-name%", "-"); //%S3
@@ -169,7 +169,6 @@ public class AuctionMessageManager extends MessageManager {
      * @param fullBroadcast whether to broadcast or send to player
      */
     private void sendMessage(List<String> messageKeys, CommandSender sender, AuctionScope auctionScope, boolean fullBroadcast) {
-
         Auction auction = null;
         Player player = null;
 
@@ -298,8 +297,8 @@ public class AuctionMessageManager extends MessageManager {
     }
 
     private List<String> parseMessageTokens(List<String> messageList, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) {
-        List<String> newMessageList = new ArrayList<String>();
-        Map<String, String> replacements = new HashMap<String, String>();
+        List<String> newMessageList = new ArrayList<>();
+        Map<String, String> replacements = new HashMap<>();
         ItemStack lot = null;
 
         if(auction == null && auctionScope != null) {
@@ -455,8 +454,7 @@ public class AuctionMessageManager extends MessageManager {
         Map<String, Boolean> conditionals = new HashMap<String, Boolean>();
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
-            if(message.length() > 0 && (message.contains("%conditional-true%") || message.contains("%conditional-false%"))) //%C    %N
-            {
+            if(message.length() > 0 && (message.contains("%conditional-true%") || message.contains("%conditional-false%"))) {
                 conditionals.put("%always-true%", true);
                 conditionals.put("%is-admin%", player != null && FloAuction.perms.has(player, "auction.admin")); //1
                 conditionals.put("%can-start%", player != null && FloAuction.perms.has(player, "auction.start")); //2
