@@ -270,8 +270,8 @@ public class AuctionMessageManager extends MessageManager {
      * @param auctionScope A scope to check for local messages
      * @return List of actual messages to send
      */
-    private List<String> parseMessages(List<String> messageKeys, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) {
-        List<String> messageList = new ArrayList<String>();
+    public List<String> parseMessages(List<String> messageKeys, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) {
+        List<String> messageList = new ArrayList<>();
 
         for(int l = 0; l < messageKeys.size(); l++) {
             String messageKey = messageKeys.get(l);
