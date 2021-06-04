@@ -1,5 +1,7 @@
 package com.flobi.floauction;
 
+import com.clubobsidian.wrappy.Configuration;
+import com.clubobsidian.wrappy.ConfigurationType;
 import com.flobi.floauction.area.AreaManager;
 import com.flobi.floauction.auc.Auction;
 import com.flobi.floauction.auc.AuctionLot;
@@ -16,8 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -76,8 +76,8 @@ public class FloAuction extends JavaPlugin {
     public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
 
     // Config files info.
-    public static FileConfiguration config = null;
-    public static FileConfiguration textConfig = null;
+    public static Configuration config = null;
+    public static Configuration textConfig = null;
     private static File dataFolder;
     private static int queueTimer;
     public static FloAuction plugin;
@@ -406,86 +406,21 @@ public class FloAuction extends JavaPlugin {
 		File textConfigFile = new File(dataFolder, "language.yml");
         InputStream defTextConfigStream = plugin.getResource("language.yml");
 
-        YamlConfiguration defConfig = null;
-        YamlConfiguration defTextConfig = null;
+        Configuration defConfig = null;
+        Configuration defTextConfig = null;
 
-        config = null;
-        config = YamlConfiguration.loadConfiguration(configFile);
+        config = Configuration.load(configFile);
 
-        if(config.get("queue-gui-name") == null) {
-            config.set("queue-gui-name", "&9ObsidianAuction Queue");
-            try {
-                config.save(new File(FloAuction.dataFolder.getPath(), "config.yml"));
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(config.get("name-blacklist") == null) {
-            List<String> blackListDefault = FloAuction.plugin.getConfig().getDefaults().getStringList("name-blacklist");
-            config.set("name-blacklist", blackListDefault);
-            try {
-                config.save(new File(FloAuction.dataFolder.getPath(), "config.yml"));
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(config.get("enable-actionbar-messages") == null) {
-            config.set("enable-actionbar-messages", true);
-            try {
-                config.save(new File(FloAuction.dataFolder.getPath(), "config.yml"));
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(config.get("enable-chat-messages") == null) {
-            config.set("enable-chat-messages", true);
-            try {
-                config.save(new File(FloAuction.dataFolder.getPath(), "config.yml"));
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(config.get("blacklist-enabled") == null) {
-            config.set("blacklist-enabled", false);
-            try {
-                config.save(new File(FloAuction.dataFolder.getPath(), "config.yml"));
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(config.get("renamed-items-override") == null) {
-            config.set("renamed-items-override", false);
-            try {
-                config.save(new File(FloAuction.dataFolder.getPath(), "config.yml"));
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(config.get("allow-renamed-items") == null) {
-            config.set("allow-renamed-items", true);
-            try {
-                config.save(new File(FloAuction.dataFolder.getPath(), "config.yml"));
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-
+        //TODO - copy defaults
+        /*
         // Look for defaults in the jar
         if(defConfigStream != null) {
-            InputStreamReader reader = new InputStreamReader(defConfigStream);
-            defConfig = YamlConfiguration.loadConfiguration(reader);
+            defConfig = Configuration.load(defConfigStream, ConfigurationType.YAML);
             try {
-                reader.close();
+                defConfigStream.close();
             } catch(IOException e) {
                 e.printStackTrace();
             }
-            defConfigStream = null;
         }
         if(defConfig != null) {
             config.setDefaults(defConfig);
@@ -493,42 +428,10 @@ public class FloAuction extends JavaPlugin {
 
         textConfig = null;
 
-        // Check to see if this needs converstion from floAuction version 2:
-        // suppress-auction-start-info was added in 2.6 and removed in 3.0.
-        if(config.contains("suppress-auction-start-info")) {
-            // I want to save a copy of the config and language files for them.
-            FileUtil.copy(configFile, new File(dataFolder, "config.v2-backup.yml"));
-            FileUtil.copy(textConfigFile, new File(dataFolder, "language.v2-backup.yml"));
-
-            // Late version 2's also had an auction house.  If it has this, it needs to be converted.
-            String houseWorld = config.getString("auctionhouse-world");
-            if(houseWorld != null && !houseWorld.isEmpty()) {
-                YamlConfiguration house = new YamlConfiguration();
-                house.set("name", "Auction House");
-                house.set("type", "house");
-                house.set("house-world", houseWorld);
-                house.set("house-min-x", config.get("auctionhouse-min-x"));
-                house.set("house-min-y", config.get("auctionhouse-min-y"));
-                house.set("house-min-z", config.get("auctionhouse-min-z"));
-                house.set("house-max-x", config.get("auctionhouse-max-x"));
-                house.set("house-max-y", config.get("auctionhouse-max-y"));
-                house.set("house-max-z", config.get("auctionhouse-max-z"));
-                YamlConfiguration scopes = new YamlConfiguration();
-                scopes.set("house", house);
-                config.set("auction-scopes", scopes);
-            }
-            config.set("disabled-commands-participating", config.get("disabled-commands"));
-            // The unused rows will be removed through the cleaning process.
-            // The entire language file needs to be purged though.
-            textConfig = new YamlConfiguration();
-        } else {
-            textConfig = YamlConfiguration.loadConfiguration(textConfigFile);
-        }
-
         // Look for defaults in the jar
         if(defTextConfigStream != null) {
             InputStreamReader reader = new InputStreamReader(defTextConfigStream);
-            defTextConfig = YamlConfiguration.loadConfiguration(reader);
+            defTextConfig = Configuration.load(reader);
             try {
                 reader.close();
             } catch(IOException e) {
@@ -541,43 +444,24 @@ public class FloAuction extends JavaPlugin {
         }
 
         // Clean up the configuration of any unused values.
-        FileConfiguration cleanConfig = new YamlConfiguration();
-        Map<String, Object> configValues = config.getDefaults().getValues(false);
+        Configuration cleanConfig = new Configuration();
+        Map<String, Object> configValues = config.getDefaults().getValues();
         for(Map.Entry<String, Object> configEntry : configValues.entrySet()) {
             cleanConfig.set(configEntry.getKey(), config.get(configEntry.getKey()));
         }
+
         config = cleanConfig;
+        config.save();
 
-        try {
-            config.save(configFile);
-        } catch(IOException ex) {
-            this.getLogger().log(Level.SEVERE, "Cannot save config.yml");
-        }
 
-        // Another typo fix from 3.0.0
-        if(textConfig.contains("plogin-reload-fail-permissions")) {
-            textConfig.set("plugin-reload-fail-permissions", textConfig.get("plogin-reload-fail-permissions"));
-        }
-
-        FileConfiguration cleanTextConfig = new YamlConfiguration();
-        Map<String, Object> textConfigValues = textConfig.getDefaults().getValues(false);
+        Configuration cleanTextConfig = new Configuration();
+        Map<String, Object> textConfigValues = textConfig.getDefaults().getValues();
         for(Map.Entry<String, Object> textConfigEntry : textConfigValues.entrySet()) {
             cleanTextConfig.set(textConfigEntry.getKey(), textConfig.get(textConfigEntry.getKey()));
         }
         textConfig = cleanTextConfig;
 
-        // Here's an oppsie fix for a typo in 3.0.0.
-        if(textConfig.getString("bid-fail-under-starting-bid") != null && textConfig.getString("bid-fail-under-starting-bid").equals("&6The bidding must start at %auction-pre-tax%.")) //%A8
-        {
-            textConfig.set("bid-fail-under-starting-bid", "&6The bidding must start at %auction-bid-starting%."); //%A4
-        }
-
-        try {
-            textConfig.save(textConfigFile);
-        } catch(IOException ex) {
-            this.getLogger().log(Level.SEVERE, "Cannot save language.yml");
-        }
-
+        textConfig.save();*/
 
         // Build auction scopes.
         AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
@@ -598,7 +482,6 @@ public class FloAuction extends JavaPlugin {
         configFile = null;
         defTextConfig = null;
         textConfigFile = null;
-
     }
 
     /**

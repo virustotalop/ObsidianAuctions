@@ -1,8 +1,8 @@
 package com.flobi.floauction;
 
+import com.clubobsidian.wrappy.ConfigurationSection;
 import com.flobi.floauction.auc.AuctionScope;
 import com.flobi.floauction.util.Functions;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +34,7 @@ public class AuctionConfig {
      */
     public static double getDouble(String path, AuctionScope auctionScope) {
         Double result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getDouble(path);
         }
 
@@ -53,12 +53,12 @@ public class AuctionConfig {
      */
     public static int getInt(String path, AuctionScope auctionScope) {
         Integer result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
-            result = auctionScope.getConfig().getInt(path);
+        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+            result = auctionScope.getConfig().getInteger(path);
         }
 
         if(result == null) {
-            result = FloAuction.config.getInt(path);
+            result = FloAuction.config.getInteger(path);
         }
         return result;
     }
@@ -72,7 +72,7 @@ public class AuctionConfig {
      */
     public static boolean getBoolean(String path, AuctionScope auctionScope) {
         Boolean result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getBoolean(path);
         }
 
@@ -91,7 +91,7 @@ public class AuctionConfig {
      */
     public static List<String> getStringList(String path, AuctionScope auctionScope) {
         List<String> result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getStringList(path);
         }
 
@@ -110,7 +110,7 @@ public class AuctionConfig {
      */
     public static String getString(String path, AuctionScope auctionScope) {
         String result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getString(path);
         }
 
@@ -131,7 +131,7 @@ public class AuctionConfig {
         Map<String, String> result = new HashMap<>();
 
         ConfigurationSection section = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().contains(path)) {
+        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             section = auctionScope.getConfig().getConfigurationSection(path);
         }
 
@@ -140,7 +140,7 @@ public class AuctionConfig {
         }
 
         if(section != null) {
-            for(String itemCode : section.getKeys(false)) {
+            for(String itemCode : section.getKeys()) {
                 result.put(itemCode, section.getString(itemCode));
             }
         }
@@ -156,7 +156,7 @@ public class AuctionConfig {
      */
     public static String getLanguageString(String path, AuctionScope auctionScope) {
         String result = null;
-        if(auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().contains(path)) {
+        if(auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().hasKey(path)) {
             result = auctionScope.getTextConfig().getString(path);
         }
 
@@ -175,7 +175,7 @@ public class AuctionConfig {
      */
     public static List<String> getLanguageStringList(String path, AuctionScope auctionScope) {
         List<String> result = null;
-        if(auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().contains(path)) {
+        if(auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().hasKey(path)) {
             result = auctionScope.getTextConfig().getStringList(path);
         }
 

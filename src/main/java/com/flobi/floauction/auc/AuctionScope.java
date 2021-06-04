@@ -1,5 +1,7 @@
 package com.flobi.floauction.auc;
 
+import com.clubobsidian.wrappy.Configuration;
+import com.clubobsidian.wrappy.ConfigurationSection;
 import com.flobi.floauction.AuctionConfig;
 import com.flobi.floauction.FloAuction;
 import com.flobi.floauction.message.MessageManager;
@@ -11,8 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -407,13 +407,13 @@ public class AuctionScope {
         AuctionScope.auctionScopes.clear();
         AuctionScope.auctionScopesOrder.clear();
         if(auctionScopesConfig != null) {
-            for(String scopeName : auctionScopesConfig.getKeys(false)) {
+            for(String scopeName : auctionScopesConfig.getKeys()) {
                 AuctionScope.auctionScopesOrder.add(scopeName);
                 ConfigurationSection auctionScopeConfig = auctionScopesConfig.getConfigurationSection(scopeName);
                 File scopeTextConfigFile = new File(dataFolder, "language-" + scopeName + ".yml");
-                YamlConfiguration scopeTextConfig = null;
+                Configuration scopeTextConfig = null;
                 if(scopeTextConfigFile.exists()) {
-                    scopeTextConfig = YamlConfiguration.loadConfiguration(scopeTextConfigFile);
+                    scopeTextConfig = Configuration.load(scopeTextConfigFile);
                 }
                 AuctionScope auctionScope = new AuctionScope(scopeName, auctionScopeConfig, scopeTextConfig);
                 AuctionScope.auctionScopes.put(scopeName, auctionScope);
