@@ -153,7 +153,7 @@ auction-disabled: '&bAuctioning disabled.'
 auction-enabled: '&bAuctioning enabled.'
 auction-start: '&cAttention, an auction is beginning!'
 auction-help:
-  - '%can-start%%end%%!allow-unsealed-auctions%%end%&b/auction&4|&bauc
+  - '%can-start%%end%%allow-unsealed-auctions%%end%&b/auction&4|&bauc
   start&4|&bs &6[QTY] [PRICE] [INC] [TIME]%allow-buynow% [BUYNOW]%end-allow-buynow%&9
   - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9
   with an enforced increase of &6[INC]&9 between bids%allow-buynow%
