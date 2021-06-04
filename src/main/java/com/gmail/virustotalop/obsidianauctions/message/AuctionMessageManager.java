@@ -553,7 +553,7 @@ public class AuctionMessageManager extends MessageManager {
         If it has a ! we will get the opposite value
         Check for an %end% or %end-condition% and parse the value inbetween
      */
-    private String parseConditionals(String message, Map<String, Boolean> conditionals) {
+    public String parseConditionals(String message, Map<String, Boolean> conditionals) {
         String built = "";
         char[] chars = message.toCharArray();
         boolean open = false;
