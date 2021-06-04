@@ -565,18 +565,25 @@ public class AuctionMessageManager extends MessageManager {
             if(ch == '%') { //Looking for a pattern
                 if(open) {
                     open = false;
-                    if(inner.equals("%")) {
+                    if(inner.equals("end")) {
                         break;
                     } else if(inner.startsWith("end-")) {
                         open = false;
                         inner = "";
                         skip = false;
+                        not = false;
                     } else {
-                        boolean eval = conditionals.get(inner);
-                        if(not) {
-                            eval = !eval;
+                        Boolean eval = conditionals.get(inner);
+                        if(eval != null) {
+                            if(not) {
+                                eval = !eval;
+                            }
+                            skip = !eval; //Inverse because if it is true we should not skip
+                        } else {
+                            built += "%" + inner + "%";
                         }
-                        skip = eval;
+
+                        inner = "";
                     }
                 } else {
                     open = true;
