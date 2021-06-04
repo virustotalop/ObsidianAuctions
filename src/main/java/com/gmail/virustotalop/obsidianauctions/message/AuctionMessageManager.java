@@ -392,37 +392,35 @@ public class AuctionMessageManager extends MessageManager {
         }
 
         // Search to see if conditionals are required:
-        Map<String, Boolean> conditionals = new HashMap<String, Boolean>();
+        Map<String, Boolean> conditionals = new HashMap<>();
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
             if(message.length() > 0 && (message.contains("%conditional-true%") || message.contains("%conditional-false%"))) {
-                conditionals.put("%always-true%", true);
-                conditionals.put("%is-admin%", player != null && ObsidianAuctions.perms.has(player, "auction.admin")); //1
-                conditionals.put("%can-start%", player != null && ObsidianAuctions.perms.has(player, "auction.start")); //2
-                conditionals.put("%can-bid%", player != null && ObsidianAuctions.perms.has(player, "auction.bid")); //3
-                conditionals.put("%has-display-name%", lot != null && ObsidianAuctions.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
-                //conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //4 -> probably not needed
-                conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
-                conditionals.put("%is-sealed%", auction != null && auction.sealed); //6
-                conditionals.put("%not-sealed%", auction != null && !auction.sealed && auction.getCurrentBid() != null); //7
-                conditionals.put("%is-broadcast%", isBroadcast); //8
-                conditionals.put("%has-book-title%", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty()); //9
-                conditionals.put("%has-book-author%", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty()); //0
-                conditionals.put("%item-has-lore%", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0); //A
-                conditionals.put("%has-durability%", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0); //B
-                conditionals.put("%is-firework%", lot != null && (lot.getType() == Material.FIREWORK || lot.getType() == Material.FIREWORK_CHARGE)); //C
-                conditionals.put("%is-buynow%", auction != null && auction.getBuyNow() != 0); //D
-                conditionals.put("%has-enchantments%", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0))); //E
-                conditionals.put("%allow-max-bids%", AuctionConfig.getBoolean("allow-max-bids", auctionScope)); //F
-                conditionals.put("%allow-buynow%", AuctionConfig.getBoolean("allow-buynow", auctionScope)); //G
-                conditionals.put("%allow-auto-bid%", AuctionConfig.getBoolean("allow-auto-bid", auctionScope)); //H
-                conditionals.put("%allow-early-bid%", AuctionConfig.getBoolean("allow-early-end", auctionScope)); //I
-                conditionals.put("%cancel-prevention-percent%", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100); //J
-                conditionals.put("%allow-unsealed-auctions%", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope)); //K
-                conditionals.put("%allow-sealed-auctions%", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope)); //L
-                conditionals.put("%is-item-logic%", conditionals.get("%allow-unsealed-auctions%") || conditionals.get("%allow-sealed-auctions%")); //L or K
-                conditionals.put("%get-active-auction%", auctionScope != null && auctionScope.getActiveAuction() != null); //N
-                conditionals.put("%item-is-in-queue%", auctionScope != null && auctionScope.getAuctionQueueLength() > 0); //O
+                conditionals.put("is-admin", player != null && ObsidianAuctions.perms.has(player, "auction.admin")); //1
+                conditionals.put("can-start", player != null && ObsidianAuctions.perms.has(player, "auction.start")); //2
+                conditionals.put("can-bid", player != null && ObsidianAuctions.perms.has(player, "auction.bid")); //3
+                conditionals.put("has-display-name", lot != null && ObsidianAuctions.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
+                conditionals.put("has-enchantment", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
+                conditionals.put("is-sealed", auction != null && auction.sealed); //6
+                conditionals.put("not-sealed", auction != null && !auction.sealed && auction.getCurrentBid() != null); //7
+                conditionals.put("is-broadcast", isBroadcast); //8
+                conditionals.put("has-book-title", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty()); //9
+                conditionals.put("has-book-author", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty()); //0
+                conditionals.put("item-has-lore", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0); //A
+                conditionals.put("has-durability", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0); //B
+                conditionals.put("is-firework", lot != null && (lot.getType() == Material.FIREWORK || lot.getType() == Material.FIREWORK_CHARGE)); //C
+                conditionals.put("is-buynow", auction != null && auction.getBuyNow() != 0); //D
+                conditionals.put("has-enchantments", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0))); //E
+                conditionals.put("allow-max-bids", AuctionConfig.getBoolean("allow-max-bids", auctionScope)); //F
+                conditionals.put("allow-buynow", AuctionConfig.getBoolean("allow-buynow", auctionScope)); //G
+                conditionals.put("allow-auto-bid", AuctionConfig.getBoolean("allow-auto-bid", auctionScope)); //H
+                conditionals.put("allow-early-bid", AuctionConfig.getBoolean("allow-early-end", auctionScope)); //I
+                conditionals.put("cancel-prevention-percent", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100); //J
+                conditionals.put("allow-unsealed-auctions", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope)); //K
+                conditionals.put("allow-sealed-auctions", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope)); //L
+                conditionals.put("is-item-logic", conditionals.get("allow-unsealed-auctions") || conditionals.get("allow-sealed-auctions")); //L or K
+                conditionals.put("get-active-auction", auctionScope != null && auctionScope.getActiveAuction() != null); //N
+                conditionals.put("item-is-in-queue", auctionScope != null && auctionScope.getAuctionQueueLength() > 0); //O
                 break;
             }
         }
@@ -433,114 +431,112 @@ public class AuctionMessageManager extends MessageManager {
 
             if(message.length() > 0) {
                 // Remove conditional sections.
-                if(message.contains("%conditional-true%") || message.contains("%conditional-false%")) {
-                    for(Entry<String, Boolean> conditional : conditionals.entrySet()) {
-                        if(message.length() > 0) {
-                            message = parseConditionals(message, conditional.getKey(), conditional.getValue());
+                if(message.length() > 0) {
+                    message = parseConditionals(message, conditionals);
+                }
+            }
+            if(message.length() == 0) { //If the length is 0 due to replacements just keep going
+                continue;
+            }
+
+            // Make standard replacements.
+            for(Map.Entry<String, String> replacementEntry : replacements.entrySet()) {
+                message = message.replace(replacementEntry.getKey(), replacementEntry.getValue());
+            }
+
+            // Only one repeatable can be processed per line.
+            if(message.contains("%repeatable")) {
+                // Mental note: I'm not caching these because there is no reason to use them more than once per message.
+                if(message.contains("%repeatable-enchantments%")) // Enchantments
+                {
+                    if(lot != null) {
+                        // Stored enchantments and regular ones are treated identically.
+                        Map<Enchantment, Integer> enchantments = lot.getEnchantments();
+                        if(enchantments == null) {
+                            enchantments = Items.getStoredEnchantments(lot);
+                        } else {
+                            Map<Enchantment, Integer> storedEnchantments = Items.getStoredEnchantments(lot);
+                            if(storedEnchantments != null) {
+                                enchantments.putAll(storedEnchantments);
+                            }
+                        }
+                        if(enchantments != null && enchantments.size() > 0) {
+                            for(Map.Entry<Enchantment, Integer> enchantmentEntry : enchantments.entrySet()) {
+                                if(message.length() > 0) {
+                                    newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-enchantment%", Items.getEnchantmentName(enchantmentEntry)));
+                                }
+                            }
+                        }
+                    }
+                } else if(message.contains("%repeatable-firework-payload%")) { // Firework aspects
+                    FireworkEffect[] payloads = Items.getFireworkEffects(lot);
+                    if(payloads != null && payloads.length > 0) {
+                        for(int j = 0; j < payloads.length; j++) {
+                            FireworkEffect payload = payloads[j];
+                            // %A lists all aspects of the payload
+
+                            String payloadAspects = "";
+                            String payloadSeparator = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-payload-separator", auctionScope));
+
+                            Type type = payload.getType();
+                            if(type != null) {
+                                if(!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+                                String fireworkShape = AuctionConfig.getLanguageString("firework-shapes." + type.toString(), auctionScope);
+                                if(fireworkShape == null) {
+                                    payloadAspects += type.toString();
+                                } else {
+                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkShape);
+                                }
+                            }
+                            List<Color> colors = payload.getColors();
+                            for(int k = 0; k < colors.size(); k++) {
+                                if(!payloadAspects.isEmpty()) {
+                                    payloadAspects += payloadSeparator;
+                                }
+                                Color color = colors.get(k);
+                                String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
+                                String fireworkColor = AuctionConfig.getLanguageString("firework-colors." + colorRGB, auctionScope);
+                                if(fireworkColor == null) {
+                                    payloadAspects += "#" + colorRGB;
+                                } else {
+                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkColor);
+                                }
+                            }
+                            if(payload.hasFlicker()) {
+                                if(!payloadAspects.isEmpty()) {
+                                    payloadAspects += payloadSeparator;
+                                }
+
+                                payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-twinkle", auctionScope));
+                            }
+                            if(payload.hasTrail()) {
+                                if(!payloadAspects.isEmpty()) {
+                                    payloadAspects += payloadSeparator;
+                                }
+                                payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-trail", auctionScope));
+                            }
+                            if(message.length() > 0) {
+                                newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
+                            }
+                        }
+                        continue;
+                    }
+                } else if(message.contains("%repeatable-lore%")) {
+                    if(auction != null) {
+                        String[] lore = Items.getLore(lot);
+                        for(int j = 0; j < lore.length; j++) {
+                            if(message.length() > 0) {
+                                newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-lore%", lore[j]));
+                            }
                         }
                     }
                 }
-
-                // Make standard replacements.
-                for(Map.Entry<String, String> replacementEntry : replacements.entrySet()) {
-                    message = message.replace(replacementEntry.getKey(), replacementEntry.getValue());
-                }
-
-                // Only one repeatable can be processed per line.
-                if(message.contains("%repeatable")) {
-                    // Mental note: I'm not caching these because there is no reason to use them more than once per message.
-                    if(message.contains("%repeatable-enchantments%")) // Enchantments
-                    {
-                        if(lot != null) {
-                            // Stored enchantments and regular ones are treated identically.
-                            Map<Enchantment, Integer> enchantments = lot.getEnchantments();
-                            if(enchantments == null) {
-                                enchantments = Items.getStoredEnchantments(lot);
-                            } else {
-                                Map<Enchantment, Integer> storedEnchantments = Items.getStoredEnchantments(lot);
-                                if(storedEnchantments != null) {
-                                    enchantments.putAll(storedEnchantments);
-                                }
-                            }
-                            if(enchantments != null && enchantments.size() > 0) {
-                                for(Map.Entry<Enchantment, Integer> enchantmentEntry : enchantments.entrySet()) {
-                                    if(message.length() > 0) {
-                                        newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-enchantment%", Items.getEnchantmentName(enchantmentEntry)));
-                                    }
-                                }
-                            }
-                        }
-                    } else if(message.contains("%repeatable-firework-payload%")) { // Firework aspects
-                        FireworkEffect[] payloads = Items.getFireworkEffects(lot);
-                        if(payloads != null && payloads.length > 0) {
-                            for(int j = 0; j < payloads.length; j++) {
-                                FireworkEffect payload = payloads[j];
-                                // %A lists all aspects of the payload
-
-                                String payloadAspects = "";
-                                String payloadSeparator = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-payload-separator", auctionScope));
-
-                                Type type = payload.getType();
-                                if(type != null) {
-                                    if(!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
-                                    String fireworkShape = AuctionConfig.getLanguageString("firework-shapes." + type.toString(), auctionScope);
-                                    if(fireworkShape == null) {
-                                        payloadAspects += type.toString();
-                                    } else {
-                                        payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkShape);
-                                    }
-                                }
-                                List<Color> colors = payload.getColors();
-                                for(int k = 0; k < colors.size(); k++) {
-                                    if(!payloadAspects.isEmpty()) {
-                                        payloadAspects += payloadSeparator;
-                                    }
-                                    Color color = colors.get(k);
-                                    String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
-                                    String fireworkColor = AuctionConfig.getLanguageString("firework-colors." + colorRGB, auctionScope);
-                                    if(fireworkColor == null) {
-                                        payloadAspects += "#" + colorRGB;
-                                    } else {
-                                        payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkColor);
-                                    }
-                                }
-                                if(payload.hasFlicker()) {
-                                    if(!payloadAspects.isEmpty()) {
-                                        payloadAspects += payloadSeparator;
-                                    }
-
-                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-twinkle", auctionScope));
-                                }
-                                if(payload.hasTrail()) {
-                                    if(!payloadAspects.isEmpty()) {
-                                        payloadAspects += payloadSeparator;
-                                    }
-                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-trail", auctionScope));
-                                }
-                                if(message.length() > 0) {
-                                    newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
-                                }
-                            }
-                            continue;
-                        }
-                    } else if(message.contains("%repeatable-lore%")) {
-                        if(auction != null) {
-                            String[] lore = Items.getLore(lot);
-                            for(int j = 0; j < lore.length; j++) {
-                                if(message.length() > 0) {
-                                    newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-lore%", lore[j]));
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if(message.length() > 0) {
-                        newMessageList.add(chatPrep(message, auctionScope));
-                    }
+            } else {
+                if(message.length() > 0) {
+                    newMessageList.add(chatPrep(message, auctionScope));
                 }
             }
         }
-
         if(newMessageList != null) {
             if(ObsidianAuctions.placeHolderApiEnabled) {
                 for(int i = 0; i < newMessageList.size(); i++) {
@@ -548,45 +544,56 @@ public class AuctionMessageManager extends MessageManager {
                 }
             }
         }
-
         return newMessageList;
     }
 
-    /**
-     * Removes sections wrapped by keys if condition is false or removes just the keys if the condition is true and removes the negative key if false.
-     *
-     * @param message           the original unparsed message
-     * @param conditionalNumber the number of the key to search for
-     * @param condition         whether or not to remove sections wrapped by key
-     * @return message with condition parsed
+    /*
+        Search for %text% pattern
+        If it is found in conditionals we will get the value and skip adding it to the message
+        If it has a ! we will get the opposite value
+        Check for an %end% or %end-condition% and parse the value inbetween
      */
-    private String parseConditionals(String message, String conditionalNumber, boolean condition) {
-        message = parseConditional(message, "%conditional-true%" + conditionalNumber, condition); //%C
-        message = parseConditional(message, "%conditional-false%" + conditionalNumber, !condition); //%N
-        return message;
-    }
-
-    /**
-     * Removes sections wrapped by keys if condition is false or removes just the keys if the condition is true.
-     *
-     * @param message        the original unparsed message
-     * @param conditionalKey the key to search for
-     * @param condition      whether or not to remove sections wrapped by key
-     * @return message with condition parsed
-     */
-    private String parseConditional(String message, String conditionalKey, boolean condition) {
-        if(!message.contains(conditionalKey)) {
-            return message;
-        }
-        if(condition) {
-            message = message.replace(conditionalKey, "");
-        } else {
-            String[] parts = message.split(conditionalKey);
-            message = "";
-            for(int t = 0; t < parts.length; t++) {
-                if(t % 2 == 0) message += parts[t];
+    private String parseConditionals(String message, Map<String, Boolean> conditionals) {
+        String built = "";
+        char[] chars = message.toCharArray();
+        boolean open = false;
+        boolean not = false;
+        String inner = "";
+        boolean skip = false;
+        for(int i = 0; i < chars.length; i++) {
+            char ch = chars[i];
+            if(ch == '%') { //Looking for a pattern
+                if(open) {
+                    open = false;
+                    if(inner.equals("%")) {
+                        break;
+                    } else if(inner.startsWith("end-")) {
+                        open = false;
+                        inner = "";
+                        skip = false;
+                    } else {
+                        boolean eval = conditionals.get(inner);
+                        if(not) {
+                            eval = !eval;
+                        }
+                        skip = eval;
+                    }
+                } else {
+                    open = true;
+                }
+            } else if(ch == ' ' && open) { //In the case of dangling percent signs
+                open = false;
+                inner = "";
+            } else if(open) {
+                if(ch == '!') {
+                    not = !not;
+                } else {
+                    inner += ch;
+                }
+            } else if(!skip) {
+                built += ch;
             }
         }
-        return message;
+        return built;
     }
 }
