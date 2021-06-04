@@ -246,6 +246,8 @@ public class ObsidianAuctions extends JavaPlugin {
         dataFolder = getDataFolder();
         plugin = this;
         auctionLog = new File(dataFolder, "auctions.log");
+        this.saveResource("config.yml", false);
+        this.saveResource("language.yml", false);
 
         loadConfig();
 
@@ -413,6 +415,7 @@ public class ObsidianAuctions extends JavaPlugin {
         Configuration defTextConfig = null;
 
         config = Configuration.load(configFile);
+        textConfig = Configuration.load(textConfigFile);
 
         //TODO - copy defaults
         /*
@@ -478,7 +481,7 @@ public class ObsidianAuctions extends JavaPlugin {
         ObsidianAuctions.allowRenamedItems = config.getBoolean("allow-renamed-items");
 
         //Setup additional floAuction values
-        ObsidianAuctions.isDamagedAllowed = defConfig.getBoolean("allow-damaged-items");
+        ObsidianAuctions.isDamagedAllowed = config.getBoolean("allow-damaged-items");
 
         //make values null at the end
         defConfig = null;

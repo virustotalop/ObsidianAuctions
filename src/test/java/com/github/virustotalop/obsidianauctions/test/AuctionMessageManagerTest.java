@@ -10,7 +10,6 @@ import static org.junit.Assert.assertEquals;
 
 public class AuctionMessageManagerTest {
 
-
     @Test
     public void testParseConditionals() {
         AuctionMessageManager manager = new AuctionMessageManager();
