@@ -555,7 +555,7 @@ public class AuctionMessageManager extends MessageManager {
         boolean open = false;
         boolean not = false;
         String inner = "";
-        boolean skip = false;
+        boolean copyInner = true;
         for(int i = 0; i < chars.length; i++) {
             char ch = chars[i];
             if(ch == '%') { //Looking for a pattern
@@ -566,7 +566,7 @@ public class AuctionMessageManager extends MessageManager {
                     } else if(inner.startsWith("end-")) { //The end of a conditional should match to the original
                         open = false;
                         inner = "";
-                        skip = false;
+                        copyInner = true;
                         not = false;
                     } else { //If not any of those we will evaluate the inner text
                         Boolean eval = conditionals.get(inner);
@@ -574,7 +574,7 @@ public class AuctionMessageManager extends MessageManager {
                             if(not) { //Check for not
                                 eval = !eval;
                             }
-                            skip = !eval; //Inverse because if it is true we should not skip
+                            copyInner = eval; //Inverse because if it is true we should not skip
                         } else { //If the condition was null we just append the whole thing to built
                             built += "%" + inner + "%";
                         }
@@ -594,7 +594,7 @@ public class AuctionMessageManager extends MessageManager {
                     built += "%" + inner;
                     inner = "";
                 }
-            } else if(!skip) {
+            } else if(copyInner) {
                 built += ch;
             }
         }
