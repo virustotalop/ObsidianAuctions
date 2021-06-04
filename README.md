@@ -1,8 +1,7 @@
 <div align="center">
 <h1>ObsidianAuctions</h1>
 
-Fork of the floAuction plugin, you can find it [here](https://www.spigotmc.org/resources/obsidianauctions.5595/)
- on spigot.
+An auction plugin for spigot 1.8+, you can find it [here on spigot!](https://www.spigotmc.org/resources/obsidianauctions.5595/)
  </div>
 
 ## FAQ
