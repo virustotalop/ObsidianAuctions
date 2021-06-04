@@ -158,11 +158,10 @@ auction-help:
   - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9
   with an enforced increase of &6[INC]&9 between bids%allow-buynow%
   and an option to buy item for &6[BUYNOW]%end-allow-buynow%&9.'
-  - '%can-start%%end%%conditional-true%%allow-sealed-auctions%&b/%conditional-true%%allow-unsealed-auctions%s%conditional-true%%allow-unsealed-auctions%auction&4|&b%conditional-true%%allow-unsealed-auctions%s%conditional-true%%allow-unsealed-auctions%auc
-  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction%conditional-true%%allow-unsealed-auctions%.%conditional-true%%allow-unsealed-auctions%%conditional-false%%allow-unsealed-auctions%
+  - '%can-start%%end%%allow-sealed-auctions%%end%&b/sealedauction&4|&bsauc
+  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction
   for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced
-  increase of &6[INC]&9 between bids&9. &a("&4|&a" means "or" meaning you can any
-  option in &4|&a lists)'
+  increase of &6[INC]&9 between bids&9.'
   - '%can-start%%end%%is-item-logic%%end%&b/auction&4|&bauc
   prep&4|&bp &6[QTY] [PRICE] [INC] [TIME]%allow-buynow% [BUYNOW]%end-allow-buynow%&9
   - Assigns your default values when placing auctions.'
