@@ -54,18 +54,18 @@ allow-inferior-item-name-logic: false
 
 auctionscope-change-check-interval: 20
 
-banned-items: 
+banned-items:
   - 7
   - 383;63
-  
-taxed-items: 
+
+taxed-items:
   0: 100%
 
 disabled-commands-participating:
   - '/ma join'
   - '/mobarena join'
   - '/arena join'
-disabled-commands-inscope: {}
+disabled-commands-inscope: []
 
 banned-lore:
   - mcMMO Ability Tool
@@ -77,74 +77,74 @@ auction-scopes:
     worlds:
       - '*'
     config:
-      disabled-commands-inscope: {}
+      disabled-commands-inscope: []
 
 #Name blacklist for items, if an item contains one of these it will not allowed to be auctioned
 name-blacklist-enabled: true
- #Modified list from here: https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/blob/master/en
+#Modified list from here: https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/blob/master/en
 name-blacklist:
-- "porn"
-- "fuck"
-- "shit"
-- "nigger"
-- "cunt"
-- "wetback"
-- "sex"
-- "masturbate"
-- "clop"
-- "penis"
-- "vagina"
-- "wank"
-- "tranny"
-- "ass"
-- "balls"
-- "beaner"
-- "beastiality"
-- "bitch"
-- "cock"
-- "blowjob"
-- "bondage"
-- "busty"
-- "boobs"
-- "tits"
-- "butt"
-- "clit"
-- "coon"
-- "rape"
-- "cum"
-- "faggot"
-- "escort"
-- "hump"
-- "bukkake"
-- "hand job"
-- "handjob"
-- "incest"
-- "pedo"
-- "rapi"
-- "topless"
-- "boner"
-- "shemale"
-- "slut"
-- "fingering"
-- "hentai"
-- "guru"
-- "gay"
-- "dirty"
-- "drug"
-- "cocaine"
-- "marijauna"
-- "undress"
-- "weed"
-- "erotic"
-- "genitals"
-- "xxx"
-- "voyeur"
-- "loli"
-- "jail"
-- "coke"
-- "cocaine"
-- "crack"
-- "mary"
-- "skeet"
-- "hump"
-- "yiffy" 
+  - "porn"
+  - "fuck"
+  - "shit"
+  - "nigger"
+  - "cunt"
+  - "wetback"
+  - "sex"
+  - "masturbate"
+  - "clop"
+  - "penis"
+  - "vagina"
+  - "wank"
+  - "tranny"
+  - "ass"
+  - "balls"
+  - "beaner"
+  - "beastiality"
+  - "bitch"
+  - "cock"
+  - "blowjob"
+  - "bondage"
+  - "busty"
+  - "boobs"
+  - "tits"
+  - "butt"
+  - "clit"
+  - "coon"
+  - "rape"
+  - "cum"
+  - "faggot"
+  - "escort"
+  - "hump"
+  - "bukkake"
+  - "hand job"
+  - "handjob"
+  - "incest"
+  - "pedo"
+  - "rapi"
+  - "topless"
+  - "boner"
+  - "shemale"
+  - "slut"
+  - "fingering"
+  - "hentai"
+  - "guru"
+  - "gay"
+  - "dirty"
+  - "drug"
+  - "cocaine"
+  - "marijauna"
+  - "undress"
+  - "weed"
+  - "erotic"
+  - "genitals"
+  - "xxx"
+  - "voyeur"
+  - "loli"
+  - "jail"
+  - "coke"
+  - "cocaine"
+  - "crack"
+  - "mary"
+  - "skeet"
+  - "hump"
+  - "yiffy"

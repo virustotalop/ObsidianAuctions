@@ -407,18 +407,19 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     private void loadConfig() {
         File configFile = new File(dataFolder, "config.yml");
-        InputStream defConfigStream = plugin.getResource("config.yml");
-		File textConfigFile = new File(dataFolder, "language.yml");
-        InputStream defTextConfigStream = plugin.getResource("language.yml");
 
-        Configuration defConfig = null;
-        Configuration defTextConfig = null;
+		File textConfigFile = new File(dataFolder, "language.yml");
+
 
         config = Configuration.load(configFile);
         textConfig = Configuration.load(textConfigFile);
 
         //TODO - copy defaults
         /*
+        InputStream defConfigStream = plugin.getResource("config.yml");
+        InputStream defTextConfigStream = plugin.getResource("language.yml");
+         Configuration defConfig = null;
+        Configuration defTextConfig = null;
         // Look for defaults in the jar
         if(defConfigStream != null) {
             defConfig = Configuration.load(defConfigStream, ConfigurationType.YAML);
@@ -484,9 +485,9 @@ public class ObsidianAuctions extends JavaPlugin {
         ObsidianAuctions.isDamagedAllowed = config.getBoolean("allow-damaged-items");
 
         //make values null at the end
-        defConfig = null;
+        //defConfig = null;
         configFile = null;
-        defTextConfig = null;
+        //defTextConfig = null;
         textConfigFile = null;
     }
 
