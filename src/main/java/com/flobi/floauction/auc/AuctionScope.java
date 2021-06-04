@@ -50,8 +50,8 @@ public class AuctionScope {
     private ConfigurationSection config = null;
     private ConfigurationSection textConfig = null;
 
-    public static List<String> auctionScopesOrder = new ArrayList<String>();
-    public static Map<String, AuctionScope> auctionScopes = new HashMap<String, AuctionScope>();
+    public static List<String> auctionScopesOrder = new ArrayList<>();
+    public static Map<String, AuctionScope> auctionScopes = new HashMap<>();
     private static WorldGuardPlugin worldGuardPlugin = null;
 
     /**
@@ -61,7 +61,7 @@ public class AuctionScope {
      * @param config     configuration
      * @param textConfig language config
      */
-    private AuctionScope(String scopeId, ConfigurationSection config, ConfigurationSection textConfig) {
+    public AuctionScope(String scopeId, ConfigurationSection config, ConfigurationSection textConfig) {
         this.scopeId = scopeId;
         this.name = config.getString("name");
 
