@@ -562,7 +562,10 @@ public class AuctionMessageManager extends MessageManager {
                 if(open) {
                     open = false;
                     if(inner.equals("end")) { //If it is end we should just break out
-                        break;
+                        inner = "";
+                        if(!copyInner) {
+                            break;
+                        }
                     } else if(inner.startsWith("end-")) { //The end of a conditional should match to the original
                         open = false;
                         inner = "";

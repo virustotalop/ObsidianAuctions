@@ -47,6 +47,15 @@ public class AuctionMessageManagerTest {
     }
 
     @Test
+    public void testParseConditionalsDoNotEnd() {
+        AuctionMessageManager manager = new AuctionMessageManager();
+        Map<String, Boolean> conditionals = new HashMap<>();
+        conditionals.put("true", true);
+        String parsed = manager.parseConditionals("%true%%end%other text", conditionals);
+        assertEquals("other text", parsed);
+    }
+
+    @Test
     public void testParseConditionalsOtherTextWithPercent() {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
