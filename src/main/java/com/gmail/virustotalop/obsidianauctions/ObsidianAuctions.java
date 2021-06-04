@@ -287,14 +287,15 @@ public class ObsidianAuctions extends JavaPlugin {
                 AuctionParticipant.forceLocation(event.getPlayer().getName(), null);
             }
 
-            @EventHandler(priority = EventPriority.LOWEST)
+            @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
             public void onPlayerChangedGameMode(PlayerGameModeChangeEvent event) {
-                if(event.isCancelled()) return;
                 Player player = event.getPlayer();
                 String playerName = player.getName();
                 AuctionScope playerScope = AuctionScope.getPlayerScope(player);
                 Auction playerAuction = getPlayerAuction(player);
-                if(AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) return;
+                if(AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) {
+                    return;
+                }
 
                 if(AuctionParticipant.isParticipating(playerName)) {
                     event.setCancelled(true);
@@ -302,15 +303,17 @@ public class ObsidianAuctions extends JavaPlugin {
                 }
             }
 
-            @EventHandler(priority = EventPriority.LOWEST)
+            @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
             public void onPlayerPreprocessCommand(PlayerCommandPreprocessEvent event) {
-
-                if(event.isCancelled()) return;
                 Player player = event.getPlayer();
-                if(player == null) return;
+                if(player == null) {
+                    return;
+                }
                 String playerName = player.getName();
                 String message = event.getMessage();
-                if(message == null || message.isEmpty()) return;
+                if(message == null || message.isEmpty()) {
+                    return;
+                }
 
                 AuctionScope playerScope = AuctionScope.getPlayerScope(player);
 
@@ -327,13 +330,19 @@ public class ObsidianAuctions extends JavaPlugin {
                 }
 
                 // Check participating disabled commands
-                if(playerScope == null) return;
-                if(!AuctionParticipant.isParticipating(player.getName())) return;
+                if(playerScope == null) {
+                    return;
+                }
+                if(!AuctionParticipant.isParticipating(player.getName())) {
+                    return;
+                }
 
                 disabledCommands = AuctionConfig.getStringList("disabled-commands-participating", playerScope);
                 for(int i = 0; i < disabledCommands.size(); i++) {
                     String disabledCommand = disabledCommands.get(i);
-                    if(disabledCommand.isEmpty()) continue;
+                    if(disabledCommand.isEmpty()) {
+                        continue;
+                    }
                     if(message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                         event.setCancelled(true);
                         messageManager.sendPlayerMessage("disabled-command-participating", playerName, (AuctionScope) null);
@@ -342,22 +351,19 @@ public class ObsidianAuctions extends JavaPlugin {
                 }
             }
 
-            @EventHandler()
+            @EventHandler(ignoreCancelled = true)
             public void onPlayerMove(PlayerMoveEvent event) {
-                if(event.isCancelled()) return;
                 AuctionParticipant.forceLocation(event.getPlayer().getName(), event.getTo());
             }
 
-            @EventHandler(priority = EventPriority.LOWEST)
+            @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
             public void onPlayerTeleport(PlayerTeleportEvent event) {
-                if(event.isCancelled()) return;
                 if(!AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo()))
                     event.setCancelled(true);
             }
 
-            @EventHandler(priority = EventPriority.LOWEST)
+            @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
             public void onPlayerPortalEvent(PlayerPortalEvent event) {
-                if(event.isCancelled()) return;
                 if(!AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo()))
                     event.setCancelled(true);
             }
@@ -921,7 +927,9 @@ public class ObsidianAuctions extends JavaPlugin {
      * @return auction instance
      */
     public static Auction getPlayerAuction(String playerName) {
-        if(playerName == null) return null;
+        if(playerName == null) {
+            return null;
+        }
         return getPlayerAuction(Bukkit.getPlayer(playerName));
     }
 
@@ -932,9 +940,13 @@ public class ObsidianAuctions extends JavaPlugin {
      * @return auction instance
      */
     public static Auction getPlayerAuction(Player player) {
-        if(player == null) return null;
+        if(player == null) {
+            return null;
+        }
         AuctionScope auctionScope = AuctionScope.getPlayerScope(player);
-        if(auctionScope == null) return null;
+        if(auctionScope == null) {
+            return null;
+        }
         return auctionScope.getActiveAuction();
     }
 
