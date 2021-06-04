@@ -33,59 +33,6 @@ import java.util.Map.Entry;
 
 public class AuctionMessageManager extends MessageManager {
 
-    private static final Map<String, Map<String, String>> replacementDefaults = new HashMap<>();
-
-    public AuctionMessageManager() {
-        Map<String, String> aReplacments = new HashMap<>();
-        aReplacments.put("%auction-owner-name%", "-"); //%A1
-        aReplacments.put("%auction-owner-display-name%", "-"); //%A2
-        aReplacments.put("%auction-quantity%", "-"); //%A3
-        aReplacments.put("%auction-bid-starting%", "-"); //%A4
-        aReplacments.put("%auction-bid-increment%", "-"); //%A5
-        aReplacments.put("%auction-buy-now%", "-"); //%A6
-        aReplacments.put("%auction-remaining-time%", "-"); //%A7
-        aReplacments.put("%auction-pre-tax%", "-"); //%A8
-        aReplacments.put("%auction-post-tax%", "-"); //%A9
-        replacementDefaults.put("a", aReplacments);
-
-        Map<String, String> bReplacments = new HashMap<String, String>();
-        bReplacments.put("%current-bid-name%", "-"); //%B1
-        bReplacments.put("%current-bid-display-name%", "-"); //%B2
-        bReplacments.put("%current-bid-amount%", "-"); //%B3
-        bReplacments.put("%auction-bid-starting%", "-"); //%B4
-        replacementDefaults.put("b", bReplacments);
-
-        Map<String, String> lReplacments = new HashMap<>();
-        lReplacments.put("%item-material-name%", "-"); //%L1
-        lReplacments.put("%item-display-name%", "-"); //%L2
-        lReplacments.put("%item-firework-power%", "-"); //%L3
-        lReplacments.put("%item-book-author%", "-"); //%L4
-        lReplacments.put("%item-book-title%", "-"); //%l5
-        lReplacments.put("%item-durability-left%", "-"); //%L6
-        lReplacments.put("%item-enchantments%", "-"); //%L7
-        replacementDefaults.put("l", lReplacments);
-
-        Map<String, String> pReplacments = new HashMap<>();
-        pReplacments.put("%auction-prep-amount-other%", "-"); //%P1
-        pReplacments.put("%auction-prep-amount-other%", "-"); //%P2
-        pReplacments.put("%auction-prep-price-formatted%", "-"); //%P3
-        pReplacments.put("%auction-prep-price%", "-"); //%P4
-        pReplacments.put("%auction-prep-increment-formatted%", "-"); //%P5
-        pReplacments.put("%auction-prep-increment%", "-"); //%P6
-        pReplacments.put("%auction-prep-time-formatted%", "-"); //%P7
-        pReplacments.put("%auction-prep-time%", "-"); //%P8
-        pReplacments.put("%auction-prep-buynow-formatted%", "-"); //%P9
-        pReplacments.put("%auction-prep-buynow%", "-"); //%P0
-        replacementDefaults.put("p", pReplacments);
-
-        Map<String, String> sReplacments = new HashMap<>();
-        sReplacments.put("%player-auction-queue-position%", "-"); //%S1
-        sReplacments.put("%auction-queue-length%", "-"); //%S2
-        sReplacments.put("%auction-scope-name%", "-"); //%S3
-        sReplacments.put("%auction-scope-id%", "-"); //%S4
-        replacementDefaults.put("s", sReplacments);
-    }
-
     @Override
     public void sendPlayerMessage(String messageKey, String playerName, Auction auction) {
         List<String> messageKeys = new ArrayList<>();
@@ -309,7 +256,6 @@ public class AuctionMessageManager extends MessageManager {
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
             if(message.length() > 0 && message.contains("%auction-")) {
-                replacements.putAll(replacementDefaults.get("a"));
                 if(auction != null) {
                     replacements.put("%auction-owner-name%", auction.getOwner()); //%A1
                     replacements.put("%auction-owner-display-name%", auction.getOwnerDisplayName()); //%A2
@@ -333,7 +279,6 @@ public class AuctionMessageManager extends MessageManager {
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
             if(message.length() > 0 && (message.contains("%current-") || message.contains("%auction-bid"))) {
-                replacements.putAll(replacementDefaults.get("b"));
                 if(auction != null) {
                     AuctionBid currentBid = auction.getCurrentBid();
                     if(currentBid != null) {
@@ -358,7 +303,6 @@ public class AuctionMessageManager extends MessageManager {
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
             if(message.length() > 0 && message.contains("%item-")) {
-                replacements.putAll(replacementDefaults.get("l"));
                 if(auction != null) {
                     lot = auction.getLotType();
                     if(lot != null) {
@@ -406,10 +350,8 @@ public class AuctionMessageManager extends MessageManager {
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
             if(message.length() > 0 && message.contains("%auction-prep")) {
-                replacements.putAll(replacementDefaults.get("p"));
                 if(player != null) {
                     String playerName = player.getName();
-
                     String[] defaultStartArgs = Functions.mergeInputArgs(playerName, new String[]{}, false);
                     if(defaultStartArgs[0].equalsIgnoreCase("this") || defaultStartArgs[0].equalsIgnoreCase("hand")) {
                         replacements.put("%auction-prep-amount-other%", ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("prep-amount-in-hand", auctionScope))); //%P1
@@ -437,7 +379,6 @@ public class AuctionMessageManager extends MessageManager {
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
             if(message.length() > 0 && message.contains("%player-auction-queue") || message.contains("%auction-")) {
-                replacements.putAll(replacementDefaults.get("s"));
                 if(auctionScope != null) {
                     if(player != null) {
                         replacements.put("%player-auction-queue-position%", Integer.toString(auctionScope.getQueuePosition(player.getName()))); //%S1
