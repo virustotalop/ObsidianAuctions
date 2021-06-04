@@ -59,7 +59,7 @@ banned-items:
   - 383;63
 
 taxed-items:
-  0: 100%
+  '0': 100%
 
 disabled-commands-participating:
   - '/ma join'
