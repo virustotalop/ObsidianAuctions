@@ -547,12 +547,8 @@ public class AuctionMessageManager extends MessageManager {
         return newMessageList;
     }
 
-    /*
-        Search for %text% pattern
-        If it is found in conditionals we will get the value and skip adding it to the message
-        If it has a ! we will get the opposite value
-        Check for an %end% or %end-condition% and parse the value inbetween
-     */
+
+
     public String parseConditionals(String message, Map<String, Boolean> conditionals) {
         String built = "";
         char[] chars = message.toCharArray();
@@ -565,37 +561,38 @@ public class AuctionMessageManager extends MessageManager {
             if(ch == '%') { //Looking for a pattern
                 if(open) {
                     open = false;
-                    if(inner.equals("end")) {
+                    if(inner.equals("end")) { //If it is end we should just break out
                         break;
-                    } else if(inner.startsWith("end-")) {
+                    } else if(inner.startsWith("end-")) { //The end of a conditional should match to the original
                         open = false;
                         inner = "";
                         skip = false;
                         not = false;
-                    } else {
+                    } else { //If not any of those we will evaluate the inner text
                         Boolean eval = conditionals.get(inner);
-                        if(eval != null) {
-                            if(not) {
+                        if(eval != null) { //If the condition is not null, I.E a replacer we eval it
+                            if(not) { //Check for not
                                 eval = !eval;
                             }
                             skip = !eval; //Inverse because if it is true we should not skip
-                        } else {
+                        } else { //If the condition was null we just append the whole thing to built
                             built += "%" + inner + "%";
                         }
-
-                        inner = "";
+                        inner = ""; //Clear the inner text
                     }
-                } else {
+                } else { //If it is the first percent we should check start checking for the inner contents
                     open = true;
                 }
-            } else if(ch == ' ' && open) { //In the case of dangling percent signs
-                open = false;
-                inner = "";
-            } else if(open) {
-                if(ch == '!') {
+            } else if(open) { //Check for open
+                if(ch == '!') { //Check for not
                     not = !not;
-                } else {
+                } else { //If open and not a modifier symbol start building the inner
                     inner += ch;
+                }
+                if(ch == ' ' || chars.length - 1 == i) { //Space or at the end
+                    open = false;
+                    built += "%" + inner;
+                    inner = "";
                 }
             } else if(!skip) {
                 built += ch;

@@ -55,4 +55,31 @@ public class AuctionMessageManagerTest {
         String parsed = manager.parseConditionals("%true%%some-other-text%", conditionals);
         assertEquals("%some-other-text%", parsed);
     }
+
+    @Test
+    public void testParseConditionalsDanglingPercent() {
+        AuctionMessageManager manager = new AuctionMessageManager();
+        Map<String, Boolean> conditionals = new HashMap<>();
+        conditionals.put("true", true);
+        String parsed = manager.parseConditionals("% a", conditionals);
+        assertEquals("% a", parsed);
+    }
+
+    @Test
+    public void testParseConditionalsDanglingPercentWithOtherText() {
+        AuctionMessageManager manager = new AuctionMessageManager();
+        Map<String, Boolean> conditionals = new HashMap<>();
+        conditionals.put("true", true);
+        String parsed = manager.parseConditionals("%a", conditionals);
+        assertEquals("%a", parsed);
+    }
+
+    @Test
+    public void testParseConditionalsDanglingPercentWithOtherTextWithSpaceAtEnd() {
+        AuctionMessageManager manager = new AuctionMessageManager();
+        Map<String, Boolean> conditionals = new HashMap<>();
+        conditionals.put("true", true);
+        String parsed = manager.parseConditionals("%a ", conditionals);
+        assertEquals("%a ", parsed);
+    }
 }
