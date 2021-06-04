@@ -1,8 +1,8 @@
-package com.flobi.floauction;
+package com.gmail.virustotalop.obsidianauctions;
 
 import com.clubobsidian.wrappy.ConfigurationSection;
-import com.flobi.floauction.auc.AuctionScope;
-import com.flobi.floauction.util.Functions;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.util.Functions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +39,7 @@ public class AuctionConfig {
         }
 
         if(result == null) {
-            result = FloAuction.config.getDouble(path);
+            result = ObsidianAuctions.config.getDouble(path);
         }
         return result;
     }
@@ -58,7 +58,7 @@ public class AuctionConfig {
         }
 
         if(result == null) {
-            result = FloAuction.config.getInteger(path);
+            result = ObsidianAuctions.config.getInteger(path);
         }
         return result;
     }
@@ -77,7 +77,7 @@ public class AuctionConfig {
         }
 
         if(result == null) {
-            result = FloAuction.config.getBoolean(path);
+            result = ObsidianAuctions.config.getBoolean(path);
         }
         return result;
     }
@@ -96,7 +96,7 @@ public class AuctionConfig {
         }
 
         if(result == null) {
-            result = FloAuction.config.getStringList(path);
+            result = ObsidianAuctions.config.getStringList(path);
         }
         return result;
     }
@@ -115,7 +115,7 @@ public class AuctionConfig {
         }
 
         if(result == null) {
-            result = FloAuction.config.getString(path);
+            result = ObsidianAuctions.config.getString(path);
         }
         return result;
     }
@@ -136,7 +136,7 @@ public class AuctionConfig {
         }
 
         if(section == null) {
-            section = FloAuction.config.getConfigurationSection(path);
+            section = ObsidianAuctions.config.getConfigurationSection(path);
         }
 
         if(section != null) {
@@ -161,7 +161,7 @@ public class AuctionConfig {
         }
 
         if(result == null) {
-            result = FloAuction.textConfig.getString(path);
+            result = ObsidianAuctions.textConfig.getString(path);
         }
         return result;
     }
@@ -180,7 +180,7 @@ public class AuctionConfig {
         }
 
         if(result == null) {
-            result = FloAuction.textConfig.getStringList(path);
+            result = ObsidianAuctions.textConfig.getStringList(path);
         }
         return result;
     }

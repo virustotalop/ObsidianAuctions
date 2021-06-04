@@ -1,7 +1,7 @@
 name: ObsidianAuctions
-main: com.flobi.floauction.FloAuction
+main: com.gmail.virustotalop.obsidianauctions.ObsidianAuctions
 version: "@VERSION@"
-description: Updated fork of floAuctions.
+description: An auction plugin that is a fork of floAuction.
 authors: [flobi, VirusTotal]
 softdepend: [Vault, PlaceholderAPI]
 api-version: "1.13"

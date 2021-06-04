@@ -1,7 +1,7 @@
-package com.flobi.floauction.message;
+package com.gmail.virustotalop.obsidianauctions.message;
 
-import com.flobi.floauction.auc.Auction;
-import com.flobi.floauction.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auc.Auction;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
 
 import java.util.List;
 

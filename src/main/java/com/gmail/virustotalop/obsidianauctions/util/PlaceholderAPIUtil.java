@@ -1,4 +1,4 @@
-package com.flobi.floauction.util;
+package com.gmail.virustotalop.obsidianauctions.util;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

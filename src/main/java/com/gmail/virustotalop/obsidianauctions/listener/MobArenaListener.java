@@ -1,9 +1,9 @@
-package com.flobi.floauction.listener;
+package com.gmail.virustotalop.obsidianauctions.listener;
 
-import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.auc.AuctionParticipant;
-import com.flobi.floauction.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionParticipant;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
 import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +19,7 @@ public class MobArenaListener implements Listener {
         }
         String playerName = player.getName();
         if(!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-            FloAuction.getMessageManager().sendPlayerMessage("arena-warning", playerName, (AuctionScope) null);
+            ObsidianAuctions.getMessageManager().sendPlayerMessage("arena-warning", playerName, (AuctionScope) null);
             event.setCancelled(true);
         }
     }

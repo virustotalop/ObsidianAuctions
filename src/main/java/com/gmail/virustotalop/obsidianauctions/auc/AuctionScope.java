@@ -1,10 +1,10 @@
-package com.flobi.floauction.auc;
+package com.gmail.virustotalop.obsidianauctions.auc;
 
 import com.clubobsidian.wrappy.Configuration;
 import com.clubobsidian.wrappy.ConfigurationSection;
-import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.message.MessageManager;
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -213,7 +213,7 @@ public class AuctionScope {
         } else if(!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
             messageManager.sendPlayerMessage("auction-fail-gamemode-creative", playerName, auction);
             return;
-        } else if(!FloAuction.perms.has(player, "auction.start")) {
+        } else if(!ObsidianAuctions.perms.has(player, "auction.start")) {
             messageManager.sendPlayerMessage("auction-fail-permissions", playerName, auction);
             return;
         } else if(!auction.isValid()) {
@@ -457,13 +457,13 @@ public class AuctionScope {
     }
 
     public static void sendFairwellMessages() {
-        Iterator<String> playerIterator = FloAuction.getPlayerScopeCache().keySet().iterator();
+        Iterator<String> playerIterator = ObsidianAuctions.getPlayerScopeCache().keySet().iterator();
         while(playerIterator.hasNext()) {
             String playerName = playerIterator.next();
             if(!AuctionParticipant.isParticipating(playerName)) {
                 Player player = Bukkit.getPlayer(playerName);
                 if(player != null && player.isOnline()) {
-                    String oldScopeId = FloAuction.getPlayerScopeCache().get(playerName);
+                    String oldScopeId = ObsidianAuctions.getPlayerScopeCache().get(playerName);
                     AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
                     AuctionScope playerScope = AuctionScope.getPlayerScope(player);
                     String playerScopeId = null;
@@ -471,9 +471,9 @@ public class AuctionScope {
                         playerScopeId = playerScope.getScopeId();
                     }
                     if(playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
-                        FloAuction.getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerName, oldScope);
+                        ObsidianAuctions.getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerName, oldScope);
                         playerIterator.remove();
-                        FloAuction.getPlayerScopeCache().remove(playerName);
+                        ObsidianAuctions.getPlayerScopeCache().remove(playerName);
                     }
                 }
             }
@@ -495,15 +495,15 @@ public class AuctionScope {
         String playerName = player.getName();
         if(!AuctionParticipant.isParticipating(playerName)) {
             AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-            String oldScopeId = FloAuction.getPlayerScopeCache().get(playerName);
+            String oldScopeId = ObsidianAuctions.getPlayerScopeCache().get(playerName);
             if(playerScope == null) {
                 if(oldScopeId != null) {
-                    FloAuction.getPlayerScopeCache().remove(playerName);
+                    ObsidianAuctions.getPlayerScopeCache().remove(playerName);
                 }
             } else {
                 if(oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
-                    FloAuction.getMessageManager().sendPlayerMessage(welcomeMessageKey, playerName, playerScope);
-                    FloAuction.getPlayerScopeCache().put(playerName, playerScope.getScopeId());
+                    ObsidianAuctions.getMessageManager().sendPlayerMessage(welcomeMessageKey, playerName, playerScope);
+                    ObsidianAuctions.getPlayerScopeCache().put(playerName, playerScope.getScopeId());
                 }
             }
         }

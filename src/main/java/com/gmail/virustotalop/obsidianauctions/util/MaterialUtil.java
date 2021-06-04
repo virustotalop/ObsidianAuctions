@@ -1,6 +1,6 @@
-package com.flobi.floauction.util;
+package com.gmail.virustotalop.obsidianauctions.util;
 
-import com.flobi.floauction.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 

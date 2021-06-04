@@ -1,8 +1,8 @@
-package com.flobi.floauction.util;
+package com.gmail.virustotalop.obsidianauctions.util;
 
-import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.text.DecimalFormat;
@@ -36,10 +36,10 @@ public class Functions {
         String[] resultArgs = null;
 
         // if player has no preset, use the current system defaults:
-        if(FloAuction.userSavedInputArgs.get(playerName) == null) {
+        if(ObsidianAuctions.userSavedInputArgs.get(playerName) == null) {
             resultArgs = new String[]{"this", removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-starting-bid", null))), removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-bid-increment", null))), Integer.toString(AuctionConfig.getInt("default-auction-time", null)), "0"};
         } else {
-            resultArgs = FloAuction.userSavedInputArgs.get(playerName).clone();
+            resultArgs = ObsidianAuctions.userSavedInputArgs.get(playerName).clone();
         }
 
         // Size increased in 2.10.0
@@ -65,7 +65,7 @@ public class Functions {
             if(validateArgs) {
                 // This is similar to the validation in Auction.java but without verifying availability.
                 if(!resultArgs[0].equalsIgnoreCase("this") && !resultArgs[0].equalsIgnoreCase("hand") && !resultArgs[0].equalsIgnoreCase("all") && !resultArgs[0].matches("[0-9]{1,7}")) {
-                    FloAuction.getMessageManager().sendPlayerMessage("parse-error-invalid-quantity", playerName, (AuctionScope) null);
+                    ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-quantity", playerName, (AuctionScope) null);
                     return null;
                 }
             }
@@ -76,8 +76,8 @@ public class Functions {
                     resultArgs[1] = processArgs[1];
                 }
                 if(validateArgs) {
-                    if(resultArgs[1].isEmpty() || !resultArgs[1].matches(FloAuction.decimalRegex)) {
-                        FloAuction.getMessageManager().sendPlayerMessage("parse-error-invalid-starting-bid", playerName, (AuctionScope) null);
+                    if(resultArgs[1].isEmpty() || !resultArgs[1].matches(ObsidianAuctions.decimalRegex)) {
+                        ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-starting-bid", playerName, (AuctionScope) null);
                         return null;
                     }
                 }
@@ -88,8 +88,8 @@ public class Functions {
                         resultArgs[2] = processArgs[2];
                     }
                     if(validateArgs) {
-                        if(resultArgs[2].isEmpty() || !resultArgs[2].matches(FloAuction.decimalRegex)) {
-                            FloAuction.getMessageManager().sendPlayerMessage("parse-error-invalid-max-bid", playerName, (AuctionScope) null);
+                        if(resultArgs[2].isEmpty() || !resultArgs[2].matches(ObsidianAuctions.decimalRegex)) {
+                            ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-max-bid", playerName, (AuctionScope) null);
                             return null;
                         }
                     }
@@ -101,7 +101,7 @@ public class Functions {
                         }
                         if(validateArgs) {
                             if(!resultArgs[3].matches("[0-9]{1,7}")) {
-                                FloAuction.getMessageManager().sendPlayerMessage("parse-error-invalid-time", playerName, (AuctionScope) null);
+                                ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-time", playerName, (AuctionScope) null);
                                 return null;
                             }
                         }
@@ -112,8 +112,8 @@ public class Functions {
                                 resultArgs[4] = processArgs[4];
                             }
                             if(validateArgs) {
-                                if(resultArgs[4].isEmpty() || !resultArgs[4].matches(FloAuction.decimalRegex)) {
-                                    FloAuction.getMessageManager().sendPlayerMessage("parse-error-invalid-buynow", playerName, (AuctionScope) null);
+                                if(resultArgs[4].isEmpty() || !resultArgs[4].matches(ObsidianAuctions.decimalRegex)) {
+                                    ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-buynow", playerName, (AuctionScope) null);
                                     return null;
                                 }
                             }
@@ -133,12 +133,12 @@ public class Functions {
     }
 
     public static String formatAmount(double unsafeMoney) {
-        if(FloAuction.econ == null) {
-            FloAuction.plugin.getLogger().log(Level.WARNING, "Economy cannot be null!");
+        if(ObsidianAuctions.econ == null) {
+            ObsidianAuctions.plugin.getLogger().log(Level.WARNING, "Economy cannot be null!");
             return "-";
         }
         //if (!floAuction.econ.isEnabled()) return "-";
-        String vaultFormat = FloAuction.econ.format(unsafeMoney);
+        String vaultFormat = ObsidianAuctions.econ.format(unsafeMoney);
         //DecimalFormat decFormat = new DecimalFormat("#,###.00");
         return vaultFormat;//decFormat.format(vaultFormat);
     }
@@ -148,21 +148,21 @@ public class Functions {
     }
 
     public static boolean withdrawPlayer(String playerName, double unsafeMoney) {
-        EconomyResponse receipt = FloAuction.econ.withdrawPlayer(playerName, unsafeMoney);
+        EconomyResponse receipt = ObsidianAuctions.econ.withdrawPlayer(playerName, unsafeMoney);
         return receipt.transactionSuccess();
     }
 
     public static boolean depositPlayer(String playerName, double unsafeMoney) {
-        EconomyResponse receipt = FloAuction.econ.depositPlayer(playerName, unsafeMoney);
+        EconomyResponse receipt = ObsidianAuctions.econ.depositPlayer(playerName, unsafeMoney);
         return receipt.transactionSuccess();
     }
 
     public static long getSafeMoney(Double money) {
         DecimalFormat twoDForm = new DecimalFormat("#");
-        return Long.valueOf(twoDForm.format(money * Math.pow(10, FloAuction.decimalPlaces)));
+        return Long.valueOf(twoDForm.format(money * Math.pow(10, ObsidianAuctions.decimalPlaces)));
     }
 
     public static double getUnsafeMoney(long money) {
-        return (double) money / Math.pow(10, FloAuction.decimalPlaces);
+        return (double) money / Math.pow(10, ObsidianAuctions.decimalPlaces);
     }
 }

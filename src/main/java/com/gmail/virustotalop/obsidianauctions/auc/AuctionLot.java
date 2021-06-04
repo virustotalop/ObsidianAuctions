@@ -1,7 +1,7 @@
-package com.flobi.floauction.auc;
+package com.gmail.virustotalop.obsidianauctions.auc;
 
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.util.Items;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.util.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -115,7 +115,7 @@ public class AuctionLot implements Serializable {
             // Give whatever items space permits at this time.
             ItemStack typeStack = getTypeStack();
             if(amountToGive > 0) {
-                FloAuction.getMessageManager().sendPlayerMessage("lot-give", playerName, (AuctionScope) null);
+                ObsidianAuctions.getMessageManager().sendPlayerMessage("lot-give", playerName, (AuctionScope) null);
             }
             while(amountToGive > 0) {
                 ItemStack givingItems = lotTypeLock.clone();
@@ -138,7 +138,7 @@ public class AuctionLot implements Serializable {
                     Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
                     drop.setItemStack(cloneStack);
                 }
-                FloAuction.getMessageManager().sendPlayerMessage("lot-drop", playerName, (AuctionScope) null);
+                ObsidianAuctions.getMessageManager().sendPlayerMessage("lot-drop", playerName, (AuctionScope) null);
             }
         } else {
             // Player is offline, queue lot for give on login.
@@ -150,7 +150,7 @@ public class AuctionLot implements Serializable {
             this.quantity = 0;
 
             // Queue for distribution on space availability.
-            FloAuction.saveOrphanLot(orphanLot);
+            ObsidianAuctions.saveOrphanLot(orphanLot);
         }
     }
 

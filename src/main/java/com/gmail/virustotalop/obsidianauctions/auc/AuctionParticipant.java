@@ -1,7 +1,7 @@
-package com.flobi.floauction.auc;
+package com.gmail.virustotalop.obsidianauctions.auc;
 
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.area.AreaManager;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.area.AreaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -110,7 +110,7 @@ public class AuctionParticipant {
         if(this.sentArenaWarning) {
             return;
         }
-        FloAuction.getMessageManager().sendPlayerMessage("arena-warning", this.playerName, (AuctionScope) null);
+        ObsidianAuctions.getMessageManager().sendPlayerMessage("arena-warning", this.playerName, (AuctionScope) null);
         this.sentArenaWarning = true;
     }
 
@@ -121,7 +121,7 @@ public class AuctionParticipant {
         if(this.sentEscapeWarning) {
             return;
         }
-        FloAuction.getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerName, (AuctionScope) null);
+        ObsidianAuctions.getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerName, (AuctionScope) null);
         this.sentEscapeWarning = true;
     }
 
@@ -133,8 +133,8 @@ public class AuctionParticipant {
      */
     public static boolean isParticipating(String playerName) {
         boolean participating = false;
-        for(int i = 0; i < FloAuction.auctionParticipants.size(); i++) {
-            AuctionParticipant participant = FloAuction.auctionParticipants.get(i);
+        for(int i = 0; i < ObsidianAuctions.auctionParticipants.size(); i++) {
+            AuctionParticipant participant = ObsidianAuctions.auctionParticipants.get(i);
             if(participant.isParticipating() && playerName.equalsIgnoreCase(participant.playerName)) {
                 participating = true;
             }
@@ -153,7 +153,7 @@ public class AuctionParticipant {
         if(AuctionParticipant.getParticipant(playerName) == null) {
             AuctionParticipant participant = new AuctionParticipant(playerName, auctionScope);
             participant.lastKnownGoodLocation = player.getLocation();
-            FloAuction.auctionParticipants.add(participant);
+            ObsidianAuctions.auctionParticipants.add(participant);
             participant.isParticipating();
         }
     }
@@ -165,8 +165,8 @@ public class AuctionParticipant {
      * @return participant instance
      */
     private static AuctionParticipant getParticipant(String playerName) {
-        for(int i = 0; i < FloAuction.auctionParticipants.size(); i++) {
-            AuctionParticipant participant = FloAuction.auctionParticipants.get(i);
+        for(int i = 0; i < ObsidianAuctions.auctionParticipants.size(); i++) {
+            AuctionParticipant participant = ObsidianAuctions.auctionParticipants.get(i);
             if(playerName.equalsIgnoreCase(participant.playerName)) {
                 return participant;
             }
@@ -218,7 +218,7 @@ public class AuctionParticipant {
             }
         }
 
-        if(!participating) FloAuction.auctionParticipants.remove(this);
+        if(!participating) ObsidianAuctions.auctionParticipants.remove(this);
         {
             return participating;
         }

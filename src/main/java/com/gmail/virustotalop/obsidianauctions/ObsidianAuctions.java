@@ -1,15 +1,15 @@
-package com.flobi.floauction;
+package com.gmail.virustotalop.obsidianauctions;
 
 import com.clubobsidian.wrappy.Configuration;
-import com.flobi.floauction.area.AreaManager;
-import com.flobi.floauction.auc.Auction;
-import com.flobi.floauction.auc.AuctionLot;
-import com.flobi.floauction.auc.AuctionParticipant;
-import com.flobi.floauction.auc.AuctionScope;
-import com.flobi.floauction.listener.InventoryClickListener;
-import com.flobi.floauction.message.AuctionMessageManager;
-import com.flobi.floauction.message.MessageManager;
-import com.flobi.floauction.util.Functions;
+import com.gmail.virustotalop.obsidianauctions.area.AreaManager;
+import com.gmail.virustotalop.obsidianauctions.auc.Auction;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionLot;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionParticipant;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.listener.InventoryClickListener;
+import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageManager;
+import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
+import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -32,7 +32,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.FileUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -43,7 +42,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
@@ -63,7 +61,7 @@ import java.util.logging.Level;
  *
  * @author Joshua "flobi" Hatfield
  */
-public class FloAuction extends JavaPlugin {
+public class ObsidianAuctions extends JavaPlugin {
 
     public static int decimalPlaces = 0;
     public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{0,1})?$";
@@ -79,7 +77,7 @@ public class FloAuction extends JavaPlugin {
     public static Configuration textConfig = null;
     private static File dataFolder;
     private static int queueTimer;
-    public static FloAuction plugin;
+    public static ObsidianAuctions plugin;
 
     private static int playerScopeCheckTimer;
     private static final Map<String, String> playerScopeCache = new HashMap<>();
@@ -112,8 +110,8 @@ public class FloAuction extends JavaPlugin {
      * @param auctionLot AuctionLot to save.
      */
     public static void saveOrphanLot(AuctionLot auctionLot) {
-        FloAuction.orphanLots.add(auctionLot);
-        saveObject(FloAuction.orphanLots, "orphanLots.ser");
+        ObsidianAuctions.orphanLots.add(auctionLot);
+        saveObject(ObsidianAuctions.orphanLots, "orphanLots.ser");
     }
 
     /**
@@ -261,7 +259,7 @@ public class FloAuction extends JavaPlugin {
         this.setupPermissions();
 
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            FloAuction.placeHolderApiEnabled = true;
+            ObsidianAuctions.placeHolderApiEnabled = true;
         }
 
         if(econ == null) {
@@ -279,7 +277,7 @@ public class FloAuction extends JavaPlugin {
             @EventHandler
             public void playerJoin(PlayerJoinEvent event) {
                 Player player = event.getPlayer();
-                FloAuction.killOrphan(player);
+                ObsidianAuctions.killOrphan(player);
                 AuctionScope.sendWelcomeMessage(player, true);
             }
 
@@ -388,7 +386,7 @@ public class FloAuction extends JavaPlugin {
         }
 
         orphanLots = loadArrayListAuctionLot("orphanLots.ser");
-        FloAuction.voluntarilyDisabledUsers = loadArrayListString("voluntarilyDisabledUsers.ser");
+        ObsidianAuctions.voluntarilyDisabledUsers = loadArrayListString("voluntarilyDisabledUsers.ser");
         suspendedUsers = loadArrayListString("suspendedUsers.ser");
         userSavedInputArgs = loadMapStringStringArray("userSavedInputArgs.ser");
 
@@ -466,15 +464,15 @@ public class FloAuction extends JavaPlugin {
         AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
 
         //Gui queue inventory name
-        FloAuction.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
-        FloAuction.itemBlacklist = config.getStringList("name-blacklist");
-        FloAuction.itemNameBlackListEnabled = config.getBoolean("name-blacklist-enabled");
-        FloAuction.enableChatMessages = config.getBoolean("enable-chat-messages");
-        FloAuction.enableActionbarMessages = config.getBoolean("enable-actionbar-messages");
-        FloAuction.allowRenamedItems = config.getBoolean("allow-renamed-items");
+        ObsidianAuctions.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
+        ObsidianAuctions.itemBlacklist = config.getStringList("name-blacklist");
+        ObsidianAuctions.itemNameBlackListEnabled = config.getBoolean("name-blacklist-enabled");
+        ObsidianAuctions.enableChatMessages = config.getBoolean("enable-chat-messages");
+        ObsidianAuctions.enableActionbarMessages = config.getBoolean("enable-actionbar-messages");
+        ObsidianAuctions.allowRenamedItems = config.getBoolean("allow-renamed-items");
 
         //Setup additional floAuction values
-        FloAuction.isDamagedAllowed = defConfig.getBoolean("allow-damaged-items");
+        ObsidianAuctions.isDamagedAllowed = defConfig.getBoolean("allow-damaged-items");
 
         //make values null at the end
         defConfig = null;
@@ -490,9 +488,9 @@ public class FloAuction extends JavaPlugin {
     public void onDisable() {
         AuctionScope.cancelAllAuctions();
         this.getServer().getScheduler().cancelTask(queueTimer);
-        FloAuction.plugin = null;
+        ObsidianAuctions.plugin = null;
         this.logToBukkit("plugin-disabled", Level.INFO);
-        FloAuction.auctionLog = null;
+        ObsidianAuctions.auctionLog = null;
     }
 
     // Overrides onCommand from Plugin
@@ -713,8 +711,8 @@ public class FloAuction extends JavaPlugin {
                     String[] mergedArgs = Functions.mergeInputArgs(playerName, args, true);
 
                     if(mergedArgs != null) {
-                        FloAuction.userSavedInputArgs.put(playerName, mergedArgs);
-                        FloAuction.saveObject(FloAuction.userSavedInputArgs, "userSavedInputArgs.ser");
+                        ObsidianAuctions.userSavedInputArgs.put(playerName, mergedArgs);
+                        ObsidianAuctions.saveObject(ObsidianAuctions.userSavedInputArgs, "userSavedInputArgs.ser");
                         messageManager.sendPlayerMessage("prep-save-success", playerName, (AuctionScope) null);
                     }
 
@@ -815,7 +813,7 @@ public class FloAuction extends JavaPlugin {
                         messageManager.sendPlayerMessage("auction-queue-status-not-in-queue", playerName, (AuctionScope) null);
                         return true;
                     }
-                    Inventory inv = Bukkit.createInventory(null, 18, FloAuction.guiQueueName);
+                    Inventory inv = Bukkit.createInventory(null, 18, ObsidianAuctions.guiQueueName);
                     for(int i = 0; i < auctionQueue.size(); i++) {
                         if(i == inv.getSize())
                             break;

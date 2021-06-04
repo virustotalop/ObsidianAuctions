@@ -1,14 +1,14 @@
-package com.flobi.floauction.auc;
+package com.gmail.virustotalop.obsidianauctions.auc;
 
-import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.area.AreaManager;
-import com.flobi.floauction.event.AuctionBidEvent;
-import com.flobi.floauction.event.AuctionEndEvent;
-import com.flobi.floauction.event.AuctionStartEvent;
-import com.flobi.floauction.message.MessageManager;
-import com.flobi.floauction.util.Functions;
-import com.flobi.floauction.util.Items;
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.area.AreaManager;
+import com.gmail.virustotalop.obsidianauctions.event.AuctionBidEvent;
+import com.gmail.virustotalop.obsidianauctions.event.AuctionEndEvent;
+import com.gmail.virustotalop.obsidianauctions.event.AuctionStartEvent;
+import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
+import com.gmail.virustotalop.obsidianauctions.util.Functions;
+import com.gmail.virustotalop.obsidianauctions.util.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public class Auction {
 
-    protected FloAuction plugin;
+    protected ObsidianAuctions plugin;
     private final String[] args;
     private String ownerName;
     private final AuctionScope scope;
@@ -79,7 +79,7 @@ public class Auction {
      * @param scope        the hosting AuctionScope
      * @param sealed       whether or not it is a sealed auction
      */
-    public Auction(FloAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) {
+    public Auction(ObsidianAuctions plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) {
         this.ownerName = auctionOwner.getName();
         this.args = Functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
         this.plugin = plugin;
@@ -172,7 +172,7 @@ public class Auction {
         }
 
         if(preAuctionTax > 0D) {
-            if(!FloAuction.econ.has(this.ownerName, preAuctionTax)) {
+            if(!ObsidianAuctions.econ.has(this.ownerName, preAuctionTax)) {
                 this.messageManager.sendPlayerMessage("auction-fail-start-tax", this.ownerName, this);
                 return false;
             }
@@ -184,13 +184,13 @@ public class Auction {
         }
 
         if(preAuctionTax > 0D) {
-            if(FloAuction.econ.has(this.ownerName, preAuctionTax)) {
-                FloAuction.econ.withdrawPlayer(this.ownerName, preAuctionTax);
+            if(ObsidianAuctions.econ.has(this.ownerName, preAuctionTax)) {
+                ObsidianAuctions.econ.withdrawPlayer(this.ownerName, preAuctionTax);
                 this.extractedPreTax = preAuctionTax;
                 this.messageManager.sendPlayerMessage("auction-start-tax", this.ownerName, this);
                 String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", scope);
                 if(!taxDestinationUser.isEmpty()) {
-                    FloAuction.econ.depositPlayer(taxDestinationUser, preAuctionTax);
+                    ObsidianAuctions.econ.depositPlayer(taxDestinationUser, preAuctionTax);
                 }
             }
         }
@@ -632,9 +632,9 @@ public class Auction {
         //Implementing allowing auctioned mob-spawners
         //if display name is not empty do function if not fall through to next if
         if(!displayName.isEmpty()) {
-            if(FloAuction.itemNameBlackListEnabled) {
+            if(ObsidianAuctions.itemNameBlackListEnabled) {
                 String lowerCaseDisplay = displayName.toLowerCase();
-                for(String string : FloAuction.itemBlacklist) {
+                for(String string : ObsidianAuctions.itemBlacklist) {
                     if(lowerCaseDisplay.contains(string)) {
                         this.messageManager.sendPlayerMessage("auction-fail-blacklist-name", ownerName, this);
                         return false;
@@ -835,7 +835,7 @@ public class Auction {
             if(this.args[1].isEmpty()) {
                 this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerName, this);
                 return false;
-            } else if(!args[1].matches(FloAuction.decimalRegex)) {
+            } else if(!args[1].matches(ObsidianAuctions.decimalRegex)) {
                 this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerName, this);
                 return false;
             }
@@ -861,7 +861,7 @@ public class Auction {
         }
 
         if(this.args.length > 2) {
-            if(!this.args[2].isEmpty() && args[2].matches(FloAuction.decimalRegex)) {
+            if(!this.args[2].isEmpty() && args[2].matches(ObsidianAuctions.decimalRegex)) {
                 this.minBidIncrement = Functions.getSafeMoney(Double.parseDouble(this.args[2]));
             } else {
                 this.messageManager.sendPlayerMessage("parse-error-invalid-bid-increment", this.ownerName, this);
@@ -921,7 +921,7 @@ public class Auction {
         }
 
         if(this.args.length > 4) {
-            if(!this.args[4].isEmpty() && this.args[4].matches(FloAuction.decimalRegex)) {
+            if(!this.args[4].isEmpty() && this.args[4].matches(ObsidianAuctions.decimalRegex)) {
                 this.buyNow = Functions.getSafeMoney(Double.parseDouble(args[4]));
             } else {
                 this.messageManager.sendPlayerMessage("parse-error-invalid-buynow", this.ownerName, this);

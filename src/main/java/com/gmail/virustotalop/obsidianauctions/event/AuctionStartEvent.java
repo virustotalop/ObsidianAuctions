@@ -1,20 +1,27 @@
-package com.flobi.floauction.event;
+package com.gmail.virustotalop.obsidianauctions.event;
 
-import com.flobi.floauction.auc.Auction;
+import com.gmail.virustotalop.obsidianauctions.auc.Auction;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class AuctionEndEvent extends Event implements Cancellable {
+public class AuctionStartEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
     private boolean cancelled;
+    private final Player player;
     private final Auction auction;
 
-    public AuctionEndEvent(Auction auction, boolean cancelled) {
+    public AuctionStartEvent(Player player, Auction auction) {
+        this.player = player;
         this.auction = auction;
-        this.cancelled = cancelled;
+        this.cancelled = false;
+    }
+
+    public Player getPlayer() {
+        return this.player;
     }
 
     public Auction getAuction() {
@@ -34,6 +41,6 @@ public class AuctionEndEvent extends Event implements Cancellable {
     }
 
     public static HandlerList getHandlerList() {
-        return AuctionEndEvent.handlers;
+        return AuctionStartEvent.handlers;
     }
 }

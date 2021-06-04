@@ -1,6 +1,6 @@
-package com.flobi.floauction.auc;
+package com.gmail.virustotalop.obsidianauctions.auc;
 
-import com.flobi.floauction.FloAuction;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -72,7 +72,7 @@ public class AuctionProhibition {
                 }
                 if(auctionProhibition.reminderMessage == null) {
                     // Send stock message.
-                    FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-reminder", playerName, (AuctionScope) null);
+                    ObsidianAuctions.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-reminder", playerName, (AuctionScope) null);
                 } else {
                     player.sendMessage(auctionProhibition.reminderMessage);
                 }
@@ -101,7 +101,7 @@ public class AuctionProhibition {
                 }
                 if(auctionProhibition.reminderMessage == null) {
                     // Send stock message.
-                    FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-reminder", playerName, (AuctionScope) null);
+                    ObsidianAuctions.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-reminder", playerName, (AuctionScope) null);
                 } else {
                     player.sendMessage(auctionProhibition.reminderMessage);
                 }
@@ -153,7 +153,7 @@ public class AuctionProhibition {
         }
         if(enableMessage == null) {
             // Send stock message.
-            FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-enabled", playerName, (AuctionScope) null);
+            ObsidianAuctions.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-enabled", playerName, (AuctionScope) null);
         } else {
             player.sendMessage(enableMessage);
         }
@@ -174,7 +174,7 @@ public class AuctionProhibition {
                 if(player != null) {
                     if(auctionProhibition.disableMessage == null) {
                         // Send stock message.
-                        FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-disabled", playerName, (AuctionScope) null);
+                        ObsidianAuctions.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-disabled", playerName, (AuctionScope) null);
                     } else {
                         player.sendMessage(auctionProhibition.disableMessage);
                     }
@@ -189,7 +189,7 @@ public class AuctionProhibition {
             if(player != null) {
                 if(auctionProhibition.enableMessage == null) {
                     // Send stock message.
-                    FloAuction.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-enabled", playerName, (AuctionScope) null);
+                    ObsidianAuctions.getMessageManager().sendPlayerMessage("remote-plugin-prohibition-enabled", playerName, (AuctionScope) null);
                 } else {
                     player.sendMessage(auctionProhibition.enableMessage);
                 }

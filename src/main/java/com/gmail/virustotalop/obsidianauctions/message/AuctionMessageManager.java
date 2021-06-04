@@ -1,13 +1,13 @@
-package com.flobi.floauction.message;
+package com.gmail.virustotalop.obsidianauctions.message;
 
-import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.auc.Auction;
-import com.flobi.floauction.auc.AuctionBid;
-import com.flobi.floauction.auc.AuctionScope;
-import com.flobi.floauction.util.Functions;
-import com.flobi.floauction.util.Items;
-import com.flobi.floauction.util.PlaceholderAPIUtil;
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.auc.Auction;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionBid;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.util.Functions;
+import com.gmail.virustotalop.obsidianauctions.util.Items;
+import com.gmail.virustotalop.obsidianauctions.util.PlaceholderAPIUtil;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -179,12 +179,12 @@ public class AuctionMessageManager extends MessageManager {
         if(sender != null) {
             if(sender instanceof Player) {
                 player = (Player) sender;
-                if(!fullBroadcast && FloAuction.getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1) {
+                if(!fullBroadcast && ObsidianAuctions.getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1) {
                     // Don't send this user any messages.
                     return;
                 }
             } else {
-                if(!fullBroadcast && FloAuction.getVoluntarilyDisabledUsers().indexOf("*console*") != -1) {
+                if(!fullBroadcast && ObsidianAuctions.getVoluntarilyDisabledUsers().indexOf("*console*") != -1) {
                     // Don't send console any messages.
                     return;
                 }
@@ -199,17 +199,17 @@ public class AuctionMessageManager extends MessageManager {
             for(String message : messages) {
                 player.sendMessage(message);
 
-                FloAuction.log(player.getName(), message, auctionScope);
+                ObsidianAuctions.log(player.getName(), message, auctionScope);
             }
         } else if(sender != null) {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             for(String message : messages) {
                 console.sendMessage(ChatColor.stripColor(message));
-                FloAuction.log("CONSOLE", message, auctionScope);
+                ObsidianAuctions.log("CONSOLE", message, auctionScope);
             }
         } else {
             for(String message : messages) {
-                FloAuction.log("NO TARGET!", message, auctionScope);
+                ObsidianAuctions.log("NO TARGET!", message, auctionScope);
             }
         }
     }
@@ -223,23 +223,23 @@ public class AuctionMessageManager extends MessageManager {
     private static void broadcastMessage(List<String> messages, AuctionScope auctionScope) {
         Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
         for(Player player : onlinePlayers) {
-            if(FloAuction.getVoluntarilyDisabledUsers().contains(player.getName())) {
+            if(ObsidianAuctions.getVoluntarilyDisabledUsers().contains(player.getName())) {
                 continue;
             } else if(auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) {
                 continue;
             }
 
             for(String message : messages) {
-                if(FloAuction.enableChatMessages) {
+                if(ObsidianAuctions.enableChatMessages) {
                     player.sendMessage(message);
                 }
-                if(FloAuction.enableActionbarMessages) {
+                if(ObsidianAuctions.enableActionbarMessages) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
                 }
             }
         }
 
-        if(auctionScope == null && FloAuction.getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
+        if(auctionScope == null && ObsidianAuctions.getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
             for(String message : messages) {
                 message = ChatColor.stripColor(message);
                 Bukkit.getConsoleSender().sendMessage(message);
@@ -247,7 +247,7 @@ public class AuctionMessageManager extends MessageManager {
         }
         for(String message : messages) {
             message = ChatColor.stripColor(message);
-            FloAuction.log("BROADCAST", message, auctionScope);
+            ObsidianAuctions.log("BROADCAST", message, auctionScope);
         }
     }
 
@@ -456,10 +456,10 @@ public class AuctionMessageManager extends MessageManager {
             String message = messageList.get(l);
             if(message.length() > 0 && (message.contains("%conditional-true%") || message.contains("%conditional-false%"))) {
                 conditionals.put("%always-true%", true);
-                conditionals.put("%is-admin%", player != null && FloAuction.perms.has(player, "auction.admin")); //1
-                conditionals.put("%can-start%", player != null && FloAuction.perms.has(player, "auction.start")); //2
-                conditionals.put("%can-bid%", player != null && FloAuction.perms.has(player, "auction.bid")); //3
-                conditionals.put("%has-display-name%", lot != null && FloAuction.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
+                conditionals.put("%is-admin%", player != null && ObsidianAuctions.perms.has(player, "auction.admin")); //1
+                conditionals.put("%can-start%", player != null && ObsidianAuctions.perms.has(player, "auction.start")); //2
+                conditionals.put("%can-bid%", player != null && ObsidianAuctions.perms.has(player, "auction.bid")); //3
+                conditionals.put("%has-display-name%", lot != null && ObsidianAuctions.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
                 //conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //4 -> probably not needed
                 conditionals.put("%has-enchantment%", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
                 conditionals.put("%is-sealed%", auction != null && auction.sealed); //6
@@ -601,7 +601,7 @@ public class AuctionMessageManager extends MessageManager {
         }
 
         if(newMessageList != null) {
-            if(FloAuction.placeHolderApiEnabled) {
+            if(ObsidianAuctions.placeHolderApiEnabled) {
                 for(int i = 0; i < newMessageList.size(); i++) {
                     newMessageList.set(i, PlaceholderAPIUtil.setPlaceHolders(player, newMessageList.get(i)));
                 }

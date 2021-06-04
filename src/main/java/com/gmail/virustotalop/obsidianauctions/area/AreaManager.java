@@ -1,9 +1,9 @@
-package com.flobi.floauction.area;
+package com.gmail.virustotalop.obsidianauctions.area;
 
-import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.auc.AuctionScope;
-import com.flobi.floauction.listener.MobArenaListener;
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.listener.MobArenaListener;
 import com.garbagemule.MobArena.MobArena;
 import com.tommytony.war.War;
 import com.tommytony.war.Warzone;
@@ -30,7 +30,7 @@ public class AreaManager {
      *
      * @param plugin the floAuction instance to pass into the listener
      */
-    public static void loadArenaListeners(FloAuction plugin) {
+    public static void loadArenaListeners(ObsidianAuctions plugin) {
         PluginManager pluginManager = Bukkit.getPluginManager();
         // Load plugins
         if(AreaManager.mobArena == null) {

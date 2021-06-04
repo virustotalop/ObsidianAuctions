@@ -1,9 +1,9 @@
-package com.flobi.floauction.auc;
+package com.gmail.virustotalop.obsidianauctions.auc;
 
-import com.flobi.floauction.AuctionConfig;
-import com.flobi.floauction.FloAuction;
-import com.flobi.floauction.util.Functions;
-import com.flobi.floauction.util.Items;
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.util.Functions;
+import com.gmail.virustotalop.obsidianauctions.util.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -130,14 +130,14 @@ public class AuctionBid {
             this.auction.messageManager.sendPlayerMessage("auction-end-tax", this.auction.getOwner(), this.auction);
             unsafeBidAmount -= taxes;
             String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", this.auction.getScope());
-            if(!taxDestinationUser.isEmpty()) FloAuction.econ.depositPlayer(taxDestinationUser, taxes);
+            if(!taxDestinationUser.isEmpty()) ObsidianAuctions.econ.depositPlayer(taxDestinationUser, taxes);
         }
 
         // Apply winnings to auction owner.
-        FloAuction.econ.depositPlayer(this.auction.getOwner(), unsafeBidAmount);
+        ObsidianAuctions.econ.depositPlayer(this.auction.getOwner(), unsafeBidAmount);
 
         // Refund remaining reserve.
-        FloAuction.econ.depositPlayer(this.bidderName, this.reserve - unsafeBidAmount - taxes);
+        ObsidianAuctions.econ.depositPlayer(this.bidderName, this.reserve - unsafeBidAmount - taxes);
 
         this.reserve = 0;
     }
@@ -228,11 +228,11 @@ public class AuctionBid {
      */
     private Boolean parseArgBid() {
         if(this.args.length > 0) {
-            if(!this.args[0].isEmpty() && args[0].matches(FloAuction.decimalRegex)) {
+            if(!this.args[0].isEmpty() && args[0].matches(ObsidianAuctions.decimalRegex)) {
                 this.bidAmount = Functions.getSafeMoney(Double.parseDouble(this.args[0]));
                 /*Should fix the bug that allowed over-sized payments
                  */
-                if(this.bidAmount > FloAuction.econ.getBalance(this.bidderName)) {
+                if(this.bidAmount > ObsidianAuctions.econ.getBalance(this.bidderName)) {
                     this.error = "bid-fail-cant-allocate-funds";
                     return false;
                 } else if(this.bidAmount == 0) {
@@ -288,7 +288,7 @@ public class AuctionBid {
             return true;
         }
         if(this.args.length > 1) {
-            if(!args[1].isEmpty() && args[1].matches(FloAuction.decimalRegex)) {
+            if(!args[1].isEmpty() && args[1].matches(ObsidianAuctions.decimalRegex)) {
                 this.maxBidAmount = Functions.getSafeMoney(Double.parseDouble(this.args[1]));
             } else {
                 this.error = "parse-error-invalid-max-bid";
