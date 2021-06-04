@@ -123,8 +123,7 @@ public class ObsidianAuctions extends JavaPlugin {
     private static void saveObject(Object object, String filename) {
         File saveFile = new File(dataFolder, filename);
         try {
-            if(saveFile.exists()) //file exists, delete it
-            {
+            if(saveFile.exists()) {
                 saveFile.delete();
             }
             FileOutputStream file = new FileOutputStream(saveFile.getAbsolutePath());
@@ -138,7 +137,7 @@ public class ObsidianAuctions extends JavaPlugin {
                 file.close(); //make sure these are closed
             }
         } catch(IOException ex) {
-            return;
+            ex.printStackTrace();
         }
     }
 
@@ -149,14 +148,14 @@ public class ObsidianAuctions extends JavaPlugin {
      * @return the resulting string array
      */
     @SuppressWarnings({"unchecked", "finally"})
-    private static ArrayList<String> loadArrayListString(String filename) {
+    private static List<String> loadStringList(String filename) {
         File saveFile = new File(dataFolder, filename);
-        ArrayList<String> importedObjects = new ArrayList<String>();
+        List<String> importedObjects = new ArrayList<String>();
         try {
             InputStream file = new FileInputStream(saveFile.getAbsolutePath());
             InputStream buffer = new BufferedInputStream(file);
             ObjectInput input = new ObjectInputStream(buffer);
-            importedObjects = (ArrayList<String>) input.readObject();
+            importedObjects = (List<String>) input.readObject();
             input.close();
             buffer.close(); //make sure these are closed
             file.close(); //make sure these are closed
@@ -195,20 +194,21 @@ public class ObsidianAuctions extends JavaPlugin {
      * @return the loaded list
      */
     @SuppressWarnings("unchecked")
-    private static ArrayList<AuctionLot> loadArrayListAuctionLot(String filename) {
+    private static List<AuctionLot> loadListAuctionLot(String filename) {
         File saveFile = new File(dataFolder, filename);
-        ArrayList<AuctionLot> importedObjects = new ArrayList<AuctionLot>();
+        List<AuctionLot> importedObjects = new ArrayList<>();
         try {
             InputStream file = new FileInputStream(saveFile.getAbsolutePath());
             InputStream buffer = new BufferedInputStream(file);
             ObjectInput input = new ObjectInputStream(buffer);
-            importedObjects = (ArrayList<AuctionLot>) input.readObject();
+            importedObjects = (List<AuctionLot>) input.readObject();
             input.close();
             buffer.close(); //make sure these are closed
             file.close();   //make sure these are closed
-        } catch(IOException e) {
-        } catch(ClassNotFoundException e) {
+        } catch(IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
         }
+
         return importedObjects;
     }
 
@@ -385,9 +385,9 @@ public class ObsidianAuctions extends JavaPlugin {
             }, playerScopeCheckInterval, playerScopeCheckInterval);
         }
 
-        orphanLots = loadArrayListAuctionLot("orphanLots.ser");
-        ObsidianAuctions.voluntarilyDisabledUsers = loadArrayListString("voluntarilyDisabledUsers.ser");
-        suspendedUsers = loadArrayListString("suspendedUsers.ser");
+        orphanLots = loadListAuctionLot("orphanLots.ser");
+        ObsidianAuctions.voluntarilyDisabledUsers = loadStringList("voluntarilyDisabledUsers.ser");
+        suspendedUsers = loadStringList("suspendedUsers.ser");
         userSavedInputArgs = loadMapStringStringArray("userSavedInputArgs.ser");
 
         messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
