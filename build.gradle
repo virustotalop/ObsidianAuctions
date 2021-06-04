@@ -23,6 +23,14 @@ processResources {
 shadowJar {
     archiveBaseName.set('ObsidianAuctions')
     archiveClassifier.set('')
+    relocate 'com.clubobsidian.wrappy', 'com.gmail.virustotalop.obsidianauctions.shaded.wrappy'
+    relocate 'com.fasterxml.jackson', 'com.gmail.virustotalop.obsidianauctions.shaded.jackson'
+    relocate 'com.typesafe.config', 'com.gmail.virustotalop.obsidianauctions.shaded.hocon'
+    relocate 'io.leangen', 'com.gmail.virustotalop.obsidianauctions.shaded.leangen'
+    relocate 'org.apache.commons.io', 'com.gmail.virustotalop.obsidianauctions.shaded.commonsio'
+    relocate 'org.checkerframework', 'com.gmail.virustotalop.obsidianauctions.shaded.checkerframework'
+    relocate 'org.spongepowered.configurate', 'com.gmail.virustotalop.obsidianauctions.shaded.configurate'
+    relocate 'org.yaml.snakeyaml', 'com.gmail.virustotalop.obsidianauctions.shaded.snakeyaml'
 }
 
 repositories {
