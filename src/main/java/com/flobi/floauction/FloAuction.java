@@ -1,7 +1,6 @@
 package com.flobi.floauction;
 
 import com.clubobsidian.wrappy.Configuration;
-import com.clubobsidian.wrappy.ConfigurationType;
 import com.flobi.floauction.area.AreaManager;
 import com.flobi.floauction.auc.Auction;
 import com.flobi.floauction.auc.AuctionLot;
@@ -72,8 +71,8 @@ public class FloAuction extends JavaPlugin {
     private static File auctionLog = null;
     private static boolean suspendAllAuctions = false;
     public static boolean isDamagedAllowed;
-    public static List<AuctionParticipant> auctionParticipants = new ArrayList<AuctionParticipant>();
-    public static Map<String, String[]> userSavedInputArgs = new HashMap<String, String[]>();
+    public static List<AuctionParticipant> auctionParticipants = new ArrayList<>();
+    public static Map<String, String[]> userSavedInputArgs = new HashMap<>();
 
     // Config files info.
     public static Configuration config = null;
@@ -85,9 +84,9 @@ public class FloAuction extends JavaPlugin {
     private static int playerScopeCheckTimer;
     private static final Map<String, String> playerScopeCache = new HashMap<>();
 
-    private static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();
-    private static ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();
-    private static ArrayList<String> suspendedUsers = new ArrayList<String>();
+    private static List<AuctionLot> orphanLots = new ArrayList<>();
+    private static List<String> voluntarilyDisabledUsers = new ArrayList<>();
+    private static List<String> suspendedUsers = new ArrayList<>();
 
     private static final MessageManager messageManager = new AuctionMessageManager();
 
@@ -941,7 +940,7 @@ public class FloAuction extends JavaPlugin {
         return auctionScope.getActiveAuction();
     }
 
-    public static ArrayList<String> getVoluntarilyDisabledUsers() {
+    public static List<String> getVoluntarilyDisabledUsers() {
         return voluntarilyDisabledUsers;
     }
 
