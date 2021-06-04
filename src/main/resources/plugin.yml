@@ -1,6 +1,6 @@
 name: ObsidianAuctions
 main: com.gmail.virustotalop.obsidianauctions.ObsidianAuctions
-version: "@VERSION@"
+version: {pluginVersion}
 description: An auction plugin that is a fork of floAuction.
 authors: [flobi, VirusTotal]
 softdepend: [Vault, PlaceholderAPI]
