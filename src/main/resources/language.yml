@@ -165,7 +165,7 @@ auction-help:
   - '%can-start%%end%%is-item-logic%%end%&b/auction&4|&bauc
   prep&4|&bp &6[QTY] [PRICE] [INC] [TIME]%allow-buynow% [BUYNOW]%end-allow-buynow%&9
   - Assigns your default values when placing auctions.'
-  - '%can-start%%end%%is-item-logic%%end%%conditional-true%%allow-early-bid%&b/auction&4|&bauc
+  - '%can-start%%end%%is-item-logic%%end%%allow-early-bid%&b/auction&4|&bauc
   end&4|&be&4|&bstop&9 - Ends current auction'
   - '%can-start%%end%%is-item-logic%%end%%cancel-prevention-percent%%end%&b/auction&4|&bauc
   cancel&4|&bc&9 - Cancels current auction'

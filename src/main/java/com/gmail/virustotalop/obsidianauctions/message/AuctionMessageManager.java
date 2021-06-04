@@ -395,7 +395,7 @@ public class AuctionMessageManager extends MessageManager {
         Map<String, Boolean> conditionals = new HashMap<>();
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
-            if(message.length() > 0 && (message.contains("%conditional-true%") || message.contains("%conditional-false%"))) {
+            if(message.length() > 0) {
                 conditionals.put("is-admin", player != null && ObsidianAuctions.perms.has(player, "auction.admin")); //1
                 conditionals.put("can-start", player != null && ObsidianAuctions.perms.has(player, "auction.start")); //2
                 conditionals.put("can-bid", player != null && ObsidianAuctions.perms.has(player, "auction.bid")); //3
