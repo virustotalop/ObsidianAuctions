@@ -29,6 +29,7 @@ shadowJar {
     relocate 'org.checkerframework', 'com.gmail.virustotalop.obsidianauctions.shaded.checkerframework'
     relocate 'org.spongepowered.configurate', 'com.gmail.virustotalop.obsidianauctions.shaded.configurate'
     relocate 'org.yaml.snakeyaml', 'com.gmail.virustotalop.obsidianauctions.shaded.snakeyaml'
+    minimize()
 }
 
 repositories {
