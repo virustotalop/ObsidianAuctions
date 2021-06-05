@@ -387,8 +387,7 @@ public class Auction {
      * @param bidder    Player attempting to bid
      * @param inputArgs parameters entered in chat
      */
-    public void Bid(Player bidder, String[] inputArgs) {
-
+    public void bid(Player bidder, String[] inputArgs) {
         if(bidder == null) {
             return;
         }

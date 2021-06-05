@@ -855,7 +855,7 @@ public class ObsidianAuctions extends JavaPlugin {
                 messageManager.sendPlayerMessage("bid-fail-no-auction", playerName, (AuctionScope) null);
                 return true;
             }
-            auction.Bid(player, args);
+            auction.bid(player, args);
             return true;
         }
         return false;
