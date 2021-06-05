@@ -425,14 +425,12 @@ public class AuctionMessageManager extends MessageManager {
             }
         }
 
-        System.out.println("lore: " + conditionals.get("item-has-lore"));
-
         // Apply replacements and duplicate/remove rows that need it.
         for(int l = 0; l < messageList.size(); l++) {
             String message = ChatColor.translateAlternateColorCodes('&', messageList.get(l));
 
             if(message.length() > 0) {
-                message = parseConditionals(message, conditionals);
+                message = this.parseConditionals(message, conditionals);
             }
             if(message.length() == 0) { //If the length is 0 due to replacements just keep going
                 continue;
@@ -522,7 +520,6 @@ public class AuctionMessageManager extends MessageManager {
                     }
                 } else if(message.contains("%repeatable-lore%")) {
                     if(auction != null) {
-                        System.out.println("lore: " + message);
                         String[] lore = Items.getLore(lot);
                         for(int j = 0; j < lore.length; j++) {
                             if(message.length() > 0) {
@@ -581,6 +578,7 @@ public class AuctionMessageManager extends MessageManager {
                             built += "{" + inner + "}";
                         }
                         inner = ""; //Clear the inner text
+                        not = false;
                     }
                 } else if(ch == '{'){ //If it is the open bracket we should check start checking for the inner contents
                     open = true;

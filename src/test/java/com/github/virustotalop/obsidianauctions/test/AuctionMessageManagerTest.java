@@ -65,6 +65,16 @@ public class AuctionMessageManagerTest {
     }
 
     @Test
+    public void testParseConditionalsDoubleEndWithFalseEnd() {
+        AuctionMessageManager manager = new AuctionMessageManager();
+        Map<String, Boolean> conditionals = new HashMap<>();
+        conditionals.put("true", true);
+        conditionals.put("false", false);
+        String parsed = manager.parseConditionals("{!false}{end}{false}{end}other text", conditionals);
+        assertEquals("", parsed);
+    }
+
+    @Test
     public void testParseConditionalsDoNotEndMultipleConditionals() {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
