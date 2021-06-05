@@ -1,7 +1,7 @@
 <div align="center">
 <h1>ObsidianAuctions</h1>
 
-<p>An auction plugin for spigot 1.8+, you can find it <a href=https://www.spigotmc.org/resources/obsidianauctions.5595/">here on spigot!</a></p>
+<p>An auction plugin for spigot 1.12.2+, you can find it <a href=https://www.spigotmc.org/resources/obsidianauctions.5595/">here on spigot!</a></p>
 <p>5.0.0 is under heavy development and is not currently considered production ready. You can find the old code on the 4.1.1 branch but it is not recommended to run old builds due to them having numerous bugs which is why 5.0.0 has quite a bit of the old code rewritten.</p>
  </div>
 
