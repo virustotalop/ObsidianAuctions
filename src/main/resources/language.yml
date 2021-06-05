@@ -182,11 +182,10 @@ auction-start-tax: You have been charged an auction tax of %auction-pre-tax%.
 auction-end-tax: An auction tax of %auction-post-tax% has been extracted from your winnings.
 auction-info:
   - '&b%auction-owner-name%&9 is auctioning &f%auction-quantity% {has-durability}&4damaged
-  %end-has-durability%%has-enchantment%&benchanted %end-has-enchantment%
-  &a%item-material-name%&9
-  named &f"%item-display-name%"&9 for &c%auction-remaining-time%&9.
+  {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}&a%item-material-name%{has-display-name}&9
+  named &f"%item-display-name%"{end-has-display-name}&9 for &c%auction-remaining-time%&9.
   Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  {is-buynow}Buy now: &6%auction-buy-now%&9. {end-is-buynow}Type
+  {is-buynow}Buy now: &6%auction-buy-now%&9. {end-is-buynow}{is-broadcast}{end}Type
   &a/auction info&9 for full details.'
   - '{!is-broadcast}{end}{has-durability}{end}&lItem damaged: &6%item-durability-left% &aremaining.'
   - '{!is-broadcast}{end}{has-enchantments}{end}Enchantments:
