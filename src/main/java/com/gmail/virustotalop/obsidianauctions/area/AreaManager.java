@@ -2,7 +2,7 @@ package com.gmail.virustotalop.obsidianauctions.area;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.listener.MobArenaListener;
 import com.garbagemule.MobArena.MobArena;
 import com.tommytony.war.War;

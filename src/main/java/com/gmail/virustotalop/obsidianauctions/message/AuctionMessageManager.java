@@ -2,9 +2,9 @@ package com.gmail.virustotalop.obsidianauctions.message;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.gmail.virustotalop.obsidianauctions.auc.Auction;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionBid;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.Auction;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionBid;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.PlaceholderAPIUtil;

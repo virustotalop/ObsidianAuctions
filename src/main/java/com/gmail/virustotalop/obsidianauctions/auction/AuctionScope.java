@@ -1,4 +1,4 @@
-package com.gmail.virustotalop.obsidianauctions.auc;
+package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.clubobsidian.wrappy.Configuration;
 import com.clubobsidian.wrappy.ConfigurationSection;

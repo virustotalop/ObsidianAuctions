@@ -1,4 +1,4 @@
-package com.gmail.virustotalop.obsidianauctions.auc;
+package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import org.bukkit.Bukkit;

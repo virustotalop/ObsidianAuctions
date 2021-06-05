@@ -2,7 +2,7 @@ package com.gmail.virustotalop.obsidianauctions.util;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.text.DecimalFormat;

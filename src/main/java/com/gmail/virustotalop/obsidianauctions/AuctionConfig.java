@@ -1,7 +1,7 @@
 package com.gmail.virustotalop.obsidianauctions;
 
 import com.clubobsidian.wrappy.ConfigurationSection;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 
 import java.util.HashMap;

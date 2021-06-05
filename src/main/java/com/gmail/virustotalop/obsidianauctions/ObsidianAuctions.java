@@ -2,10 +2,10 @@ package com.gmail.virustotalop.obsidianauctions;
 
 import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.area.AreaManager;
-import com.gmail.virustotalop.obsidianauctions.auc.Auction;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionLot;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionParticipant;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.Auction;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionLot;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.listener.InventoryClickListener;
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageManager;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;

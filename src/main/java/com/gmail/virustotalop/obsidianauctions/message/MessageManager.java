@@ -1,7 +1,7 @@
 package com.gmail.virustotalop.obsidianauctions.message;
 
-import com.gmail.virustotalop.obsidianauctions.auc.Auction;
-import com.gmail.virustotalop.obsidianauctions.auc.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.Auction;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 
 import java.util.List;
 

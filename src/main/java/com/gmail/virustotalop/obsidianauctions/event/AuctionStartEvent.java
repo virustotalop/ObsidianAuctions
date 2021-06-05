@@ -1,6 +1,6 @@
 package com.gmail.virustotalop.obsidianauctions.event;
 
-import com.gmail.virustotalop.obsidianauctions.auc.Auction;
+import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
