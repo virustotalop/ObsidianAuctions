@@ -567,7 +567,7 @@ public class AuctionMessageManager extends MessageManager {
                             break;
                         }
                     } else if(inner.startsWith("end-")) { //The end of a conditional should match to the original
-                        open = false;
+                        System.out.println("End: " + inner);
                         inner = "";
                         copyInner = true;
                         not = false;

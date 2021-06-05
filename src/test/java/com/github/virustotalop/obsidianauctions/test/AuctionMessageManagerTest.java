@@ -51,7 +51,7 @@ public class AuctionMessageManagerTest {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
-        String parsed = manager.parseConditionals("%true%%other text%%true-end%", conditionals);
+        String parsed = manager.parseConditionals("%true%%other text%%end-true%", conditionals);
         assertEquals("%other text%", parsed);
     }
 
