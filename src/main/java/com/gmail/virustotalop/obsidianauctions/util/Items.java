@@ -57,12 +57,12 @@ public class Items {
 
         while(true) {
             // Do we already have a stack of it?
-            int firstPartial = firstPartial(item, playerInventory.getContents());
+            int firstPartial = firstPartial(item, playerInventory.getStorageContents());
 
             // Drat! no partial stack
             if(firstPartial == -1) {
                 // Find a free spot!
-                int firstFree = firstEmpty(playerInventory.getContents());
+                int firstFree = firstEmpty(playerInventory.getStorageContents());
 
                 if(firstFree == -1) {
                     // No space at all!
@@ -514,7 +514,7 @@ public class Items {
         int maxstack = getMaxStackSize(item);
         int space = 0;
 
-        ItemStack[] items = player.getInventory().getContents();
+        ItemStack[] items = player.getInventory().getStorageContents();
         for(ItemStack current : items) {
             if(current == null) {
                 space += maxstack;
@@ -552,7 +552,7 @@ public class Items {
     public static int getAmount(String ownerName, ItemStack compareItem) {
         if(Bukkit.getPlayer(ownerName) == null) return 0;
         PlayerInventory inventory = Bukkit.getPlayer(ownerName).getInventory();
-        ItemStack[] items = inventory.getContents();
+        ItemStack[] items = inventory.getStorageContents();
         int has = 0;
         for(ItemStack item : items) {
             if(isSameItem(compareItem, item)) {
