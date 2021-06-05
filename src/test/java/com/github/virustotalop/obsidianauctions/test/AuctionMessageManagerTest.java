@@ -15,7 +15,7 @@ public class AuctionMessageManagerTest {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
-        String parsed = manager.parseConditionals("%true%some text", conditionals);
+        String parsed = manager.parseConditionals("{true}some text", conditionals);
         assertEquals("some text", parsed);
     }
 
@@ -24,7 +24,7 @@ public class AuctionMessageManagerTest {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
-        String parsed = manager.parseConditionals("%!true%some text", conditionals);
+        String parsed = manager.parseConditionals("{!true}some text", conditionals);
         assertEquals("", parsed);
     }
 
@@ -33,7 +33,7 @@ public class AuctionMessageManagerTest {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("false", false);
-        String parsed = manager.parseConditionals("%false%some text%end-false%other text", conditionals);
+        String parsed = manager.parseConditionals("{false}some text{end-false}other text", conditionals);
         assertEquals("other text", parsed);
     }
 
@@ -42,7 +42,7 @@ public class AuctionMessageManagerTest {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("false", false);
-        String parsed = manager.parseConditionals("%false%%end%other text", conditionals);
+        String parsed = manager.parseConditionals("{false}{end}other text", conditionals);
         assertEquals("", parsed);
     }
 
@@ -51,7 +51,7 @@ public class AuctionMessageManagerTest {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
-        String parsed = manager.parseConditionals("%true%%other text%%end-true%", conditionals);
+        String parsed = manager.parseConditionals("{true}%other text%{end-true}", conditionals);
         assertEquals("%other text%", parsed);
     }
 
@@ -60,7 +60,7 @@ public class AuctionMessageManagerTest {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
-        String parsed = manager.parseConditionals("%true%%end%other text", conditionals);
+        String parsed = manager.parseConditionals("{true}{end}other text", conditionals);
         assertEquals("other text", parsed);
     }
 
@@ -70,7 +70,7 @@ public class AuctionMessageManagerTest {
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
         conditionals.put("also-true", true);
-        String parsed = manager.parseConditionals("%true%%end%%also-true%%end%other text", conditionals);
+        String parsed = manager.parseConditionals("{true}{end}{also-true}{end}other text", conditionals);
         assertEquals("other text", parsed);
     }
 
@@ -79,34 +79,7 @@ public class AuctionMessageManagerTest {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
-        String parsed = manager.parseConditionals("%true%%some-other-text%", conditionals);
+        String parsed = manager.parseConditionals("{true}%some-other-text%", conditionals);
         assertEquals("%some-other-text%", parsed);
-    }
-
-    @Test
-    public void testParseConditionalsDanglingPercent() {
-        AuctionMessageManager manager = new AuctionMessageManager();
-        Map<String, Boolean> conditionals = new HashMap<>();
-        conditionals.put("true", true);
-        String parsed = manager.parseConditionals("% a", conditionals);
-        assertEquals("% a", parsed);
-    }
-
-    @Test
-    public void testParseConditionalsDanglingPercentWithOtherText() {
-        AuctionMessageManager manager = new AuctionMessageManager();
-        Map<String, Boolean> conditionals = new HashMap<>();
-        conditionals.put("true", true);
-        String parsed = manager.parseConditionals("%a", conditionals);
-        assertEquals("%a", parsed);
-    }
-
-    @Test
-    public void testParseConditionalsDanglingPercentWithOtherTextWithSpaceAtEnd() {
-        AuctionMessageManager manager = new AuctionMessageManager();
-        Map<String, Boolean> conditionals = new HashMap<>();
-        conditionals.put("true", true);
-        String parsed = manager.parseConditionals("%a ", conditionals);
-        assertEquals("%a ", parsed);
     }
 }

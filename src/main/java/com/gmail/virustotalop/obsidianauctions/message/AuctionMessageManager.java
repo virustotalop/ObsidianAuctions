@@ -523,6 +523,7 @@ public class AuctionMessageManager extends MessageManager {
                     }
                 } else if(message.contains("%repeatable-lore%")) {
                     if(auction != null) {
+                        System.out.println("lore: " + message);
                         String[] lore = Items.getLore(lot);
                         for(int j = 0; j < lore.length; j++) {
                             if(message.length() > 0) {
@@ -555,21 +556,20 @@ public class AuctionMessageManager extends MessageManager {
         boolean open = false;
         boolean not = false;
         String inner = "";
-        boolean copyInner = true;
+        boolean copy = true;
         for(int i = 0; i < chars.length; i++) {
             char ch = chars[i];
-            if(ch == '%') { //Looking for a pattern
-                if(open) {
+            if(ch == '{' || ch == '}') { //Looking for a pattern
+                if(open && ch == '}') {
                     open = false;
                     if(inner.equals("end")) { //If it is end we should just break out
                         inner = "";
-                        if(!copyInner) {
+                        if(!copy) {
                             break;
                         }
                     } else if(inner.startsWith("end-")) { //The end of a conditional should match to the original
-                        System.out.println("End: " + inner);
                         inner = "";
-                        copyInner = true;
+                        copy = true;
                         not = false;
                     } else { //If not any of those we will evaluate the inner text
                         Boolean eval = conditionals.get(inner);
@@ -577,13 +577,13 @@ public class AuctionMessageManager extends MessageManager {
                             if(not) { //Check for not
                                 eval = !eval;
                             }
-                            copyInner = eval; //Inverse because if it is true we should not skip
+                            copy = eval; //Inverse because if it is true we should not skip
                         } else { //If the condition was null we just append the whole thing to built
-                            built += "%" + inner + "%";
+                            built += "{" + inner + "}";
                         }
                         inner = ""; //Clear the inner text
                     }
-                } else { //If it is the first percent we should check start checking for the inner contents
+                } else if(ch == '{'){ //If it is the open bracket we should check start checking for the inner contents
                     open = true;
                 }
             } else if(open) { //Check for open
@@ -592,12 +592,7 @@ public class AuctionMessageManager extends MessageManager {
                 } else { //If open and not a modifier symbol start building the inner
                     inner += ch;
                 }
-                if(ch == ' ' || chars.length - 1 == i) { //Space or at the end
-                    open = false;
-                    built += "%" + inner;
-                    inner = "";
-                }
-            } else if(copyInner) {
+            } else if(copy) {
                 built += ch;
             }
         }
