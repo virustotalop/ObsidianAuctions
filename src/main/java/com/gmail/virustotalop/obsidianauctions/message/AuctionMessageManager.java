@@ -30,6 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AuctionMessageManager extends MessageManager {
 
@@ -547,60 +550,34 @@ public class AuctionMessageManager extends MessageManager {
         return newMessageList;
     }
 
-
-
     public String parseConditionals(String message, Map<String, Boolean> conditionals) {
-        String built = "";
-        char[] chars = message.toCharArray();
-        boolean open = false;
-        boolean not = false;
-        String inner = "";
-        boolean copyInner = true;
-        for(int i = 0; i < chars.length; i++) {
-            char ch = chars[i];
-            if(ch == '%') { //Looking for a pattern
-                if(open) {
-                    open = false;
-                    if(inner.equals("end")) { //If it is end we should just break out
-                        inner = "";
-                        if(!copyInner) {
-                            break;
-                        }
-                    } else if(inner.startsWith("end-")) { //The end of a conditional should match to the original
-                        System.out.println("End: " + inner);
-                        inner = "";
-                        copyInner = true;
-                        not = false;
-                    } else { //If not any of those we will evaluate the inner text
-                        Boolean eval = conditionals.get(inner);
-                        if(eval != null) { //If the condition is not null, I.E a replacer we eval it
-                            if(not) { //Check for not
-                                eval = !eval;
-                            }
-                            copyInner = eval; //Inverse because if it is true we should not skip
-                        } else { //If the condition was null we just append the whole thing to built
-                            built += "%" + inner + "%";
-                        }
-                        inner = ""; //Clear the inner text
-                    }
-                } else { //If it is the first percent we should check start checking for the inner contents
-                    open = true;
-                }
-            } else if(open) { //Check for open
-                if(ch == '!') { //Check for not
-                    not = !not;
-                } else { //If open and not a modifier symbol start building the inner
-                    inner += ch;
-                }
-                if(ch == ' ' || chars.length - 1 == i) { //Space or at the end
-                    open = false;
-                    built += "%" + inner;
-                    inner = "";
-                }
-            } else if(copyInner) {
-                built += ch;
-            }
-        }
-        return built;
+       Pattern pattern = Pattern.compile("\\{(.*?)\\}");
+       Matcher matcher = pattern.matcher(message);
+       List<MatchedToken> tokens = new ArrayList<>();
+       while(matcher.find()) {
+           int start = matcher.start();
+           int end = matcher.end();
+           String found = message.substring(start, end);
+           tokens.add(new MatchedToken(found, start, end));
+       }
+       String built = "";
+       int index = 0;
+       for(int i = 0; i < tokens.size(); i++) {
+           MatchedToken token = tokens.get(i);
+           int start = token.getStart();
+           int end = token.getEnd();
+           boolean not = token.getNot();
+           String key = token.getKey();
+           boolean cond = conditionals.get(key);
+           if(not) {
+               cond = !cond;
+           }
+           if(cond && i + 1 < tokens.size()) {
+               MatchedToken nextToken = tokens.get(i + 1);
+               built += message.substring(end, nextToken.getStart());
+               index += end;
+           }
+       }
+       return built;
     }
 }
