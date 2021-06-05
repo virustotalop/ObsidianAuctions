@@ -1,37 +1,52 @@
-buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
-  }
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id 'eclipse'
+    id 'idea'
 }
 
-apply plugin: 'java'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'jacoco'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
+group = 'com.flobi'
+version = '5.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {
-    mavenCentral()
-    maven {
-    	url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+processResources {
+    from(sourceSets.main.resources) {
+        include 'plugin.yml'
+        expand 'pluginVersion': project.version
     }
+}
+
+shadowJar {
+    archiveBaseName.set('ObsidianAuctions')
+    archiveClassifier.set('')
+    relocate 'com.clubobsidian.wrappy', 'com.gmail.virustotalop.obsidianauctions.shaded.wrappy'
+    relocate 'com.fasterxml.jackson', 'com.gmail.virustotalop.obsidianauctions.shaded.jackson'
+    relocate 'com.typesafe.config', 'com.gmail.virustotalop.obsidianauctions.shaded.hocon'
+    relocate 'io.leangen', 'com.gmail.virustotalop.obsidianauctions.shaded.leangen'
+    relocate 'org.apache.commons.io', 'com.gmail.virustotalop.obsidianauctions.shaded.commonsio'
+    relocate 'org.checkerframework', 'com.gmail.virustotalop.obsidianauctions.shaded.checkerframework'
+    relocate 'org.spongepowered.configurate', 'com.gmail.virustotalop.obsidianauctions.shaded.configurate'
+    relocate 'org.yaml.snakeyaml', 'com.gmail.virustotalop.obsidianauctions.shaded.snakeyaml'
+    minimize()
+}
+
+repositories {
+    flatDir { dirs 'libs' }
+    mavenCentral()
+    maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url 'https://jitpack.io' }
     jcenter()
 }
 
-repositories {
-   flatDir {
-       dirs 'libs'
-   }
-}
-
 dependencies {
-	compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+    compile 'com.github.clubobsidian:wrappy:2.3.1'
+    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
 	compileOnly name: 'vault'
 	compileOnly name: 'mobarena'
 	compileOnly name: 'war'

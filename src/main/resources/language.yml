@@ -2,14 +2,14 @@ chat-prefix: '&f[&7Obsidian&9Auctions&f] &9'
 plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
 plugin-disabled-no-vault:
-- '----- Vault Dependency Failure -----'
-- Vault is a needed dependency, please install it.
-- Without vault ObsidianAuctions will not work, thank you!
-- '----- ------------------------ -----'
+  - '----- Vault Dependency Failure -----'
+  - Vault is a needed dependency, please install it.
+  - Without vault ObsidianAuctions will not work, thank you!
+  - '----- ------------------------ -----'
 plugin-disabled-no-economy:
-- '----- Economy Dependency Failure -----'
-- You do not have an economy plugin installed!
-- '----- -------------------------- -----'
+  - '----- Economy Dependency Failure -----'
+  - You do not have an economy plugin installed!
+  - '----- -------------------------- -----'
 plugin-reloaded: '&fconfiguration has been reloaded.'
 plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions are
   running or queued.  If your server is too busy to find a time when auctions are
@@ -17,29 +17,29 @@ plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions
   but don''t forget to &a/auc resume &6when finished.'
 plugin-reload-fail-permissions: '&6You do not have permission to reload this plugin.'
 auctionscope-welcome:
-- '&2Entering auction area: &f%auction-scope-name%.'
-- '%conditional-true%%get-active-auction%&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
-  %conditional-true%%has-durability%&4damaged %conditional-true%%has-durability%%conditional-true%%has-enchantment%&benchanted
+  - '&2Entering auction area: &f%auction-scope-name%.'
+  - '%conditional-true%%get-active-auction%&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
+  %conditional-true%{has-durability}&4damaged %conditional-true%{has-durability}%conditional-true%%has-enchantment%&benchanted
   %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
   named &f"%item-display-name%"&9%conditional-true%%has-enchantment% for &c%auction-remaining-time%&9.
   Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  %conditional-true%%is-buynow%Buy now: &6%auction-buy-now%&9. %conditional-true%%is-buynow%Type
+  %conditional-true%{is-buynow}Buy now: &6%auction-buy-now%&9. %conditional-true%{is-buynow}Type
   &a/auction info&9 for full details.'
-- '%conditional-true%%is-sealed%&fThis is a SEALED auction, bids are hidden from other
+  - '%conditional-true%%is-sealed%&fThis is a SEALED auction, bids are hidden from other
   players.'
-- '%conditional-true%%item-is-in-queue%&9There are %auction-queue-length% auctions
+  - '%conditional-true%%item-is-in-queue%&9There are %auction-queue-length% auctions
   queued.'
 auctionscope-welcome-onjoin:
-- '%conditional-true%%get-active-auction%&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
-  %conditional-true%%has-durability%&4damaged %conditional-true%%has-durability%%conditional-true%%has-enchantment%&benchanted
+  - '%conditional-true%%get-active-auction%&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
+  %conditional-true%{has-durability}&4damaged %conditional-true%{has-durability}%conditional-true%%has-enchantment%&benchanted
   %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
   named &f"%item-display-name%"&9%conditional-true%%has-enchantment% for &c%auction-remaining-time%&9.
   Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  %conditional-true%%is-buynow%Buy now: &6%auction-buy-now%&9. %conditional-true%%is-buynow%Type
+  %conditional-true%{is-buynow}Buy now: &6%auction-buy-now%&9. %conditional-true%{is-buynow}Type
   &a/auction info&9 for full details.'
-- '%conditional-true%%is-sealed%&fThis is a SEALED auction, bids are hidden from other
+  - '%conditional-true%%is-sealed%&fThis is a SEALED auction, bids are hidden from other
   players.'
-- '%conditional-true%%item-is-in-queue%&9There are %auction-queue-length% auctions
+  - '%conditional-true%%item-is-in-queue%&9There are %auction-queue-length% auctions
   queued.'
 auctionscope-fairwell: '&2Leaving auction area: &f%auction-scope-name%.'
 recommended-whatisit: WhatIsIt plugin highly recommended for full item information!
@@ -108,7 +108,7 @@ auction-fail-banned-lore: '&6This item contains banned lore.'
 auction-fail-blocked-by-other-plugin: '&6The auction was blocked by another plugin.'
 auction-fail-blacklist-name: '&6This item contains a blacklisted word.'
 bid-success-no-challenger: '&b%current-bid-name%&9 has bid &6%current-bid-amount%&9
-  on the %conditional-true%%has-durability%&4damaged %conditional-true%%has-durability%%conditional-true%%has-enchantment%&benchanted
+  on the %conditional-true%{has-durability}&4damaged %conditional-true%{has-durability}%conditional-true%%has-enchantment%&benchanted
   %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
   named &f"%item-display-name%"&9%conditional-true%%has-enchantment%&9.'
 bid-success-outbid: '&b%current-bid-name%&9 raised the bid to &6%current-bid-amount%&9.'
@@ -153,71 +153,66 @@ auction-disabled: '&bAuctioning disabled.'
 auction-enabled: '&bAuctioning enabled.'
 auction-start: '&cAttention, an auction is beginning!'
 auction-help:
-- '%conditional-true%%can-start%%conditional-true%%allow-unsealed-auctions%&b/auction&4|&bauc
-  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]%conditional-true%%allow-buynow% [BUYNOW]%conditional-true%%allow-buynow%&9
+  - '{can-start}{end}{allow-unsealed-auctions}{end}&b/auction&4|&bauc
+  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]{allow-buynow} [BUYNOW]{end-allow-buynow}&9
   - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9
-  with an enforced increase of &6[INC]&9 between bids%conditional-true%%allow-buynow%
-  and an option to buy item for &6[BUYNOW]%conditional-true%%allow-buynow%&9. &a("&4|&a"
-  means "or" meaning you can any option in &4|&a lists)'
-- '%conditional-true%%can-start%%conditional-true%%allow-sealed-auctions%&b/%conditional-true%%allow-unsealed-auctions%s%conditional-true%%allow-unsealed-auctions%auction&4|&b%conditional-true%%allow-unsealed-auctions%s%conditional-true%%allow-unsealed-auctions%auc
-  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction%conditional-true%%allow-unsealed-auctions%.%conditional-true%%allow-unsealed-auctions%%conditional-false%%allow-unsealed-auctions%
+  with an enforced increase of &6[INC]&9 between bids{allow-buynow}
+  and an option to buy item for &6[BUYNOW]{end-allow-buynow}&9.'
+  - '{can-start}{end}{allow-sealed-auctions}{end}&b/sealedauction&4|&bsauc
+  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction
   for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced
-  increase of &6[INC]&9 between bids&9. &a("&4|&a" means "or" meaning you can any
-  option in &4|&a lists)'
-- '%conditional-true%%can-start%%conditional-true%%is-item-logic%&b/auction&4|&bauc
-  prep&4|&bp &6[QTY] [PRICE] [INC] [TIME]%conditional-true%%allow-buynow% [BUYNOW]%conditional-true%%allow-buynow%&9
+  increase of &6[INC]&9 between bids&9.'
+  - '{can-start}{end}{is-item-logic}{end}&b/auction&4|&bauc
+  prep&4|&bp &6[QTY] [PRICE] [INC] [TIME]{allow-buynow} [BUYNOW]{end-allow-buynow}&9
   - Assigns your default values when placing auctions.'
-- '%conditional-true%%can-start%%conditional-true%%is-item-logic%%conditional-true%%allow-early-bid%&b/auction&4|&bauc
+  - '{can-start}{end}{is-item-logic}{end}{allow-early-bid}&b/auction&4|&bauc
   end&4|&be&4|&bstop&9 - Ends current auction'
-- '%conditional-true%%can-start%%conditional-true%%is-item-logic%%conditional-true%%cancel-prevention-percent%&b/auction&4|&bauc
+  - '{can-start}{end}{is-item-logic}{end}{cancel-prevention-percent}{end}&b/auction&4|&bauc
   cancel&4|&bc&9 - Cancels current auction'
-- '%conditional-true%%can-start%%conditional-true%%is-item-logic%&b/auction&4|&bauc
+  - '{can-start}{end}{is-item-logic}{end}&b/auction&4|&bauc
   info&4|&bi&9 - Returns current auction info.'
-- '%conditional-true%%can-bid%%conditional-true%%is-item-logic%&b/bid &6[BID]%conditional-true%%allow-max-bids%
-  [MAXBID]%conditional-true%%allow-max-bids%&9 - Bids on auction. %conditional-true%%allow-max-bids%If
+  - '{can-bid}{end}{is-item-logic}{end}&b/bid &6[BID]{allow-max-bids}
+  [MAXBID]{end-allow-max-bids}&9 - Bids on auction. {allow-max-bids}If
   you set a &6[MAXBID]&9 and the &6[BID]&9 is greater than the current, you will outbit
-  that bid if it''s lower than your maximum. %conditional-true%%allow-max-bids%%conditional-true%%allow-auto-bid%If
-  you omit a &6[BID]&9 the lowest allowable bid will be used.%conditional-true%%allow-auto-bid%'
-- '&b/auction&4|&bauc stfu&4|&bignore&4|&bquiet&4|&boff&4|&bsilent&4|&bsilence&9 -
+  that bid if it is lower than your maximum. {end-allow-max-bids}{allow-auto-bid}If
+  you omit a &6[BID]&9 the lowest allowable bid will be used.'
+  - '&b/auction&4|&bauc stfu&4|&bignore&4|&bquiet&4|&boff&4|&bsilent&4|&bsilence&9 -
   Opt out of auction participation and announcements.'
 auction-start-tax: You have been charged an auction tax of %auction-pre-tax%.
 auction-end-tax: An auction tax of %auction-post-tax% has been extracted from your winnings.
 auction-info:
-- '&b%auction-owner-name%&9 is auctioning &f%auction-quantity% %conditional-true%%has-durability%&4damaged
-  %conditional-true%%has-durability%%conditional-true%%has-enchantment%&benchanted
-  %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
-  named &f"%item-display-name%"&9%conditional-true%%has-enchantment% for &c%auction-remaining-time%&9.%conditional-true%%is-broadcast%
+  - '&b%auction-owner-name%&9 is auctioning &f%auction-quantity% {has-durability}&4damaged
+  {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}&a%item-material-name%{has-display-name}&9
+  named &f"%item-display-name%"{end-has-display-name}&9 for &c%auction-remaining-time%&9.
   Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  %conditional-true%%is-buynow%Buy now: &6%auction-buy-now%&9. %conditional-true%%is-buynow%Type
+  {is-buynow}Buy now: &6%auction-buy-now%&9. {end-is-buynow}{is-broadcast}{end}Type
   &a/auction info&9 for full details.'
-- '%conditional-true%%has-durability%&lItem damaged: &6%item-durability-left% &aremaining.'
-- '%conditional-false%%is-broadcast%%conditional-true%%has-enchantments%Enchantments:
+  - '{!is-broadcast}{end}{has-durability}{end}&lItem damaged: &6%item-durability-left% &aremaining.'
+  - '{!is-broadcast}{end}{has-enchantments}{end}Enchantments:
   &a%item-enchantments%'
-- '%conditional-false%%is-broadcast%%conditional-true%%has-book-title%Book is titled:
+  - '{!is-broadcast}{end}{has-book-title}{end}Book is titled:
   &a%item-book-title%'
-- '%conditional-false%%is-broadcast%%conditional-true%%has-book-author%Book signed
+  - '{!is-broadcast}{end}{has-book-author}{end}Book signed
   by: &a%item-book-author%'
-- '%conditional-false%%is-broadcast%%conditional-true%%is-firework%Firework Flight
+  - '{!is-broadcast}{end}{is-firework}{end}Firework Flight
   Duration: &a%item-firework-power%'
-- '%conditional-false%%is-broadcast%%conditional-true%%is-firework%Firework payload:
-  &a%repeatable-firework-payload%'
-- '%conditional-false%%is-broadcast%%conditional-true%%is-buynow%Buy now for &c%auction-buy-now%
+  - '{!is-broadcast}{end}{is-firework}{end}Firework payload:
+  &a{repeatable-firework-payload}'
+  - '{!is-broadcast}{end}{is-buynow}{end}Buy now for &c%auction-buy-now%
   &9with &a/bid buy&9.'
-- '%conditional-false%%is-broadcast%%conditional-false%%is-sealed%%conditional-true%%not-sealed%The
+  - '{!is-broadcast}{end}{not-sealed}{end}The
   current bid is &6%current-bid-amount%&9 by &b%current-bid-name%&9.'
-- '%conditional-false%%is-broadcast%%conditional-false%%is-sealed%%conditional-false%%not-sealed%Bidding
+  - '{!is-broadcast}{end}{not-sealed}{end}Bidding
   starts at &6%auction-bid-starting%&9.'
-- '%conditional-false%%is-broadcast%%conditional-true%%is-sealed%Bidding starts at
-  &6%auction-bid-starting%&9.'
-- '%conditional-false%%is-broadcast%%conditional-false%%is-sealed%Min bid increment
+  - '{!is-broadcast}{end}{is-sealed}{end}Min bid increment
   is &6%auction-bid-increment%&9.'
-- '%conditional-false%%is-broadcast%%conditional-true%%item-has-lore%--&1LORE&9--------------------'
-- '%conditional-false%%is-broadcast%%conditional-true%%item-has-lore%|  &5&o%repeatable-lore%'
-- '%conditional-false%%is-broadcast%%conditional-true%%item-has-lore%--&1LORE&9--------------------'
-- '%conditional-true%%is-sealed%&fThis is a SEALED auction, bids are hidden from other
+  - '{!is-broadcast}{end}{item-has-lore}{end}--&1LORE&9--------------------'
+  - '{!is-broadcast}{end}{item-has-lore}{end}|  &5&o%repeatable-lore%'
+  - '{!is-broadcast}{end}{item-has-lore}{end}--&1LORE&9--------------------'
+  - '{!is-broadcast}{end}{is-sealed}{end}&fThis is a SEALED auction, bids are hidden from other
   players.'
 auction-info-no-auction:
-- Nothing is being auctioned at this time.
+  - Nothing is being auctioned at this time.
 auction-info-enchantment-separator: '&9, &a'
 auction-info-enchantment-none: No Enchantments
 auction-info-bidder-noone: no one
@@ -229,14 +224,14 @@ lot-give: '&dYour items have been added to your inventory.'
 lot-drop: '&dNot enough space, your items dropped at your feet.'
 anti-snipe-time-added: ANTI-SNIPE! More time added to auction!
 prep-save-success:
-- 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME]%conditional-true%%allow-buynow%
+  - 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME]%conditional-true%%allow-buynow%
   [BUYNOW]'
-- 'Quantity to auction: &6%auction-prep-amount-other%'
-- 'Starting bid: &6%auction-prep-price-formatted%'
-- 'Minimum increment between bids: &6%auction-prep-increment-formatted%'
-- 'Auction length: &6%auction-prep-time-formatted%'
-- '%conditional-true%%allow-buynow%BuyNow amount: &6%auction-prep-buynow-formatted%'
-- Use &b/auction start &9to start an auction with these parameters.
+  - 'Quantity to auction: &6%auction-prep-amount-other%'
+  - 'Starting bid: &6%auction-prep-price-formatted%'
+  - 'Minimum increment between bids: &6%auction-prep-increment-formatted%'
+  - 'Auction length: &6%auction-prep-time-formatted%'
+  - '%conditional-true%%allow-buynow%BuyNow amount: &6%auction-prep-buynow-formatted%'
+  - Use &b/auction start &9to start an auction with these parameters.
 prep-amount-in-hand: Amount in hand
 prep-all-of-this-kind: All items matching held item
 prep-qty-of-this-kind: '%auction-prep-amount-other% items'
