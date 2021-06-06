@@ -65,7 +65,7 @@ public class Functions {
             if(validateArgs) {
                 // This is similar to the validation in Auction.java but without verifying availability.
                 if(!resultArgs[0].equalsIgnoreCase("this") && !resultArgs[0].equalsIgnoreCase("hand") && !resultArgs[0].equalsIgnoreCase("all") && !resultArgs[0].matches("[0-9]{1,7}")) {
-                    ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-quantity", playerName, (AuctionScope) null);
+                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-quantity", playerName, (AuctionScope) null);
                     return null;
                 }
             }
@@ -77,7 +77,7 @@ public class Functions {
                 }
                 if(validateArgs) {
                     if(resultArgs[1].isEmpty() || !resultArgs[1].matches(ObsidianAuctions.decimalRegex)) {
-                        ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-starting-bid", playerName, (AuctionScope) null);
+                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-starting-bid", playerName, (AuctionScope) null);
                         return null;
                     }
                 }
@@ -89,7 +89,7 @@ public class Functions {
                     }
                     if(validateArgs) {
                         if(resultArgs[2].isEmpty() || !resultArgs[2].matches(ObsidianAuctions.decimalRegex)) {
-                            ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-max-bid", playerName, (AuctionScope) null);
+                            ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-max-bid", playerName, (AuctionScope) null);
                             return null;
                         }
                     }
@@ -101,7 +101,7 @@ public class Functions {
                         }
                         if(validateArgs) {
                             if(!resultArgs[3].matches("[0-9]{1,7}")) {
-                                ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-time", playerName, (AuctionScope) null);
+                                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-time", playerName, (AuctionScope) null);
                                 return null;
                             }
                         }
@@ -113,7 +113,7 @@ public class Functions {
                             }
                             if(validateArgs) {
                                 if(resultArgs[4].isEmpty() || !resultArgs[4].matches(ObsidianAuctions.decimalRegex)) {
-                                    ObsidianAuctions.getMessageManager().sendPlayerMessage("parse-error-invalid-buynow", playerName, (AuctionScope) null);
+                                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-buynow", playerName, (AuctionScope) null);
                                     return null;
                                 }
                             }
@@ -134,7 +134,7 @@ public class Functions {
 
     public static String formatAmount(double unsafeMoney) {
         if(ObsidianAuctions.econ == null) {
-            ObsidianAuctions.plugin.getLogger().log(Level.WARNING, "Economy cannot be null!");
+            ObsidianAuctions.get().getLogger().log(Level.WARNING, "Economy cannot be null!");
             return "-";
         }
         //if (!floAuction.econ.isEnabled()) return "-";

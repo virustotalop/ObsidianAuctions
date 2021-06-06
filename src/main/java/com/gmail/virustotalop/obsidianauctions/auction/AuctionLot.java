@@ -115,7 +115,7 @@ public class AuctionLot implements Serializable {
             // Give whatever items space permits at this time.
             ItemStack typeStack = getTypeStack();
             if(amountToGive > 0) {
-                ObsidianAuctions.getMessageManager().sendPlayerMessage("lot-give", playerName, (AuctionScope) null);
+                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-give", playerName, (AuctionScope) null);
             }
             while(amountToGive > 0) {
                 ItemStack givingItems = lotTypeLock.clone();
@@ -138,7 +138,7 @@ public class AuctionLot implements Serializable {
                     Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
                     drop.setItemStack(cloneStack);
                 }
-                ObsidianAuctions.getMessageManager().sendPlayerMessage("lot-drop", playerName, (AuctionScope) null);
+                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-drop", playerName, (AuctionScope) null);
             }
         } else {
             // Player is offline, queue lot for give on login.

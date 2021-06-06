@@ -207,7 +207,7 @@ public class AuctionScope {
         Player player = Bukkit.getPlayer(playerName);
         if(player == null || !player.isOnline()) {
             return;
-        } else if(AuctionProhibition.isOnProhibition(auction.getOwner(), false)) {
+        } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(auction.getOwner(), false)) {
             messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerName, auction);
             return;
         } else if(!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
@@ -471,7 +471,7 @@ public class AuctionScope {
                         playerScopeId = playerScope.getScopeId();
                     }
                     if(playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
-                        ObsidianAuctions.getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerName, oldScope);
+                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerName, oldScope);
                         playerIterator.remove();
                         ObsidianAuctions.getPlayerScopeCache().remove(playerName);
                     }
@@ -502,7 +502,7 @@ public class AuctionScope {
                 }
             } else {
                 if(oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
-                    ObsidianAuctions.getMessageManager().sendPlayerMessage(welcomeMessageKey, playerName, playerScope);
+                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage(welcomeMessageKey, playerName, playerScope);
                     ObsidianAuctions.getPlayerScopeCache().put(playerName, playerScope.getScopeId());
                 }
             }

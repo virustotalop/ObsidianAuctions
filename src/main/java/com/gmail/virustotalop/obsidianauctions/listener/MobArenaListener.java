@@ -19,7 +19,7 @@ public class MobArenaListener implements Listener {
         }
         String playerName = player.getName();
         if(!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-            ObsidianAuctions.getMessageManager().sendPlayerMessage("arena-warning", playerName, (AuctionScope) null);
+            ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", playerName, (AuctionScope) null);
             event.setCancelled(true);
         }
     }

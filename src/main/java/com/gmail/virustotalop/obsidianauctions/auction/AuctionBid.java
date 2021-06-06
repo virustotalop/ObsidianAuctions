@@ -151,7 +151,7 @@ public class AuctionBid {
         if(this.bidderName == null) {
             this.error = "bid-fail-no-bidder";
             return false;
-        } else if(AuctionProhibition.isOnProhibition(this.bidderName, false)) {
+        } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(this.bidderName, false)) {
             this.error = "remote-plugin-prohibition-reminder";
             return false;
         } else if(!AuctionParticipant.checkLocation(this.bidderName)) {

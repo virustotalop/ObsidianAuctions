@@ -29,6 +29,14 @@ shadowJar {
     relocate 'org.checkerframework', 'com.gmail.virustotalop.obsidianauctions.shaded.checkerframework'
     relocate 'org.spongepowered.configurate', 'com.gmail.virustotalop.obsidianauctions.shaded.configurate'
     relocate 'org.yaml.snakeyaml', 'com.gmail.virustotalop.obsidianauctions.shaded.snakeyaml'
+    relocate 'org.aopalliance.aop', 'com.gmail.virustotalop.obsidianauctions.shaded.aop'
+    relocate 'org.aopalliance.intercept', 'com.gmail.virustotalop.obsidianauctions.shaded.intercept'
+    relocate 'javax.annotation', 'com.gmail.virustotalop.obsidianauctions.shaded.annotation'
+    relocate 'javax.inject', 'com.gmail.virustotalop.obsidianauctions.shaded.javaxinject'
+    relocate 'com.google.common', 'com.gmail.virustotalop.obsidianauctions.shaded.guava'
+    relocate 'com.google.errorprone', 'com.gmail.virustotalop.obsidianauctions.shaded.errorprone'
+    relocate 'com.google.inject', 'com.gmail.virustotalop.obsidianauctions.shaded.guice'
+    relocate 'com.google.j2objc', 'com.gmail.virustotalop.obsidianauctions.shaded.j2objc'
     minimize()
 }
 
@@ -44,7 +52,8 @@ repositories {
 dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-    compile 'com.github.clubobsidian:wrappy:2.3.1'
+    implementation 'com.github.clubobsidian:wrappy:2.3.1'
+    implementation 'com.google.inject:guice:5.0.1'
     compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
 	compileOnly name: 'vault'

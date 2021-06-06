@@ -110,7 +110,7 @@ public class AuctionParticipant {
         if(this.sentArenaWarning) {
             return;
         }
-        ObsidianAuctions.getMessageManager().sendPlayerMessage("arena-warning", this.playerName, (AuctionScope) null);
+        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", this.playerName, (AuctionScope) null);
         this.sentArenaWarning = true;
     }
 
@@ -121,7 +121,7 @@ public class AuctionParticipant {
         if(this.sentEscapeWarning) {
             return;
         }
-        ObsidianAuctions.getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerName, (AuctionScope) null);
+        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerName, (AuctionScope) null);
         this.sentEscapeWarning = true;
     }
 
