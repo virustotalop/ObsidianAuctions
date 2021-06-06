@@ -16,6 +16,7 @@ import java.util.Map;
  * @author Joshua "flobi" Hatfield
  */
 public class AuctionBid {
+
     private final Auction auction;
     private final String bidderName;
     private long bidAmount = 0;
@@ -147,7 +148,7 @@ public class AuctionBid {
      *
      * @return whether player can bid
      */
-    private Boolean validateBidder() {
+    private boolean validateBidder() {
         if(this.bidderName == null) {
             this.error = "bid-fail-no-bidder";
             return false;
@@ -169,7 +170,7 @@ public class AuctionBid {
      *
      * @return whether args are acceptable
      */
-    private Boolean parseArgs() {
+    private boolean parseArgs() {
         if(!parseArgBid()) {
             return false;
         } else return parseArgMaxBid();
@@ -212,7 +213,7 @@ public class AuctionBid {
      * @param newBidAmount
      * @return success of raising bid
      */
-    public Boolean raiseBid(Long newBidAmount) {
+    public boolean raiseBid(Long newBidAmount) {
         if(newBidAmount <= this.maxBidAmount && newBidAmount >= this.bidAmount) {
             this.bidAmount = newBidAmount;
             return true;
@@ -226,7 +227,7 @@ public class AuctionBid {
      *
      * @return acceptability of bid argument
      */
-    private Boolean parseArgBid() {
+    private boolean parseArgBid() {
         if(this.args.length > 0) {
             if(!this.args[0].isEmpty() && args[0].matches(ObsidianAuctions.decimalRegex)) {
                 this.bidAmount = Functions.getSafeMoney(Double.parseDouble(this.args[0]));
@@ -281,7 +282,7 @@ public class AuctionBid {
      *
      * @return acceptability of max bid
      */
-    private Boolean parseArgMaxBid() {
+    private boolean parseArgMaxBid() {
         if(!AuctionConfig.getBoolean("allow-max-bids", this.auction.getScope()) || this.auction.sealed) {
             // Just ignore it.
             this.maxBidAmount = this.bidAmount;
