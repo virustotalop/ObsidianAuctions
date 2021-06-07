@@ -4,7 +4,7 @@ queue-gui-name: "&9ObsidianAuctions Queue"
 renamed-items-override: false
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
-log-auctions: false
+log-auctions: true
 
 default-starting-bid: 0
 max-starting-bid: 10000

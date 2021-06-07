@@ -27,17 +27,12 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -62,7 +57,7 @@ public class ObsidianAuctions extends JavaPlugin {
 
     public static int decimalPlaces = 0;
     public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{0,1})?$";
-    private static File auctionLog = null;
+    private File auctionLog = null;
     private static boolean suspendAllAuctions = false;
     public static boolean isDamagedAllowed;
     public static List<AuctionParticipant> auctionParticipants = new ArrayList<>();
@@ -171,7 +166,15 @@ public class ObsidianAuctions extends JavaPlugin {
     public void onEnable() {
         instance = this;
         dataFolder = getDataFolder();
-        auctionLog = new File(dataFolder, "auctions.log");
+        this.auctionLog = new File(dataFolder, "auctions.log");
+        if(!this.auctionLog.exists()) {
+            try {
+                this.auctionLog.createNewFile();
+                this.auctionLog.setWritable(true);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
         this.saveResource("config.yml", false);
         this.saveResource("language.yml", false);
 
@@ -357,7 +360,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.getServer().getScheduler().cancelTask(queueTimer);
         instance = null;
         this.logToBukkit("plugin-disabled", Level.INFO);
-        ObsidianAuctions.auctionLog = null;
+        this.auctionLog = null;
     }
 
     // Overrides onCommand from Plugin
@@ -709,28 +712,19 @@ public class ObsidianAuctions extends JavaPlugin {
      * @param message      message to save
      * @param auctionScope the auction scope being referenced if any
      */
-    public static void log(String playerName, String message, AuctionScope auctionScope) {
+    public void log(String playerName, String message, AuctionScope auctionScope) {
         if(AuctionConfig.getBoolean("log-auctions", auctionScope)) {
-            String scopeId = null;
-
-            BufferedWriter out = null;
-            try {
-                if(auctionLog == null || !auctionLog.exists()) {
-                    auctionLog.createNewFile();
-                    auctionLog.setWritable(true);
-                }
-
-                out = new BufferedWriter(new FileWriter(auctionLog.getAbsolutePath(), true));
-
-                if(auctionScope == null) {
-                    scopeId = "NOSCOPE";
-                } else {
+            try(BufferedWriter out = new BufferedWriter(new FileWriter(this.auctionLog, true))) {
+                String scopeId = "NOSCOPE";
+                if(auctionScope != null) {
                     scopeId = auctionScope.getScopeId();
                 }
-
-                out.append((new Date()).toString() + " (" + playerName + ", " + scopeId + "): " + ChatColor.stripColor(message) + "\n");
-                out.close();
-
+                String dateStr = (new Date()).toString();
+                String strippedMessage = ChatColor.stripColor(message);
+                String log = dateStr + " (" + playerName + ", " + scopeId + "): " + strippedMessage;
+                out.write(log);
+                out.newLine();
+                out.flush();
             } catch(IOException e) {
                 e.printStackTrace();
             }

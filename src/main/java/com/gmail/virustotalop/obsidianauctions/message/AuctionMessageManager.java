@@ -146,17 +146,17 @@ public class AuctionMessageManager extends MessageManager {
             for(String message : messages) {
                 player.sendMessage(message);
 
-                ObsidianAuctions.log(player.getName(), message, auctionScope);
+                ObsidianAuctions.get().log(player.getName(), message, auctionScope);
             }
         } else if(sender != null) {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             for(String message : messages) {
                 console.sendMessage(ChatColor.stripColor(message));
-                ObsidianAuctions.log("CONSOLE", message, auctionScope);
+                ObsidianAuctions.get().log("CONSOLE", message, auctionScope);
             }
         } else {
             for(String message : messages) {
-                ObsidianAuctions.log("NO TARGET!", message, auctionScope);
+                ObsidianAuctions.get().log("NO TARGET!", message, auctionScope);
             }
         }
     }
@@ -194,7 +194,7 @@ public class AuctionMessageManager extends MessageManager {
         }
         for(String message : messages) {
             message = ChatColor.stripColor(message);
-            ObsidianAuctions.log("BROADCAST", message, auctionScope);
+            ObsidianAuctions.get().log("BROADCAST", message, auctionScope);
         }
     }
 
