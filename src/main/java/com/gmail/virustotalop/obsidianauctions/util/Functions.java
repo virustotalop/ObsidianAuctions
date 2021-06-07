@@ -133,12 +133,12 @@ public class Functions {
     }
 
     public static String formatAmount(double unsafeMoney) {
-        if(ObsidianAuctions.econ == null) {
+        if(ObsidianAuctions.get().getEconomy() == null) { //TODO - remove
             ObsidianAuctions.get().getLogger().log(Level.WARNING, "Economy cannot be null!");
             return "-";
         }
         //if (!floAuction.econ.isEnabled()) return "-";
-        String vaultFormat = ObsidianAuctions.econ.format(unsafeMoney);
+        String vaultFormat = ObsidianAuctions.get().getEconomy().format(unsafeMoney);
         //DecimalFormat decFormat = new DecimalFormat("#,###.00");
         return vaultFormat;//decFormat.format(vaultFormat);
     }
@@ -148,12 +148,12 @@ public class Functions {
     }
 
     public static boolean withdrawPlayer(String playerName, double unsafeMoney) {
-        EconomyResponse receipt = ObsidianAuctions.econ.withdrawPlayer(playerName, unsafeMoney);
+        EconomyResponse receipt = ObsidianAuctions.get().getEconomy().withdrawPlayer(playerName, unsafeMoney);
         return receipt.transactionSuccess();
     }
 
     public static boolean depositPlayer(String playerName, double unsafeMoney) {
-        EconomyResponse receipt = ObsidianAuctions.econ.depositPlayer(playerName, unsafeMoney);
+        EconomyResponse receipt = ObsidianAuctions.get().getEconomy().depositPlayer(playerName, unsafeMoney);
         return receipt.transactionSuccess();
     }
 

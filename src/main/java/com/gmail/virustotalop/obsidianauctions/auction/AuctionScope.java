@@ -213,7 +213,7 @@ public class AuctionScope {
         } else if(!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
             messageManager.sendPlayerMessage("auction-fail-gamemode-creative", playerName, auction);
             return;
-        } else if(!ObsidianAuctions.perms.has(player, "auction.start")) {
+        } else if(!ObsidianAuctions.get().getPermission().has(player, "auction.start")) {
             messageManager.sendPlayerMessage("auction-fail-permissions", playerName, auction);
             return;
         } else if(!auction.isValid()) {
@@ -457,13 +457,13 @@ public class AuctionScope {
     }
 
     public static void sendFairwellMessages() {
-        Iterator<String> playerIterator = ObsidianAuctions.getPlayerScopeCache().keySet().iterator();
+        Iterator<String> playerIterator = ObsidianAuctions.get().getPlayerScopeCache().keySet().iterator();
         while(playerIterator.hasNext()) {
             String playerName = playerIterator.next();
             if(!AuctionParticipant.isParticipating(playerName)) {
                 Player player = Bukkit.getPlayer(playerName);
                 if(player != null && player.isOnline()) {
-                    String oldScopeId = ObsidianAuctions.getPlayerScopeCache().get(playerName);
+                    String oldScopeId = ObsidianAuctions.get().getPlayerScopeCache().get(playerName);
                     AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
                     AuctionScope playerScope = AuctionScope.getPlayerScope(player);
                     String playerScopeId = null;
@@ -473,7 +473,7 @@ public class AuctionScope {
                     if(playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
                         ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerName, oldScope);
                         playerIterator.remove();
-                        ObsidianAuctions.getPlayerScopeCache().remove(playerName);
+                        ObsidianAuctions.get().getPlayerScopeCache().remove(playerName);
                     }
                 }
             }
@@ -495,15 +495,15 @@ public class AuctionScope {
         String playerName = player.getName();
         if(!AuctionParticipant.isParticipating(playerName)) {
             AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-            String oldScopeId = ObsidianAuctions.getPlayerScopeCache().get(playerName);
+            String oldScopeId = ObsidianAuctions.get().getPlayerScopeCache().get(playerName);
             if(playerScope == null) {
                 if(oldScopeId != null) {
-                    ObsidianAuctions.getPlayerScopeCache().remove(playerName);
+                    ObsidianAuctions.get().getPlayerScopeCache().remove(playerName);
                 }
             } else {
                 if(oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
                     ObsidianAuctions.get().getMessageManager().sendPlayerMessage(welcomeMessageKey, playerName, playerScope);
-                    ObsidianAuctions.getPlayerScopeCache().put(playerName, playerScope.getScopeId());
+                    ObsidianAuctions.get().getPlayerScopeCache().put(playerName, playerScope.getScopeId());
                 }
             }
         }

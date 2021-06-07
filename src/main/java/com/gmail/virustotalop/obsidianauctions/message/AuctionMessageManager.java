@@ -126,12 +126,12 @@ public class AuctionMessageManager extends MessageManager {
         if(sender != null) {
             if(sender instanceof Player) {
                 player = (Player) sender;
-                if(!fullBroadcast && ObsidianAuctions.getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1) {
+                if(!fullBroadcast && ObsidianAuctions.get().getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1) {
                     // Don't send this user any messages.
                     return;
                 }
             } else {
-                if(!fullBroadcast && ObsidianAuctions.getVoluntarilyDisabledUsers().indexOf("*console*") != -1) {
+                if(!fullBroadcast && ObsidianAuctions.get().getVoluntarilyDisabledUsers().indexOf("*console*") != -1) {
                     // Don't send console any messages.
                     return;
                 }
@@ -170,7 +170,7 @@ public class AuctionMessageManager extends MessageManager {
     private static void broadcastMessage(List<String> messages, AuctionScope auctionScope) {
         Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
         for(Player player : onlinePlayers) {
-            if(ObsidianAuctions.getVoluntarilyDisabledUsers().contains(player.getName())) {
+            if(ObsidianAuctions.get().getVoluntarilyDisabledUsers().contains(player.getName())) {
                 continue;
             } else if(auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) {
                 continue;
@@ -186,7 +186,7 @@ public class AuctionMessageManager extends MessageManager {
             }
         }
 
-        if(auctionScope == null && ObsidianAuctions.getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
+        if(auctionScope == null && ObsidianAuctions.get().getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
             for(String message : messages) {
                 message = ChatColor.stripColor(message);
                 Bukkit.getConsoleSender().sendMessage(message);
@@ -396,9 +396,9 @@ public class AuctionMessageManager extends MessageManager {
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
             if(message.length() > 0) {
-                conditionals.put("is-admin", player != null && ObsidianAuctions.perms.has(player, "auction.admin")); //1
-                conditionals.put("can-start", player != null && ObsidianAuctions.perms.has(player, "auction.start")); //2
-                conditionals.put("can-bid", player != null && ObsidianAuctions.perms.has(player, "auction.bid")); //3
+                conditionals.put("is-admin", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.admin")); //1
+                conditionals.put("can-start", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.start")); //2
+                conditionals.put("can-bid", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.bid")); //3
                 conditionals.put("has-display-name", lot != null && ObsidianAuctions.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
                 conditionals.put("has-enchantment", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
                 conditionals.put("is-sealed", auction != null && auction.sealed); //6

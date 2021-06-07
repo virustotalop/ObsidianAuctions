@@ -172,7 +172,7 @@ public class Auction {
         }
 
         if(preAuctionTax > 0D) {
-            if(!ObsidianAuctions.econ.has(this.ownerName, preAuctionTax)) {
+            if(!ObsidianAuctions.get().getEconomy().has(this.ownerName, preAuctionTax)) {
                 this.messageManager.sendPlayerMessage("auction-fail-start-tax", this.ownerName, this);
                 return false;
             }
@@ -184,13 +184,13 @@ public class Auction {
         }
 
         if(preAuctionTax > 0D) {
-            if(ObsidianAuctions.econ.has(this.ownerName, preAuctionTax)) {
-                ObsidianAuctions.econ.withdrawPlayer(this.ownerName, preAuctionTax);
+            if(ObsidianAuctions.get().getEconomy().has(this.ownerName, preAuctionTax)) {
+                ObsidianAuctions.get().getEconomy().withdrawPlayer(this.ownerName, preAuctionTax);
                 this.extractedPreTax = preAuctionTax;
                 this.messageManager.sendPlayerMessage("auction-start-tax", this.ownerName, this);
                 String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", scope);
                 if(!taxDestinationUser.isEmpty()) {
-                    ObsidianAuctions.econ.depositPlayer(taxDestinationUser, preAuctionTax);
+                    ObsidianAuctions.get().getEconomy().depositPlayer(taxDestinationUser, preAuctionTax);
                 }
             }
         }

@@ -79,8 +79,8 @@ public class ObsidianAuctions extends JavaPlugin {
     private static final Map<String, String> playerScopeCache = new HashMap<>();
 
     private static List<AuctionLot> orphanLots = new ArrayList<>();
-    private static List<String> voluntarilyDisabledUsers = new ArrayList<>();
-    private static List<String> suspendedUsers = new ArrayList<>();
+    private List<String> voluntarilyDisabledUsers = new ArrayList<>();
+    private List<String> suspendedUsers = new ArrayList<>();
 
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
@@ -231,8 +231,8 @@ public class ObsidianAuctions extends JavaPlugin {
 
 
     // Vault objects
-    public static Economy econ = null;
-    public static Permission perms = null;
+    private Economy econ = null;
+    private Permission perms = null;
     // private static Chat chat = null;
 
     /**
@@ -254,17 +254,15 @@ public class ObsidianAuctions extends JavaPlugin {
             return;
         }
 
-        this.setupEconomy();
+        if(!this.setupEconomy()) {
+            logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         this.setupPermissions();
 
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             ObsidianAuctions.placeHolderApiEnabled = true;
-        }
-
-        if(econ == null) {
-            logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
         }
 
         this.bootstrapInject();
@@ -296,7 +294,7 @@ public class ObsidianAuctions extends JavaPlugin {
         }
 
         orphanLots = loadListAuctionLot("orphanLots.ser");
-        ObsidianAuctions.voluntarilyDisabledUsers = loadStringList("voluntarilyDisabledUsers.ser");
+        this.voluntarilyDisabledUsers = loadStringList("voluntarilyDisabledUsers.ser");
         suspendedUsers = loadStringList("suspendedUsers.ser");
         userSavedInputArgs = loadMapStringStringArray("userSavedInputArgs.ser");
 
@@ -876,11 +874,11 @@ public class ObsidianAuctions extends JavaPlugin {
         return auctionScope.getActiveAuction();
     }
 
-    public static List<String> getVoluntarilyDisabledUsers() {
+    public List<String> getVoluntarilyDisabledUsers() {
         return voluntarilyDisabledUsers;
     }
 
-    public static Map<String, String> getPlayerScopeCache() {
+    public Map<String, String> getPlayerScopeCache() {
         return playerScopeCache;
     }
 
@@ -904,6 +902,14 @@ public class ObsidianAuctions extends JavaPlugin {
 
     public AuctionProhibitionManager getProhibitionManager() {
         return this.prohibitionCache;
+    }
+
+    public Economy getEconomy() {
+        return this.econ;
+    }
+
+    public Permission getPermission() {
+        return this.perms;
     }
 
     private void logToBukkit(String key, Level level) {
