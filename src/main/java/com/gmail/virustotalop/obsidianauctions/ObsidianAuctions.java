@@ -9,6 +9,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
+import com.gmail.virustotalop.obsidianauctions.util.FileLoadUtil;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -139,77 +140,6 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     /**
-     * Load a String array from a file.
-     *
-     * @param filename where the file is
-     * @return the resulting string array
-     */
-    @SuppressWarnings({"unchecked", "finally"})
-    private static List<String> loadStringList(String filename) {
-        File saveFile = new File(dataFolder, filename);
-        List<String> importedObjects = new ArrayList<String>();
-        try {
-            InputStream file = new FileInputStream(saveFile.getAbsolutePath());
-            InputStream buffer = new BufferedInputStream(file);
-            ObjectInput input = new ObjectInputStream(buffer);
-            importedObjects = (List<String>) input.readObject();
-            input.close();
-            buffer.close(); //make sure these are closed
-            file.close(); //make sure these are closed
-        } finally {
-            return importedObjects;
-        }
-    }
-
-    /**
-     * Load a String String map from a file.
-     *
-     * @param filename where the file is
-     * @return the resulting string string map
-     */
-    @SuppressWarnings({"unchecked", "finally"})
-    private static Map<String, String[]> loadMapStringStringArray(String filename) {
-        File saveFile = new File(dataFolder, filename);
-        Map<String, String[]> importedObjects = new HashMap<String, String[]>();
-        try {
-            InputStream file = new FileInputStream(saveFile.getAbsolutePath());
-            InputStream buffer = new BufferedInputStream(file);
-            ObjectInput input = new ObjectInputStream(buffer);
-            importedObjects = (Map<String, String[]>) input.readObject();
-            input.close();
-            buffer.close();//make sure these are closed
-            file.close();//make sure these are closed
-        } finally {
-            return importedObjects;
-        }
-    }
-
-    /**
-     * Load a list of AuctionLot from a file.
-     *
-     * @param filename where the file is
-     * @return the loaded list
-     */
-    @SuppressWarnings("unchecked")
-    private static List<AuctionLot> loadListAuctionLot(String filename) {
-        File saveFile = new File(dataFolder, filename);
-        List<AuctionLot> importedObjects = new ArrayList<>();
-        try {
-            InputStream file = new FileInputStream(saveFile.getAbsolutePath());
-            InputStream buffer = new BufferedInputStream(file);
-            ObjectInput input = new ObjectInputStream(buffer);
-            importedObjects = (List<AuctionLot>) input.readObject();
-            input.close();
-            buffer.close(); //make sure these are closed
-            file.close();   //make sure these are closed
-        } catch(IOException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
-
-        return importedObjects;
-    }
-
-    /**
      * Attempts to give lost AuctionLots back to their intended destination.
      *
      * @param player the player to check for missing items
@@ -287,10 +217,14 @@ public class ObsidianAuctions extends JavaPlugin {
             }, playerScopeCheckInterval, playerScopeCheckInterval);
         }
 
-        orphanLots = loadListAuctionLot("orphanLots.ser");
-        this.voluntarilyDisabledUsers = loadStringList("voluntarilyDisabledUsers.ser");
-        suspendedUsers = loadStringList("suspendedUsers.ser");
-        userSavedInputArgs = loadMapStringStringArray("userSavedInputArgs.ser");
+        File orphanLotsFile = new File(this.getDataFolder(), "orphanLots.ser");
+        File voluntarilyDisabledUsersFile = new File(this.getDataFolder(), "voluntarilyDisabledUsers.ser");
+        File suspendedUserFile = new File(this.getDataFolder(), "suspendedUsers.ser");
+        File savedUserInputsFile = new File(this.getDataFolder(), "userSavedInputArgs.ser");
+        orphanLots =  FileLoadUtil.loadListAuctionLot(orphanLotsFile);
+        this.voluntarilyDisabledUsers =  FileLoadUtil.loadStringList(voluntarilyDisabledUsersFile);
+        suspendedUsers =  FileLoadUtil.loadStringList(suspendedUserFile);
+        userSavedInputArgs = FileLoadUtil.loadMapStringStringArray(savedUserInputsFile);
 
         this.messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
 
