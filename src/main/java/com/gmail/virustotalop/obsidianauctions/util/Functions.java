@@ -133,13 +133,7 @@ public class Functions {
     }
 
     public static String formatAmount(double unsafeMoney) {
-        if(ObsidianAuctions.get().getEconomy() == null) { //TODO - remove
-            ObsidianAuctions.get().getLogger().log(Level.WARNING, "Economy cannot be null!");
-            return "-";
-        }
-        //if (!floAuction.econ.isEnabled()) return "-";
         String vaultFormat = ObsidianAuctions.get().getEconomy().format(unsafeMoney);
-        //DecimalFormat decFormat = new DecimalFormat("#,###.00");
         return vaultFormat;//decFormat.format(vaultFormat);
     }
 
