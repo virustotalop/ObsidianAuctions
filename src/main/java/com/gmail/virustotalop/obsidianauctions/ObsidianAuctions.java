@@ -62,7 +62,6 @@ public class ObsidianAuctions extends JavaPlugin {
 
     public static int decimalPlaces = 0;
     public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{0,1})?$";
-    public static boolean loadedDecimalFromVault = false;
     private static File auctionLog = null;
     private static boolean suspendAllAuctions = false;
     public static boolean isDamagedAllowed;
@@ -188,6 +187,16 @@ public class ObsidianAuctions extends JavaPlugin {
             logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
+        } else {
+            decimalPlaces = Math.max(econ.fractionalDigits(), 0);
+            config.set("decimal-places", decimalPlaces);
+            if(decimalPlaces < 1) {
+                decimalRegex = "^[0-9]{1,13}$";
+            } else if(decimalPlaces == 1) {
+                decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
+            } else {
+                decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
+            }
         }
         this.setupPermissions();
 
@@ -353,22 +362,6 @@ public class ObsidianAuctions extends JavaPlugin {
 
     // Overrides onCommand from Plugin
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
-        // Make sure the decimalPlaces loaded correctly.
-        // Sometimes the econ loads after floAuction.
-        if(!loadedDecimalFromVault && econ.isEnabled()) {
-            loadedDecimalFromVault = true;
-            decimalPlaces = Math.max(econ.fractionalDigits(), 0);
-            config.set("decimal-places", decimalPlaces);
-            if(decimalPlaces < 1) {
-                decimalRegex = "^[0-9]{1,13}$";
-            } else if(decimalPlaces == 1) {
-                decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
-            } else {
-                decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
-            }
-        }
-
         Player player = null;
         Auction auction = null;
         AuctionScope userScope = null;
