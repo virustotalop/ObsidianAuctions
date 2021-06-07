@@ -230,7 +230,7 @@ public class ObsidianAuctions extends JavaPlugin {
 
     }
 
-    public <T> Collection<T> collectInstances(Class<T> superClazz, Injector injector) {
+    private <T> Collection<T> collectInstances(Class<T> superClazz, Injector injector) {
         Collection<T> bindings = new ArrayList<>();
         injector.getAllBindings().values().forEach(binding -> {
             Class<?> bindingClazz = binding.getKey().getTypeLiteral().getRawType();
