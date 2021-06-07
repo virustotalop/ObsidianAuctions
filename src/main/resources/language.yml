@@ -18,29 +18,25 @@ plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions
 plugin-reload-fail-permissions: '&6You do not have permission to reload this plugin.'
 auctionscope-welcome:
   - '&2Entering auction area: &f%auction-scope-name%.'
-  - '%conditional-true%%get-active-auction%&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
-  %conditional-true%{has-durability}&4damaged %conditional-true%{has-durability}%conditional-true%%has-enchantment%&benchanted
-  %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
-  named &f"%item-display-name%"&9%conditional-true%%has-enchantment% for &c%auction-remaining-time%&9.
+  - '{get-active-auction}{end}&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
+  {has-durability}&4damaged {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}
+  &a%item-material-name%&9
+  named &f"%item-display-name%"&9% for &c%auction-remaining-time%&9.
   Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  %conditional-true%{is-buynow}Buy now: &6%auction-buy-now%&9. %conditional-true%{is-buynow}Type
+  {is-buynow}Buy now: &6%auction-buy-now%&9.{end-is-buynow} Type
   &a/auction info&9 for full details.'
-  - '%conditional-true%%is-sealed%&fThis is a SEALED auction, bids are hidden from other
+  - '{is-sealed}{end}&fThis is a SEALED auction, bids are hidden from other
   players.'
-  - '%conditional-true%%item-is-in-queue%&9There are %auction-queue-length% auctions
+  - '{item-is-in-queue}{end}&9There are %auction-queue-length% auctions
   queued.'
 auctionscope-welcome-onjoin:
-  - '%conditional-true%%get-active-auction%&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
-  %conditional-true%{has-durability}&4damaged %conditional-true%{has-durability}%conditional-true%%has-enchantment%&benchanted
-  %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
-  named &f"%item-display-name%"&9%conditional-true%%has-enchantment% for &c%auction-remaining-time%&9.
-  Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  %conditional-true%{is-buynow}Buy now: &6%auction-buy-now%&9. %conditional-true%{is-buynow}Type
-  &a/auction info&9 for full details.'
-  - '%conditional-true%%is-sealed%&fThis is a SEALED auction, bids are hidden from other
-  players.'
-  - '%conditional-true%%item-is-in-queue%&9There are %auction-queue-length% auctions
-  queued.'
+  - '{get-active-auction}{end}&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
+  {has-durability}&4damaged {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}
+  &a%item-material-name%&9 {has-display-name}named &f"%item-display-name%"{end-has-display-name} for
+  &c%auction-remaining-time%&9. Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
+  {is-buynow}Buy now: &6%auction-buy-now%&9. {end-is-buynow}Type &a/auction info&9 for full details.'
+  - '{is-sealed}{end}&fThis is a SEALED auction, bids are hidden from other players.'
+  - '{item-is-in-queue}{end}&9There are %auction-queue-length% auctions queued.'
 auctionscope-fairwell: '&2Leaving auction area: &f%auction-scope-name%.'
 recommended-whatisit: WhatIsIt plugin highly recommended for full item information!
 arena-warning: '&6You cannot enter an arena while participating in an auction.'
@@ -108,9 +104,8 @@ auction-fail-banned-lore: '&6This item contains banned lore.'
 auction-fail-blocked-by-other-plugin: '&6The auction was blocked by another plugin.'
 auction-fail-blacklist-name: '&6This item contains a blacklisted word.'
 bid-success-no-challenger: '&b%current-bid-name%&9 has bid &6%current-bid-amount%&9
-  on the %conditional-true%{has-durability}&4damaged %conditional-true%{has-durability}%conditional-true%%has-enchantment%&benchanted
-  %conditional-true%%always-true%&a%item-material-name%&9%conditional-true%%has-enchantment%
-  named &f"%item-display-name%"&9%conditional-true%%has-enchantment%&9.'
+  on the %{has-durability}&4damaged {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}
+  &a%item-material-name%&9 {has-display-name}named &f"%item-display-name%"{end-has-display-name}&9.'
 bid-success-outbid: '&b%current-bid-name%&9 raised the bid to &6%current-bid-amount%&9.'
 bid-success-update-own-bid: '&b%current-bid-name%&9 raised the bid to &6%current-bid-amount%&9.'
 bid-success-update-own-maxbid: You raised your own max bid to &6%auction-bid-starting%&9.
@@ -224,13 +219,12 @@ lot-give: '&dYour items have been added to your inventory.'
 lot-drop: '&dNot enough space, your items dropped at your feet.'
 anti-snipe-time-added: ANTI-SNIPE! More time added to auction!
 prep-save-success:
-  - 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME]%conditional-true%%allow-buynow%
-  [BUYNOW]'
+  - 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME] {allow-buynow}{end}[BUYNOW]'
   - 'Quantity to auction: &6%auction-prep-amount-other%'
   - 'Starting bid: &6%auction-prep-price-formatted%'
   - 'Minimum increment between bids: &6%auction-prep-increment-formatted%'
   - 'Auction length: &6%auction-prep-time-formatted%'
-  - '%conditional-true%%allow-buynow%BuyNow amount: &6%auction-prep-buynow-formatted%'
+  - '{allow-buynow}{end}BuyNow amount: &6%auction-prep-buynow-formatted%'
   - Use &b/auction start &9to start an auction with these parameters.
 prep-amount-in-hand: Amount in hand
 prep-all-of-this-kind: All items matching held item
