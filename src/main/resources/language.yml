@@ -38,7 +38,6 @@ auctionscope-welcome-onjoin:
   - '{is-sealed}{end}&fThis is a SEALED auction, bids are hidden from other players.'
   - '{item-is-in-queue}{end}&9There are %auction-queue-length% auctions queued.'
 auctionscope-fairwell: '&2Leaving auction area: &f%auction-scope-name%.'
-recommended-whatisit: WhatIsIt plugin highly recommended for full item information!
 arena-warning: '&6You cannot enter an arena while participating in an auction.'
 auctionscope-escape-warning: '&6You cannot leave the auction scope while participating
   in an auction.'
