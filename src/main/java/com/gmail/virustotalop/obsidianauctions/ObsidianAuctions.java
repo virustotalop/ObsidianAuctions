@@ -275,21 +275,15 @@ public class ObsidianAuctions extends JavaPlugin {
         if(queueTimer > 0) {
             bukkitScheduler.cancelTask(queueTimer);
         }
-        queueTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, new Runnable() {
-            public void run() {
-                AuctionScope.checkAuctionQueue();
-            }
-        }, 20L, 20L);
+        queueTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, () -> AuctionScope.checkAuctionQueue(), 20L, 20L);
 
         long playerScopeCheckInterval = config.getLong("auctionscope-change-check-interval");
         if(playerScopeCheckTimer > 0) bukkitScheduler.cancelTask(playerScopeCheckTimer);
 
         if(playerScopeCheckInterval > 0) {
-            playerScopeCheckTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, new Runnable() {
-                public void run() {
-                    AuctionScope.sendFairwellMessages();
-                    AuctionScope.sendWelcomeMessages();
-                }
+            playerScopeCheckTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, () -> {
+                AuctionScope.sendFairwellMessages();
+                AuctionScope.sendWelcomeMessages();
             }, playerScopeCheckInterval, playerScopeCheckInterval);
         }
 

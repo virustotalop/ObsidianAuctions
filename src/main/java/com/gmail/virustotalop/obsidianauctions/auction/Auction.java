@@ -213,27 +213,25 @@ public class Auction {
             final Auction thisAuction = this;
             this.countdown = this.time;
 
-            this.countdownTimer = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-                public void run() {
-                    if(thisAuction.nextTickTime > System.currentTimeMillis()) {
-                        return;
-                    }
-                    thisAuction.nextTickTime = thisAuction.nextTickTime + 1000;
+            this.countdownTimer = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+                if(thisAuction.nextTickTime > System.currentTimeMillis()) {
+                    return;
+                }
+                thisAuction.nextTickTime = thisAuction.nextTickTime + 1000;
 
-                    thisAuction.countdown--;
-                    if(thisAuction.countdown <= 0) {
-                        thisAuction.end();
+                thisAuction.countdown--;
+                if(thisAuction.countdown <= 0) {
+                    thisAuction.end();
+                    return;
+                }
+                if(!AuctionConfig.getBoolean("suppress-countdown", scope)) {
+                    if(thisAuction.countdown < 4) {
+                        messageManager.broadcastAuctionMessage("timer-countdown-notification", thisAuction);
                         return;
                     }
-                    if(!AuctionConfig.getBoolean("suppress-countdown", scope)) {
-                        if(thisAuction.countdown < 4) {
+                    if(thisAuction.time >= 20) {
+                        if(thisAuction.countdown == (thisAuction.time / 2)) {
                             messageManager.broadcastAuctionMessage("timer-countdown-notification", thisAuction);
-                            return;
-                        }
-                        if(thisAuction.time >= 20) {
-                            if(thisAuction.countdown == (thisAuction.time / 2)) {
-                                messageManager.broadcastAuctionMessage("timer-countdown-notification", thisAuction);
-                            }
                         }
                     }
                 }
