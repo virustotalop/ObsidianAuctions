@@ -640,7 +640,8 @@ public class Auction {
             }
         }
 
-        if(itemType.getType() == Material.MOB_SPAWNER && !AuctionConfig.getBoolean("allow-mobspawners", scope)) {
+        String typeStr= itemType.getType().toString();
+        if((typeStr.equals("MOB_SPAWNER") || typeStr.equals("SPAWNER")) && !AuctionConfig.getBoolean("allow-mobspawners", scope)) {
             this.messageManager.sendPlayerMessage("auction-fail-spawner", ownerName, this);
             this.lot = null;
             return false;

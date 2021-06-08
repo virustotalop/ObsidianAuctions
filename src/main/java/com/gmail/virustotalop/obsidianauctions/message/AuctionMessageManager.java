@@ -412,6 +412,10 @@ public class AuctionMessageManager extends MessageManager {
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
             if(message.length() > 0) {
+                String lotTypeStr = null;
+                if(lot != null) {
+                    lotTypeStr = lot.getType().toString();
+                }
                 conditionals.put("is-admin", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.admin")); //1
                 conditionals.put("can-start", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.start")); //2
                 conditionals.put("can-bid", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.bid")); //3
@@ -424,7 +428,8 @@ public class AuctionMessageManager extends MessageManager {
                 conditionals.put("has-book-author", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty()); //0
                 conditionals.put("item-has-lore", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0); //A
                 conditionals.put("has-durability", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0); //B
-                conditionals.put("is-firework", lot != null && (lot.getType() == Material.FIREWORK || lot.getType() == Material.FIREWORK_CHARGE)); //C
+                conditionals.put("is-firework", lot != null && (lotTypeStr.equals("FIREWORK")
+                        || lotTypeStr.equals("FIREWORK_CHARGE") || lotTypeStr.equals("FIREWORK_ROCKET"))); //C
                 conditionals.put("is-buynow", auction != null && auction.getBuyNow() != 0); //D
                 conditionals.put("has-enchantments", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0))); //E
                 conditionals.put("allow-max-bids", AuctionConfig.getBoolean("allow-max-bids", auctionScope)); //F

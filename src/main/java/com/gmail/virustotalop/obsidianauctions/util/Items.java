@@ -2,6 +2,7 @@ package com.gmail.virustotalop.obsidianauctions.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
@@ -386,77 +387,23 @@ public class Items {
 
     // Some of this was taken from Vault's item classes.
     public static boolean isSameItem(ItemStack item, String searchString) {
-
-        if(searchString.matches("\\d+;\\d+")) {
-            // Match on integer:short to get typeId and subTypeId
-
-            // Retrieve/parse data
-            String[] params = searchString.split(";");
-            int typeId = Integer.parseInt(params[0]);
-            short subTypeId = Short.parseShort(params[1]);
-
-            return item.getTypeId() == typeId && item.getDurability() == subTypeId;
-
-        } else if(searchString.matches("\\d+")) {
-            // Match an integer only, assume subTypeId = 0
-
-            // Retrieve/parse data
-            int typeId = Integer.parseInt(searchString);
-
-            return item.getTypeId() == typeId;
+        Material mat;
+        short damageId = 0;
+        if(searchString.contains(",")) {
+            String[] split = searchString.split(",");
+            mat = Material.valueOf(split[0]);
+            damageId = Short.parseShort(split[1]);
+        } else {
+            mat = Material.valueOf(searchString);
         }
-        return false;
+        if(damageId != 0) {
+            return isSameItem(item, new ItemStack(mat, 1, damageId));
+        }
+        return isSameItem(item, new ItemStack(mat, 1));
     }
 
     public static boolean isSameItem(ItemStack item1, ItemStack item2) {
-        // Is it even an item?
-        if(item1 == null) return false;
-        if(item2 == null) return false;
-
-        // Type must be the same:
-        if(item1.getTypeId() != item2.getTypeId()) return false;
-
-        // Data must be the same:
-        if(item1.getData().getData() != item2.getData().getData()) return false;
-
-        // Damage must be the same:
-        if(item1.getDurability() != item2.getDurability()) return false;
-
-        // Enchantments must be the same:
-        if(!item1.getEnchantments().equals(item2.getEnchantments())) return false;
-
-        // These were added in 1.4.
-        if(!isSame(getHeadOwner(item1), getHeadOwner(item2))) return false;
-        if(!isSame(getRepairCost(item1), getRepairCost(item2))) return false;
-        if(!isSame(getDisplayName(item1), getDisplayName(item2))) return false;
-
-        // These were added in 1.4.6.
-        if(!isSame(getFireworkPower(item1), getFireworkPower(item2))) return false;
-        if(!isSame(getFireworkEffects(item1), getFireworkEffects(item2))) return false;
-        if(!isSame(getStoredEnchantments(item1), getStoredEnchantments(item2))) return false;
-        if(!isSame(getLore(item1), getLore(item2))) return false;
-
-        //For 1.7 and above even though 1.7 is no longer supported
-        Object tagOne = getNbtTag(item1);
-        Object tagTwo = getNbtTag(item2);
-        if(tagOne != null && tagTwo != null) {
-            if(!(tagOne.equals(tagTwo))) return false;
-        }
-
-        // Book author, title and contents must be identical.
-        if(!isSame(getBookAuthor(item1), getBookAuthor(item2))) return false;
-        if(!isSame(getBookTitle(item1), getBookTitle(item2))) return false;
-        String[] pages1 = getBookPages(item1);
-        String[] pages2 = getBookPages(item2);
-        if((pages1 == null) ^ (pages2 == null)) return false;
-        if(pages1 != null) {
-            if(pages1.length != pages2.length) return false;
-            for(int i = 0; i < pages1.length; i++) {
-                if(!pages1[i].equals(pages2[i])) return false;
-            }
-        }
-
-        return true;
+        return item1.isSimilar(item2);
     }
 
     private static boolean isSame(String[] strings1, String[] strings2) {

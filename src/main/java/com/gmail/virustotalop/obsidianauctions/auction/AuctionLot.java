@@ -4,6 +4,7 @@ import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -29,7 +30,7 @@ public class AuctionLot implements Serializable {
 
     private String ownerName;
     private int quantity = 0;
-    private int lotTypeId;
+    private Material lotType;
     private short lotDurability;
     private Map<Integer, Integer> lotEnchantments;
     private Map<Integer, Integer> storedEnchantments;
@@ -177,7 +178,7 @@ public class AuctionLot implements Serializable {
         }
 
         // The rest of this remains for backward compatibility.
-        lotTypeLock = new ItemStack(this.lotTypeId, 1, this.lotDurability);
+        lotTypeLock = new ItemStack(this.lotType, 1, this.lotDurability);
 
         for(Entry<Integer, Integer> enchantment : this.lotEnchantments.entrySet()) {
             lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
@@ -211,7 +212,7 @@ public class AuctionLot implements Serializable {
         this.itemSerialized = tmpconfig.saveToString();
 
         // The rest of this remains for backward compatibility.
-        this.lotTypeId = lotType.getTypeId();
+        this.lotType = lotType.getType();
         this.lotDurability = lotType.getDurability();
         this.sourceStackQuantity = lotType.getAmount();
         this.lotEnchantments = new HashMap<Integer, Integer>();

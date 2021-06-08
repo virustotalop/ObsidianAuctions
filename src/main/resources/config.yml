@@ -55,11 +55,10 @@ allow-inferior-item-name-logic: false
 auctionscope-change-check-interval: 20
 
 banned-items:
-  - 7
-  - 383;63
+  - BEDROCK
 
 taxed-items:
-  '0': 100%
+  'AIR': 100%
 
 disabled-commands-participating:
   - '/ma join'
