@@ -50,7 +50,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     implementation 'com.github.clubobsidian:wrappy:2.3.1'
     implementation 'com.google.inject:guice:5.0.1'
