@@ -8,8 +8,14 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.PlaceholderAPIUtil;
+import com.google.inject.Inject;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -32,6 +38,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class AuctionMessageManager extends MessageManager {
+
+    private BukkitAudiences adventure;
+
+    @Inject
+    private AuctionMessageManager(BukkitAudiences adventure) {
+        this.adventure = adventure;
+    }
 
     @Override
     public void sendPlayerMessage(String messageKey, String playerName, Auction auction) {
@@ -144,14 +157,15 @@ public class AuctionMessageManager extends MessageManager {
             broadcastMessage(messages, auctionScope);
         } else if(player != null) {
             for(String message : messages) {
-                player.sendMessage(message);
-
+                this.adventure.player(player).sendMessage(MiniMessage.get().parse(message));
                 ObsidianAuctions.get().log(player.getName(), message, auctionScope);
             }
         } else if(sender != null) {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             for(String message : messages) {
-                console.sendMessage(ChatColor.stripColor(message));
+                console.sendMessage(ChatColor.stripColor(GsonComponentSerializer
+                        .gson()
+                        .serialize(MiniMessage.get().parse(message))));
                 ObsidianAuctions.get().log("CONSOLE", message, auctionScope);
             }
         } else {
@@ -167,7 +181,7 @@ public class AuctionMessageManager extends MessageManager {
      * @param messages     messages to send
      * @param auctionScope scope to send it to
      */
-    private static void broadcastMessage(List<String> messages, AuctionScope auctionScope) {
+    private void broadcastMessage(List<String> messages, AuctionScope auctionScope) {
         Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
         for(Player player : onlinePlayers) {
             if(ObsidianAuctions.get().getVoluntarilyDisabledUsers().contains(player.getName())) {
@@ -178,17 +192,19 @@ public class AuctionMessageManager extends MessageManager {
 
             for(String message : messages) {
                 if(ObsidianAuctions.enableChatMessages) {
-                    player.sendMessage(message);
+                    this.adventure.player(player).sendMessage(MiniMessage.get().parse(message));
                 }
                 if(ObsidianAuctions.enableActionbarMessages) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
+                    this.adventure.player(player).sendActionBar(MiniMessage.get().parse(message));
                 }
             }
         }
 
         if(auctionScope == null && ObsidianAuctions.get().getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
             for(String message : messages) {
-                message = ChatColor.stripColor(message);
+                message = ChatColor.stripColor(GsonComponentSerializer
+                        .gson()
+                        .serialize(MiniMessage.get().parse(message)));
                 Bukkit.getConsoleSender().sendMessage(message);
             }
         }

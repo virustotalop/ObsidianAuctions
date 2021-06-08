@@ -1,6 +1,6 @@
-chat-prefix: '&f[&7Obsidian&9Auctions&f] &9'
-plugin-enabled: '&fhas been enabled.'
-plugin-disabled: '&fhas been disabled.'
+chat-prefix: '<white>[<gray>Obsidian<blue>Auctions<white>] <blue>'
+plugin-enabled: '<white>has been enabled.'
+plugin-disabled: '<white>has been disabled.'
 plugin-disabled-no-vault:
   - '----- Vault Dependency Failure -----'
   - Vault is a needed dependency, please install it.
@@ -10,221 +10,221 @@ plugin-disabled-no-economy:
   - '----- Economy Dependency Failure -----'
   - You do not have an economy plugin installed!
   - '----- -------------------------- -----'
-plugin-reloaded: '&fconfiguration has been reloaded.'
-plugin-reload-fail-auctions-running: '&6Config cannot be reloaded while auctions are
+plugin-reloaded: '<white>configuration has been reloaded.'
+plugin-reload-fail-auctions-running: '<gold>Config cannot be reloaded while auctions are
   running or queued.  If your server is too busy to find a time when auctions are
-  not running, you can use &a/auc suspend &6to temporarily suspend all auctioning,
-  but don''t forget to &a/auc resume &6when finished.'
-plugin-reload-fail-permissions: '&6You do not have permission to reload this plugin.'
+  not running, you can use <green>/auc suspend <gold>to temporarily suspend all auctioning,
+  but don''t forget to <green>/auc resume <gold>when finished.'
+plugin-reload-fail-permissions: '<gold>You do not have permission to reload this plugin.'
 auctionscope-welcome:
-  - '&2Entering auction area: &f%auction-scope-name%.'
-  - '{get-active-auction}{end}&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
-  {has-durability}&4damaged {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}
-  &a%item-material-name%&9
-  named &f"%item-display-name%"&9% for &c%auction-remaining-time%&9.
-  Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  {is-buynow}Buy now: &6%auction-buy-now%&9.{end-is-buynow} Type
-  &a/auction info&9 for full details.'
-  - '{is-sealed}{end}&fThis is a SEALED auction, bids are hidden from other
+  - '<dark_green>Entering auction area: <white>%auction-scope-name%.'
+  - '{get-active-auction}{end}<aqua>%auction-owner-name%<blue> is auctioning <white>%auction-quantity%
+  {has-durability}<dark_red>damaged {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}
+  <green><lang:%item-material-name%><blue>
+  named <white>"%item-display-name%"<blue>% for <red>%auction-remaining-time%<blue>.
+  Starting bid: <gold>%auction-bid-starting%<blue>. Bid increment: <gold>%auction-bid-increment%<blue>.
+  {is-buynow}Buy now: <gold>%auction-buy-now%<blue>.{end-is-buynow} Type
+  <green>/auction info<blue> for full details.'
+  - '{is-sealed}{end}<white>This is a SEALED auction, bids are hidden from other
   players.'
-  - '{item-is-in-queue}{end}&9There are %auction-queue-length% auctions
+  - '{item-is-in-queue}{end}<blue>There are %auction-queue-length% auctions
   queued.'
 auctionscope-welcome-onjoin:
-  - '{get-active-auction}{end}&b%auction-owner-name%&9 is auctioning &f%auction-quantity%
-  {has-durability}&4damaged {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}
-  &a%item-material-name%&9 {has-display-name}named &f"%item-display-name%"{end-has-display-name} for
-  &c%auction-remaining-time%&9. Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  {is-buynow}Buy now: &6%auction-buy-now%&9. {end-is-buynow}Type &a/auction info&9 for full details.'
-  - '{is-sealed}{end}&fThis is a SEALED auction, bids are hidden from other players.'
-  - '{item-is-in-queue}{end}&9There are %auction-queue-length% auctions queued.'
-auctionscope-fairwell: '&2Leaving auction area: &f%auction-scope-name%.'
-arena-warning: '&6You cannot enter an arena while participating in an auction.'
-auctionscope-escape-warning: '&6You cannot leave the auction scope while participating
+  - '{get-active-auction}{end}<aqua>%auction-owner-name%<blue> is auctioning <white>%auction-quantity%
+  {has-durability}<dark_red>damaged {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}
+  <green><lang:%item-material-name%><blue> {has-display-name}named <white>"%item-display-name%"{end-has-display-name} for
+  <red>%auction-remaining-time%<blue>. Starting bid: <gold>%auction-bid-starting%<blue>. Bid increment: <gold>%auction-bid-increment%<blue>.
+  {is-buynow}Buy now: <gold>%auction-buy-now%<blue>. {end-is-buynow}Type <green>/auction info<blue> for full details.'
+  - '{is-sealed}{end}<white>This is a SEALED auction, bids are hidden from other players.'
+  - '{item-is-in-queue}{end}<blue>There are %auction-queue-length% auctions queued.'
+auctionscope-fairwell: '<dark_green>Leaving auction area: <white>%auction-scope-name%.'
+arena-warning: '<gold>You cannot enter an arena while participating in an auction.'
+auctionscope-escape-warning: '<gold>You cannot leave the auction scope while participating
   in an auction.'
-gamemodechange-fail-participating: '&6You cannot change gamemode while participating
+gamemodechange-fail-participating: '<gold>You cannot change gamemode while participating
   in an auction.'
-disabled-command-participating: '&6You cannot do that while participating in an auction.'
-disabled-command-inscope: '&6You cannot do that inside this auction scope.'
-suspension-user: '&6Your auction access has been suspended.'
+disabled-command-participating: '<gold>You cannot do that while participating in an auction.'
+disabled-command-inscope: '<gold>You cannot do that inside this auction scope.'
+suspension-user: '<gold>Your auction access has been suspended.'
 suspension-user-success: The user has been suspended.
-suspension-user-fail-already-suspended: '&6That user is already suspended.'
-suspension-user-fail-is-admin: '&6You cannot suspend auction admins.'
-suspension-user-fail-is-offline: '&6You cannot suspend offline users.'
-suspension-fail-permissions: '&6You do not have permission to suspend auctioning.'
+suspension-user-fail-already-suspended: '<gold>That user is already suspended.'
+suspension-user-fail-is-admin: '<gold>You cannot suspend auction admins.'
+suspension-user-fail-is-offline: '<gold>You cannot suspend offline users.'
+suspension-fail-permissions: '<gold>You do not have permission to suspend auctioning.'
 unsuspension-user: You may now participate in auctions again.
 unsuspension-user-success: The user has been unsuspended.
 unsuspension-user-fail-not-suspended: That user was not suspended.
-unsuspension-fail-permissions: '&6You do not have permission to resume auctioning.'
-suspension-global: '&6All auctioning has been suspended.'
+unsuspension-fail-permissions: '<gold>You do not have permission to resume auctioning.'
+suspension-global: '<gold>All auctioning has been suspended.'
 unsuspension-global: Auctioning has been resumed.
-remote-plugin-prohibition-enabled: '&6%? has disabled your ability to auction.'
-remote-plugin-prohibition-disabled: '&6%? has restored your ability to auction.'
-remote-plugin-prohibition-reminder: '&6%? has disabled your ability to auction.'
-parse-error-invalid-quantity: '&6The quantity you specified is invalid.'
-parse-error-invalid-starting-bid: '&6The starting bid you specified is invalid.'
-parse-error-invalid-bid-increment: '&6The bid increment you specified is invalid.'
-parse-error-invalid-time: '&6The time you specified is invalid.'
-parse-error-invalid-bid: '&6The bid amount you specified is invalid.'
-parse-error-invalid-max-bid: '&6The max bid amount you specified is invalid.'
-parse-error-invalid-buynow: '&6The BuyNow amount you specified is invalid.'
-auction-fail-spawner: '&6You cannot auction mob spawners.'
-auction-fail-permissions: '&6You do not have permissions to start an auction.'
-auction-fail-arena: '&6You cannot start an auction in an arena.'
-auction-fail-banned: '&6You cannot auction this item.'
-auction-fail-start-tax: '&6You cannot afford to start an auction.'
-auction-fail-hand-is-empty: '&6Hold something to auction.'
-auction-fail-quantity-too-low: '&6You must offer more than that.'
-auction-fail-insufficient-supply: '&6You do not have enough of this item.'
-auction-fail-starting-bid-too-low: '&6The starting bid is too low.'
-auction-fail-starting-bid-too-high: '&6The starting bid is too high.'
-auction-fail-increment-too-low: '&6The bid increment is too small.'
-auction-fail-increment-too-high: '&6The bid increment is too large.'
-auction-fail-buynow-too-low: '&6The BuyNow amount is too small.'
-auction-fail-buynow-too-high: '&6The BuyNow amount is too large.'
-auction-fail-time-too-low: '&6The specified time is too short.'
-auction-fail-time-too-high: '&6The specified time is too long.'
-auction-fail-invalid-owner: '&6A non-player tried to start an auction?'
-auction-fail-auction-exists: '&6There is already an auction going on.'
-auction-fail-no-auction-exists: '&6There is no auction at this time.'
-auction-fail-console: '&6Console cannot start auctions.'
-auction-fail-not-owner-cancel: '&6You cannot cancel auctions you did not start.'
-auction-fail-cancel-prevention: '&6You cannot cancel this close to the auction end.'
-auction-fail-not-owner-end: '&6You cannot end auctions you did not start.'
-auction-fail-gold-standard: '&6You cannot auction gold when it is set as currency.'
-auction-fail-no-early-end: '&6You cannot end auctions early.'
-auction-fail-disabled: '&6Enter &9/auction on&6 to use the auction software.'
-auction-fail-gamemode-creative: '&6You cannot auction while in CREATIVE mode.'
-auction-fail-damaged-item: '&6You cannot auction damaged items.'
-auction-fail-no-sealed-auctions: '&6Sealed auctions are disabled.'
-auction-fail-no-auctions-allowed: '&6Auctions are disabled here.'
-auction-fail-renamed-item: '&6You cannot auction renamed items.'
-auction-fail-no-scope: '&6Auctioning is not possible at this location.'
-auction-fail-banned-lore: '&6This item contains banned lore.'
-auction-fail-blocked-by-other-plugin: '&6The auction was blocked by another plugin.'
-auction-fail-blacklist-name: '&6This item contains a blacklisted word.'
-bid-success-no-challenger: '&b%current-bid-name%&9 has bid &6%current-bid-amount%&9
-  on the %{has-durability}&4damaged {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}
-  &a%item-material-name%&9 {has-display-name}named &f"%item-display-name%"{end-has-display-name}&9.'
-bid-success-outbid: '&b%current-bid-name%&9 raised the bid to &6%current-bid-amount%&9.'
-bid-success-update-own-bid: '&b%current-bid-name%&9 raised the bid to &6%current-bid-amount%&9.'
-bid-success-update-own-maxbid: You raised your own max bid to &6%auction-bid-starting%&9.
-bid-success-sealed: '&bYour bid has been placed.'
-bid-auto-outbid: '&b%current-bid-name%&9 has raised the bid to &6%current-bid-amount%&9.'
-bid-fail-arena: '&6You cannot bid on auctions in an arena.'
-bid-fail-is-auction-owner: '&6You cannot bid on your own auction.'
-bid-fail-already-current-bidder: '&6Your bid remains unchanged.'
-bid-fail-cant-allocate-funds: '&6You cannot afford that bid.'
-bid-fail-no-bidder: '&6A non-player tried to bid on an auction?'
-bid-fail-console: '&6Console bidding is prohibited.'
-bid-fail-no-auction: '&6There is no auction at this time on which to bid.'
-bid-fail-auto-outbid: '&6You have been automatically outbid.'
-bid-fail-gamemode-creative: '&6You cannot bid while in CREATIVE mode.'
-bid-fail-under-starting-bid: '&6The bidding must start at %auction-bid-starting%.'
-bid-fail-bid-required: '&6You must enter a bid amount.'
-bid-fail-too-low: '&6Your bid was too low.'
-bid-fail-outside-auctionhouse: '&6You must auction at the auction house.'
-bid-fail-buynow-expired: '&6BuyNow option missing or expired.'
-bid-fail-blocked-by-other-plugin: '&6The bid was blocked by another plugin.'
-bid-fail-permissions: '&6You do not have permissions to bid on an auction.'
-confiscate-success: '&6This auction has been impounded by %auction-owner-name%!'
-confiscate-fail-console: '&6Only online players can impound items (you have no inventory,
+remote-plugin-prohibition-enabled: '<gold>%? has disabled your ability to auction.'
+remote-plugin-prohibition-disabled: '<gold>%? has restored your ability to auction.'
+remote-plugin-prohibition-reminder: '<gold>%? has disabled your ability to auction.'
+parse-error-invalid-quantity: '<gold>The quantity you specified is invalid.'
+parse-error-invalid-starting-bid: '<gold>The starting bid you specified is invalid.'
+parse-error-invalid-bid-increment: '<gold>The bid increment you specified is invalid.'
+parse-error-invalid-time: '<gold>The time you specified is invalid.'
+parse-error-invalid-bid: '<gold>The bid amount you specified is invalid.'
+parse-error-invalid-max-bid: '<gold>The max bid amount you specified is invalid.'
+parse-error-invalid-buynow: '<gold>The BuyNow amount you specified is invalid.'
+auction-fail-spawner: '<gold>You cannot auction mob spawners.'
+auction-fail-permissions: '<gold>You do not have permissions to start an auction.'
+auction-fail-arena: '<gold>You cannot start an auction in an arena.'
+auction-fail-banned: '<gold>You cannot auction this item.'
+auction-fail-start-tax: '<gold>You cannot afford to start an auction.'
+auction-fail-hand-is-empty: '<gold>Hold something to auction.'
+auction-fail-quantity-too-low: '<gold>You must offer more than that.'
+auction-fail-insufficient-supply: '<gold>You do not have enough of this item.'
+auction-fail-starting-bid-too-low: '<gold>The starting bid is too low.'
+auction-fail-starting-bid-too-high: '<gold>The starting bid is too high.'
+auction-fail-increment-too-low: '<gold>The bid increment is too small.'
+auction-fail-increment-too-high: '<gold>The bid increment is too large.'
+auction-fail-buynow-too-low: '<gold>The BuyNow amount is too small.'
+auction-fail-buynow-too-high: '<gold>The BuyNow amount is too large.'
+auction-fail-time-too-low: '<gold>The specified time is too short.'
+auction-fail-time-too-high: '<gold>The specified time is too long.'
+auction-fail-invalid-owner: '<gold>A non-player tried to start an auction?'
+auction-fail-auction-exists: '<gold>There is already an auction going on.'
+auction-fail-no-auction-exists: '<gold>There is no auction at this time.'
+auction-fail-console: '<gold>Console cannot start auctions.'
+auction-fail-not-owner-cancel: '<gold>You cannot cancel auctions you did not start.'
+auction-fail-cancel-prevention: '<gold>You cannot cancel this close to the auction end.'
+auction-fail-not-owner-end: '<gold>You cannot end auctions you did not start.'
+auction-fail-gold-standard: '<gold>You cannot auction gold when it is set as currency.'
+auction-fail-no-early-end: '<gold>You cannot end auctions early.'
+auction-fail-disabled: '<gold>Enter <blue>/auction on<gold> to use the auction software.'
+auction-fail-gamemode-creative: '<gold>You cannot auction while in CREATIVE mode.'
+auction-fail-damaged-item: '<gold>You cannot auction damaged items.'
+auction-fail-no-sealed-auctions: '<gold>Sealed auctions are disabled.'
+auction-fail-no-auctions-allowed: '<gold>Auctions are disabled here.'
+auction-fail-renamed-item: '<gold>You cannot auction renamed items.'
+auction-fail-no-scope: '<gold>Auctioning is not possible at this location.'
+auction-fail-banned-lore: '<gold>This item contains banned lore.'
+auction-fail-blocked-by-other-plugin: '<gold>The auction was blocked by another plugin.'
+auction-fail-blacklist-name: '<gold>This item contains a blacklisted word.'
+bid-success-no-challenger: '<aqua>%current-bid-name%<blue> has bid <gold>%current-bid-amount%<blue>
+  on the %{has-durability}<dark_red>damaged {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}
+  <green><lang:%item-material-name%><blue> {has-display-name}named <white>"%item-display-name%"{end-has-display-name}<blue>.'
+bid-success-outbid: '<aqua>%current-bid-name%<blue> raised the bid to <gold>%current-bid-amount%<blue>.'
+bid-success-update-own-bid: '<aqua>%current-bid-name%<blue> raised the bid to <gold>%current-bid-amount%<blue>.'
+bid-success-update-own-maxbid: You raised your own max bid to <gold>%auction-bid-starting%<blue>.
+bid-success-sealed: '<aqua>Your bid has been placed.'
+bid-auto-outbid: '<aqua>%current-bid-name%<blue> has raised the bid to <gold>%current-bid-amount%<blue>.'
+bid-fail-arena: '<gold>You cannot bid on auctions in an arena.'
+bid-fail-is-auction-owner: '<gold>You cannot bid on your own auction.'
+bid-fail-already-current-bidder: '<gold>Your bid remains unchanged.'
+bid-fail-cant-allocate-funds: '<gold>You cannot afford that bid.'
+bid-fail-no-bidder: '<gold>A non-player tried to bid on an auction?'
+bid-fail-console: '<gold>Console bidding is prohibited.'
+bid-fail-no-auction: '<gold>There is no auction at this time on which to bid.'
+bid-fail-auto-outbid: '<gold>You have been automatically outbid.'
+bid-fail-gamemode-creative: '<gold>You cannot bid while in CREATIVE mode.'
+bid-fail-under-starting-bid: '<gold>The bidding must start at %auction-bid-starting%.'
+bid-fail-bid-required: '<gold>You must enter a bid amount.'
+bid-fail-too-low: '<gold>Your bid was too low.'
+bid-fail-outside-auctionhouse: '<gold>You must auction at the auction house.'
+bid-fail-buynow-expired: '<gold>BuyNow option missing or expired.'
+bid-fail-blocked-by-other-plugin: '<gold>The bid was blocked by another plugin.'
+bid-fail-permissions: '<gold>You do not have permissions to bid on an auction.'
+confiscate-success: '<gold>This auction has been impounded by %auction-owner-name%!'
+confiscate-fail-console: '<gold>Only online players can impound items (you have no inventory,
   console).'
-confiscate-fail-self: '&6You cannot impound your own items (try &a/auction cancel&6).'
-confiscate-fail-permissions: '&6You do not have permission to confiscate auctions.'
+confiscate-fail-self: '<gold>You cannot impound your own items (try <green>/auction cancel<gold>).'
+confiscate-fail-permissions: '<gold>You do not have permission to confiscate auctions.'
 auction-queue-enter: Your auction has been queued (number %player-auction-queue-position% in line).
-auction-queue-fail-full: '&6The auction queue is full, try again later.'
-auction-queue-fail-in-queue: '&6You already have an auction queued (number %player-auction-queue-position%
+auction-queue-fail-full: '<gold>The auction queue is full, try again later.'
+auction-queue-fail-in-queue: '<gold>You already have an auction queued (number %player-auction-queue-position%
   in line).'
-auction-queue-fail-current-auction: '&6You are already running an auction.'
+auction-queue-fail-current-auction: '<gold>You are already running an auction.'
 auction-queue-status-in-queue: You are number %player-auction-queue-position% of %auction-queue-length% in the auction queue.
 auction-queue-status-not-in-queue: There are %auction-queue-length% auctions queued, none belong to you.
 auction-cancel: The auction has been cancelled.
 auction-cancel-queued: Your auction has been removed from the queue.
 auction-end-nobids: The auction ended with no bids.
-auction-end: '&b%current-bid-name%&9 won the auction for &a%item-material-name%&9
-  with &6%current-bid-amount%&9!'
-auction-disabled: '&bAuctioning disabled.'
-auction-enabled: '&bAuctioning enabled.'
-auction-start: '&cAttention, an auction is beginning!'
+auction-end: '<aqua>%current-bid-name%<blue> won the auction for <green><lang:%item-material-name%><blue>
+  with <gold>%current-bid-amount%<blue>!'
+auction-disabled: '<aqua>Auctioning disabled.'
+auction-enabled: '<aqua>Auctioning enabled.'
+auction-start: '<red>Attention, an auction is beginning!'
 auction-help:
-  - '{can-start}{end}{allow-unsealed-auctions}{end}&b/auction&4|&bauc
-  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]{allow-buynow} [BUYNOW]{end-allow-buynow}&9
-  - Starts an auction for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9
-  with an enforced increase of &6[INC]&9 between bids{allow-buynow}
-  and an option to buy item for &6[BUYNOW]{end-allow-buynow}&9.'
-  - '{can-start}{end}{allow-sealed-auctions}{end}&b/sealedauction&4|&bsauc
-  start&4|&bs &6[QTY] [PRICE] [INC] [TIME]&9 - Starts a sealed auction
-  for &6[TIME]&9 seconds with &6[QTY]&9 of item in hand for &6[PRICE]&9 with an enforced
-  increase of &6[INC]&9 between bids&9.'
-  - '{can-start}{end}{is-item-logic}{end}&b/auction&4|&bauc
-  prep&4|&bp &6[QTY] [PRICE] [INC] [TIME]{allow-buynow} [BUYNOW]{end-allow-buynow}&9
+  - '{can-start}{end}{allow-unsealed-auctions}{end}<aqua>/auction<dark_red>|<aqua>auc
+  start<dark_red>|<aqua>s <gold>[QTY] [PRICE] [INC] [TIME]{allow-buynow} [BUYNOW]{end-allow-buynow}<blue>
+  - Starts an auction for <gold>[TIME]<blue> seconds with <gold>[QTY]<blue> of item in hand for <gold>[PRICE]<blue>
+  with an enforced increase of <gold>[INC]<blue> between bids{allow-buynow}
+  and an option to buy item for <gold>[BUYNOW]{end-allow-buynow}<blue>.'
+  - '{can-start}{end}{allow-sealed-auctions}{end}<aqua>/sealedauction<dark_red>|<aqua>sauc
+  start<dark_red>|<aqua>s <gold>[QTY] [PRICE] [INC] [TIME]<blue> - Starts a sealed auction
+  for <gold>[TIME]<blue> seconds with <gold>[QTY]<blue> of item in hand for <gold>[PRICE]<blue> with an enforced
+  increase of <gold>[INC]<blue> between bids<blue>.'
+  - '{can-start}{end}{is-item-logic}{end}<aqua>/auction<dark_red>|<aqua>auc
+  prep<dark_red>|<aqua>p <gold>[QTY] [PRICE] [INC] [TIME]{allow-buynow} [BUYNOW]{end-allow-buynow}<blue>
   - Assigns your default values when placing auctions.'
-  - '{can-start}{end}{is-item-logic}{end}{allow-early-bid}&b/auction&4|&bauc
-  end&4|&be&4|&bstop&9 - Ends current auction'
-  - '{can-start}{end}{is-item-logic}{end}{cancel-prevention-percent}{end}&b/auction&4|&bauc
-  cancel&4|&bc&9 - Cancels current auction'
-  - '{can-start}{end}{is-item-logic}{end}&b/auction&4|&bauc
-  info&4|&bi&9 - Returns current auction info.'
-  - '{can-bid}{end}{is-item-logic}{end}&b/bid &6[BID]{allow-max-bids}
-  [MAXBID]{end-allow-max-bids}&9 - Bids on auction. {allow-max-bids}If
-  you set a &6[MAXBID]&9 and the &6[BID]&9 is greater than the current, you will outbit
+  - '{can-start}{end}{is-item-logic}{end}{allow-early-bid}<aqua>/auction<dark_red>|<aqua>auc
+  end<dark_red>|<aqua>e<dark_red>|<aqua>stop<blue> - Ends current auction'
+  - '{can-start}{end}{is-item-logic}{end}{cancel-prevention-percent}{end}<aqua>/auction<dark_red>|<aqua>auc
+  cancel<dark_red>|<aqua>c<blue> - Cancels current auction'
+  - '{can-start}{end}{is-item-logic}{end}<aqua>/auction<dark_red>|<aqua>auc
+  info<dark_red>|<aqua>i<blue> - Returns current auction info.'
+  - '{can-bid}{end}{is-item-logic}{end}<aqua>/bid <gold>[BID]{allow-max-bids}
+  [MAXBID]{end-allow-max-bids}<blue> - Bids on auction. {allow-max-bids}If
+  you set a <gold>[MAXBID]<blue> and the <gold>[BID]<blue> is greater than the current, you will outbit
   that bid if it is lower than your maximum. {end-allow-max-bids}{allow-auto-bid}If
-  you omit a &6[BID]&9 the lowest allowable bid will be used.'
-  - '&b/auction&4|&bauc stfu&4|&bignore&4|&bquiet&4|&boff&4|&bsilent&4|&bsilence&9 -
+  you omit a <gold>[BID]<blue> the lowest allowable bid will be used.'
+  - '<aqua>/auction<dark_red>|<aqua>auc stfu<dark_red>|<aqua>ignore<dark_red>|<aqua>quiet<dark_red>|<aqua>off<dark_red>|<aqua>silent<dark_red>|<aqua>silence<blue> -
   Opt out of auction participation and announcements.'
 auction-start-tax: You have been charged an auction tax of %auction-pre-tax%.
 auction-end-tax: An auction tax of %auction-post-tax% has been extracted from your winnings.
 auction-info:
-  - '&b%auction-owner-name%&9 is auctioning &f%auction-quantity% {has-durability}&4damaged
-  {end-has-durability}{has-enchantment}&benchanted {end-has-enchantment}&a%item-material-name%{has-display-name}&9
-  named &f"%item-display-name%"{end-has-display-name}&9 for &c%auction-remaining-time%&9.
-  Starting bid: &6%auction-bid-starting%&9. Bid increment: &6%auction-bid-increment%&9.
-  {is-buynow}Buy now: &6%auction-buy-now%&9. {end-is-buynow}{is-broadcast}{end}Type
-  &a/auction info&9 for full details.'
-  - '{!is-broadcast}{end}{has-durability}{end}&lItem damaged: &6%item-durability-left% &aremaining.'
+  - '<aqua>%auction-owner-name%<blue> is auctioning <white>%auction-quantity% {has-durability}<dark_red>damaged
+  {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}<green><lang:%item-material-name%>{has-display-name}<blue>
+  named <white>"%item-display-name%"{end-has-display-name}<blue> for <red>%auction-remaining-time%<blue>.
+  Starting bid: <gold>%auction-bid-starting%<blue>. Bid increment: <gold>%auction-bid-increment%<blue>.
+  {is-buynow}Buy now: <gold>%auction-buy-now%<blue>. {end-is-buynow}{is-broadcast}{end}Type
+  <green>/auction info<blue> for full details.'
+  - '{!is-broadcast}{end}{has-durability}{end}&lItem damaged: <gold>%item-durability-left% <green>remaining.'
   - '{!is-broadcast}{end}{has-enchantments}{end}Enchantments:
-  &a%item-enchantments%'
+  <green>%item-enchantments%'
   - '{!is-broadcast}{end}{has-book-title}{end}Book is titled:
-  &a%item-book-title%'
+  <green>%item-book-title%'
   - '{!is-broadcast}{end}{has-book-author}{end}Book signed
-  by: &a%item-book-author%'
+  by: <green>%item-book-author%'
   - '{!is-broadcast}{end}{is-firework}{end}Firework Flight
-  Duration: &a%item-firework-power%'
+  Duration: <green>%item-firework-power%'
   - '{!is-broadcast}{end}{is-firework}{end}Firework payload:
-  &a{repeatable-firework-payload}'
-  - '{!is-broadcast}{end}{is-buynow}{end}Buy now for &c%auction-buy-now%
-  &9with &a/bid buy&9.'
+  <green>{repeatable-firework-payload}'
+  - '{!is-broadcast}{end}{is-buynow}{end}Buy now for <red>%auction-buy-now%
+  <blue>with <green>/bid buy<blue>.'
   - '{!is-broadcast}{end}{not-sealed}{end}The
-  current bid is &6%current-bid-amount%&9 by &b%current-bid-name%&9.'
+  current bid is <gold>%current-bid-amount%<blue> by <aqua>%current-bid-name%<blue>.'
   - '{!is-broadcast}{end}{not-sealed}{end}Bidding
-  starts at &6%auction-bid-starting%&9.'
+  starts at <gold>%auction-bid-starting%<blue>.'
   - '{!is-broadcast}{end}{is-sealed}{end}Min bid increment
-  is &6%auction-bid-increment%&9.'
-  - '{!is-broadcast}{end}{item-has-lore}{end}--&1LORE&9--------------------'
-  - '{!is-broadcast}{end}{item-has-lore}{end}|  &5&o%repeatable-lore%'
-  - '{!is-broadcast}{end}{item-has-lore}{end}--&1LORE&9--------------------'
-  - '{!is-broadcast}{end}{is-sealed}{end}&fThis is a SEALED auction, bids are hidden from other
+  is <gold>%auction-bid-increment%<blue>.'
+  - '{!is-broadcast}{end}{item-has-lore}{end}--<dark_blue>LORE<blue>--------------------'
+  - '{!is-broadcast}{end}{item-has-lore}{end}|  <dark_purple><italic>%repeatable-lore%'
+  - '{!is-broadcast}{end}{item-has-lore}{end}--<dark_blue>LORE<blue>--------------------'
+  - '{!is-broadcast}{end}{is-sealed}{end}<white>This is a SEALED auction, bids are hidden from other
   players.'
 auction-info-no-auction:
   - Nothing is being auctioned at this time.
-auction-info-enchantment-separator: '&9, &a'
+auction-info-enchantment-separator: '<blue>, <green>'
 auction-info-enchantment-none: No Enchantments
 auction-info-bidder-noone: no one
-auction-info-payload-separator: '&9, &a'
-timer-countdown-notification: Auction has &c%auction-remaining-time%&9 remaining.
+auction-info-payload-separator: '<blue>, <green>'
+timer-countdown-notification: Auction has <red>%auction-remaining-time%<blue> remaining.
 time-format-minsec: '%m min, %s sec'
 time-format-seconly: '%s sec'
-lot-give: '&dYour items have been added to your inventory.'
-lot-drop: '&dNot enough space, your items dropped at your feet.'
+lot-give: '<light_purple>Your items have been added to your inventory.'
+lot-drop: '<light_purple>Not enough space, your items dropped at your feet.'
 anti-snipe-time-added: ANTI-SNIPE! More time added to auction!
 prep-save-success:
-  - 'Usage: &b/auction prep &6[QTY] [PRICE] [INC] [TIME] {allow-buynow}{end}[BUYNOW]'
-  - 'Quantity to auction: &6%auction-prep-amount-other%'
-  - 'Starting bid: &6%auction-prep-price-formatted%'
-  - 'Minimum increment between bids: &6%auction-prep-increment-formatted%'
-  - 'Auction length: &6%auction-prep-time-formatted%'
-  - '{allow-buynow}{end}BuyNow amount: &6%auction-prep-buynow-formatted%'
-  - Use &b/auction start &9to start an auction with these parameters.
+  - 'Usage: <aqua>/auction prep <gold>[QTY] [PRICE] [INC] [TIME] {allow-buynow}{end}[BUYNOW]'
+  - 'Quantity to auction: <gold>%auction-prep-amount-other%'
+  - 'Starting bid: <gold>%auction-prep-price-formatted%'
+  - 'Minimum increment between bids: <gold>%auction-prep-increment-formatted%'
+  - 'Auction length: <gold>%auction-prep-time-formatted%'
+  - '{allow-buynow}{end}BuyNow amount: <gold>%auction-prep-buynow-formatted%'
+  - Use <aqua>/auction start <blue>to start an auction with these parameters.
 prep-amount-in-hand: Amount in hand
 prep-all-of-this-kind: All items matching held item
 prep-qty-of-this-kind: '%auction-prep-amount-other% items'

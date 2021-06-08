@@ -1,42 +1,12 @@
 package com.gmail.virustotalop.obsidianauctions.util;
 
-import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MaterialUtil {
-
-    public static String getName(ItemStack item) {
-        if(item == null) {
-            return "Air";
-        }
-
-        String id = item.getType().name();
-        short dura = item.getDurability();
-        String name = null;
-
-        if(id.equalsIgnoreCase("SKULL_ITEM") || id.equals("PLAYER_HEAD") && dura == 3) {
-            SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-            if(skullMeta.hasOwner()) {
-                if(skullMeta.getOwner() != null && !(skullMeta.equals(""))) {
-                    return skullMeta.getOwner() + "'s" + " Head";
-                }
-            }
-        } else if(id.equals("MONSTER_EGG") || id.endsWith("_SPAWN_EGG")) { //mob eggs
-            return MaterialUtil.getMobEggType(item) + " Spawn Egg";
-        } else if(id.equals("MOB_SPAWNER") || id.equals("SPAWNER")) {
-            name = MaterialUtil.getSpawnerType(item) + " Spawner";
-        } else if(AuctionConfig.getBoolean("renamed-items-override", null) && Items.getDisplayName(item) != null) {
-            name = Items.getDisplayName(item);
-        }
-
-        if(name == null) {
-            name = MaterialUtil.getItemType(item);
-        }
-        return name;
-    }
 
     private static String getMobEggType(ItemStack item) {
         String type = "";

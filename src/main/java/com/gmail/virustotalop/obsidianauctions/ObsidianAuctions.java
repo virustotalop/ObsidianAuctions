@@ -13,6 +13,7 @@ import com.gmail.virustotalop.obsidianauctions.util.FileLoadUtil;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -80,6 +81,8 @@ public class ObsidianAuctions extends JavaPlugin {
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
 
+    //Adventure
+    private BukkitAudiences adventure;
 
     /*Added values
      *
@@ -164,6 +167,12 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        this.adventure = BukkitAudiences.create(this);
+        if(this.adventure == null) {
+            this.getLogger().log(Level.SEVERE, "Unable to look adventure, shutting down...");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         instance = this;
         dataFolder = getDataFolder();
         this.auctionLog = new File(dataFolder, "auctions.log");
@@ -254,7 +263,7 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     private void bootstrapInject() {
-        Injector injector = Guice.createInjector(new AuctionModule());
+        Injector injector = Guice.createInjector(new AuctionModule(this.adventure));
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
         this.collectInstances(Listener.class, injector).forEach(listener -> {
@@ -361,6 +370,10 @@ public class ObsidianAuctions extends JavaPlugin {
         instance = null;
         this.logToBukkit("plugin-disabled", Level.INFO);
         this.auctionLog = null;
+        if(this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
     }
 
     // Overrides onCommand from Plugin

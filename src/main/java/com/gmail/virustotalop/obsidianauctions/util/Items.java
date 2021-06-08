@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -618,8 +619,25 @@ public class Items {
         return false;
     }
 
-    public static String getItemName(ItemStack typeStack) {
-        return MaterialUtil.getName(typeStack);
+    public static String getItemName(ItemStack itemStack) {
+        Class<?> craftItemStack = itemStack.getClass();
+        try {
+            Field handleField = craftItemStack.getDeclaredField("handle");
+            handleField.setAccessible(true);
+            Object nmsItemStack = handleField.get(itemStack);
+            Method getItem = nmsItemStack.getClass().getMethod("getItem");
+            Object item = getItem.invoke(nmsItemStack);
+            Class<?> itemClass = Class.forName("net.minecraft.server." + VersionUtil.getVersion() + ".Item");
+            Method getName = itemClass.getDeclaredMethod("getName");
+            String name = (String) getName.invoke(item);
+            if(!name.startsWith("item.minecraft")) { //For legacy support before proper keying
+                name += ".name";
+            }
+            return name;
+        } catch(NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String getEnchantmentName(Entry<Enchantment, Integer> enchantment) {
@@ -627,7 +645,7 @@ public class Items {
         int enchantmentLevel = enchantment.getValue();
         String enchantmentName = null;
         if(enchantmentNames.size() == 0) {
-            enchantmentNames = new HashMap<Integer, String>();
+            enchantmentNames = new HashMap<>();
             enchantmentNames.put(0, "Protection");
             enchantmentNames.put(1, "Fire Protection");
             enchantmentNames.put(2, "Feather Falling");
