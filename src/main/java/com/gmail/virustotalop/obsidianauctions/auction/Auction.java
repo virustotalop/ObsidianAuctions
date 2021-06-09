@@ -361,7 +361,7 @@ public class Auction {
      *
      * @return whether the auction can begin
      */
-    public Boolean isValid() {
+    public boolean isValid() {
         if(!isValidOwner()) {
             return false;
         } else if(!parseHeldItem()) {
@@ -602,7 +602,7 @@ public class Auction {
      *
      * @return acceptability of held item for auctioning
      */
-    private Boolean parseHeldItem() {
+    private boolean parseHeldItem() {
         Player owner = Bukkit.getPlayer(this.ownerName);
         if(this.lot != null) {
             return true;
@@ -676,7 +676,7 @@ public class Auction {
      *
      * @return acceptability of entered arguments
      */
-    private Boolean parseArgs() {
+    private boolean parseArgs() {
         // (amount) (starting price) (increment) (time) (buynow)
         if(!parseArgAmount()) {
             return false;
@@ -694,7 +694,7 @@ public class Auction {
      *
      * @return acceptability of starter auctioning
      */
-    private Boolean isValidOwner() {
+    private boolean isValidOwner() {
         if(this.ownerName == null) {
             this.messageManager.sendPlayerMessage("auction-fail-invalid-owner", null, this);
             return false;
@@ -707,7 +707,7 @@ public class Auction {
      *
      * @return acceptability of lot quantity
      */
-    private Boolean isValidAmount() {
+    private boolean isValidAmount() {
         if(this.quantity <= 0) {
             this.messageManager.sendPlayerMessage("auction-fail-quantity-too-low", this.ownerName, this);
             return false;
@@ -727,7 +727,7 @@ public class Auction {
      *
      * @return if starting bid is ok
      */
-    private Boolean isValidStartingBid() {
+    private boolean isValidStartingBid() {
         if(this.startingBid < 0) {
             this.messageManager.sendPlayerMessage("auction-fail-starting-bid-too-low", this.ownerName, this);
             return false;
@@ -743,7 +743,7 @@ public class Auction {
      *
      * @return if minimum bid increment is okay
      */
-    private Boolean isValidIncrement() {
+    private boolean isValidIncrement() {
         if(getMinBidIncrement() < AuctionConfig.getSafeMoneyFromDouble("min-bid-increment", this.scope)) {
             this.messageManager.sendPlayerMessage("auction-fail-increment-too-low", this.ownerName, this);
             return false;
@@ -760,7 +760,7 @@ public class Auction {
      *
      * @return if BuyNow amount is okay
      */
-    private Boolean isValidBuyNow() {
+    private boolean isValidBuyNow() {
         if(getBuyNow() < 0) {
             this.messageManager.sendPlayerMessage("auction-fail-buynow-too-low", this.ownerName, this);
             return false;
@@ -776,7 +776,7 @@ public class Auction {
      *
      * @return if auction time limit is okiedokie
      */
-    private Boolean isValidTime() {
+    private boolean isValidTime() {
         if(this.time < AuctionConfig.getInt("min-auction-time", this.scope)) {
             this.messageManager.sendPlayerMessage("auction-fail-time-too-low", this.ownerName, this);
             return false;
@@ -792,7 +792,7 @@ public class Auction {
      *
      * @return if quantity argument parsed correctly
      */
-    private Boolean parseArgAmount() {
+    private boolean parseArgAmount() {
         if(this.quantity > 0) {
             return true;
         }
@@ -824,7 +824,7 @@ public class Auction {
      *
      * @return if argument parsed correctly
      */
-    private Boolean parseArgStartingBid() {
+    private boolean parseArgStartingBid() {
         if(this.startingBid > 0) {
             return true;
         }
@@ -853,7 +853,7 @@ public class Auction {
      *
      * @return if minimum bid increment parsed correctly
      */
-    private Boolean parseArgIncrement() {
+    private boolean parseArgIncrement() {
         if(this.minBidIncrement > 0) {
             return true;
         }
@@ -880,7 +880,7 @@ public class Auction {
      *
      * @return if time argument parsed correctly
      */
-    private Boolean parseArgTime() {
+    private boolean parseArgTime() {
         if(this.time > 0) {
             return true;
         }
@@ -907,7 +907,7 @@ public class Auction {
      *
      * @return if BuyNow argument parsed correctly
      */
-    private Boolean parseArgBuyNow() {
+    private boolean parseArgBuyNow() {
 
         if(this.sealed || !AuctionConfig.getBoolean("allow-buynow", this.scope)) {
             this.buyNow = 0;
