@@ -169,7 +169,7 @@ public class ObsidianAuctions extends JavaPlugin {
     public void onEnable() {
         this.adventure = BukkitAudiences.create(this);
         if(this.adventure == null) {
-            this.getLogger().log(Level.SEVERE, "Unable to look adventure, shutting down...");
+            this.getLogger().log(Level.SEVERE, "Unable to create adventure, shutting down...");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
