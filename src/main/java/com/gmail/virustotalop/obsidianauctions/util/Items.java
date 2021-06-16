@@ -567,7 +567,15 @@ public class Items {
     }
 
     public static String getItemName(ItemStack itemStack) {
-        Class<?> craftItemStack = itemStack.getClass();
+        if(itemStack == null) {
+            return null;
+        }
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if(!itemMeta.hasLocalizedName()) {
+            return MaterialUtil.formatName(itemStack.getType().name());
+        }
+        return itemMeta.getLocalizedName();
+        /*Class<?> craftItemStack = itemStack.getClass();
         try {
             Field handleField = craftItemStack.getDeclaredField("handle");
             handleField.setAccessible(true);
@@ -584,7 +592,7 @@ public class Items {
         } catch(NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return null;*/
     }
 
     public static String getEnchantmentName(Entry<Enchantment, Integer> enchantment) {

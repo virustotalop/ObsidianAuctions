@@ -55,7 +55,7 @@ public class MaterialUtil {
         return formatName(name);
     }
 
-    private static String formatName(String name) {
+    public static String formatName(String name) {
         char[] chars = name.toCharArray();
         chars[0] = Character.toUpperCase(chars[0]);
         for(int i = 1; i < chars.length; i++) {

@@ -20,11 +20,11 @@ auctionscope-welcome:
   - '<dark_green>Entering auction area: <white>%auction-scope-name%.'
   - '{get-active-auction}{end}<aqua>%auction-owner-name%<blue> is auctioning <white>%auction-quantity%
   {has-durability}<dark_red>damaged {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}
-  <green><lang:%item-material-name%><blue>
+  <green>%item-material-name%<blue>
   named <white>"%item-display-name%"<blue>% for <red>%auction-remaining-time%<blue>.
   Starting bid: <gold>%auction-bid-starting%<blue>. Bid increment: <gold>%auction-bid-increment%<blue>.
   {is-buynow}Buy now: <gold>%auction-buy-now%<blue>.{end-is-buynow} Type
-  <green>/auction info<blue> for full details.'
+  <click:run_command:/auction info><green><hover:show_text:"<red>Click to run command!</red>"><underlined>/auction info</underlined></click><blue> for full details.'
   - '{is-sealed}{end}<white>This is a SEALED auction, bids are hidden from other
   players.'
   - '{item-is-in-queue}{end}<blue>There are %auction-queue-length% auctions
@@ -32,9 +32,9 @@ auctionscope-welcome:
 auctionscope-welcome-onjoin:
   - '{get-active-auction}{end}<aqua>%auction-owner-name%<blue> is auctioning <white>%auction-quantity%
   {has-durability}<dark_red>damaged {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}
-  <green><lang:%item-material-name%><blue> {has-display-name}named <white>"%item-display-name%"{end-has-display-name} for
+  <green>%item-material-name%<blue> {has-display-name}named <white>"%item-display-name%"{end-has-display-name} for
   <red>%auction-remaining-time%<blue>. Starting bid: <gold>%auction-bid-starting%<blue>. Bid increment: <gold>%auction-bid-increment%<blue>.
-  {is-buynow}Buy now: <gold>%auction-buy-now%<blue>. {end-is-buynow}Type <green>/auction info<blue> for full details.'
+  {is-buynow}Buy now: <gold>%auction-buy-now%<blue>. {end-is-buynow}Type <click:run_command:/auction info><green><hover:show_text:"<red>Click to run command!</red>"><underlined>/auction info</underlined></click><blue> for full details.'
   - '{is-sealed}{end}<white>This is a SEALED auction, bids are hidden from other players.'
   - '{item-is-in-queue}{end}<blue>There are %auction-queue-length% auctions queued.'
 auctionscope-fairwell: '<dark_green>Leaving auction area: <white>%auction-scope-name%.'
@@ -104,7 +104,7 @@ auction-fail-blocked-by-other-plugin: '<gold>The auction was blocked by another 
 auction-fail-blacklist-name: '<gold>This item contains a blacklisted word.'
 bid-success-no-challenger: '<aqua>%current-bid-name%<blue> has bid <gold>%current-bid-amount%<blue>
   on the %{has-durability}<dark_red>damaged {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}
-  <green><lang:%item-material-name%><blue> {has-display-name}named <white>"%item-display-name%"{end-has-display-name}<blue>.'
+  <green>%item-material-name%<blue> {has-display-name}named <white>"%item-display-name%"{end-has-display-name}<blue>.'
 bid-success-outbid: '<aqua>%current-bid-name%<blue> raised the bid to <gold>%current-bid-amount%<blue>.'
 bid-success-update-own-bid: '<aqua>%current-bid-name%<blue> raised the bid to <gold>%current-bid-amount%<blue>.'
 bid-success-update-own-maxbid: You raised your own max bid to <gold>%auction-bid-starting%<blue>.
@@ -141,7 +141,7 @@ auction-queue-status-not-in-queue: There are %auction-queue-length% auctions que
 auction-cancel: The auction has been cancelled.
 auction-cancel-queued: Your auction has been removed from the queue.
 auction-end-nobids: The auction ended with no bids.
-auction-end: '<aqua>%current-bid-name%<blue> won the auction for <green><lang:%item-material-name%><blue>
+auction-end: '<aqua>%current-bid-name%<blue> won the auction for <green>%item-material-name%<blue>
   with <gold>%current-bid-amount%<blue>!'
 auction-disabled: '<aqua>Auctioning disabled.'
 auction-enabled: '<aqua>Auctioning enabled.'
@@ -176,11 +176,11 @@ auction-start-tax: You have been charged an auction tax of %auction-pre-tax%.
 auction-end-tax: An auction tax of %auction-post-tax% has been extracted from your winnings.
 auction-info:
   - '<aqua>%auction-owner-name%<blue> is auctioning <white>%auction-quantity% {has-durability}<dark_red>damaged
-  {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}<green><lang:%item-material-name%>{has-display-name}<blue>
+  {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}<green>%item-material-name%{has-display-name}<blue>
   named <white>"%item-display-name%"{end-has-display-name}<blue> for <red>%auction-remaining-time%<blue>.
   Starting bid: <gold>%auction-bid-starting%<blue>. Bid increment: <gold>%auction-bid-increment%<blue>.
   {is-buynow}Buy now: <gold>%auction-buy-now%<blue>. {end-is-buynow}{is-broadcast}{end}Type
-  <green>/auction info<blue> for full details.'
+  <click:run_command:/auction info><green><hover:show_text:"<red>Click to run command!</red>"><underlined>/auction info</underlined></click><blue> for full details.'
   - '{!is-broadcast}{end}{has-durability}{end}&lItem damaged: <gold>%item-durability-left% <green>remaining.'
   - '{!is-broadcast}{end}{has-enchantments}{end}Enchantments:
   <green>%item-enchantments%'

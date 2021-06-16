@@ -1,3 +1,4 @@
+language: "en-US"
 enable-chat-messages: true
 enable-actionbar-messages: true
 queue-gui-name: "&9ObsidianAuctions Queue"

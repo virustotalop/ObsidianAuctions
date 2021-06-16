@@ -16,6 +16,7 @@ import com.google.inject.Injector;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -37,6 +38,10 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -186,6 +191,18 @@ public class ObsidianAuctions extends JavaPlugin {
         }
         this.saveResource("config.yml", false);
         this.saveResource("language.yml", false);
+
+        File languagesDirectory = new File(dataFolder, "languages");
+        if(!languagesDirectory.exists()) {
+            languagesDirectory.mkdirs();
+        }
+
+       /* try {
+            Path jarLangDirectory = Paths.get(this.getClass().getResource("/languages").toURI());
+            Files.copy(jarLangDirectory, languagesDirectory.toPath());
+        } catch(URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }*/
 
         loadConfig();
 
