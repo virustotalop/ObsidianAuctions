@@ -16,7 +16,6 @@ import com.google.inject.Injector;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -38,10 +37,6 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -180,6 +175,10 @@ public class ObsidianAuctions extends JavaPlugin {
         }
         instance = this;
         dataFolder = getDataFolder();
+        if(!dataFolder.exists()) {
+            dataFolder.mkdir();
+        }
+
         this.auctionLog = new File(dataFolder, "auctions.log");
         if(!this.auctionLog.exists()) {
             try {
@@ -192,17 +191,12 @@ public class ObsidianAuctions extends JavaPlugin {
         this.saveResource("config.yml", false);
         this.saveResource("language.yml", false);
 
-        File languagesDirectory = new File(dataFolder, "languages");
+        File languagesDirectory = new File(dataFolder, "item_languages");
         if(!languagesDirectory.exists()) {
             languagesDirectory.mkdirs();
         }
 
-       /* try {
-            Path jarLangDirectory = Paths.get(this.getClass().getResource("/languages").toURI());
-            Files.copy(jarLangDirectory, languagesDirectory.toPath());
-        } catch(URISyntaxException | IOException e) {
-            e.printStackTrace();
-        }*/
+        this.saveResource("item_languages/en-US.yml", false);
 
         loadConfig();
 
@@ -233,7 +227,8 @@ public class ObsidianAuctions extends JavaPlugin {
             ObsidianAuctions.placeHolderApiEnabled = true;
         }
 
-        this.bootstrapInject();
+        String language = config.getString("language");
+        this.bootstrapInject(language);
 
         AreaManager.loadArenaListeners(this);
 
@@ -279,8 +274,12 @@ public class ObsidianAuctions extends JavaPlugin {
         return bindings;
     }
 
-    private void bootstrapInject() {
-        Injector injector = Guice.createInjector(new AuctionModule(this.adventure));
+    private void bootstrapInject(String language) {
+        File itemLanguagesFolder = new File(dataFolder, "item_languages");
+        File itemConfig = new File(itemLanguagesFolder, language + ".yml");
+        Configuration i18nItemConfig = Configuration.load(itemConfig);
+
+        Injector injector = Guice.createInjector(new AuctionModule(this.adventure, i18nItemConfig));
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
         this.collectInstances(Listener.class, injector).forEach(listener -> {

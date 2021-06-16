@@ -91,4 +91,11 @@ public class NBTCompound {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "NBTCompound{" +
+                "inner=" + this.inner +
+                '}';
+    }
 }

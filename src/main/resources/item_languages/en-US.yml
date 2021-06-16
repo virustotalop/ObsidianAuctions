@@ -1,0 +1,4 @@
+'STONE<sep>5': 'Andesite'
+'ANDESITE': 'Andesite'
+'MONSTER_EGG<sep>{EntityTag:{id:"minecraft:creeper"}}': 'Creeper Spawn Egg'
+CREEPER_SPAWN_EGG: 'Creeper Spawn Egg'

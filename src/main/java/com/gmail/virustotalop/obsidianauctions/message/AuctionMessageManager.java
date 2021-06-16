@@ -5,6 +5,7 @@ import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionBid;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.PlaceholderAPIUtil;
@@ -39,11 +40,13 @@ import java.util.Map.Entry;
 
 public class AuctionMessageManager extends MessageManager {
 
-    private BukkitAudiences adventure;
+    private final BukkitAudiences adventure;
+    private final TranslationFactory translation;
 
     @Inject
-    private AuctionMessageManager(BukkitAudiences adventure) {
+    private AuctionMessageManager(BukkitAudiences adventure, TranslationFactory translation) {
         this.adventure = adventure;
+        this.translation = translation;
     }
 
     @Override
@@ -322,7 +325,7 @@ public class AuctionMessageManager extends MessageManager {
                 if(auction != null) {
                     lot = auction.getLotType();
                     if(lot != null) {
-                        replacements.put("%item-material-name%", Items.getItemName(lot)); //%L1
+                        replacements.put("%item-material-name%", this.translation.getTranslation(lot)); //%L1
                         replacements.put("%item-display-name%", Items.getDisplayName(lot)); //%L2
                         if(replacements.get("%item-display-name%") == null || replacements.get("%item-display-name%").isEmpty()) {
                             replacements.put("%item-display-name%", replacements.get("%item-material-name%"));
