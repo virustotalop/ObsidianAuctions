@@ -229,7 +229,8 @@ public class ObsidianAuctions extends JavaPlugin {
         }
 
         String language = config.getString("language");
-        this.bootstrapInject(language);
+        Injector injector = this.inject(language);
+        this.registerListeners(injector);
 
         AreaManager.loadArenaListeners(this);
 
@@ -275,7 +276,7 @@ public class ObsidianAuctions extends JavaPlugin {
         return bindings;
     }
 
-    private void bootstrapInject(String language) {
+    private Injector inject(String language) {
         File itemLanguagesFolder = new File(dataFolder, "item_languages");
         File itemConfig = new File(itemLanguagesFolder, language + ".yml");
         Configuration i18nItemConfig = Configuration.load(itemConfig);
@@ -283,6 +284,10 @@ public class ObsidianAuctions extends JavaPlugin {
         Injector injector = Guice.createInjector(new AuctionModule(this.adventure, i18nItemConfig));
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
+        return injector;
+    }
+
+    private void registerListeners(Injector injector) {
         this.collectInstances(Listener.class, injector).forEach(listener -> {
             this.getServer().getPluginManager().registerEvents(listener, this);
         });
