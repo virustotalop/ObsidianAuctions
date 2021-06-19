@@ -13,6 +13,23 @@
 * I have a feature can you make it?
   * It depends on the complexity and if I have time to complete it. If I don't think it fits with the vision of ObsidianAuctions I will reject it. You may however fork this project and add it yourself. Alternatively if its a feature I don't have time to implement it I welcome pull requests. 
 
+ ## Differences
+ 
+ Below are some of the differences between ObsidianAuctions and the old FloAuctions plugin
+ 
+* Auction queue GUI
+* Full UUID support
+* Configurable language support
+* Spawner & Mob Egg Support
+* Support for modern Minecraft 1.12-1.17
+* Easier to configure language file
+  * Support for [minimessage](https://docs.adventure.kyori.net/minimessage.html#format)
+ 
+ 
+**Future Features**
+* Configurable disallowed auction areas
+ 
+ 
 ## How to file a bug report
 Please post all relevant stacktraces to either [pastebin.com](pastebin.com) or [hastebin.com](hastebin.com).
 Provide as much detail as possible to resolve the bug the fastest.
