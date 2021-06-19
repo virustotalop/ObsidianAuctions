@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Structure to handle auction bids.
@@ -18,6 +19,7 @@ import java.util.Map;
 public class AuctionBid {
 
     private final Auction auction;
+    private final UUID bidderUUID;
     private final String bidderName;
     private long bidAmount = 0;
     private long maxBidAmount = 0;
@@ -34,6 +36,7 @@ public class AuctionBid {
      */
     public AuctionBid(Auction auction, Player player, String[] inputArgs) {
         this.auction = auction;
+        this.bidderUUID = player.getUniqueId();
         this.bidderName = player.getName();
         this.args = inputArgs;
         if(!validateBidder()) return;
@@ -52,14 +55,14 @@ public class AuctionBid {
         AuctionBid currentBid = this.auction.getCurrentBid();
 
         for(int i = 0; i < this.auction.sealedBids.size(); i++) {
-            if(this.auction.sealedBids.get(i).getBidder().equalsIgnoreCase(this.getBidder())) {
+            if(this.auction.sealedBids.get(i).getBidderName().equalsIgnoreCase(this.getBidderName())) {
                 previousSealedReserve += this.auction.sealedBids.get(i).getBidAmount();
                 this.auction.sealedBids.remove(i);
                 i--;
             }
         }
 
-        if(currentBid != null && currentBid.getBidder().equalsIgnoreCase(bidderName)) {
+        if(currentBid != null && currentBid.getBidderName().equalsIgnoreCase(bidderName)) {
             // Same bidder: only reserve difference.
             if(this.maxBidAmount > currentBid.getMaxBidAmount() + previousSealedReserve) {
                 amountToReserve = this.maxBidAmount - currentBid.getMaxBidAmount() - previousSealedReserve;
@@ -86,7 +89,7 @@ public class AuctionBid {
         if(this.auction.sealed) {
             // Queue reserve refund.
             this.auction.sealedBids.add(this);
-            AuctionParticipant.addParticipant(getBidder(), this.auction.getScope());
+            AuctionParticipant.addParticipant(this.getBidderUUID(), this.auction.getScope());
         } else {
             // Refund reserve.
             Functions.depositPlayer(this.bidderName, this.reserve);
@@ -128,14 +131,14 @@ public class AuctionBid {
             taxes = unsafeBidAmount * (taxPercent / 100D);
 
             this.auction.extractedPostTax = taxes;
-            this.auction.messageManager.sendPlayerMessage("auction-end-tax", this.auction.getOwner(), this.auction);
+            this.auction.messageManager.sendPlayerMessage("auction-end-tax", this.auction.getOwnerUUID(), this.auction);
             unsafeBidAmount -= taxes;
             String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", this.auction.getScope());
             if(!taxDestinationUser.isEmpty()) ObsidianAuctions.get().getEconomy().depositPlayer(taxDestinationUser, taxes);
         }
 
         // Apply winnings to auction owner.
-        ObsidianAuctions.get().getEconomy().depositPlayer(this.auction.getOwner(), unsafeBidAmount);
+        ObsidianAuctions.get().getEconomy().depositPlayer(this.auction.getOwnerName(), unsafeBidAmount);
 
         // Refund remaining reserve.
         ObsidianAuctions.get().getEconomy().depositPlayer(this.bidderName, this.reserve - unsafeBidAmount - taxes);
@@ -152,13 +155,13 @@ public class AuctionBid {
         if(this.bidderName == null) {
             this.error = "bid-fail-no-bidder";
             return false;
-        } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(this.bidderName, false)) {
+        } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(this.bidderUUID, false)) {
             this.error = "remote-plugin-prohibition-reminder";
             return false;
-        } else if(!AuctionParticipant.checkLocation(this.bidderName)) {
+        } else if(!AuctionParticipant.checkLocation(this.bidderUUID)) {
             this.error = "bid-fail-outside-auctionhouse";
             return false;
-        } else if(bidderName.equalsIgnoreCase(auction.getOwner()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", this.auction.getScope())) {
+        } else if(bidderName.equalsIgnoreCase(auction.getOwnerName()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", this.auction.getScope())) {
             this.error = "bid-fail-is-auction-owner";
             return false;
         }
@@ -263,7 +266,7 @@ public class AuctionBid {
                     // Unless the starting bid is 0, then use the minimum bid increment.
                     this.bidAmount = auction.getMinBidIncrement();
                 }
-            } else if(currentBid.getBidder().equalsIgnoreCase(this.bidderName)) {
+            } else if(currentBid.getBidderName().equalsIgnoreCase(this.bidderName)) {
                 // We are the current bidder, so use previous.  Don't auto-up our own bid.
                 this.bidAmount = currentBid.bidAmount;
             } else {
@@ -314,11 +317,20 @@ public class AuctionBid {
     }
 
     /**
+     * Gets the uuid of the bidder.
+     *
+     * @return uuid of bidder
+     */
+    public UUID getBidderUUID() {
+        return this.bidderUUID;
+    }
+
+    /**
      * Gets the name of the bidder.
      *
      * @return name of bidder
      */
-    public String getBidder() {
+    public String getBidderName() {
         return this.bidderName;
     }
 

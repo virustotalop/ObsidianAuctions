@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.UUID;
+
 public class MobArenaListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
@@ -17,9 +19,9 @@ public class MobArenaListener implements Listener {
         if(player == null) {
             return;
         }
-        String playerName = player.getName();
-        if(!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerName)) {
-            ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", playerName, (AuctionScope) null);
+        UUID playerUUID = player.getUniqueId();
+        if(!AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player)) && AuctionParticipant.isParticipating(playerUUID)) {
+            ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", playerUUID, (AuctionScope) null);
             event.setCancelled(true);
         }
     }

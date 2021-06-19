@@ -11,7 +11,6 @@ import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -21,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Main auction class.
@@ -31,6 +31,7 @@ public class Auction {
 
     protected ObsidianAuctions plugin;
     private final String[] args;
+    private UUID ownerUUID;
     private String ownerName;
     private final AuctionScope scope;
 
@@ -80,8 +81,9 @@ public class Auction {
      * @param sealed       whether or not it is a sealed auction
      */
     public Auction(ObsidianAuctions plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope, boolean sealed, MessageManager messageManager, ItemStack guiItem) {
+        this.ownerUUID = auctionOwner.getUniqueId();
         this.ownerName = auctionOwner.getName();
-        this.args = Functions.mergeInputArgs(auctionOwner.getName(), inputArgs, false);
+        this.args = Functions.mergeInputArgs(auctionOwner.getUniqueId(), inputArgs, false);
         this.plugin = plugin;
         this.scope = scope;
         this.sealed = sealed;
@@ -124,11 +126,11 @@ public class Auction {
      *
      * @return whether or not the auction start succeeded
      */
-    public Boolean start() {
-        Player owner = Bukkit.getPlayer(this.ownerName);
+    public boolean start() {
+        Player owner = Bukkit.getServer().getPlayer(this.ownerUUID);
 
         if(AreaManager.isInArena(owner)) {
-            this.messageManager.sendPlayerMessage("auction-fail-arena", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-arena", this.ownerUUID, this);
             return false;
         }
 
@@ -139,7 +141,7 @@ public class Auction {
         List<String> bannedItems = AuctionConfig.getStringList("banned-items", this.scope);
         for(int i = 0; i < bannedItems.size(); i++) {
             if(Items.isSameItem(typeStack, bannedItems.get(i))) {
-                this.messageManager.sendPlayerMessage("auction-fail-banned", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("auction-fail-banned", this.ownerUUID, this);
                 return false;
             }
         }
@@ -173,13 +175,13 @@ public class Auction {
 
         if(preAuctionTax > 0D) {
             if(!ObsidianAuctions.get().getEconomy().has(this.ownerName, preAuctionTax)) {
-                this.messageManager.sendPlayerMessage("auction-fail-start-tax", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("auction-fail-start-tax", this.ownerUUID, this);
                 return false;
             }
         }
 
         if(!this.lot.addItems(this.quantity, true)) {
-            this.messageManager.sendPlayerMessage("auction-fail-insufficient-supply", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-insufficient-supply", this.ownerUUID, this);
             return false;
         }
 
@@ -187,7 +189,7 @@ public class Auction {
             if(ObsidianAuctions.get().getEconomy().has(this.ownerName, preAuctionTax)) {
                 ObsidianAuctions.get().getEconomy().withdrawPlayer(this.ownerName, preAuctionTax);
                 this.extractedPreTax = preAuctionTax;
-                this.messageManager.sendPlayerMessage("auction-start-tax", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("auction-start-tax", this.ownerUUID, this);
                 String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", scope);
                 if(!taxDestinationUser.isEmpty()) {
                     ObsidianAuctions.get().getEconomy().depositPlayer(taxDestinationUser, preAuctionTax);
@@ -204,7 +206,7 @@ public class Auction {
         Bukkit.getServer().getPluginManager().callEvent(auctionStartEvent);
 
         if(auctionStartEvent.isCancelled()) {
-            this.messageManager.sendPlayerMessage("auction-fail-blocked-by-other-plugin", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-blocked-by-other-plugin", this.ownerUUID, this);
         } else {
             this.active = true;
             this.messageManager.broadcastAuctionMessage("auction-start", this);
@@ -253,8 +255,10 @@ public class Auction {
     public void info(CommandSender sender, boolean fullBroadcast) {
         List<String> messageKeys = new ArrayList<String>();
         String playerName = null;
+        UUID playerUUID = null;
         if(sender instanceof Player) {
             playerName = sender.getName();
+            playerUUID = ((Player) sender).getUniqueId();
         }
 
         ItemStack itemType = this.getLotType();
@@ -264,7 +268,7 @@ public class Auction {
         }
         if(!this.active) {
             if(sender instanceof Player) {
-                this.messageManager.sendPlayerMessage("auction-info-no-auction", playerName, this);
+                this.messageManager.sendPlayerMessage("auction-info-no-auction", playerUUID, this);
             }
             return;
         } else {
@@ -273,7 +277,7 @@ public class Auction {
         if(fullBroadcast) {
             this.messageManager.broadcastAuctionMessage(messageKeys, this);
         } else {
-            this.messageManager.sendPlayerMessage(messageKeys, playerName, this);
+            this.messageManager.sendPlayerMessage(messageKeys, playerUUID, this);
         }
     }
 
@@ -304,7 +308,7 @@ public class Auction {
         this.ownerName = authority.getName();
         this.messageManager.broadcastAuctionMessage("confiscate-success", this);
         if(this.lot != null) {
-            this.lot.winLot(authority.getName());
+            this.lot.winLot(authority.getUniqueId(), authority.getName());
         }
         if(this.currentBid != null) {
             this.currentBid.cancelBid();
@@ -337,7 +341,7 @@ public class Auction {
                 }
             } else {
                 this.messageManager.broadcastAuctionMessage("auction-end", this);
-                this.lot.winLot(currentBid.getBidder());
+                this.lot.winLot(currentBid.getBidderUUID(), currentBid.getBidderName());
                 this.currentBid.winBid();
             }
         }
@@ -390,9 +394,10 @@ public class Auction {
             return;
         }
         String playerName = bidder.getName();
+        UUID playerUUID = bidder.getUniqueId();
 
         if(AreaManager.isInArena(bidder)) {
-            this.messageManager.sendPlayerMessage("bid-fail-arena", playerName, this);
+            this.messageManager.sendPlayerMessage("bid-fail-arena", playerUUID, this);
             return;
         }
 
@@ -401,7 +406,7 @@ public class Auction {
             if(inputArgs[0].equalsIgnoreCase("buy")) {
 
                 if(this.buyNow == 0 || (this.currentBid != null && currentBid.getBidAmount() >= this.buyNow)) {
-                    this.messageManager.sendPlayerMessage("bid-fail-buynow-expired", playerName, this);
+                    this.messageManager.sendPlayerMessage("bid-fail-buynow-expired", playerUUID, this);
                 } else {
                     inputArgs[0] = Double.toString(Functions.getUnsafeMoney(this.buyNow));
                     if(inputArgs[0].endsWith(".0")) {
@@ -457,7 +462,7 @@ public class Auction {
 
         long previousBidAmount = this.currentBid.getBidAmount();
         long previousMaxBidAmount = this.currentBid.getMaxBidAmount();
-        if(this.currentBid.getBidder().equals(bidder.getName())) {
+        if(this.currentBid.getBidderName().equals(bidder.getName())) {
             if(bid.raiseOwnBid(this.currentBid)) {
                 // Let other plugins figure out any reasons why this buy shouldn't happen.
                 AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
@@ -532,14 +537,14 @@ public class Auction {
                     failBid(bid, "bid-fail-auto-outbid");
                 } else {
                     if(!this.sealed) {
-                        this.messageManager.sendPlayerMessage("bid-fail-too-low", bid.getBidder(), this);
+                        this.messageManager.sendPlayerMessage("bid-fail-too-low", bid.getBidderUUID(), this);
                     }
                     this.failBid(bid, null);
                 }
             }
         } else {
             // Seriously don't know what could cause this, but might as well take care of it.
-            this.messageManager.sendPlayerMessage("bid-fail-too-low", bid.getBidder(), this);
+            this.messageManager.sendPlayerMessage("bid-fail-too-low", bid.getBidderUUID(), this);
         }
     }
 
@@ -552,9 +557,9 @@ public class Auction {
     private void failBid(AuctionBid attemptedBid, String reason) {
         attemptedBid.cancelBid();
         if(this.sealed && (attemptedBid.getError() == null || attemptedBid.getError().isEmpty())) {
-            this.messageManager.sendPlayerMessage("bid-success-sealed", attemptedBid.getBidder(), this);
+            this.messageManager.sendPlayerMessage("bid-success-sealed", attemptedBid.getBidderUUID(), this);
         } else {
-            this.messageManager.sendPlayerMessage(reason, attemptedBid.getBidder(), this);
+            this.messageManager.sendPlayerMessage(reason, attemptedBid.getBidderUUID(), this);
         }
     }
 
@@ -576,16 +581,16 @@ public class Auction {
         }
         this.currentBid = newBid;
         if(this.sealed) {
-            this.messageManager.sendPlayerMessage("bid-success-sealed", newBid.getBidder(), this);
+            this.messageManager.sendPlayerMessage("bid-success-sealed", newBid.getBidderUUID(), this);
         } else if(AuctionConfig.getBoolean("broadcast-bid-updates", this.scope)) {
             this.messageManager.broadcastAuctionMessage(reason, this);
         } else {
-            this.messageManager.sendPlayerMessage(reason, newBid.getBidder(), this);
-            if(prevBid != null && newBid.getBidder().equalsIgnoreCase(prevBid.getBidder())) {
-                this.messageManager.sendPlayerMessage(reason, prevBid.getBidder(), this);
+            this.messageManager.sendPlayerMessage(reason, newBid.getBidderUUID(), this);
+            if(prevBid != null && newBid.getBidderName().equalsIgnoreCase(prevBid.getBidderName())) {
+                this.messageManager.sendPlayerMessage(reason, prevBid.getBidderUUID(), this);
             }
         }
-        AuctionParticipant.addParticipant(newBid.getBidder(), this.scope);
+        AuctionParticipant.addParticipant(newBid.getBidderUUID(), this.scope);
         if(this.currentBid.getBidAmount() >= this.buyNow) {
             this.buyNow = 0;
         }
@@ -603,21 +608,21 @@ public class Auction {
      * @return acceptability of held item for auctioning
      */
     private boolean parseHeldItem() {
-        Player owner = Bukkit.getPlayer(this.ownerName);
+        Player owner = Bukkit.getServer().getPlayer(this.ownerUUID);
         if(this.lot != null) {
             return true;
         }
         ItemStack heldItem = owner.getItemInHand();
         if(heldItem == null || heldItem.getAmount() == 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-hand-is-empty", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-hand-is-empty", this.ownerUUID, this);
             return false;
         }
-        this.lot = new AuctionLot(heldItem, this.ownerName);
+        this.lot = new AuctionLot(heldItem, this.ownerUUID, this.ownerName);
 
         ItemStack itemType = this.lot.getTypeStack();
 
         if(!AuctionConfig.getBoolean("allow-damaged-items", scope) && itemType.getType().getMaxDurability() > 0 && itemType.getDurability() > 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-damaged-item", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-damaged-item", this.ownerUUID, this);
             this.lot = null;
             return false;
         }
@@ -633,7 +638,7 @@ public class Auction {
                 String lowerCaseDisplay = displayName.toLowerCase();
                 for(String string : ObsidianAuctions.itemBlacklist) {
                     if(lowerCaseDisplay.contains(string)) {
-                        this.messageManager.sendPlayerMessage("auction-fail-blacklist-name", ownerName, this);
+                        this.messageManager.sendPlayerMessage("auction-fail-blacklist-name", this.ownerUUID, this);
                         return false;
                     }
                 }
@@ -642,13 +647,13 @@ public class Auction {
 
         String typeStr= itemType.getType().toString();
         if((typeStr.equals("MOB_SPAWNER") || typeStr.equals("SPAWNER")) && !AuctionConfig.getBoolean("allow-mobspawners", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-spawner", ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-spawner", this.ownerUUID, this);
             this.lot = null;
             return false;
         }
 
         if(!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-renamed-item", ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-renamed-item", this.ownerUUID, this);
             this.lot = null;
             return false;
         }
@@ -660,7 +665,7 @@ public class Auction {
             for(int i = 0; i < bannedLore.size(); i++) {
                 for(int j = 0; j < lore.length; j++) {
                     if(lore[j].toLowerCase().contains(bannedLore.get(i).toLowerCase())) {
-                        this.messageManager.sendPlayerMessage("auction-fail-banned-lore", this.ownerName, this);
+                        this.messageManager.sendPlayerMessage("auction-fail-banned-lore", this.ownerUUID, this);
                         this.lot = null;
                         return false;
                     }
@@ -709,14 +714,14 @@ public class Auction {
      */
     private boolean isValidAmount() {
         if(this.quantity <= 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-quantity-too-low", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-quantity-too-low", this.ownerUUID, this);
             return false;
         }
 
         // TODO: Add config setting for max quantity.
 
         if(!Items.hasAmount(this.ownerName, this.quantity, this.lot.getTypeStack())) {
-            this.messageManager.sendPlayerMessage("auction-fail-insufficient-supply", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-insufficient-supply", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -729,10 +734,10 @@ public class Auction {
      */
     private boolean isValidStartingBid() {
         if(this.startingBid < 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-starting-bid-too-low", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-starting-bid-too-low", this.ownerUUID, this);
             return false;
         } else if(this.startingBid > AuctionConfig.getSafeMoneyFromDouble("max-starting-bid", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-starting-bid-too-high", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-starting-bid-too-high", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -745,11 +750,11 @@ public class Auction {
      */
     private boolean isValidIncrement() {
         if(getMinBidIncrement() < AuctionConfig.getSafeMoneyFromDouble("min-bid-increment", this.scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-increment-too-low", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-increment-too-low", this.ownerUUID, this);
             return false;
         }
         if(getMinBidIncrement() > AuctionConfig.getSafeMoneyFromDouble("max-bid-increment", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-increment-too-high", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-increment-too-high", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -762,10 +767,10 @@ public class Auction {
      */
     private boolean isValidBuyNow() {
         if(getBuyNow() < 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-buynow-too-low", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-buynow-too-low", this.ownerUUID, this);
             return false;
         } else if(getBuyNow() > AuctionConfig.getSafeMoneyFromDouble("max-buynow", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-buynow-too-high", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-buynow-too-high", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -778,10 +783,10 @@ public class Auction {
      */
     private boolean isValidTime() {
         if(this.time < AuctionConfig.getInt("min-auction-time", this.scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-time-too-low", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-time-too-low", this.ownerUUID, this);
             return false;
         } else if(this.time > AuctionConfig.getInt("max-auction-time", this.scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-time-too-high", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("auction-fail-time-too-high", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -806,14 +811,14 @@ public class Auction {
             } else if(args[0].matches("[0-9]{1,7}")) {
                 this.quantity = Integer.parseInt(this.args[0]);
             } else {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-quantity", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("parse-error-invalid-quantity", this.ownerUUID, this);
                 return false;
             }
         } else {
             this.quantity = lotType.getAmount();
         }
         if(this.quantity < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-quantity", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("parse-error-invalid-quantity", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -831,10 +836,10 @@ public class Auction {
 
         if(this.args.length > 1) {
             if(this.args[1].isEmpty()) {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerUUID, this);
                 return false;
             } else if(!args[1].matches(ObsidianAuctions.decimalRegex)) {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerUUID, this);
                 return false;
             }
             this.startingBid = Functions.getSafeMoney(Double.parseDouble(args[1]));
@@ -842,7 +847,7 @@ public class Auction {
             this.startingBid = AuctionConfig.getSafeMoneyFromDouble("default-starting-bid", this.scope);
         }
         if(this.startingBid < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -862,14 +867,14 @@ public class Auction {
             if(!this.args[2].isEmpty() && args[2].matches(ObsidianAuctions.decimalRegex)) {
                 this.minBidIncrement = Functions.getSafeMoney(Double.parseDouble(this.args[2]));
             } else {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-bid-increment", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("parse-error-invalid-bid-increment", this.ownerUUID, this);
                 return false;
             }
         } else {
             this.minBidIncrement = AuctionConfig.getSafeMoneyFromDouble("default-bid-increment", this.scope);
         }
         if(this.minBidIncrement < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-bid-increment", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("parse-error-invalid-bid-increment", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -889,14 +894,14 @@ public class Auction {
             if(this.args[3].matches("[0-9]{1,7}")) {
                 this.time = Integer.parseInt(this.args[3]);
             } else {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-time", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("parse-error-invalid-time", this.ownerUUID, this);
                 return false;
             }
         } else {
             this.time = AuctionConfig.getInt("default-auction-time", this.scope);
         }
         if(this.time < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-time", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("parse-error-invalid-time", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -922,14 +927,14 @@ public class Auction {
             if(!this.args[4].isEmpty() && this.args[4].matches(ObsidianAuctions.decimalRegex)) {
                 this.buyNow = Functions.getSafeMoney(Double.parseDouble(args[4]));
             } else {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-buynow", this.ownerName, this);
+                this.messageManager.sendPlayerMessage("parse-error-invalid-buynow", this.ownerUUID, this);
                 return false;
             }
         } else {
             this.buyNow = 0;
         }
         if(getBuyNow() < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-buynow", this.ownerName, this);
+            this.messageManager.sendPlayerMessage("parse-error-invalid-buynow", this.ownerUUID, this);
             return false;
         }
         return true;
@@ -991,11 +996,20 @@ public class Auction {
     }
 
     /**
+     * Gets the UUID of the player who started and therefore "owns" the auction.
+     *
+     * @return auction owner uuid
+     */
+    public UUID getOwnerUUID() {
+        return this.ownerUUID;
+    }
+
+    /**
      * Gets the name of the player who started and therefore "owns" the auction.
      *
      * @return auction owner name
      */
-    public String getOwner() {
+    public String getOwnerName() {
         return this.ownerName;
     }
 
@@ -1038,7 +1052,7 @@ public class Auction {
     }
 
     public String getOwnerDisplayName() {
-        Player ownerPlayer = Bukkit.getPlayer(this.ownerName);
+        Player ownerPlayer = Bukkit.getServer().getPlayer(this.ownerUUID);
         if(ownerPlayer != null) {
             return ownerPlayer.getDisplayName();
         } else {

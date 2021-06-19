@@ -4,44 +4,45 @@ import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class MessageManager {
 
     /**
      * Sends a message to a player.
      *
-     * @param playerName username of player or null for console
+     * @param playerUUID uuid of player or null for console
      * @param auction    the auction being referenced if any
      * @param messageKey message key to be used by floAuction
      */
-    public abstract void sendPlayerMessage(String messageKey, String playerName, Auction auction);
+    public abstract void sendPlayerMessage(String messageKey, UUID playerUUID, Auction auction);
 
     /**
      * Sends a message to a player.
      *
-     * @param playerName  username of player or null for console
+     * @param playerUUID  uuid of player or null for console
      * @param auction     the auction being referenced if any
      * @param messageKeys list of message keys used by floAuction
      */
-    public abstract void sendPlayerMessage(List<String> messageKeys, String playerName, Auction auction);
+    public abstract void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, Auction auction);
 
     /**
      * Sends a message to a player.
      *
      * @param messageKey   message key used by floAuction
-     * @param playerName   username of player or null for console
+     * @param playerUUID   uuid of player or null for console
      * @param auctionScope the auction scope being referenced if any
      */
-    public abstract void sendPlayerMessage(String messageKey, String playerName, AuctionScope auctionScope);
+    public abstract void sendPlayerMessage(String messageKey, UUID playerUUID, AuctionScope auctionScope);
 
     /**
      * Sends a message to a player.
      *
      * @param messageKeys  list of message keys used by floAuction
-     * @param playerName   username of player or null for console
+     * @param playerUUID   uuid of player or null for console
      * @param auctionScope the auction scope being referenced if any
      */
-    public abstract void sendPlayerMessage(List<String> messageKeys, String playerName, AuctionScope auctionScope);
+    public abstract void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, AuctionScope auctionScope);
 
     /**
      * Sends a message to anyone in the scope of a given auction.

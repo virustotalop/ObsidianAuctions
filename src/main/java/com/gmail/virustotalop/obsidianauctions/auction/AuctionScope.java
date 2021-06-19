@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Class to manage different auction areas or scopes.
@@ -145,43 +146,44 @@ public class AuctionScope {
      * @param auctionToQueue auction instance to queue
      */
     public void queueAuction(Auction auctionToQueue) {
-        String playerName = auctionToQueue.getOwner();
+        UUID playerUUID = auctionToQueue.getOwnerUUID();
+        String playerName = auctionToQueue.getOwnerName();
         MessageManager messageManager = auctionToQueue.messageManager;
 
         if(this.activeAuction == null) {
             // Queuing because of interval not yet timed out.
             // Allow a queue of 1 to override if 0 for this condition.
             if(Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= this.auctionQueue.size()) {
-                messageManager.sendPlayerMessage("auction-queue-fail-full", playerName, auctionToQueue);
+                messageManager.sendPlayerMessage("auction-queue-fail-full", playerUUID, auctionToQueue);
                 return;
             }
         } else {
             if(AuctionConfig.getInt("max-auction-queue-length", this) <= 0) {
-                messageManager.sendPlayerMessage("auction-fail-auction-exists", playerName, auctionToQueue);
+                messageManager.sendPlayerMessage("auction-fail-auction-exists", playerUUID, auctionToQueue);
                 return;
-            } else if(this.activeAuction.getOwner().equalsIgnoreCase(playerName)) {
-                messageManager.sendPlayerMessage("auction-queue-fail-current-auction", playerName, auctionToQueue);
+            } else if(this.activeAuction.getOwnerName().equalsIgnoreCase(playerName)) {
+                messageManager.sendPlayerMessage("auction-queue-fail-current-auction", playerUUID, auctionToQueue);
                 return;
             } else if(AuctionConfig.getInt("max-auction-queue-length", this) <= auctionQueue.size()) {
-                messageManager.sendPlayerMessage("auction-queue-fail-full", playerName, auctionToQueue);
+                messageManager.sendPlayerMessage("auction-queue-fail-full", playerUUID, auctionToQueue);
                 return;
             }
         }
         for(int i = 0; i < this.auctionQueue.size(); i++) {
             if(this.auctionQueue.get(i) != null) {
                 Auction queuedAuction = this.auctionQueue.get(i);
-                if(queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
-                    messageManager.sendPlayerMessage("auction-queue-fail-in-queue", playerName, auctionToQueue);
+                if(queuedAuction.getOwnerName().equalsIgnoreCase(playerName)) {
+                    messageManager.sendPlayerMessage("auction-queue-fail-in-queue", playerUUID, auctionToQueue);
                     return;
                 }
             }
         }
         if((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
             this.auctionQueue.add(auctionToQueue);
-            AuctionParticipant.addParticipant(playerName, this);
+            AuctionParticipant.addParticipant(playerUUID, this);
             AuctionScope.checkAuctionQueue();
             if(this.auctionQueue.contains(auctionToQueue)) {
-                messageManager.sendPlayerMessage("auction-queue-enter", playerName, auctionToQueue);
+                messageManager.sendPlayerMessage("auction-queue-enter", playerUUID, auctionToQueue);
             }
         }
     }
@@ -203,18 +205,19 @@ public class AuctionScope {
         }
         MessageManager messageManager = auction.messageManager;
 
-        String playerName = auction.getOwner();
+        String playerName = auction.getOwnerName();
+        UUID playerUUID = auction.getOwnerUUID();
         Player player = Bukkit.getPlayer(playerName);
         if(player == null || !player.isOnline()) {
             return;
-        } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(auction.getOwner(), false)) {
-            messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerName, auction);
+        } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(auction.getOwnerUUID(), false)) {
+            messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerUUID, auction);
             return;
         } else if(!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
-            messageManager.sendPlayerMessage("auction-fail-gamemode-creative", playerName, auction);
+            messageManager.sendPlayerMessage("auction-fail-gamemode-creative", playerUUID, auction);
             return;
         } else if(!ObsidianAuctions.get().getPermission().has(player, "auction.start")) {
-            messageManager.sendPlayerMessage("auction-fail-permissions", playerName, auction);
+            messageManager.sendPlayerMessage("auction-fail-permissions", playerUUID, auction);
             return;
         } else if(!auction.isValid()) {
             return;
@@ -350,7 +353,7 @@ public class AuctionScope {
     public int getQueuePosition(String playerName) {
         for(int t = 0; t < this.auctionQueue.size(); t++) {
             Auction auction = this.auctionQueue.get(t);
-            if(auction.getOwner().equalsIgnoreCase(playerName)) {
+            if(auction.getOwnerName().equalsIgnoreCase(playerName)) {
                 return t + 1;
             }
         }
@@ -457,13 +460,13 @@ public class AuctionScope {
     }
 
     public static void sendFairwellMessages() {
-        Iterator<String> playerIterator = ObsidianAuctions.get().getPlayerScopeCache().keySet().iterator();
+        Iterator<UUID> playerIterator = ObsidianAuctions.get().getPlayerScopeCache().keySet().iterator();
         while(playerIterator.hasNext()) {
-            String playerName = playerIterator.next();
-            if(!AuctionParticipant.isParticipating(playerName)) {
-                Player player = Bukkit.getPlayer(playerName);
+            UUID playerUUID = playerIterator.next();
+            if(!AuctionParticipant.isParticipating(playerUUID)) {
+                Player player = Bukkit.getPlayer(playerUUID);
                 if(player != null && player.isOnline()) {
-                    String oldScopeId = ObsidianAuctions.get().getPlayerScopeCache().get(playerName);
+                    String oldScopeId = ObsidianAuctions.get().getPlayerScopeCache().get(playerUUID);
                     AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
                     AuctionScope playerScope = AuctionScope.getPlayerScope(player);
                     String playerScopeId = null;
@@ -471,9 +474,9 @@ public class AuctionScope {
                         playerScopeId = playerScope.getScopeId();
                     }
                     if(playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
-                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerName, oldScope);
+                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerUUID, oldScope);
                         playerIterator.remove();
-                        ObsidianAuctions.get().getPlayerScopeCache().remove(playerName);
+                        ObsidianAuctions.get().getPlayerScopeCache().remove(playerUUID);
                     }
                 }
             }
@@ -492,18 +495,18 @@ public class AuctionScope {
         if(isOnJoin) {
             welcomeMessageKey += "-onjoin";
         }
-        String playerName = player.getName();
-        if(!AuctionParticipant.isParticipating(playerName)) {
+        UUID playerUUID = player.getUniqueId();
+        if(!AuctionParticipant.isParticipating(playerUUID)) {
             AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-            String oldScopeId = ObsidianAuctions.get().getPlayerScopeCache().get(playerName);
+            String oldScopeId = ObsidianAuctions.get().getPlayerScopeCache().get(playerUUID);
             if(playerScope == null) {
                 if(oldScopeId != null) {
-                    ObsidianAuctions.get().getPlayerScopeCache().remove(playerName);
+                    ObsidianAuctions.get().getPlayerScopeCache().remove(playerUUID);
                 }
             } else {
                 if(oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
-                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage(welcomeMessageKey, playerName, playerScope);
-                    ObsidianAuctions.get().getPlayerScopeCache().put(playerName, playerScope.getScopeId());
+                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage(welcomeMessageKey, playerUUID, playerScope);
+                    ObsidianAuctions.get().getPlayerScopeCache().put(playerUUID, playerScope.getScopeId());
                 }
             }
         }

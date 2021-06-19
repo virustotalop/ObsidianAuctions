@@ -6,6 +6,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.text.DecimalFormat;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Functions {
@@ -31,15 +32,15 @@ public class Functions {
     }
 
     // Merges player's preset with the current specifications and system defaults.
-    public static String[] mergeInputArgs(String playerName, String[] inputArgs, boolean validateArgs) {
+    public static String[] mergeInputArgs(UUID playerUUID, String[] inputArgs, boolean validateArgs) {
         // Get existing defaults (if present)
         String[] resultArgs = null;
 
         // if player has no preset, use the current system defaults:
-        if(ObsidianAuctions.userSavedInputArgs.get(playerName) == null) {
+        if(ObsidianAuctions.userSavedInputArgs.get(playerUUID) == null) {
             resultArgs = new String[]{"this", removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-starting-bid", null))), removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-bid-increment", null))), Integer.toString(AuctionConfig.getInt("default-auction-time", null)), "0"};
         } else {
-            resultArgs = ObsidianAuctions.userSavedInputArgs.get(playerName).clone();
+            resultArgs = ObsidianAuctions.userSavedInputArgs.get(playerUUID).clone();
         }
 
         // Size increased in 2.10.0
@@ -65,7 +66,7 @@ public class Functions {
             if(validateArgs) {
                 // This is similar to the validation in Auction.java but without verifying availability.
                 if(!resultArgs[0].equalsIgnoreCase("this") && !resultArgs[0].equalsIgnoreCase("hand") && !resultArgs[0].equalsIgnoreCase("all") && !resultArgs[0].matches("[0-9]{1,7}")) {
-                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-quantity", playerName, (AuctionScope) null);
+                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-quantity", playerUUID, (AuctionScope) null);
                     return null;
                 }
             }
@@ -77,7 +78,7 @@ public class Functions {
                 }
                 if(validateArgs) {
                     if(resultArgs[1].isEmpty() || !resultArgs[1].matches(ObsidianAuctions.decimalRegex)) {
-                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-starting-bid", playerName, (AuctionScope) null);
+                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-starting-bid", playerUUID, (AuctionScope) null);
                         return null;
                     }
                 }
@@ -89,7 +90,7 @@ public class Functions {
                     }
                     if(validateArgs) {
                         if(resultArgs[2].isEmpty() || !resultArgs[2].matches(ObsidianAuctions.decimalRegex)) {
-                            ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-max-bid", playerName, (AuctionScope) null);
+                            ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-max-bid", playerUUID, (AuctionScope) null);
                             return null;
                         }
                     }
@@ -101,7 +102,7 @@ public class Functions {
                         }
                         if(validateArgs) {
                             if(!resultArgs[3].matches("[0-9]{1,7}")) {
-                                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-time", playerName, (AuctionScope) null);
+                                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-time", playerUUID, (AuctionScope) null);
                                 return null;
                             }
                         }
@@ -113,7 +114,7 @@ public class Functions {
                             }
                             if(validateArgs) {
                                 if(resultArgs[4].isEmpty() || !resultArgs[4].matches(ObsidianAuctions.decimalRegex)) {
-                                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-buynow", playerName, (AuctionScope) null);
+                                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage("parse-error-invalid-buynow", playerUUID, (AuctionScope) null);
                                     return null;
                                 }
                             }

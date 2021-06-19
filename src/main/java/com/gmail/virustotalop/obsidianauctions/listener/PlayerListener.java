@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
@@ -40,22 +41,22 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
         // Hopefully the teleport and portal things I just added will make this obsolete, but I figure I'll keep it just to make sure.
-        AuctionParticipant.forceLocation(event.getPlayer().getName(), null);
+        AuctionParticipant.forceLocation(event.getPlayer().getUniqueId(), null);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerChangedGameMode(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
-        String playerName = player.getName();
+        UUID playerUUID = player.getUniqueId();
         AuctionScope playerScope = AuctionScope.getPlayerScope(player);
         Auction playerAuction = ObsidianAuctions.get().getPlayerAuction(player);
         if(AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) {
             return;
         }
 
-        if(AuctionParticipant.isParticipating(playerName)) {
+        if(AuctionParticipant.isParticipating(playerUUID)) {
             event.setCancelled(true);
-            this.messageManager.sendPlayerMessage("gamemodechange-fail-participating", playerName, (AuctionScope) null);
+            this.messageManager.sendPlayerMessage("gamemodechange-fail-participating", playerUUID, (AuctionScope) null);
         }
     }
 
@@ -65,7 +66,7 @@ public class PlayerListener implements Listener {
         if(player == null) {
             return;
         }
-        String playerName = player.getName();
+        UUID playerUUID = player.getUniqueId();
         String message = event.getMessage();
         if(message == null || message.isEmpty()) {
             return;
@@ -80,7 +81,7 @@ public class PlayerListener implements Listener {
             if(disabledCommand.isEmpty()) continue;
             if(message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
-                this.messageManager.sendPlayerMessage("disabled-command-inscope", playerName, (AuctionScope) null);
+                this.messageManager.sendPlayerMessage("disabled-command-inscope", playerUUID, (AuctionScope) null);
                 return;
             }
         }
@@ -89,7 +90,7 @@ public class PlayerListener implements Listener {
         if(playerScope == null) {
             return;
         }
-        if(!AuctionParticipant.isParticipating(player.getName())) {
+        if(!AuctionParticipant.isParticipating(playerUUID)) {
             return;
         }
 
@@ -101,7 +102,7 @@ public class PlayerListener implements Listener {
             }
             if(message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
-                this.messageManager.sendPlayerMessage("disabled-command-participating", playerName, (AuctionScope) null);
+                this.messageManager.sendPlayerMessage("disabled-command-participating", playerUUID, (AuctionScope) null);
                 return;
             }
         }
@@ -109,18 +110,18 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
-        AuctionParticipant.forceLocation(event.getPlayer().getName(), event.getTo());
+        AuctionParticipant.forceLocation(event.getPlayer().getUniqueId(), event.getTo());
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if(!AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo()))
+        if(!AuctionParticipant.checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
             event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerPortalEvent(PlayerPortalEvent event) {
-        if(!AuctionParticipant.checkTeleportLocation(event.getPlayer().getName(), event.getTo()))
+        if(!AuctionParticipant.checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
             event.setCancelled(true);
     }
 }

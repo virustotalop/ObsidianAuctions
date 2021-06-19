@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Class to manipulate remote plugin prohibitions on player auctioning.
@@ -16,7 +17,7 @@ import java.util.List;
 public class AuctionProhibition {
 
     private final Plugin prohibiterPlugin;
-    private final String playerName;
+    private final UUID playerUUID;
     private final String enableMessage;
     private final String reminderMessage;
     private final String disableMessage;
@@ -25,14 +26,14 @@ public class AuctionProhibition {
      * Protected constructor called when initializing prohibition.
      *
      * @param prohibiterPlugin prohibiting plugin
-     * @param playerName       prohibited player's name
+     * @param playerUUID       prohibited player's uuid
      * @param enableMessage    message to send when starting prohibition
      * @param reminderMessage  message to send when reminding player of prohibition
      * @param disableMessage   message to send when ending prohibition
      */
-    protected AuctionProhibition(Plugin prohibiterPlugin, String playerName, String enableMessage, String reminderMessage, String disableMessage) {
+    protected AuctionProhibition(Plugin prohibiterPlugin, UUID playerUUID, String enableMessage, String reminderMessage, String disableMessage) {
         this.prohibiterPlugin = prohibiterPlugin;
-        this.playerName = playerName;
+        this.playerUUID = playerUUID;
         this.enableMessage = enableMessage;
         this.reminderMessage = reminderMessage;
         this.disableMessage = disableMessage;
@@ -42,8 +43,8 @@ public class AuctionProhibition {
         return this.prohibiterPlugin;
     }
 
-    public String getPlayerName() {
-        return this.playerName;
+    public UUID getPlayerUUID() {
+        return this.playerUUID;
     }
 
     public String getEnableMessage() {

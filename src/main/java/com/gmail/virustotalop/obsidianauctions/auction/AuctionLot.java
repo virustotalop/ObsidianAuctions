@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 /**
  * Structure to hold and process the items being auctioned.
@@ -28,7 +29,9 @@ public class AuctionLot implements Serializable {
 
     private static final long serialVersionUID = -1764290458703647129L;
 
+    private UUID ownerUUID;
     private String ownerName;
+
     private int quantity = 0;
     private Material lotType;
     private short lotDurability;
@@ -46,16 +49,18 @@ public class AuctionLot implements Serializable {
     private String[] lore = null;
     private String itemSerialized = null;
 
+
     /**
      * Constructor that sets owner and lot type.
      *
-     * @param lotType
-     * @param lotOwner
+     * @param lotStack
+     * @param ownerUUID
+     * @param ownerName
      */
-    public AuctionLot(ItemStack lotType, String lotOwner) {
-        // Lots can only have one type of item per lot.
-        this.ownerName = lotOwner;
-        setLotType(lotType);
+    public AuctionLot(ItemStack lotStack, UUID ownerUUID, String ownerName) {
+        setLotType(lotStack);
+        this.ownerUUID = ownerUUID;
+        this.ownerName = ownerName;
     }
 
     /**
@@ -79,31 +84,33 @@ public class AuctionLot implements Serializable {
     /**
      * Public alias for giveLot(String playerName) used when we happen to be giving the lot to an auction winner or authorized confiscator.
      *
-     * @param winnerName who receives the items
+     * @param winnerUUID who receives the items
      */
-    public void winLot(String winnerName) {
-        this.giveLot(winnerName);
+    public void winLot(UUID winnerUUID, String winnerName) {
+        this.giveLot(winnerUUID, winnerName);
     }
 
     /**
      * Cancels the lot by giving the items to the lots original owner.
      */
     public void cancelLot() {
-        this.giveLot(this.ownerName);
+        this.giveLot(this.ownerUUID, this.ownerName);
     }
 
     /**
      * Gives the items to a player, drops excess on ground or saves all of it to orphanage if the player is offline.
      *
-     * @param playerName who receives the items
+     * @param playerUUID who receives the items
      */
-    private void giveLot(String playerName) {
-        this.ownerName = playerName;
+    private void giveLot(UUID playerUUID, String playerName) {
         if(this.quantity == 0) {
             return;
         }
         ItemStack lotTypeLock = getTypeStack();
-        Player player = Bukkit.getPlayer(playerName);
+        Player player = Bukkit.getPlayer(playerUUID);
+
+        this.ownerUUID = playerUUID;
+        this.ownerName = playerName;
 
         int maxStackSize = lotTypeLock.getType().getMaxStackSize();
         if(player != null && player.isOnline()) {
@@ -116,7 +123,7 @@ public class AuctionLot implements Serializable {
             // Give whatever items space permits at this time.
             ItemStack typeStack = getTypeStack();
             if(amountToGive > 0) {
-                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-give", playerName, (AuctionScope) null);
+                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-give", playerUUID, (AuctionScope) null);
             }
             while(amountToGive > 0) {
                 ItemStack givingItems = lotTypeLock.clone();
@@ -139,12 +146,12 @@ public class AuctionLot implements Serializable {
                     Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
                     drop.setItemStack(cloneStack);
                 }
-                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-drop", playerName, (AuctionScope) null);
+                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-drop", playerUUID, (AuctionScope) null);
             }
         } else {
             // Player is offline, queue lot for give on login.
             // Create orphaned lot to try to give when inventory clears up.
-            final AuctionLot orphanLot = new AuctionLot(lotTypeLock, playerName);
+            final AuctionLot orphanLot = new AuctionLot(lotTypeLock, playerUUID, playerName);
 
             // Move items to orphan lot
             orphanLot.addItems(this.quantity, false);

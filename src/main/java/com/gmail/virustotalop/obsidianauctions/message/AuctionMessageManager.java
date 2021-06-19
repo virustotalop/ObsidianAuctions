@@ -13,16 +13,11 @@ import com.google.inject.Inject;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -37,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 public class AuctionMessageManager extends MessageManager {
 
@@ -50,19 +46,19 @@ public class AuctionMessageManager extends MessageManager {
     }
 
     @Override
-    public void sendPlayerMessage(String messageKey, String playerName, Auction auction) {
+    public void sendPlayerMessage(String messageKey, UUID playerUUID, Auction auction) {
         List<String> messageKeys = new ArrayList<>();
         messageKeys.add(messageKey);
-        this.sendPlayerMessage(messageKeys, playerName, auction);
+        this.sendPlayerMessage(messageKeys, playerUUID, auction);
     }
 
     @Override
-    public void sendPlayerMessage(List<String> messageKeys, String playerName, Auction auction) {
+    public void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, Auction auction) {
         CommandSender recipient = null;
-        if(playerName == null) {
+        if(playerUUID == null) {
             recipient = Bukkit.getConsoleSender();
         } else {
-            recipient = Bukkit.getPlayer(playerName);
+            recipient = Bukkit.getPlayer(playerUUID);
         }
         AuctionScope auctionScope = null;
         if(auction != null) {
@@ -75,19 +71,19 @@ public class AuctionMessageManager extends MessageManager {
     }
 
     @Override
-    public void sendPlayerMessage(String messageKey, String playerName, AuctionScope auctionScope) {
+    public void sendPlayerMessage(String messageKey, UUID playerUUID, AuctionScope auctionScope) {
         List<String> messageKeys = new ArrayList<>();
         messageKeys.add(messageKey);
-        this.sendPlayerMessage(messageKeys, playerName, auctionScope);
+        this.sendPlayerMessage(messageKeys, playerUUID, auctionScope);
     }
 
     @Override
-    public void sendPlayerMessage(List<String> messageKeys, String playerName, AuctionScope auctionScope) {
+    public void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, AuctionScope auctionScope) {
         CommandSender recipient = null;
-        if(playerName == null) {
+        if(playerUUID == null) {
             recipient = Bukkit.getConsoleSender();
         } else {
-            recipient = Bukkit.getPlayer(playerName);
+            recipient = Bukkit.getPlayer(playerUUID);
         }
         if(auctionScope == null && recipient instanceof Player) {
             auctionScope = AuctionScope.getPlayerScope((Player) recipient);
@@ -276,7 +272,7 @@ public class AuctionMessageManager extends MessageManager {
             String message = messageList.get(l);
             if(message.length() > 0 && message.contains("%auction-")) {
                 if(auction != null) {
-                    replacements.put("%auction-owner-name%", auction.getOwner()); //%A1
+                    replacements.put("%auction-owner-name%", auction.getOwnerName()); //%A1
                     replacements.put("%auction-owner-display-name%", auction.getOwnerDisplayName()); //%A2
                     replacements.put("%auction-quantity%", Integer.toString(auction.getLotQuantity()));
                     if(auction.getStartingBid() == 0) {
@@ -301,7 +297,7 @@ public class AuctionMessageManager extends MessageManager {
                 if(auction != null) {
                     AuctionBid currentBid = auction.getCurrentBid();
                     if(currentBid != null) {
-                        replacements.put("%current-bid-name%", currentBid.getBidder()); //%B1
+                        replacements.put("%current-bid-name%", currentBid.getBidderName()); //%B1
                         replacements.put("%current-bid-display-name%", currentBid.getBidderDisplayName()); //%B2
                         replacements.put("%current-bid-amount%", Functions.formatAmount(currentBid.getBidAmount())); //%B3
                         replacements.put("%auction-bid-starting%", Functions.formatAmount(auction.getStartingBid())); //%B4
@@ -370,8 +366,8 @@ public class AuctionMessageManager extends MessageManager {
             String message = messageList.get(l);
             if(message.length() > 0 && message.contains("%auction-prep")) {
                 if(player != null) {
-                    String playerName = player.getName();
-                    String[] defaultStartArgs = Functions.mergeInputArgs(playerName, new String[]{}, false);
+                    UUID playerUUID = player.getUniqueId();
+                    String[] defaultStartArgs = Functions.mergeInputArgs(playerUUID, new String[]{}, false);
                     if(defaultStartArgs[0].equalsIgnoreCase("this") || defaultStartArgs[0].equalsIgnoreCase("hand")) {
                         replacements.put("%auction-prep-amount-other%", ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("prep-amount-in-hand", auctionScope))); //%P1
                     } else if(defaultStartArgs[0].equalsIgnoreCase("all")) {
