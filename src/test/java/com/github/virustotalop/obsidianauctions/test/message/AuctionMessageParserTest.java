@@ -1,6 +1,7 @@
-package com.github.virustotalop.obsidianauctions.test;
+package com.github.virustotalop.obsidianauctions.test.message;
 
-import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageManager;
+import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageParser;
+import com.google.inject.Guice;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -8,11 +9,12 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class AuctionMessageManagerTest {
+public class AuctionMessageParserTest {
 
-    /*@Test
+    @Test
     public void testParseConditionals() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
         String parsed = manager.parseConditionals("{true}some text", conditionals);
@@ -21,7 +23,8 @@ public class AuctionMessageManagerTest {
 
     @Test
     public void testParseConditionalsNot() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
         String parsed = manager.parseConditionals("{!true}some text", conditionals);
@@ -30,7 +33,8 @@ public class AuctionMessageManagerTest {
 
     @Test
     public void testParseConditionalsSkipText() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("false", false);
         String parsed = manager.parseConditionals("{false}some text{end-false}other text", conditionals);
@@ -39,7 +43,8 @@ public class AuctionMessageManagerTest {
 
     @Test
     public void testParseConditionalsEnd() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("false", false);
         String parsed = manager.parseConditionals("{false}{end}other text", conditionals);
@@ -48,7 +53,8 @@ public class AuctionMessageManagerTest {
 
     @Test
     public void testParseConditionalsInbetween() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
         String parsed = manager.parseConditionals("{true}%other text%{end-true}", conditionals);
@@ -57,7 +63,8 @@ public class AuctionMessageManagerTest {
 
     @Test
     public void testParseConditionalsDoNotEnd() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
         String parsed = manager.parseConditionals("{true}{end}other text", conditionals);
@@ -66,7 +73,8 @@ public class AuctionMessageManagerTest {
 
     @Test
     public void testParseConditionalsDoubleEndWithFalseEnd() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
         conditionals.put("false", false);
@@ -76,7 +84,8 @@ public class AuctionMessageManagerTest {
 
     @Test
     public void testParseConditionalsDoNotEndMultipleConditionals() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
         conditionals.put("also-true", true);
@@ -86,10 +95,11 @@ public class AuctionMessageManagerTest {
 
     @Test
     public void testParseConditionalsOtherTextWithPercent() {
-        AuctionMessageManager manager = new AuctionMessageManager();
+        AuctionMessageParser manager = Guice.createInjector(new AuctionMessageParserModule())
+                .getInstance(AuctionMessageParser.class);
         Map<String, Boolean> conditionals = new HashMap<>();
         conditionals.put("true", true);
         String parsed = manager.parseConditionals("{true}%some-other-text%", conditionals);
         assertEquals("%some-other-text%", parsed);
-    }*/
+    }
 }
