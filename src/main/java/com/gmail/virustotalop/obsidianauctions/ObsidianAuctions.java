@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +77,8 @@ public class ObsidianAuctions extends JavaPlugin {
     private static final Map<UUID, String> playerScopeCache = new HashMap<>();
 
     private static List<AuctionLot> orphanLots = new ArrayList<>();
-    private List<String> voluntarilyDisabledUsers = new ArrayList<>();
-    private List<UUID> suspendedUsers = new ArrayList<>();
+    private Collection<UUID> voluntarilyDisabledUsers = new HashSet<>();
+    private Collection<UUID> suspendedUsers = new HashSet<>();
 
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
@@ -257,8 +258,8 @@ public class ObsidianAuctions extends JavaPlugin {
         File suspendedUserFile = new File(this.getDataFolder(), "suspendedUsers.ser");
         File savedUserInputsFile = new File(this.getDataFolder(), "userSavedInputArgs.ser");
         orphanLots =  FileLoadUtil.loadListAuctionLot(orphanLotsFile);
-        this.voluntarilyDisabledUsers =  FileLoadUtil.loadStringList(voluntarilyDisabledUsersFile);
-        suspendedUsers =  FileLoadUtil.loadUUIDList(suspendedUserFile);
+        this.voluntarilyDisabledUsers =  FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
+        this.suspendedUsers =  FileLoadUtil.loadUUIDSet(suspendedUserFile);
         userSavedInputArgs = FileLoadUtil.loadMapUUIDStringArray(savedUserInputsFile);
 
         this.messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
@@ -421,20 +422,15 @@ public class ObsidianAuctions extends JavaPlugin {
                         args.length > 0 &&
                         args[0].equalsIgnoreCase("on")
         ) {
-            int index = getVoluntarilyDisabledUsers().indexOf(playerName);
-            if(index != -1) {
-                getVoluntarilyDisabledUsers().remove(index);
-            }
-            this.messageManager.sendPlayerMessage("auction-enabled", playerUUID, (AuctionScope) null);
-            saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
+           if(this.removeVoluntarilyDisabled(playerUUID)) {
+               this.messageManager.sendPlayerMessage("auction-enabled", playerUUID, (AuctionScope) null);
+               saveObject(this.voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
+           }
             return true;
         }
 
-        if(getVoluntarilyDisabledUsers().contains(playerName)) {
-            getVoluntarilyDisabledUsers().remove(playerName);
+        if(this.isVoluntarilyDisabled(playerUUID)) {
             this.messageManager.sendPlayerMessage("auction-fail-disabled", playerUUID, (AuctionScope) null);
-            getVoluntarilyDisabledUsers().add(playerName);
-            saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
             return true;
         }
 
@@ -693,10 +689,9 @@ public class ObsidianAuctions extends JavaPlugin {
                                 args[0].equalsIgnoreCase("silent") ||
                                 args[0].equalsIgnoreCase("silence")
                 ) {
-                    if(getVoluntarilyDisabledUsers().indexOf(playerName) == -1) {
+                    if(this.addVoluntarilyDisabled(playerUUID)) {
                         this.messageManager.sendPlayerMessage("auction-disabled", playerUUID, (AuctionScope) null);
-                        getVoluntarilyDisabledUsers().add(playerName);
-                        saveObject(getVoluntarilyDisabledUsers(), "voluntarilyDisabledUsers.ser");
+                        saveObject(this.voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
                     }
                     return true;
                 } else if(args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("i")) {
@@ -834,8 +829,16 @@ public class ObsidianAuctions extends JavaPlugin {
         return auctionScope.getActiveAuction();
     }
 
-    public List<String> getVoluntarilyDisabledUsers() {
-        return voluntarilyDisabledUsers;
+    public boolean isVoluntarilyDisabled(UUID uuid) {
+        return this.voluntarilyDisabledUsers.contains(uuid);
+    }
+
+    public boolean addVoluntarilyDisabled(UUID uuid) {
+        return this.voluntarilyDisabledUsers.add(uuid);
+    }
+
+    public boolean removeVoluntarilyDisabled(UUID uuid) {
+        return this.voluntarilyDisabledUsers.remove(uuid);
     }
 
     public Map<UUID, String> getPlayerScopeCache() {

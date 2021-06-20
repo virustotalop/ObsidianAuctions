@@ -38,11 +38,13 @@ public class AuctionMessageManager extends MessageManager {
 
     private final BukkitAudiences adventure;
     private final TranslationFactory translation;
+    private final GsonComponentSerializer gsonSerializer;
 
     @Inject
     private AuctionMessageManager(BukkitAudiences adventure, TranslationFactory translation) {
         this.adventure = adventure;
         this.translation = translation;
+        this.gsonSerializer = GsonComponentSerializer.gson();
     }
 
     @Override
@@ -138,13 +140,8 @@ public class AuctionMessageManager extends MessageManager {
         if(sender != null) {
             if(sender instanceof Player) {
                 player = (Player) sender;
-                if(!fullBroadcast && ObsidianAuctions.get().getVoluntarilyDisabledUsers().indexOf(player.getName()) != -1) {
+                if(!fullBroadcast && ObsidianAuctions.get().isVoluntarilyDisabled(player.getUniqueId())) {
                     // Don't send this user any messages.
-                    return;
-                }
-            } else {
-                if(!fullBroadcast && ObsidianAuctions.get().getVoluntarilyDisabledUsers().indexOf("*console*") != -1) {
-                    // Don't send console any messages.
                     return;
                 }
             }
@@ -183,7 +180,7 @@ public class AuctionMessageManager extends MessageManager {
     private void broadcastMessage(List<String> messages, AuctionScope auctionScope) {
         Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
         for(Player player : onlinePlayers) {
-            if(ObsidianAuctions.get().getVoluntarilyDisabledUsers().contains(player.getName())) {
+            if(ObsidianAuctions.get().isVoluntarilyDisabled(player.getUniqueId())) {
                 continue;
             } else if(auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) {
                 continue;
@@ -199,16 +196,10 @@ public class AuctionMessageManager extends MessageManager {
             }
         }
 
-        if(auctionScope == null && ObsidianAuctions.get().getVoluntarilyDisabledUsers().indexOf("*console*") == -1) {
-            for(String message : messages) {
-                message = ChatColor.stripColor(GsonComponentSerializer
-                        .gson()
-                        .serialize(MiniMessage.get().parse(message)));
-                Bukkit.getConsoleSender().sendMessage(message);
-            }
-        }
+
         for(String message : messages) {
-            message = ChatColor.stripColor(message);
+            message = this.gsonSerializer.serialize(MiniMessage.get().parse(message));
+            Bukkit.getConsoleSender().sendMessage(message);
             ObsidianAuctions.get().log("BROADCAST", message, auctionScope);
         }
     }

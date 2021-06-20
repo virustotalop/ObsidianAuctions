@@ -11,8 +11,10 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public final class FileLoadUtil {
@@ -55,6 +57,28 @@ public final class FileLoadUtil {
             InputStream buffer = new BufferedInputStream(file);
             ObjectInput input = new ObjectInputStream(buffer);
             importedObjects = (List<UUID>) input.readObject();
+            input.close();
+            buffer.close(); //make sure these are closed
+            file.close(); //make sure these are closed
+        } finally {
+            return importedObjects;
+        }
+    }
+
+    /**
+     * Load a UUID set from a file.
+     *
+     * @param saveFile the file to be saved
+     * @return the resulting string list
+     */
+    @SuppressWarnings({"unchecked", "finally"})
+    public static Set<UUID> loadUUIDSet(File saveFile) {
+       Set<UUID> importedObjects = new HashSet<>();
+        try {
+            InputStream file = new FileInputStream(saveFile.getAbsolutePath());
+            InputStream buffer = new BufferedInputStream(file);
+            ObjectInput input = new ObjectInputStream(buffer);
+            importedObjects = (HashSet<UUID>) input.readObject();
             input.close();
             buffer.close(); //make sure these are closed
             file.close(); //make sure these are closed
