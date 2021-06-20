@@ -19,7 +19,8 @@ import java.util.UUID;
 
 public final class FileLoadUtil {
 
-    private FileLoadUtil() {}
+    private FileLoadUtil() {
+    }
 
     /**
      * Load a String array from a file.
@@ -73,7 +74,7 @@ public final class FileLoadUtil {
      */
     @SuppressWarnings({"unchecked", "finally"})
     public static Set<UUID> loadUUIDSet(File saveFile) {
-       Set<UUID> importedObjects = new HashSet<>();
+        Set<UUID> importedObjects = new HashSet<>();
         try {
             InputStream file = new FileInputStream(saveFile.getAbsolutePath());
             InputStream buffer = new BufferedInputStream(file);

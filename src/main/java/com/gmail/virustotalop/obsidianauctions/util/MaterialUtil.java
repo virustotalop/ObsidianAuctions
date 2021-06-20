@@ -2,8 +2,6 @@ package com.gmail.virustotalop.obsidianauctions.util;
 
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MaterialUtil {

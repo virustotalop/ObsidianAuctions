@@ -274,8 +274,9 @@ public class AuctionScope {
                 return false;
             } else if(location.getZ() > Math.max(this.minHouseLocation.getZ(), this.maxHouseLocation.getZ()) || location.getZ() < Math.min(minHouseLocation.getZ(), this.maxHouseLocation.getZ())) {
                 return false;
-            } else return !(location.getY() > Math.max(this.minHouseLocation.getY(), this.maxHouseLocation.getY())) && !(location.getY() < Math.min(this.minHouseLocation.getY(), this.maxHouseLocation.getY()));
-		} else if(this.type.equalsIgnoreCase("worldguardregion")) {
+            } else
+                return !(location.getY() > Math.max(this.minHouseLocation.getY(), this.maxHouseLocation.getY())) && !(location.getY() < Math.min(this.minHouseLocation.getY(), this.maxHouseLocation.getY()));
+        } else if(this.type.equalsIgnoreCase("worldguardregion")) {
             if(worldGuardPlugin == null) {
                 return false;
             }

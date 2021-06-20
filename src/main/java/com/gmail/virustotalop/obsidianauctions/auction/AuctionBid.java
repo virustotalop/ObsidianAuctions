@@ -134,7 +134,8 @@ public class AuctionBid {
             this.auction.messageManager.sendPlayerMessage("auction-end-tax", this.auction.getOwnerUUID(), this.auction);
             unsafeBidAmount -= taxes;
             String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", this.auction.getScope());
-            if(!taxDestinationUser.isEmpty()) ObsidianAuctions.get().getEconomy().depositPlayer(taxDestinationUser, taxes);
+            if(!taxDestinationUser.isEmpty())
+                ObsidianAuctions.get().getEconomy().depositPlayer(taxDestinationUser, taxes);
         }
 
         // Apply winnings to auction owner.
@@ -177,7 +178,7 @@ public class AuctionBid {
         if(!parseArgBid()) {
             return false;
         } else return parseArgMaxBid();
-	}
+    }
 
     /**
      * Prepares two bids from the same player to compete against each other.

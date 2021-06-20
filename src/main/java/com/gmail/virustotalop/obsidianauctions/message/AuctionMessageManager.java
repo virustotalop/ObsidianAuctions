@@ -1,37 +1,21 @@
 package com.gmail.virustotalop.obsidianauctions.message;
 
-import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionBid;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
-import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
-import com.gmail.virustotalop.obsidianauctions.util.Functions;
-import com.gmail.virustotalop.obsidianauctions.util.Items;
-import com.gmail.virustotalop.obsidianauctions.util.PlaceholderAPIUtil;
 import com.google.inject.Inject;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 public class AuctionMessageManager extends MessageManager {

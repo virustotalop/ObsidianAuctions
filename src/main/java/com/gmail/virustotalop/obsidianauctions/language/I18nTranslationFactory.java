@@ -90,8 +90,7 @@ public class I18nTranslationFactory implements TranslationFactory {
                 }
                 Collection<LanguageItem> items = map.computeIfAbsent(material, (col) -> new ArrayList<>());
                 items.add(new LanguageItem(material, durability, compound, translation));
-            }
-            catch(Exception ex) {
+            } catch(Exception ex) {
                 ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid item: " + key);
                 ex.printStackTrace();
             }

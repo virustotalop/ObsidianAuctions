@@ -407,7 +407,7 @@ public class AuctionMessageParser {
                         inner = ""; //Clear the inner text
                         not = false;
                     }
-                } else if(ch == '{'){ //If it is the open bracket we should check start checking for the inner contents
+                } else if(ch == '{') { //If it is the open bracket we should check start checking for the inner contents
                     open = true;
                 }
             } else if(open) { //Check for open

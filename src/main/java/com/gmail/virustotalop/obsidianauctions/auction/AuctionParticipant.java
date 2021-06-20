@@ -220,7 +220,8 @@ public class AuctionParticipant {
             }
         }
 
-        if(!participating) ObsidianAuctions.auctionParticipants.remove(this);{
+        if(!participating) ObsidianAuctions.auctionParticipants.remove(this);
+        {
             return participating;
         }
     }

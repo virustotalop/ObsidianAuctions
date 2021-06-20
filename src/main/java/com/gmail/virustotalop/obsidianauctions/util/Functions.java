@@ -7,7 +7,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.text.DecimalFormat;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class Functions {
 

@@ -31,7 +31,7 @@ public class Auction {
 
     protected ObsidianAuctions plugin;
     private final String[] args;
-    private UUID ownerUUID;
+    private final UUID ownerUUID;
     private String ownerName;
     private final AuctionScope scope;
 
@@ -645,7 +645,7 @@ public class Auction {
             }
         }
 
-        String typeStr= itemType.getType().toString();
+        String typeStr = itemType.getType().toString();
         if((typeStr.equals("MOB_SPAWNER") || typeStr.equals("SPAWNER")) && !AuctionConfig.getBoolean("allow-mobspawners", scope)) {
             this.messageManager.sendPlayerMessage("auction-fail-spawner", this.ownerUUID, this);
             this.lot = null;

@@ -257,9 +257,9 @@ public class ObsidianAuctions extends JavaPlugin {
         File voluntarilyDisabledUsersFile = new File(this.getDataFolder(), "voluntarilyDisabledUsers.ser");
         File suspendedUserFile = new File(this.getDataFolder(), "suspendedUsers.ser");
         File savedUserInputsFile = new File(this.getDataFolder(), "userSavedInputArgs.ser");
-        orphanLots =  FileLoadUtil.loadListAuctionLot(orphanLotsFile);
-        this.voluntarilyDisabledUsers =  FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
-        this.suspendedUsers =  FileLoadUtil.loadUUIDSet(suspendedUserFile);
+        orphanLots = FileLoadUtil.loadListAuctionLot(orphanLotsFile);
+        this.voluntarilyDisabledUsers = FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
+        this.suspendedUsers = FileLoadUtil.loadUUIDSet(suspendedUserFile);
         userSavedInputArgs = FileLoadUtil.loadMapUUIDStringArray(savedUserInputsFile);
 
         this.messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
@@ -300,7 +300,7 @@ public class ObsidianAuctions extends JavaPlugin {
     private void loadConfig() {
         File configFile = new File(dataFolder, "config.yml");
 
-		File textConfigFile = new File(dataFolder, "language.yml");
+        File textConfigFile = new File(dataFolder, "language.yml");
 
 
         config = Configuration.load(configFile);
@@ -422,10 +422,10 @@ public class ObsidianAuctions extends JavaPlugin {
                         args.length > 0 &&
                         args[0].equalsIgnoreCase("on")
         ) {
-           if(this.removeVoluntarilyDisabled(playerUUID)) {
-               this.messageManager.sendPlayerMessage("auction-enabled", playerUUID, (AuctionScope) null);
-               saveObject(this.voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
-           }
+            if(this.removeVoluntarilyDisabled(playerUUID)) {
+                this.messageManager.sendPlayerMessage("auction-enabled", playerUUID, (AuctionScope) null);
+                saveObject(this.voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
+            }
             return true;
         }
 

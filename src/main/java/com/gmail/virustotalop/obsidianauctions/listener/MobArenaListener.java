@@ -1,10 +1,10 @@
 package com.gmail.virustotalop.obsidianauctions.listener;
 
+import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
-import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
