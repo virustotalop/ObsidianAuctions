@@ -50,12 +50,12 @@ public class I18nTranslationFactory implements TranslationFactory {
         Map<Material, Collection<LanguageItem>> map = new HashMap<>();
         for(String key : config.getKeys()) {
             String translation = config.getString(key);
-            boolean hasSeperator = key.contains("<sep>");
-            Material material = null;
+            boolean hasSeparator = key.contains("<sep>");
+            Material material;
             short durability = 0;
             NBTCompound compound = null;
             try {
-                if(hasSeperator) {
+                if(hasSeparator) {
                     String[] split = key.split("<sep>");
                     if(split.length != 2) {
                         ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid length for: " + key);
@@ -99,12 +99,7 @@ public class I18nTranslationFactory implements TranslationFactory {
     }
 
     private boolean isMaterial(String material) {
-        try {
-            Material.valueOf(material);
-            return true;
-        } catch(IllegalArgumentException ex) {
-            return false;
-        }
+        return Material.getMaterial(material) != null;
     }
 
     private boolean isShort(String parse) {
