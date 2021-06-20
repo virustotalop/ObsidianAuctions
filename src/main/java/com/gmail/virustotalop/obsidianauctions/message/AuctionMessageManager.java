@@ -198,7 +198,7 @@ public class AuctionMessageManager extends MessageManager {
 
 
         for(String message : messages) {
-            message = this.gsonSerializer.serialize(MiniMessage.get().parse(message));
+            message = MiniMessage.get().stripTokens(message);
             Bukkit.getConsoleSender().sendMessage(message);
             ObsidianAuctions.get().log("BROADCAST", message, auctionScope);
         }
