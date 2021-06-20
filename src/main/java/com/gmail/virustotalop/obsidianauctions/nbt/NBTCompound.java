@@ -20,7 +20,6 @@ public class NBTCompound {
         try {
             Class<?> parser = Class.forName("net.minecraft.server." + version + ".MojangsonParser");
             parse = parser.getDeclaredMethod("parse", String.class);
-
             Class<?> compound = Class.forName("net.minecraft.server." + version + ".NBTTagCompound");
             for(Method method : compound.getDeclaredMethods()) {
                 if(method.getReturnType().equals(Set.class)) {
@@ -28,9 +27,7 @@ public class NBTCompound {
                     break;
                 }
             }
-
             get = compound.getDeclaredMethod("get", String.class);
-
         } catch(ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -39,11 +36,11 @@ public class NBTCompound {
     private final Object inner;
 
     public NBTCompound(String json) throws Exception {
-        this.inner = this.parseFromJson(json);
+        this.inner = this.parseNBTCompoundFromJson(json);
     }
 
     public NBTCompound(ItemStack itemStack) {
-        this.inner = this.retrieveFromItem(itemStack);
+        this.inner = this.retrieveNBTCompoundFromItem(itemStack);
     }
 
     public Object getInner() {
@@ -72,11 +69,11 @@ public class NBTCompound {
         return null;
     }
 
-    private Object parseFromJson(String json) throws Exception {
+    private Object parseNBTCompoundFromJson(String json) throws Exception {
         return parse.invoke(null, json);
     }
 
-    private Object retrieveFromItem(ItemStack itemStack) {
+    private Object retrieveNBTCompoundFromItem(ItemStack itemStack) {
         Class<?> craftItemStack = null;
         try {
             craftItemStack = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
