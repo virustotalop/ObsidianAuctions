@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 public class AuctionMessageManagerTest {
 
-    @Test
+    /*@Test
     public void testParseConditionals() {
         AuctionMessageManager manager = new AuctionMessageManager();
         Map<String, Boolean> conditionals = new HashMap<>();
@@ -91,5 +91,5 @@ public class AuctionMessageManagerTest {
         conditionals.put("true", true);
         String parsed = manager.parseConditionals("{true}%some-other-text%", conditionals);
         assertEquals("%some-other-text%", parsed);
-    }
+    }*/
 }

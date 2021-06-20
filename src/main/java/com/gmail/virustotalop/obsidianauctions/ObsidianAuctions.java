@@ -689,8 +689,9 @@ public class ObsidianAuctions extends JavaPlugin {
                                 args[0].equalsIgnoreCase("silent") ||
                                 args[0].equalsIgnoreCase("silence")
                 ) {
-                    if(this.addVoluntarilyDisabled(playerUUID)) {
+                    if(!this.isVoluntarilyDisabled(playerUUID)) {
                         this.messageManager.sendPlayerMessage("auction-disabled", playerUUID, (AuctionScope) null);
+                        this.addVoluntarilyDisabled(playerUUID);
                         saveObject(this.voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
                     }
                     return true;

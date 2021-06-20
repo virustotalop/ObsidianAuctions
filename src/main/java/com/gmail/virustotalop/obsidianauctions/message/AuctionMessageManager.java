@@ -38,13 +38,11 @@ public class AuctionMessageManager extends MessageManager {
 
     private final BukkitAudiences adventure;
     private final TranslationFactory translation;
-    private final GsonComponentSerializer gsonSerializer;
 
     @Inject
     private AuctionMessageManager(BukkitAudiences adventure, TranslationFactory translation) {
         this.adventure = adventure;
         this.translation = translation;
-        this.gsonSerializer = GsonComponentSerializer.gson();
     }
 
     @Override
@@ -195,8 +193,6 @@ public class AuctionMessageManager extends MessageManager {
                 }
             }
         }
-
-
         for(String message : messages) {
             message = MiniMessage.get().stripTokens(message);
             Bukkit.getConsoleSender().sendMessage(message);
