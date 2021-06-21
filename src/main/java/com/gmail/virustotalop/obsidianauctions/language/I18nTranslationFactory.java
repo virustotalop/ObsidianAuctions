@@ -64,7 +64,7 @@ public class I18nTranslationFactory implements TranslationFactory {
 
                     String first = split[0];
                     String second = split[1];
-                    if(!this.isMaterial(first)) {
+                    if(this.invalidMaterial(first)) {
                         continue; //Skip and ignore
                     }
                     material = Material.getMaterial(first);
@@ -79,7 +79,7 @@ public class I18nTranslationFactory implements TranslationFactory {
                         }
                     }
                 } else {
-                    if(!this.isMaterial(key)) {
+                    if(this.invalidMaterial(key)) {
                         continue; //Skip and ignore
                     }
                     material = Material.valueOf(key);
@@ -98,8 +98,8 @@ public class I18nTranslationFactory implements TranslationFactory {
         return map;
     }
 
-    private boolean isMaterial(String material) {
-        return Material.getMaterial(material) != null;
+    private boolean invalidMaterial(String material) {
+        return Material.getMaterial(material) == null;
     }
 
     private boolean isShort(String parse) {
