@@ -74,9 +74,8 @@ public class NBTCompound {
     }
 
     private Object retrieveNBTCompoundFromItem(ItemStack itemStack) {
-        Class<?> craftItemStack = null;
         try {
-            craftItemStack = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
+            Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
             Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", ItemStack.class);
             Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", ItemStack.class);
             Object craftCopy = asCraftCopy.invoke(null, itemStack);

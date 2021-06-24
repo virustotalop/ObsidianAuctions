@@ -1,6 +1,7 @@
 package com.gmail.virustotalop.obsidianauctions.language;
 
 import com.gmail.virustotalop.obsidianauctions.nbt.NBTCompound;
+import com.gmail.virustotalop.obsidianauctions.util.ReflectionUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +26,7 @@ public class LanguageItem {
     public boolean matches(ItemStack itemStack) {
         if(this.type != itemStack.getType()) {
             return false;
-        } else if(this.durability != 0 && this.durability != itemStack.getDurability()) {
+        } else if(this.durability != ReflectionUtil.getDurability(itemStack)) {
             return false;
         }
         if(this.compound != null) {
