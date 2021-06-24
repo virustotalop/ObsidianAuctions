@@ -155,3 +155,19 @@
 'SPLASH_POTION<sep>{Potion:"minecraft:strong_luck"}': "Splash Potion of Luck II"
 'SPLASH_POTION<sep>{Potion:"minecraft:strong_turtle_master"}': "Splash Potion of the Turtle Master II"
 'SPLASH_POTION<sep>{Potion:"minecraft:strong_slow_falling"}': "Splash Potion of Slow Falling II"
+'WOOL<sep>0': 'White Wool'
+'WOOL<sep>1': 'Orange Wool'
+'WOOL<sep>2': 'Magenta Wool'
+'WOOL<sep>3': 'Light blue Wool'
+'WOOL<sep>4': 'Yellow Wool'
+'WOOL<sep>5': 'Lime Wool'
+'WOOL<sep>6': 'Pink Wool'
+'WOOL<sep>7': 'Gray Wool'
+'WOOL<sep>8': 'Light Gray Wool'
+'WOOL<sep>9': 'Cyan Wool'
+'WOOL<sep>10': 'Purple Wool'
+'WOOL<sep>11': 'Blue Wool'
+'WOOL<sep>12': 'Brown Wool'
+'WOOL<sep>13': 'Green Wool'
+'WOOL<sep>14': 'Red Wool'
+'WOOL<sep>15': 'Black Wool' 
