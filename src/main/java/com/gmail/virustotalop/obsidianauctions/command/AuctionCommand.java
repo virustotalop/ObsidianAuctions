@@ -13,9 +13,15 @@ public class AuctionCommand {
 
     }
 
-    @CommandMethod("auction|auc start [quantity] [price] [increment] [buynow]")
+    @CommandMethod("auction start [quantity] [price] [increment] [buynow]")
     @CommandPermission(Permission.AUCTION_START)
     public void start(CommandSender sender, Integer quantity, Long price, Long increment, Long buyNow) {
+
+    }
+
+    @CommandMethod("auction end")
+    @CommandPermission(Permission.AUCTION_END)
+    public void end(CommandSender sender) {
 
     }
 }
