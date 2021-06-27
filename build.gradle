@@ -37,6 +37,8 @@ shadowJar {
     relocate 'com.google.errorprone', 'com.gmail.virustotalop.obsidianauctions.shaded.errorprone'
     relocate 'com.google.inject', 'com.gmail.virustotalop.obsidianauctions.shaded.guice'
     relocate 'com.google.j2objc', 'com.gmail.virustotalop.obsidianauctions.shaded.j2objc'
+    relocate 'net.kyori.adventure', 'com.gmail.virustotalop.obsidianauctions.shaded.adventure'
+    relocate 'net.kyori.examination', 'com.gmail.virustotalop.obsidianauctions.shaded.examination'
     minimize()
 }
 
