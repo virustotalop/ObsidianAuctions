@@ -36,13 +36,28 @@ permissions:
     description: Gives access to all auction commands
     children:
       auction.admin: true
+      auction.use: true
       auction.start: true
+      auction.end: true
       auction.bid: true
+  action.basic:
+    description: Gives access to basic player auction commands
+    children:
+      auction.use: true
+      auction.start: true
+      auction.end: true
+      auction.bed: true
   auction.admin:
     description: Auction administrative functions.
     default: op
+  auction.use:
+    description: Gives access to the auction command
+    default: op
   auction.start:
     description: Allows one to start an auction.
+    default: op
+  auction.end:
+    description: Allows one to end their auction
     default: op
   auction.bid:
     description: Allows one to bid on auctions.
