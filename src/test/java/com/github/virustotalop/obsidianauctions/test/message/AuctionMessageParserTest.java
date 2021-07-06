@@ -2,12 +2,12 @@ package com.github.virustotalop.obsidianauctions.test.message;
 
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageParser;
 import com.google.inject.Guice;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AuctionMessageParserTest {
 
