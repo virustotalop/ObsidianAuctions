@@ -19,6 +19,10 @@ public class LanguageItem {
         this.translation = translation;
     }
 
+    public Material getType() {
+        return this.type;
+    }
+
     public String getTranslation() {
         return this.translation;
     }

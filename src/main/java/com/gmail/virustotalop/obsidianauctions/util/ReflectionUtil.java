@@ -11,15 +11,6 @@ public final class ReflectionUtil {
     private static final boolean durabilityExists = methodExists(ItemStack.class, "getDurability");
     private static final boolean mainHandExists = methodExists(PlayerInventory.class, "getItemInMainHand");
 
-    /*
-    for(Method method : ItemStack.class.getDeclaredMethods()) {
-            if(method.getName().equals("getDurability")) {
-                durabilityExists = true;
-            }
-        }
-     */
-
-
     public static short getDurability(ItemStack itemStack) {
         if(durabilityExists) {
             return itemStack.getDurability();

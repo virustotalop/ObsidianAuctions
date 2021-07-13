@@ -50,55 +50,62 @@ public class I18nTranslationFactory implements TranslationFactory {
         Map<Material, Collection<LanguageItem>> map = new HashMap<>();
         for(String key : config.getKeys()) {
             String translation = config.getString(key);
-            boolean hasSeparator = key.contains("<sep>");
-            Material material;
-            short durability = 0;
-            NBTCompound compound = null;
-            try {
-                if(hasSeparator) {
-                    String[] split = key.split("<sep>");
-                    if(split.length != 2) {
-                        ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid length for: " + key);
-                        continue;
-                    }
-
-                    String first = split[0];
-                    String second = split[1];
-                    if(this.invalidMaterial(first)) {
-                        continue; //Skip and ignore
-                    }
-                    material = Material.getMaterial(first);
-                    if(this.isShort(second)) {
-                        durability = Short.parseShort(second);
-                    } else {
-                        try {
-                            compound = new NBTCompound(second);
-                        } catch(Exception ex) {
-                            ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid nbt: " + second);
-                            ex.printStackTrace();
-                        }
-                    }
-                } else {
-                    if(this.invalidMaterial(key)) {
-                        continue; //Skip and ignore
-                    }
-                    material = Material.valueOf(key);
-                }
-                if(material == null) {
-                    ObsidianAuctions.get().getLogger().log(Level.SEVERE, "No material found for: " + key);
-                    continue;
-                }
+            LanguageItem item = this.parseItem(key, translation);
+            if(item != null) {
+                Material material = item.getType();
                 Collection<LanguageItem> items = map.computeIfAbsent(material, (col) -> new ArrayList<>());
-                items.add(new LanguageItem(material, durability, compound, translation));
-            } catch(Exception ex) {
-                ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid item: " + key);
-                ex.printStackTrace();
+                items.add(item);
             }
         }
         return map;
     }
 
+    private LanguageItem parseItem(String key, String translation) {
+        boolean hasSeparator = key.contains("<sep>");
+        Material material;
+        short durability = 0;
+        NBTCompound compound = null;
+        try {
+            if(hasSeparator) {
+                String[] split = key.split("<sep>");
+                if(split.length != 2) {
+                    ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid length for: " + key);
+                    return null;
+                }
 
+                String first = split[0];
+                String second = split[1];
+                if(this.invalidMaterial(first)) {
+                    return null;
+                }
+                material = Material.getMaterial(first);
+                if(this.isShort(second)) {
+                    durability = Short.parseShort(second);
+                } else {
+                    try {
+                        compound = new NBTCompound(second);
+                    } catch(Exception ex) {
+                        ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid nbt: " + second);
+                        ex.printStackTrace();
+                    }
+                }
+            } else {
+                if(this.invalidMaterial(key)) {
+                    return null;
+                }
+                material = Material.valueOf(key);
+            }
+            if(material == null) {
+                ObsidianAuctions.get().getLogger().log(Level.SEVERE, "No material found for: " + key);
+                return null;
+            }
+            return new LanguageItem(material, durability, compound, translation);
+        } catch(Exception ex) {
+            ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid item: " + key);
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     private boolean invalidMaterial(String material) {
         return Material.getMaterial(material) == null;
