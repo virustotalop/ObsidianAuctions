@@ -6,7 +6,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.lang.reflect.Method;
 
-public final class ReflectionUtil {
+public final class LegacyUtil {
 
     private static final boolean durabilityExists = methodExists(ItemStack.class, "getDurability");
     private static final boolean mainHandExists = methodExists(PlayerInventory.class, "getItemInMainHand");
