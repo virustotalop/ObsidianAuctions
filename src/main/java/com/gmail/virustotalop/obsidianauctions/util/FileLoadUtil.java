@@ -135,12 +135,15 @@ public final class FileLoadUtil {
     /**
      * Load a list of AuctionLot from a file.
      *
-     * @param saveFile the file to be saved
+     * @param saveFile the file to be loaded
      * @return the loaded list
      */
     @SuppressWarnings("unchecked")
     public static List<AuctionLot> loadListAuctionLot(File saveFile) {
         List<AuctionLot> importedObjects = new ArrayList<>();
+        if(!saveFile.exists()) {
+            return importedObjects;
+        }
         try {
             InputStream file = new FileInputStream(saveFile.getAbsolutePath());
             InputStream buffer = new BufferedInputStream(file);
