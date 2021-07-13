@@ -13,5 +13,4 @@ public class VersionUtil {
         version = name.substring(name.lastIndexOf('.') + 1);
         return version;
     }
-
 }

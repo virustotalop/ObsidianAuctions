@@ -1,25 +1,46 @@
 package com.gmail.virustotalop.obsidianauctions.util;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.lang.reflect.Method;
 
-public class ReflectionUtil {
+public final class ReflectionUtil {
 
-    private static boolean durabilityExists = false;
+    private static final boolean durabilityExists = methodExists(ItemStack.class, "getDurability");
+    private static final boolean mainHandExists = methodExists(PlayerInventory.class, "getItemInMainHand");
 
-    static {
-        for(Method method : ItemStack.class.getDeclaredMethods()) {
+    /*
+    for(Method method : ItemStack.class.getDeclaredMethods()) {
             if(method.getName().equals("getDurability")) {
                 durabilityExists = true;
             }
         }
-    }
+     */
+
 
     public static short getDurability(ItemStack itemStack) {
         if(durabilityExists) {
             return itemStack.getDurability();
         }
         return 0;
+    }
+
+
+    public static ItemStack getItemInMainHand(Player player) {
+        if(mainHandExists) {
+            return player.getInventory().getItemInMainHand();
+        }
+        return player.getItemInHand();
+    }
+
+    private static boolean methodExists(Class<?> clazz, String methodName) {
+        for(Method method : clazz.getDeclaredMethods()) {
+            if(method.getName().equals(methodName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

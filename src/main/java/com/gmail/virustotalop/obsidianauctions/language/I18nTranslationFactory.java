@@ -98,6 +98,8 @@ public class I18nTranslationFactory implements TranslationFactory {
         return map;
     }
 
+
+
     private boolean invalidMaterial(String material) {
         return Material.getMaterial(material) == null;
     }
