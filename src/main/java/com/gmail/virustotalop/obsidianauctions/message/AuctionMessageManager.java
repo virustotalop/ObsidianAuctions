@@ -20,11 +20,13 @@ import java.util.UUID;
 
 public class AuctionMessageManager extends MessageManager {
 
+    private final ActionBarManager actionBar;
     private final BukkitAudiences adventure;
     private final AuctionMessageParser parser;
 
     @Inject
-    private AuctionMessageManager(BukkitAudiences adventure, AuctionMessageParser parser) {
+    private AuctionMessageManager(ActionBarManager actionBar, BukkitAudiences adventure, AuctionMessageParser parser) {
+        this.actionBar = actionBar;
         this.adventure = adventure;
         this.parser = parser;
     }
@@ -174,6 +176,7 @@ public class AuctionMessageManager extends MessageManager {
                 }
                 if(ObsidianAuctions.enableActionbarMessages) {
                     this.adventure.player(player).sendActionBar(MiniMessage.get().parse(message));
+                    this.actionBar.addPlayer(player, message);
                 }
             }
         }

@@ -3,6 +3,7 @@ enable-chat-messages: true
 enable-actionbar-messages: true
 queue-gui-name: "&9ObsidianAuctions Queue"
 renamed-items-override: false
+action-bar-ticks: 60
 use-old-bid-logic: false
 allow-bid-on-own-auction: false
 log-auctions: true

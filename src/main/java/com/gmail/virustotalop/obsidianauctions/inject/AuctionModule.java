@@ -7,6 +7,7 @@ import com.gmail.virustotalop.obsidianauctions.language.I18nTranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.listener.InventoryClickListener;
 import com.gmail.virustotalop.obsidianauctions.listener.PlayerListener;
+import com.gmail.virustotalop.obsidianauctions.message.ActionBarManager;
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageManager;
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageParser;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
@@ -29,6 +30,7 @@ public class AuctionModule implements Module {
         binder.bind(BukkitAudiences.class).toInstance(this.adventure);
         binder.bind(Configuration.class).annotatedWith(I18nItemConfig.class).toInstance(this.i18nItemConfig);
         binder.bind(TranslationFactory.class).to(I18nTranslationFactory.class).asEagerSingleton();
+        binder.bind(ActionBarManager.class).asEagerSingleton();
         binder.bind(AuctionMessageParser.class).asEagerSingleton();
         binder.bind(MessageManager.class).to(AuctionMessageManager.class);
         binder.bind(AuctionProhibitionManager.class).asEagerSingleton();

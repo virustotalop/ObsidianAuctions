@@ -95,6 +95,7 @@ public class ObsidianAuctions extends JavaPlugin {
     public static boolean enableChatMessages;
     public static boolean enableActionbarMessages;
     public static boolean allowRenamedItems;
+    public static int actionBarTicks;
 
     /* Check if addon plugins are enabled
      *
@@ -372,6 +373,7 @@ public class ObsidianAuctions extends JavaPlugin {
         ObsidianAuctions.enableChatMessages = config.getBoolean("enable-chat-messages");
         ObsidianAuctions.enableActionbarMessages = config.getBoolean("enable-actionbar-messages");
         ObsidianAuctions.allowRenamedItems = config.getBoolean("allow-renamed-items");
+        ObsidianAuctions.actionBarTicks = config.get("action-bar-ticks", Integer.class, 60);
 
         //Setup additional floAuction values
         ObsidianAuctions.isDamagedAllowed = config.getBoolean("allow-damaged-items");
