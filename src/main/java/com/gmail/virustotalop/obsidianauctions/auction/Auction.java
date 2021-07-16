@@ -9,6 +9,7 @@ import com.gmail.virustotalop.obsidianauctions.event.AuctionStartEvent;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
+import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -612,7 +613,7 @@ public class Auction {
         if(this.lot != null) {
             return true;
         }
-        ItemStack heldItem = owner.getItemInHand();
+        ItemStack heldItem = LegacyUtil.getItemInMainHand(owner);
         if(heldItem == null || heldItem.getAmount() == 0) {
             this.messageManager.sendPlayerMessage("auction-fail-hand-is-empty", this.ownerUUID, this);
             return false;

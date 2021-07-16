@@ -515,13 +515,14 @@ public class Items {
             PlayerInventory inventory = player.getInventory();
 
             // Remove held item first:
-            if(isSameItem(compareItem, player.getItemInHand())) {
-                int heldAmount = player.getItemInHand().getAmount();
+            ItemStack hand = LegacyUtil.getItemInMainHand(player);
+            if(isSameItem(compareItem, hand)) {
+                int heldAmount = hand.getAmount();
                 if(heldAmount <= amount) {
                     amount -= heldAmount;
                     inventory.clear(inventory.getHeldItemSlot());
                 } else {
-                    player.getItemInHand().setAmount(heldAmount - amount);
+                    hand.setAmount(heldAmount - amount);
                     amount = 0;
                 }
             }

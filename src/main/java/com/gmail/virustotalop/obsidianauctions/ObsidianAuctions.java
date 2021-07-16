@@ -11,6 +11,7 @@ import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.FileLoadUtil;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
+import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -573,22 +574,22 @@ public class ObsidianAuctions extends JavaPlugin {
                         return true;
                     }
 
-                    if(player.getInventory().getItemInHand() == null || player.getInventory().getItemInHand().getAmount() == 0) {
+                    if(LegacyUtil.getItemInMainHand(player) == null || LegacyUtil.getItemInMainHand(player).getAmount() == 0) {
                         this.messageManager.sendPlayerMessage("auction-fail-hand-is-empty", playerUUID, (AuctionScope) null);
                         return true;
                     }
 
                     if(cmd.getName().equalsIgnoreCase("sealedauction") || cmd.getName().equalsIgnoreCase("sauc")) {
                         if(AuctionConfig.getBoolean("allow-sealed-auctions", userScope)) {
-                            userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, player.getItemInHand().clone()));
+                            userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, LegacyUtil.getItemInMainHand(player).clone()));
                         } else {
                             this.messageManager.sendPlayerMessage("auction-fail-no-sealed-auctions", playerUUID, (AuctionScope) null);
                         }
                     } else {
                         if(AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
-                            userScope.queueAuction(new Auction(this, player, args, userScope, false, messageManager, player.getItemInHand().clone()));
+                            userScope.queueAuction(new Auction(this, player, args, userScope, false, messageManager, LegacyUtil.getItemInMainHand(player).clone()));
                         } else {
-                            userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, player.getItemInHand().clone()));
+                            userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, LegacyUtil.getItemInMainHand(player).clone()));
                         }
                     }
 
