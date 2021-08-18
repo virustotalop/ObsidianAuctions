@@ -168,7 +168,7 @@ auction-help:
   info<dark_red>|<aqua>i<blue> - Returns current auction info.'
   - '{can-bid}{end}{is-item-logic}{end}<aqua>/bid <gold>[BID]{allow-max-bids}
   [MAXBID]{end-allow-max-bids}<blue> - Bids on auction. {allow-max-bids}If
-  you set a <gold>[MAXBID]<blue> and the <gold>[BID]<blue> is greater than the current, you will outbit
+  you set a <gold>[MAXBID]<blue> and the <gold>[BID]<blue> is greater than the current, you will outbid
   that bid if it is lower than your maximum. {end-allow-max-bids}{allow-auto-bid}If
   you omit a <gold>[BID]<blue> the lowest allowable bid will be used.'
   - '<aqua>/auction<dark_red>|<aqua>auc stfu<dark_red>|<aqua>ignore<dark_red>|<aqua>quiet<dark_red>|<aqua>off<dark_red>|<aqua>silent<dark_red>|<aqua>silence<blue> -
