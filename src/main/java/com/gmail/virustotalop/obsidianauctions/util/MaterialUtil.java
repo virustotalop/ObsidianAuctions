@@ -3,7 +3,7 @@ package com.gmail.virustotalop.obsidianauctions.util;
 public final class MaterialUtil {
 
     private MaterialUtil() {}
-    
+
     public static String formatName(String name) {
         char[] chars = name.toCharArray();
         chars[0] = Character.toUpperCase(chars[0]);

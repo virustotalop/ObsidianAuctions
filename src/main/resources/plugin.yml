@@ -9,28 +9,6 @@ api-version: "1.13"
 #Fork of floAuction, name has been changed to help with confusion.
 #This plugin can be found publicly on spigot here: https://www.spigotmc.org/resources/obsidianauctions.5595/
 
-commands:
-  auction:
-    description: General auction command.
-    permissions: auction.start
-    usage: Type /<command> for instructions.
-  sealedauction:
-    description: General auction command.
-    permissions: auction.start
-    usage: Type /<command> for instructions.
-  auc:
-    description: General auction command.
-    permissions: auction.start
-    usage: Type /<command> for instructions.
-  sauc:
-    description: General auction command.
-    permissions: auction.start
-    usage: Type /<command> for instructions.
-  bid:
-    description: Bid on auctions.
-    permissions: auction.bid
-    usage: /<command> [bid amount] [max bid]
-
 permissions:
   auction.*:
     description: Gives access to all auction commands
@@ -40,13 +18,15 @@ permissions:
       auction.start: true
       auction.end: true
       auction.bid: true
+      auction.toggle: true
   action.basic:
     description: Gives access to basic player auction commands
     children:
       auction.use: true
       auction.start: true
       auction.end: true
-      auction.bed: true
+      auction.bid: true
+      auction.toggle: true
   auction.admin:
     description: Auction administrative functions.
     default: op

@@ -54,6 +54,7 @@ suspension-fail-permissions: '<gold>You do not have permission to suspend auctio
 unsuspension-user: You may now participate in auctions again.
 unsuspension-user-success: The user has been unsuspended.
 unsuspension-user-fail-not-suspended: That user was not suspended.
+unsuspension-user-fail-is-offline: '<gold>Your cannot unsuspend offline users.'
 unsuspension-fail-permissions: '<gold>You do not have permission to resume auctioning.'
 suspension-global: '<gold>All auctioning has been suspended.'
 unsuspension-global: Auctioning has been resumed.

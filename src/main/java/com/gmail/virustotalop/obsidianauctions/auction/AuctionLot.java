@@ -158,7 +158,7 @@ public class AuctionLot implements Serializable {
             this.quantity = 0;
 
             // Queue for distribution on space availability.
-            ObsidianAuctions.saveOrphanLot(orphanLot);
+            ObsidianAuctions.get().saveOrphanLot(orphanLot);
         }
     }
 

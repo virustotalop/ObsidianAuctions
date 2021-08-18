@@ -25,16 +25,18 @@ import java.util.UUID;
 public class PlayerListener implements Listener {
 
     private final MessageManager messageManager;
+    private final ObsidianAuctions plugin;
 
     @Inject
-    private PlayerListener(MessageManager messageManager) {
+    private PlayerListener(MessageManager messageManager, ObsidianAuctions plugin) {
         this.messageManager = messageManager;
+        this.plugin = plugin;
     }
 
     @EventHandler
     public void playerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        ObsidianAuctions.killOrphan(player);
+        this.plugin.killOrphan(player);
         AuctionScope.sendWelcomeMessage(player, true);
     }
 

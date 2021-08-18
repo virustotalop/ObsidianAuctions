@@ -1,7 +1,9 @@
 package com.gmail.virustotalop.obsidianauctions.inject;
 
 import com.clubobsidian.wrappy.Configuration;
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
+import com.gmail.virustotalop.obsidianauctions.command.AuctionCommand;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.I18nItemConfig;
 import com.gmail.virustotalop.obsidianauctions.language.I18nTranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
@@ -14,19 +16,24 @@ import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class AuctionModule implements Module {
 
+    private final ObsidianAuctions plugin;
     private final BukkitAudiences adventure;
     private final Configuration i18nItemConfig;
 
-    public AuctionModule(BukkitAudiences adventure, Configuration i18nItemConfig) {
+    public AuctionModule(ObsidianAuctions plugin, BukkitAudiences adventure, Configuration i18nItemConfig) {
+        this.plugin = plugin;
         this.adventure = adventure;
         this.i18nItemConfig = i18nItemConfig;
     }
 
     @Override
     public void configure(Binder binder) {
+        binder.bind(ObsidianAuctions.class).toInstance(this.plugin);
+        binder.bind(JavaPlugin.class).toInstance(this.plugin);
         binder.bind(BukkitAudiences.class).toInstance(this.adventure);
         binder.bind(Configuration.class).annotatedWith(I18nItemConfig.class).toInstance(this.i18nItemConfig);
         binder.bind(TranslationFactory.class).to(I18nTranslationFactory.class).asEagerSingleton();
@@ -36,5 +43,6 @@ public class AuctionModule implements Module {
         binder.bind(AuctionProhibitionManager.class).asEagerSingleton();
         binder.bind(InventoryClickListener.class).asEagerSingleton();
         binder.bind(PlayerListener.class).asEagerSingleton();
+        binder.bind(AuctionCommand.class).asEagerSingleton();
     }
 }
