@@ -170,30 +170,7 @@ public class AuctionCommand {
             }
             this.messageManager.sendPlayerMessage("auction-help", playerUUID, (AuctionScope) null);
             return true;
-        } else if(cmd.getName().equalsIgnoreCase("bid")) {
-            if(suspendAllAuctions) {
-                this.messageManager.sendPlayerMessage("suspension-global", playerUUID, (AuctionScope) null);
-                return true;
-            } else if(player != null && suspendedUsers.contains(playerName.toLowerCase())) {
-                this.messageManager.sendPlayerMessage("suspension-user", playerUUID, (AuctionScope) null);
-                return true;
-            } else if(player == null) {
-                this.messageManager.sendPlayerMessage("bid-fail-console", playerUUID, (AuctionScope) null);
-                return true;
-            } else if(!AuctionConfig.getBoolean("allow-gamemode-creative", userScope) && player.getGameMode().equals(GameMode.CREATIVE)) {
-                this.messageManager.sendPlayerMessage("bid-fail-gamemode-creative", playerUUID, (AuctionScope) null);
-                return true;
-            } else if(!perms.has(player, "auction.bid")) {
-                this.messageManager.sendPlayerMessage("bid-fail-permissions", playerUUID, (AuctionScope) null);
-                return true;
-            } else if(auction == null) {
-                this.messageManager.sendPlayerMessage("bid-fail-no-auction", playerUUID, (AuctionScope) null);
-                return true;
-            }
-            auction.bid(player, args);
-            return true;
         }
-        return false;
     }
      */
 
@@ -311,23 +288,6 @@ public class AuctionCommand {
         }
     }
 
-    /*
-    if(auction == null) {
-                        this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    if(!AuctionConfig.getBoolean("allow-early-end", userScope)) {
-                        this.messageManager.sendPlayerMessage("auction-fail-no-early-end", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    if(player.getName().equalsIgnoreCase(auction.getOwnerName())) {
-                        auction.end();
-                    } else {
-                        this.messageManager.sendPlayerMessage("auction-fail-not-owner-end", playerUUID, (AuctionScope) null);
-                    }
-                    return true;
-     */
-
     @CommandMethod("auction end|e")
     @CommandPermission(Permission.AUCTION_END)
     public void end(CommandSender sender) {
@@ -354,11 +314,15 @@ public class AuctionCommand {
         }
     }
 
-    @CommandMethod("bid")
+    @CommandMethod("bid [bid] [maxbid]")
     @CommandPermission(Permission.AUCTION_BID)
-    public void bid(CommandSender sender) {
+    public void bid(CommandSender sender, @Argument("bid") String bid, @Argument("maxbid") String maxBid) {
         if(this.canBid(sender)) {
-            //TODO - Implement bid
+            Player player = (Player) sender;
+            AuctionScope userScope = AuctionScope.getPlayerScope(player);
+            Auction auction = userScope.getActiveAuction();
+            String[] args = {bid, maxBid};
+            auction.bid(player, args);
         }
     }
 
