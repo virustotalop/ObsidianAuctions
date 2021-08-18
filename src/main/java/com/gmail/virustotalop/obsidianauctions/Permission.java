@@ -7,6 +7,7 @@ public final class Permission {
     public static final String AUCTION_END = "auction.end";
     public static final String AUCTION_TOGGLE = "auction.toggle";
     public static final String AUCTION_ADMIN = "auction.admin";
+    public static final String AUCTION_BID = "auction.bid";
 
     private Permission() { }
 

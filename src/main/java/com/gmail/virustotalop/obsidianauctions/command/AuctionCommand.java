@@ -6,6 +6,7 @@ import cloud.commandframework.annotations.CommandPermission;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.Permission;
+import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
@@ -143,21 +144,6 @@ public class AuctionCommand {
                         return true;
                     }
                     auction.confiscate(player);
-                    return true;
-                } else if(args[0].equalsIgnoreCase("end") || args[0].equalsIgnoreCase("e")) {
-                    if(auction == null) {
-                        this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    if(!AuctionConfig.getBoolean("allow-early-end", userScope)) {
-                        this.messageManager.sendPlayerMessage("auction-fail-no-early-end", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    if(player.getName().equalsIgnoreCase(auction.getOwnerName())) {
-                        auction.end();
-                    } else {
-                        this.messageManager.sendPlayerMessage("auction-fail-not-owner-end", playerUUID, (AuctionScope) null);
-                    }
                     return true;
                 } else if(args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("i")) {
                     if(auction == null) {
@@ -318,13 +304,60 @@ public class AuctionCommand {
     @CommandMethod("auction start [quantity] [price] [increment] [buynow]")
     @CommandPermission(Permission.AUCTION_START)
     public void start(CommandSender sender, int quantity, long price, long increment, long buyNow) {
-
+        if(this.canAuction(sender)) {
+            //TODO - Implement auction
+        }
     }
 
-    @CommandMethod("auction end")
+    /*
+    if(auction == null) {
+                        this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerUUID, (AuctionScope) null);
+                        return true;
+                    }
+                    if(!AuctionConfig.getBoolean("allow-early-end", userScope)) {
+                        this.messageManager.sendPlayerMessage("auction-fail-no-early-end", playerUUID, (AuctionScope) null);
+                        return true;
+                    }
+                    if(player.getName().equalsIgnoreCase(auction.getOwnerName())) {
+                        auction.end();
+                    } else {
+                        this.messageManager.sendPlayerMessage("auction-fail-not-owner-end", playerUUID, (AuctionScope) null);
+                    }
+                    return true;
+     */
+
+    @CommandMethod("auction end|e")
     @CommandPermission(Permission.AUCTION_END)
     public void end(CommandSender sender) {
+        UUID uuid = this.uuidFromSender(sender);
+        if(uuid != null) {
+            Player player = this.plugin.getServer().getPlayer(uuid);
+            AuctionScope userScope = AuctionScope.getPlayerScope(player);
+            if(userScope == null) {
+                this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
+            } else {
+                Auction auction = userScope.getActiveAuction();
+                if(auction == null) {
+                    this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
+                } else {
+                    if(!AuctionConfig.getBoolean("allow-early-end", userScope)) {
+                        this.messageManager.sendPlayerMessage("auction-fail-no-early-end", uuid, (AuctionScope) null);
+                    } else if(!player.getUniqueId().equals(auction.getOwnerUUID())) {
+                        this.messageManager.sendPlayerMessage("auction-fail-not-owner-end", uuid, (AuctionScope) null);
+                    } else {
+                        auction.end();
+                    }
+                }
+            }
+        }
+    }
 
+    @CommandMethod("bid")
+    @CommandPermission(Permission.AUCTION_BID)
+    public void bid(CommandSender sender) {
+        if(this.canBid(sender)) {
+            //TODO - Implement bid
+        }
     }
 
     private UUID uuidFromSender(CommandSender sender) {
@@ -336,7 +369,7 @@ public class AuctionCommand {
     }
 
     private boolean canAuction(CommandSender sender) {
-        if(!this.canBid(sender)) {
+        if(!this.preAuctionLogic(sender, CommandType.AUCTION)) {
             return false;
         }
         UUID uuid = this.uuidFromSender(sender);
@@ -353,12 +386,30 @@ public class AuctionCommand {
     }
 
     private boolean canBid(CommandSender sender) {
+        if(!this.preAuctionLogic(sender, CommandType.BID)) {
+            return false;
+        }
+        UUID uuid = this.uuidFromSender(sender);
+        Player player = (Player) sender;
+        AuctionScope scope = AuctionScope.getPlayerScope(player);
+        boolean active = scope.getActiveAuction() != null;
+        if(!active) {
+            this.messageManager.sendPlayerMessage("bid-fail-no-auction", uuid, (AuctionScope) null);
+        }
+        return active;
+    }
+
+    private boolean preAuctionLogic(CommandSender sender, CommandType type) {
         UUID uuid = this.uuidFromSender(sender);
         if(this.plugin.getSuspendAllAuctions()) {
             this.messageManager.sendPlayerMessage("suspension-global", uuid, (AuctionScope) null);
             return false;
         } else if(uuid == null) {
-            this.messageManager.sendPlayerMessage("auction-fail-console", uuid, (AuctionScope) null);
+            if(type == CommandType.AUCTION) {
+                this.messageManager.sendPlayerMessage("auction-fail-console", uuid, (AuctionScope) null);
+            } else {
+                this.messageManager.sendPlayerMessage("bid-fail-console", uuid, (AuctionScope) null);
+            }
             return false;
         } else if(this.plugin.isVoluntarilyDisabled(uuid)) {
             this.messageManager.sendPlayerMessage("auction-fail-disabled", uuid, (AuctionScope) null);
@@ -370,12 +421,23 @@ public class AuctionCommand {
         Player player = this.plugin.getServer().getPlayer(uuid);
         AuctionScope userScope = AuctionScope.getPlayerScope(player);
         if(!AuctionConfig.getBoolean("allow-gamemode-creative", userScope) && player.getGameMode() == GameMode.CREATIVE) {
-            this.messageManager.sendPlayerMessage("auction-fail-gamemode-creative", uuid, (AuctionScope) null);
+            if(type == CommandType.AUCTION) {
+                this.messageManager.sendPlayerMessage("auction-fail-gamemode-creative", uuid, (AuctionScope) null);
+            } else {
+                this.messageManager.sendPlayerMessage("bid-fail-gamemode-creative", uuid, (AuctionScope) null);
+            }
             return false;
         } else if(userScope == null) {
             this.messageManager.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
             return false;
         }
         return true;
+    }
+
+    private enum CommandType {
+
+        AUCTION,
+        BID
+
     }
 }
