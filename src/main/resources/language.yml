@@ -171,7 +171,7 @@ auction-help:
   you set a <gold>[MAXBID]<blue> and the <gold>[BID]<blue> is greater than the current, you will outbid
   that bid if it is lower than your maximum. {end-allow-max-bids}{allow-auto-bid}If
   you omit a <gold>[BID]<blue> the lowest allowable bid will be used.'
-  - '<aqua>/auction<dark_red>|<aqua>auc stfu<dark_red>|<aqua>ignore<dark_red>|<aqua>quiet<dark_red>|<aqua>off<dark_red>|<aqua>silent<dark_red>|<aqua>silence<blue> -
+  - '<aqua>/auction<dark_red>|<aqua>auc <aqua>ignore<dark_red>|<aqua>quiet<dark_red>|<aqua>off<dark_red>|<aqua>silent<dark_red>|<aqua>silence<blue> -
   Opt out of auction participation and announcements.'
 auction-start-tax: You have been charged an auction tax of %auction-pre-tax%.
 auction-end-tax: An auction tax of %auction-post-tax% has been extracted from your winnings.
