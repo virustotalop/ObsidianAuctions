@@ -183,7 +183,7 @@ public class AuctionCommand {
         this.messageManager = messageManager;
     }
 
-    @CommandMethod("auction|auc <help>")
+    @CommandMethod("auction|auc")
     @CommandPermission(Permission.AUCTION_USE)
     public void auction(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
