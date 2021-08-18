@@ -303,7 +303,9 @@ public class AuctionCommand {
 
     @CommandMethod("auction start [quantity] [price] [increment] [buynow]")
     @CommandPermission(Permission.AUCTION_START)
-    public void start(CommandSender sender, int quantity, long price, long increment, long buyNow) {
+    public void start(CommandSender sender, @Argument("quantity") int quantity,
+                      @Argument("price") long price, @Argument("increment") long increment,
+                      @Argument("buynow") long buyNow) {
         if(this.canAuction(sender)) {
             //TODO - Implement auction
         }
