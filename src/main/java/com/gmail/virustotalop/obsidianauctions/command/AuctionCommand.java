@@ -190,6 +190,13 @@ public class AuctionCommand {
         this.messageManager.sendPlayerMessage("auction-help", uuid, (AuctionScope) null);
     }
 
+    @CommandMethod("auction help")
+    @CommandPermission(Permission.AUCTION_USE)
+    public void auctionHelp(CommandSender sender) {
+        UUID uuid = this.uuidFromSender(sender);
+        this.messageManager.sendPlayerMessage("auction-help", uuid, (AuctionScope) null);
+    }
+
     @CommandMethod("auction on")
     @CommandPermission(Permission.AUCTION_TOGGLE)
     public void auctionOn(CommandSender sender) {
