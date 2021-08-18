@@ -13,7 +13,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionLot;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
-import com.gmail.virustotalop.obsidianauctions.command.AuctionCommand;
+import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.FileLoadUtil;
@@ -275,7 +275,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.commandParser = new AnnotationParser(this.commandManager,
                 CommandSender.class, parameters ->
                 SimpleCommandMeta.empty());
-        this.commandParser.parse(injector.getInstance(AuctionCommand.class));
+        this.commandParser.parse(injector.getInstance(AuctionCommands.class));
 
         this.messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
 

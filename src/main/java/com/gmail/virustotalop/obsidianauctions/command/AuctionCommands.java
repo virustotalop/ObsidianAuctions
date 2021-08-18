@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class AuctionCommand {
+public class AuctionCommands {
 
     /*
      public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -178,7 +178,7 @@ public class AuctionCommand {
     private final MessageManager messageManager;
 
     @Inject
-    private AuctionCommand(ObsidianAuctions plugin, MessageManager messageManager) {
+    private AuctionCommands(ObsidianAuctions plugin, MessageManager messageManager) {
         this.plugin = plugin;
         this.messageManager = messageManager;
     }

@@ -3,7 +3,7 @@ package com.gmail.virustotalop.obsidianauctions.inject;
 import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
-import com.gmail.virustotalop.obsidianauctions.command.AuctionCommand;
+import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.I18nItemConfig;
 import com.gmail.virustotalop.obsidianauctions.language.I18nTranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
@@ -43,6 +43,6 @@ public class AuctionModule implements Module {
         binder.bind(AuctionProhibitionManager.class).asEagerSingleton();
         binder.bind(InventoryClickListener.class).asEagerSingleton();
         binder.bind(PlayerListener.class).asEagerSingleton();
-        binder.bind(AuctionCommand.class).asEagerSingleton();
+        binder.bind(AuctionCommands.class).asEagerSingleton();
     }
 }
