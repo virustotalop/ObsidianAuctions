@@ -15,7 +15,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
+import java.util.List;
 import java.util.UUID;
 
 public class AuctionCommands {
@@ -151,20 +153,6 @@ public class AuctionCommands {
                         return true;
                     }
                     auction.info(sender, false);
-                    return true;
-                } else if(args[0].equalsIgnoreCase("queue") || args[0].equalsIgnoreCase("q")) {
-                    List<Auction> auctionQueue = userScope.getAuctionQueue();
-                    if(auctionQueue.isEmpty()) {
-                        this.messageManager.sendPlayerMessage("auction-queue-status-not-in-queue", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    Inventory inv = Bukkit.createInventory(null, 18, ObsidianAuctions.guiQueueName);
-                    for(int i = 0; i < auctionQueue.size(); i++) {
-                        if(i == inv.getSize())
-                            break;
-                        inv.setItem(i, auctionQueue.get(i).getGuiItem());
-                    }
-                    player.openInventory(inv);
                     return true;
                 }
             }
@@ -316,6 +304,31 @@ public class AuctionCommands {
                     } else {
                         auction.end();
                     }
+                }
+            }
+        }
+    }
+
+    @CommandMethod("auction queue|q")
+    @CommandPermission(Permission.AUCTION_QUEUE)
+    public void auctionQueue(CommandSender sender) {
+        UUID uuid = this.uuidFromSender(sender);
+        if(uuid != null) {
+            Player player = this.plugin.getServer().getPlayer(uuid);
+            AuctionScope userScope = AuctionScope.getPlayerScope(player);
+            if(userScope != null) {
+                List<Auction> auctionQueue = userScope.getAuctionQueue();
+                if(auctionQueue.isEmpty()) {
+                    this.messageManager.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
+                } else {
+                    Inventory inv = Bukkit.createInventory(null, 18, ObsidianAuctions.guiQueueName);
+                    for(int i = 0; i < auctionQueue.size(); i++) {
+                        if(i == inv.getSize()) {
+                            break;
+                        }
+                        inv.setItem(i, auctionQueue.get(i).getGuiItem());
+                    }
+                    player.openInventory(inv);
                 }
             }
         }
