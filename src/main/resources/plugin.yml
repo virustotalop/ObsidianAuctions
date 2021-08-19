@@ -20,6 +20,7 @@ permissions:
       auction.bid: true
       auction.toggle: true
       auction.queue: true
+      auction.info: true
   action.basic:
     description: Gives access to basic player auction commands
     children:
@@ -29,6 +30,7 @@ permissions:
       auction.bid: true
       auction.toggle: true
       auction.queue: true
+      auction.info: true
   auction.admin:
     description: Auction administrative functions.
     default: op
@@ -49,4 +51,7 @@ permissions:
     default: op
   auction.queue:
     description: Allows one to view the auction queue.
+    default: op
+  auction.info:
+    description: Allows one to view information about the auction.
     default: op

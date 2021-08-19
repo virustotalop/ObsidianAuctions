@@ -147,13 +147,6 @@ public class AuctionCommands {
                     }
                     auction.confiscate(player);
                     return true;
-                } else if(args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("i")) {
-                    if(auction == null) {
-                        this.messageManager.sendPlayerMessage("auction-info-no-auction", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    auction.info(sender, false);
-                    return true;
                 }
             }
             this.messageManager.sendPlayerMessage("auction-help", playerUUID, (AuctionScope) null);
@@ -329,6 +322,24 @@ public class AuctionCommands {
                         inv.setItem(i, auctionQueue.get(i).getGuiItem());
                     }
                     player.openInventory(inv);
+                }
+            }
+        }
+    }
+
+    @CommandMethod("auction info")
+    @CommandPermission(Permission.AUCTION_INFO)
+    public void auctionInfo(CommandSender sender) {
+        UUID uuid = this.uuidFromSender(sender);
+        if(uuid != null) {
+            Player player = this.plugin.getServer().getPlayer(uuid);
+            AuctionScope userScope = AuctionScope.getPlayerScope(player);
+            if(userScope != null) {
+                Auction auction = userScope.getActiveAuction();
+                if(auction == null) {
+                    this.messageManager.sendPlayerMessage("auction-info-no-auction", uuid, (AuctionScope) null);
+                } else {
+                    auction.info(sender, false);
                 }
             }
         }
