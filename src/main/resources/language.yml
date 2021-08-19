@@ -157,9 +157,6 @@ auction-help:
   start<dark_red>|<aqua>s <gold>[QTY] [PRICE] [INC] [TIME]<blue> - Starts a sealed auction
   for <gold>[TIME]<blue> seconds with <gold>[QTY]<blue> of item in hand for <gold>[PRICE]<blue> with an enforced
   increase of <gold>[INC]<blue> between bids<blue>.'
-  - '{can-start}{end}{is-item-logic}{end}<aqua>/auction<dark_red>|<aqua>auc
-  prep<dark_red>|<aqua>p <gold>[QTY] [PRICE] [INC] [TIME]{allow-buynow} [BUYNOW]{end-allow-buynow}<blue>
-  - Assigns your default values when placing auctions.'
   - '{can-start}{end}{is-item-logic}{end}{allow-early-bid}<aqua>/auction<dark_red>|<aqua>auc
   end<dark_red>|<aqua>e<dark_red>|<aqua>stop<blue> - Ends current auction'
   - '{can-start}{end}{is-item-logic}{end}{cancel-prevention-percent}{end}<aqua>/auction<dark_red>|<aqua>auc
@@ -218,17 +215,6 @@ time-format-seconly: '%s sec'
 lot-give: '<light_purple>Your items have been added to your inventory.'
 lot-drop: '<light_purple>Not enough space, your items dropped at your feet.'
 anti-snipe-time-added: ANTI-SNIPE! More time added to auction!
-prep-save-success:
-  - 'Usage: <aqua>/auction prep <gold>[QTY] [PRICE] [INC] [TIME] {allow-buynow}{end}[BUYNOW]'
-  - 'Quantity to auction: <gold>%auction-prep-amount-other%'
-  - 'Starting bid: <gold>%auction-prep-price-formatted%'
-  - 'Minimum increment between bids: <gold>%auction-prep-increment-formatted%'
-  - 'Auction length: <gold>%auction-prep-time-formatted%'
-  - '{allow-buynow}{end}BuyNow amount: <gold>%auction-prep-buynow-formatted%'
-  - Use <aqua>/auction start <blue>to start an auction with these parameters.
-prep-amount-in-hand: Amount in hand
-prep-all-of-this-kind: All items matching held item
-prep-qty-of-this-kind: '%auction-prep-amount-other% items'
 firework-shapes:
   BALL: Ball
   BALL_LARGE: Large Ball

@@ -68,7 +68,6 @@ public class ObsidianAuctions extends JavaPlugin {
     private boolean suspendAllAuctions = false;
     public static boolean isDamagedAllowed;
     public static List<AuctionParticipant> auctionParticipants = new ArrayList<>();
-    public static Map<UUID, String[]> userSavedInputArgs = new HashMap<>();
 
     // Config files info.
     public static Configuration config = null;
@@ -269,7 +268,6 @@ public class ObsidianAuctions extends JavaPlugin {
         orphanLots = FileLoadUtil.loadListAuctionLot(orphanLotsFile);
         this.voluntarilyDisabledUsers = FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
         this.suspendedUsers = FileLoadUtil.loadUUIDSet(suspendedUserFile);
-        userSavedInputArgs = FileLoadUtil.loadMapUUIDStringArray(savedUserInputsFile);
 
         this.commandManager = this.createCommandManager();
         this.commandParser = new AnnotationParser(this.commandManager,

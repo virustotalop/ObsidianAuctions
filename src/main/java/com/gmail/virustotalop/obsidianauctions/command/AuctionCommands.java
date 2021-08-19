@@ -72,27 +72,6 @@ public class AuctionCommands {
                     }
 
                     return true;
-                } else if(args[0].equalsIgnoreCase("prep") || args[0].equalsIgnoreCase("p")) {
-                    // Save a users individual starting default values.
-                    if(player == null) {
-                        this.messageManager.sendPlayerMessage("auction-fail-console", null, (AuctionScope) null);
-                        return true;
-                    }
-                    if(!perms.has(player, "auction.start")) {
-                        this.messageManager.sendPlayerMessage("auction-fail-permissions", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-
-                    // The function returns null and sends error on failure.
-                    String[] mergedArgs = Functions.mergeInputArgs(playerUUID, args, true);
-
-                    if(mergedArgs != null) {
-                        ObsidianAuctions.userSavedInputArgs.put(playerUUID, mergedArgs);
-                        ObsidianAuctions.saveObject(ObsidianAuctions.userSavedInputArgs, "userSavedInputArgs.ser");
-                        this.messageManager.sendPlayerMessage("prep-save-success", playerUUID, (AuctionScope) null);
-                    }
-
-                    return true;
                 } else if(args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
                     if(userScope == null) {
                         this.messageManager.sendPlayerMessage("auction-fail-no-scope", playerUUID, (AuctionScope) null);

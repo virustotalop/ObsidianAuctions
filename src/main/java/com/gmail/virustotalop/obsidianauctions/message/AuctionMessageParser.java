@@ -169,36 +169,6 @@ public class AuctionMessageParser {
             }
         }
 
-
-        // Search to see if player info is required:
-        for(int l = 0; l < messageList.size(); l++) {
-            String message = messageList.get(l);
-            if(message.length() > 0 && message.contains("%auction-prep")) {
-                if(player != null) {
-                    UUID playerUUID = player.getUniqueId();
-                    String[] defaultStartArgs = Functions.mergeInputArgs(playerUUID, new String[]{}, false);
-                    if(defaultStartArgs[0].equalsIgnoreCase("this") || defaultStartArgs[0].equalsIgnoreCase("hand")) {
-                        replacements.put("%auction-prep-amount-other%", ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("prep-amount-in-hand", auctionScope))); //%P1
-                    } else if(defaultStartArgs[0].equalsIgnoreCase("all")) {
-                        replacements.put("%auction-prep-amount-other%", ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("prep-all-of-this-kind", auctionScope))); //%P1
-                    } else {
-                        replacements.put("%auction-prep-amount-other%", ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("prep-qty-of-this-kind", auctionScope))); //%P1
-                    }
-
-                    replacements.put("%auction-prep-amount-other%", defaultStartArgs[0]); //%P2
-                    replacements.put("%auction-prep-price-formatted%", Functions.formatAmount(Double.parseDouble(defaultStartArgs[1]))); //%P3
-                    replacements.put("%auction-prep-price%", defaultStartArgs[1]); //%P4
-                    replacements.put("%auction-prep-increment-formatted%", Functions.formatAmount(Double.parseDouble(defaultStartArgs[2]))); //%P5
-                    replacements.put("%auction-prep-increment%", defaultStartArgs[2]); //%P6
-                    replacements.put("%auction-prep-time-formatted%", Functions.formatTime(Integer.parseInt(defaultStartArgs[3]), auctionScope)); //%P7
-                    replacements.put("%auction-prep-time%", defaultStartArgs[3]); //%P8
-                    replacements.put("%auction-prep-buynow-formatted%", Functions.formatAmount(Double.parseDouble(defaultStartArgs[4]))); //%P9
-                    replacements.put("%auction-prep-buynow%", defaultStartArgs[4]); //%P0
-                }
-                break;
-            }
-        }
-
         // Search to see if scope info is required:
         for(int l = 0; l < messageList.size(); l++) {
             String message = messageList.get(l);
