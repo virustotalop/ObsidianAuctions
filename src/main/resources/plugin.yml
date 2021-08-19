@@ -17,6 +17,7 @@ permissions:
       auction.use: true
       auction.start: true
       auction.end: true
+      auction.cancel: true
       auction.bid: true
       auction.toggle: true
       auction.queue: true
@@ -27,6 +28,7 @@ permissions:
       auction.use: true
       auction.start: true
       auction.end: true
+      auction.cancel: true
       auction.bid: true
       auction.toggle: true
       auction.queue: true
@@ -42,6 +44,9 @@ permissions:
     default: op
   auction.end:
     description: Allows one to end their auction.
+    default: op
+  auction.cancel:
+    description: Allows one to cancel their auction.
     default: op
   auction.bid:
     description: Allows one to bid on auctions.

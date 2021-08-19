@@ -72,40 +72,6 @@ public class AuctionCommands {
                     }
 
                     return true;
-                } else if(args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
-                    if(userScope == null) {
-                        this.messageManager.sendPlayerMessage("auction-fail-no-scope", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    if(userScope.getActiveAuction() == null && userScope.getAuctionQueueLength() == 0) {
-                        this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-
-                    List<Auction> auctionQueue = userScope.getAuctionQueue();
-                    for(int i = 0; i < auctionQueue.size(); i++) {
-                        if(auctionQueue.get(i).getOwnerName().equalsIgnoreCase(playerName)) {
-                            auctionQueue.remove(i);
-                            this.messageManager.sendPlayerMessage("auction-cancel-queued", playerUUID, (AuctionScope) null);
-                            return true;
-                        }
-                    }
-
-                    if(auction == null) {
-                        this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-
-                    if(player == null || player.getName().equalsIgnoreCase(auction.getOwnerName()) || perms.has(player, "auction.admin")) {
-                        if(AuctionConfig.getInt("cancel-prevention-seconds", userScope) > auction.getRemainingTime() || AuctionConfig.getDouble("cancel-prevention-percent", userScope) > (double) auction.getRemainingTime() / (double) auction.getTotalTime() * 100D) {
-                            this.messageManager.sendPlayerMessage("auction-fail-cancel-prevention", playerUUID, (AuctionScope) null);
-                        } else {
-                            auction.cancel();
-                        }
-                    } else {
-                        this.messageManager.sendPlayerMessage("auction-fail-not-owner-cancel", playerUUID, (AuctionScope) null);
-                    }
-                    return true;
                 }
             }
             this.messageManager.sendPlayerMessage("auction-help", playerUUID, (AuctionScope) null);
@@ -181,7 +147,7 @@ public class AuctionCommands {
     public void auctionSuspend(CommandSender sender, @Argument("player") String playerName) {
         UUID uuid = this.uuidFromSender(sender);
         if(playerName != null) {
-            Player player = Bukkit.getServer().getPlayer(playerName);
+            Player player = this.plugin.getServer().getPlayer(playerName);
             if(player == null) {
                 this.messageManager.sendPlayerMessage("suspension-user-fail-is-offline", uuid, (AuctionScope) null);
             } else if(player.hasPermission(Permission.AUCTION_ADMIN)) {
@@ -206,7 +172,7 @@ public class AuctionCommands {
     public void auctionResume(CommandSender sender, @Argument("player") String playerName) {
         UUID uuid = this.uuidFromSender(sender);
         if(playerName != null) {
-            Player player = Bukkit.getServer().getPlayer(playerName);
+            Player player = this.plugin.getServer().getPlayer(playerName);
             if(player == null) {
                 this.messageManager.sendPlayerMessage("unsuspension-user-fail-is-offline", uuid, (AuctionScope) null);
             } else if(player.hasPermission(Permission.AUCTION_ADMIN)) {
@@ -235,6 +201,8 @@ public class AuctionCommands {
         }
     }
 
+
+
     @CommandMethod("auction end|e")
     @CommandPermission(Permission.AUCTION_END)
     public void auctionEnd(CommandSender sender) {
@@ -257,6 +225,49 @@ public class AuctionCommands {
                         auction.end();
                     }
                 }
+            }
+        }
+    }
+
+    @CommandMethod("auction cancel")
+    @CommandPermission(Permission.AUCTION_CANCEL)
+    public void auctionCancel(CommandSender sender) {
+        UUID uuid = this.uuidFromSender(sender);
+        if(uuid == null) {
+            this.messageManager.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
+        } else {
+            Player player = this.plugin.getServer().getPlayer(uuid);
+            String playerName = player.getName();
+            AuctionScope userScope = AuctionScope.getPlayerScope(player);
+            if(userScope == null) {
+                this.messageManager.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
+                return;
+            }
+            if(userScope.getActiveAuction() == null && userScope.getAuctionQueueLength() == 0) {
+                this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
+                return;
+            }
+            List<Auction> auctionQueue = userScope.getAuctionQueue();
+            for(int i = 0; i < auctionQueue.size(); i++) {
+                if(auctionQueue.get(i).getOwnerName().equalsIgnoreCase(playerName)) {
+                    auctionQueue.remove(i);
+                    this.messageManager.sendPlayerMessage("auction-cancel-queued", uuid, (AuctionScope) null);
+                    return;
+                }
+            }
+            Auction auction = userScope.getActiveAuction();
+            if(auction == null) {
+                this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
+                return;
+            }
+            if(player == null || uuid.equals(auction.getOwnerUUID()) || player.hasPermission(Permission.AUCTION_ADMIN)) {
+                if(AuctionConfig.getInt("cancel-prevention-seconds", userScope) > auction.getRemainingTime() || AuctionConfig.getDouble("cancel-prevention-percent", userScope) > (double) auction.getRemainingTime() / (double) auction.getTotalTime() * 100D) {
+                    this.messageManager.sendPlayerMessage("auction-fail-cancel-prevention", uuid, (AuctionScope) null);
+                } else {
+                    auction.cancel();
+                }
+            } else {
+                this.messageManager.sendPlayerMessage("auction-fail-not-owner-cancel", uuid, (AuctionScope) null);
             }
         }
     }
