@@ -127,26 +127,6 @@ public class AuctionCommands {
                         this.messageManager.sendPlayerMessage("auction-fail-not-owner-cancel", playerUUID, (AuctionScope) null);
                     }
                     return true;
-                } else if(args[0].equalsIgnoreCase("confiscate") || args[0].equalsIgnoreCase("impound")) {
-                    if(auction == null) {
-                        this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-
-                    if(player == null) {
-                        this.messageManager.sendPlayerMessage("confiscate-fail-console", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    if(!perms.has(player, "auction.admin")) {
-                        this.messageManager.sendPlayerMessage("confiscate-fail-permissions", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    if(playerName.equalsIgnoreCase(auction.getOwnerName())) {
-                        this.messageManager.sendPlayerMessage("confiscate-fail-self", playerUUID, (AuctionScope) null);
-                        return true;
-                    }
-                    auction.confiscate(player);
-                    return true;
                 }
             }
             this.messageManager.sendPlayerMessage("auction-help", playerUUID, (AuctionScope) null);
@@ -268,9 +248,9 @@ public class AuctionCommands {
 
     @CommandMethod("auction start [quantity] [price] [increment] [buynow]")
     @CommandPermission(Permission.AUCTION_START)
-    public void start(CommandSender sender, @Argument("quantity") int quantity,
-                      @Argument("price") long price, @Argument("increment") long increment,
-                      @Argument("buynow") long buyNow) {
+    public void auctionStart(CommandSender sender, @Argument("quantity") int quantity,
+                             @Argument("price") long price, @Argument("increment") long increment,
+                             @Argument("buynow") long buyNow) {
         if(this.canAuction(sender)) {
             //TODO - Implement auction
         }
@@ -278,7 +258,7 @@ public class AuctionCommands {
 
     @CommandMethod("auction end|e")
     @CommandPermission(Permission.AUCTION_END)
-    public void end(CommandSender sender) {
+    public void auctionEnd(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
         if(uuid != null) {
             Player player = this.plugin.getServer().getPlayer(uuid);
@@ -342,6 +322,32 @@ public class AuctionCommands {
                     auction.info(sender, false);
                 }
             }
+        }
+    }
+
+    @CommandMethod("auction confiscate|impound")
+    @CommandPermission(Permission.AUCTION_ADMIN)
+    public void auctionConfiscate(CommandSender sender) {
+        UUID uuid = this.uuidFromSender(sender);
+        if(uuid != null) {
+            Player player = this.plugin.getServer().getPlayer(uuid);
+            AuctionScope userScope = AuctionScope.getPlayerScope(player);
+            if(userScope == null) {
+                this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
+            } else {
+                Auction auction = userScope.getActiveAuction();
+                if(auction == null) {
+                    this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
+                } else {
+                    if(uuid.equals(auction.getOwnerUUID())) {
+                        this.messageManager.sendPlayerMessage("confiscate-fail-self", uuid, (AuctionScope) null);
+                    } else {
+                        auction.confiscate(player);
+                    }
+                }
+            }
+        } else {
+            this.messageManager.sendPlayerMessage("confiscate-fail-console", null, (AuctionScope) null);
         }
     }
 
