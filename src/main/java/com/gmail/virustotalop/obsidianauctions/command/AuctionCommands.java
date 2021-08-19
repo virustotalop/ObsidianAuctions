@@ -16,69 +16,12 @@ import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.UUID;
 
 public class AuctionCommands {
-
-    /*
-     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = null;
-        Auction auction = null;
-        AuctionScope userScope = null;
-        String playerName = null;
-        UUID playerUUID = null;
-
-        if(sender instanceof Player) {
-            player = (Player) sender;
-            playerName = player.getName();
-            playerUUID = player.getUniqueId();
-            userScope = AuctionScope.getPlayerScope(player);
-            if(userScope != null) {
-                auction = userScope.getActiveAuction();
-            }
-        }
-
-        if(
-                cmd.getName().equalsIgnoreCase("auc") ||
-                        cmd.getName().equalsIgnoreCase("auction") ||
-                        cmd.getName().equalsIgnoreCase("sauc") ||
-                        cmd.getName().equalsIgnoreCase("sealedauction")
-        ) {
-            if(args.length > 0) {
-                 else if(
-                        args[0].equalsIgnoreCase("start") ||
-                                args[0].equalsIgnoreCase("s") ||
-                                args[0].equalsIgnoreCase("this") ||
-                                args[0].equalsIgnoreCase("hand") ||
-                                args[0].equalsIgnoreCase("all") ||
-                                args[0].matches("[0-9]+")
-                ) {
-
-
-                    if(cmd.getName().equalsIgnoreCase("sealedauction") || cmd.getName().equalsIgnoreCase("sauc")) {
-                        if(AuctionConfig.getBoolean("allow-sealed-auctions", userScope)) {
-                            userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, LegacyUtil.getItemInMainHand(player).clone()));
-                        } else {
-                            this.messageManager.sendPlayerMessage("auction-fail-no-sealed-auctions", playerUUID, (AuctionScope) null);
-                        }
-                    } else {
-                        if(AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
-                            userScope.queueAuction(new Auction(this, player, args, userScope, false, messageManager, LegacyUtil.getItemInMainHand(player).clone()));
-                        } else {
-                            userScope.queueAuction(new Auction(this, player, args, userScope, true, messageManager, LegacyUtil.getItemInMainHand(player).clone()));
-                        }
-                    }
-
-                    return true;
-                }
-            }
-            this.messageManager.sendPlayerMessage("auction-help", playerUUID, (AuctionScope) null);
-            return true;
-        }
-    }
-     */
 
     private final ObsidianAuctions plugin;
     private final MessageManager messageManager;
@@ -96,14 +39,14 @@ public class AuctionCommands {
         this.messageManager.sendPlayerMessage("auction-help", uuid, (AuctionScope) null);
     }
 
-    @CommandMethod("auction help")
+    @CommandMethod("auction|auc help")
     @CommandPermission(Permission.AUCTION_USE)
     public void auctionHelp(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
         this.messageManager.sendPlayerMessage("auction-help", uuid, (AuctionScope) null);
     }
 
-    @CommandMethod("auction on")
+    @CommandMethod("auction|auc on")
     @CommandPermission(Permission.AUCTION_TOGGLE)
     public void auctionOn(CommandSender sender) {
         if(sender instanceof Player) {
@@ -116,7 +59,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction off|quiet|ignore|silent|silence")
+    @CommandMethod("auction|auc off|quiet|ignore|silent|silence")
     @CommandPermission(Permission.AUCTION_TOGGLE)
     public void auctionOff(CommandSender sender) {
         if(sender instanceof Player) {
@@ -130,7 +73,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction reload")
+    @CommandMethod("auction|auc reload")
     @CommandPermission(Permission.AUCTION_ADMIN)
     public void auctionReload(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
@@ -142,7 +85,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction suspend <player>")
+    @CommandMethod("auction|auc suspend <player>")
     @CommandPermission(Permission.AUCTION_ADMIN)
     public void auctionSuspend(CommandSender sender, @Argument("player") String playerName) {
         UUID uuid = this.uuidFromSender(sender);
@@ -167,7 +110,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction resume <player>")
+    @CommandMethod("auction|auc resume <player>")
     @CommandPermission(Permission.AUCTION_ADMIN)
     public void auctionResume(CommandSender sender, @Argument("player") String playerName) {
         UUID uuid = this.uuidFromSender(sender);
@@ -191,19 +134,29 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction start [quantity] [price] [increment] [buynow]")
+    @CommandMethod("auction|auc start [quantity] [price] [increment] [buynow] <sealed>")
     @CommandPermission(Permission.AUCTION_START)
-    public void auctionStart(CommandSender sender, @Argument("quantity") int quantity,
-                             @Argument("price") long price, @Argument("increment") long increment,
-                             @Argument("buynow") long buyNow) {
+    public void auctionStart(CommandSender sender, @Argument("quantity") String quantity,
+                             @Argument("price") String price, @Argument("increment") String increment,
+                             @Argument("buynow") String buyNow, @Argument("sealed") boolean sealed) {
         if(this.canAuction(sender)) {
-            //TODO - Implement auction
+            UUID uuid = this.uuidFromSender(sender);
+            Player player = this.plugin.getServer().getPlayer(uuid);
+            AuctionScope userScope = AuctionScope.getPlayerScope(player);
+            if(!AuctionConfig.getBoolean("allow-sealed-auctions", userScope) && sealed) {
+                this.messageManager.sendPlayerMessage("auction-fail-no-sealed-auctions", uuid, (AuctionScope) null);
+                return;
+            }
+            if(!AuctionConfig.getBoolean("allow-unsealed-auctions", userScope) && !sealed) {
+                sealed = true;
+            }
+            ItemStack hand = LegacyUtil.getItemInMainHand(player).clone();
+            String[] args = {quantity, price, increment, buyNow};
+            userScope.queueAuction(new Auction(this.plugin, player, args, userScope, sealed, this.messageManager, hand));
         }
     }
 
-
-
-    @CommandMethod("auction end|e")
+    @CommandMethod("auction|auc end|e")
     @CommandPermission(Permission.AUCTION_END)
     public void auctionEnd(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
@@ -229,7 +182,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction cancel")
+    @CommandMethod("auction|auc cancel")
     @CommandPermission(Permission.AUCTION_CANCEL)
     public void auctionCancel(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
@@ -272,7 +225,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction queue|q")
+    @CommandMethod("auction|auc queue|q")
     @CommandPermission(Permission.AUCTION_QUEUE)
     public void auctionQueue(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
@@ -284,7 +237,7 @@ public class AuctionCommands {
                 if(auctionQueue.isEmpty()) {
                     this.messageManager.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
                 } else {
-                    Inventory inv = Bukkit.createInventory(null, 18, ObsidianAuctions.guiQueueName);
+                    Inventory inv = this.plugin.getServer().createInventory(null, 18, ObsidianAuctions.guiQueueName);
                     for(int i = 0; i < auctionQueue.size(); i++) {
                         if(i == inv.getSize()) {
                             break;
@@ -297,7 +250,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction info")
+    @CommandMethod("auction|auc info")
     @CommandPermission(Permission.AUCTION_INFO)
     public void auctionInfo(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
@@ -315,7 +268,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction confiscate|impound")
+    @CommandMethod("auction|auc confiscate|impound")
     @CommandPermission(Permission.AUCTION_ADMIN)
     public void auctionConfiscate(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
