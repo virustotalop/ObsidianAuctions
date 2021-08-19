@@ -11,7 +11,6 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
 import com.google.inject.Inject;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -85,7 +84,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction|auc suspend <player>")
+    @CommandMethod("auction|auc suspend [player]")
     @CommandPermission(Permission.AUCTION_ADMIN)
     public void auctionSuspend(CommandSender sender, @Argument("player") String playerName) {
         UUID uuid = this.uuidFromSender(sender);
@@ -110,7 +109,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction|auc resume <player>")
+    @CommandMethod("auction|auc resume [player]")
     @CommandPermission(Permission.AUCTION_ADMIN)
     public void auctionResume(CommandSender sender, @Argument("player") String playerName) {
         UUID uuid = this.uuidFromSender(sender);
@@ -134,12 +133,20 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction|auc start [quantity] [price] [increment] [buynow] <sealed>")
+    @CommandMethod("auction|auc start <quantity> <price> <increment> <time> [buynow] [sealed]")
     @CommandPermission(Permission.AUCTION_START)
     public void auctionStart(CommandSender sender, @Argument("quantity") String quantity,
                              @Argument("price") String price, @Argument("increment") String increment,
-                             @Argument("buynow") String buyNow, @Argument("sealed") boolean sealed) {
+                             @Argument("time") String time, @Argument("buynow") String buyNow,
+                             @Argument("sealed") String sealedStr) {
         if(this.canAuction(sender)) {
+            boolean sealed = false;
+            if(sealedStr != null) {
+                String lower = sealedStr.toLowerCase();
+                if(lower.equals("sealed") || lower.equals("yes") || lower.equals("true")) {
+                    sealed = true;
+                }
+            }
             UUID uuid = this.uuidFromSender(sender);
             Player player = this.plugin.getServer().getPlayer(uuid);
             AuctionScope userScope = AuctionScope.getPlayerScope(player);
@@ -151,7 +158,7 @@ public class AuctionCommands {
                 sealed = true;
             }
             ItemStack hand = LegacyUtil.getItemInMainHand(player).clone();
-            String[] args = {quantity, price, increment, buyNow};
+            String[] args = {quantity, price, increment, time, buyNow};
             userScope.queueAuction(new Auction(this.plugin, player, args, userScope, sealed, this.messageManager, hand));
         }
     }
@@ -294,7 +301,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("bid [bid] [maxbid]")
+    @CommandMethod("bid <bid> <maxbid>")
     @CommandPermission(Permission.AUCTION_BID)
     public void bid(CommandSender sender, @Argument("bid") String bid, @Argument("maxbid") String maxBid) {
         if(this.canBid(sender)) {
