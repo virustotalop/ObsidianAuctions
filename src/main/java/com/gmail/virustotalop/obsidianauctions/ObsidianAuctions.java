@@ -264,7 +264,6 @@ public class ObsidianAuctions extends JavaPlugin {
         File orphanLotsFile = new File(this.getDataFolder(), "orphanLots.ser");
         File voluntarilyDisabledUsersFile = new File(this.getDataFolder(), "voluntarilyDisabledUsers.ser");
         File suspendedUserFile = new File(this.getDataFolder(), "suspendedUsers.ser");
-        File savedUserInputsFile = new File(this.getDataFolder(), "userSavedInputArgs.ser");
         orphanLots = FileLoadUtil.loadListAuctionLot(orphanLotsFile);
         this.voluntarilyDisabledUsers = FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
         this.suspendedUsers = FileLoadUtil.loadUUIDSet(suspendedUserFile);
