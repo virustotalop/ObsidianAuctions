@@ -33,14 +33,10 @@ public class Functions {
     // Merges player's preset with the current specifications and system defaults.
     public static String[] mergeInputArgs(UUID playerUUID, String[] inputArgs, boolean validateArgs) {
         // Get existing defaults (if present)
-        String[] resultArgs = null;
-
-        // if player has no preset, use the current system defaults:
-        if(ObsidianAuctions.userSavedInputArgs.get(playerUUID) == null) {
-            resultArgs = new String[]{"this", removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-starting-bid", null))), removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-bid-increment", null))), Integer.toString(AuctionConfig.getInt("default-auction-time", null)), "0"};
-        } else {
-            resultArgs = ObsidianAuctions.userSavedInputArgs.get(playerUUID).clone();
-        }
+        String[] resultArgs = new String[]{"this",
+                removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-starting-bid", null))),
+                removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-bid-increment", null))),
+                Integer.toString(AuctionConfig.getInt("default-auction-time", null)), "0"};
 
         // Size increased in 2.10.0
         if(resultArgs.length < 5) {
