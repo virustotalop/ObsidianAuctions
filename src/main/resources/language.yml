@@ -104,7 +104,7 @@ auction-fail-banned-lore: '<gold>This item contains banned lore.'
 auction-fail-blocked-by-other-plugin: '<gold>The auction was blocked by another plugin.'
 auction-fail-blacklist-name: '<gold>This item contains a blacklisted word.'
 bid-success-no-challenger: '<aqua>%current-bid-name%<blue> has bid <gold>%current-bid-amount%<blue>
-  on the %{has-durability}<dark_red>damaged {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}
+  on the {has-durability}<dark_red>damaged {end-has-durability}{has-enchantment}<aqua>enchanted {end-has-enchantment}
   <green>%item-material-name%<blue> {has-display-name}named <white>"%item-display-name%"{end-has-display-name}<blue>.'
 bid-success-outbid: '<aqua>%current-bid-name%<blue> raised the bid to <gold>%current-bid-amount%<blue>.'
 bid-success-update-own-bid: '<aqua>%current-bid-name%<blue> raised the bid to <gold>%current-bid-amount%<blue>.'
