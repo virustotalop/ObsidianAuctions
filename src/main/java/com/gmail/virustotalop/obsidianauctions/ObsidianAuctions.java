@@ -3,6 +3,7 @@ package com.gmail.virustotalop.obsidianauctions;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.annotations.AnnotationParser;
 import cloud.commandframework.bukkit.CloudBukkitCapabilities;
+import cloud.commandframework.exceptions.NoPermissionException;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
@@ -14,6 +15,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
+import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.FileLoadUtil;
@@ -268,7 +270,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.voluntarilyDisabledUsers = FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
         this.suspendedUsers = FileLoadUtil.loadUUIDSet(suspendedUserFile);
 
-        this.commandManager = this.createCommandManager();
+        this.commandManager = this.createCommandManager(injector);
         this.commandParser = new AnnotationParser(this.commandManager,
                 CommandSender.class, parameters ->
                 SimpleCommandMeta.empty());
@@ -462,9 +464,16 @@ public class ObsidianAuctions extends JavaPlugin {
      * @return success level
      */
     private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = Bukkit.getServicesManager().getRegistration(Permission.class);
-        perms = rsp.getProvider();
-        return perms != null;
+        try {
+            Class<?> vaultClazz = Class.forName("net.milkbowl.vault.permission.Permission");
+            RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> rsp = Bukkit
+                    .getServicesManager()
+                    .getRegistration(net.milkbowl.vault.permission.Permission.class);
+            perms = rsp.getProvider();
+            return perms != null;
+        } catch(ClassNotFoundException e) {
+            return false;
+        }
     }
 
     /**
@@ -592,12 +601,14 @@ public class ObsidianAuctions extends JavaPlugin {
         return this.suspendAllAuctions;
     }
 
-    private CommandManager<CommandSender> createCommandManager() {
+    private CommandManager<CommandSender> createCommandManager(Injector injector) {
         try {
             PaperCommandManager<CommandSender> commandManager = new PaperCommandManager(this,
                     CommandExecutionCoordinator.simpleCoordinator(),
                     Function.identity(),
                     Function.identity());
+            CommandPermissionHandler handler = injector.getInstance(CommandPermissionHandler.class);
+            commandManager.registerExceptionHandler(NoPermissionException.class, handler);
             if (commandManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
                 commandManager.registerBrigadier();
             }

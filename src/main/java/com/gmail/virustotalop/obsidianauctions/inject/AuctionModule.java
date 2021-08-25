@@ -4,6 +4,7 @@ import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
+import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.I18nItemConfig;
 import com.gmail.virustotalop.obsidianauctions.language.I18nTranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
@@ -39,10 +40,11 @@ public class AuctionModule implements Module {
         binder.bind(TranslationFactory.class).to(I18nTranslationFactory.class).asEagerSingleton();
         binder.bind(ActionBarManager.class).asEagerSingleton();
         binder.bind(AuctionMessageParser.class).asEagerSingleton();
-        binder.bind(MessageManager.class).to(AuctionMessageManager.class);
+        binder.bind(MessageManager.class).to(AuctionMessageManager.class).asEagerSingleton();
         binder.bind(AuctionProhibitionManager.class).asEagerSingleton();
         binder.bind(InventoryClickListener.class).asEagerSingleton();
         binder.bind(PlayerListener.class).asEagerSingleton();
         binder.bind(AuctionCommands.class).asEagerSingleton();
+        binder.bind(CommandPermissionHandler.class).asEagerSingleton();
     }
 }
