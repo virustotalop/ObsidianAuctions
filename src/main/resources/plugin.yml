@@ -35,6 +35,12 @@ permissions:
       auction.info: true
   auction.admin:
     description: Auction administrative functions.
+    children:
+      auction.admin.reload: true
+      auction.admin.suspend: true
+      auction.admin.resume: true
+      auction.admin.cancel: true
+      auction.admin.confiscate: true
     default: op
   auction.use:
     description: Gives access to the auction command

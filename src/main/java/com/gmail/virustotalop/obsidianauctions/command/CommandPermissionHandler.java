@@ -30,7 +30,7 @@ public class CommandPermissionHandler implements BiConsumer<CommandSender, NoPer
         if(missing.equals(Permission.AUCTION_BID)) {
             this.sendMessage(sender, "bid-fail-permissions");
         } else if(missing.equals(Permission.AUCTION_USE)) {
-            
+            this.sendMessage(sender, "auction-use-permissions");
         }
     }
 

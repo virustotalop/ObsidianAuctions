@@ -68,6 +68,7 @@ parse-error-invalid-time: '<gold>The time you specified is invalid.'
 parse-error-invalid-bid: '<gold>The bid amount you specified is invalid.'
 parse-error-invalid-max-bid: '<gold>The max bid amount you specified is invalid.'
 parse-error-invalid-buynow: '<gold>The BuyNow amount you specified is invalid.'
+auction-use-permissions: "<gold>You do not have access to auctions."
 auction-fail-spawner: '<gold>You cannot auction mob spawners.'
 auction-fail-permissions: '<gold>You do not have permissions to start an auction.'
 auction-fail-arena: '<gold>You cannot start an auction in an arena.'
