@@ -72,67 +72,6 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction|auc reload")
-    @CommandPermission(Permission.AUCTION_ADMIN_RELOAD)
-    public void auctionReload(CommandSender sender) {
-        UUID uuid = this.uuidFromSender(sender);
-        if(AuctionScope.areAuctionsRunning()) { // Don't reload if any auctions are running.{
-            this.messageManager.sendPlayerMessage("plugin-reload-fail-auctions-running", uuid, (AuctionScope) null);
-        } else {
-            this.plugin.loadConfig();
-            this.messageManager.sendPlayerMessage("plugin-reloaded", uuid, (AuctionScope) null);
-        }
-    }
-
-    @CommandMethod("auction|auc suspend [player]")
-    @CommandPermission(Permission.AUCTION_ADMIN_SUSPEND)
-    public void auctionSuspend(CommandSender sender, @Argument("player") String playerName) {
-        UUID uuid = this.uuidFromSender(sender);
-        if(playerName != null) {
-            Player player = this.plugin.getServer().getPlayer(playerName);
-            if(player == null) {
-                this.messageManager.sendPlayerMessage("suspension-user-fail-is-offline", uuid, (AuctionScope) null);
-            } else if(player.hasPermission(Permission.AUCTION_ADMIN_SUSPEND)) {
-                this.messageManager.sendPlayerMessage("suspension-user-fail-is-admin", uuid, (AuctionScope) null);
-            } else if(this.plugin.isSuspendedUser(player.getUniqueId())) {
-                this.messageManager.sendPlayerMessage("suspension-user-fail-already-suspended", uuid, (AuctionScope) null);
-            } else {
-                this.plugin.addSuspendedUser(player.getUniqueId());
-                this.plugin.saveSuspendedUsers();
-                this.messageManager.sendPlayerMessage("suspension-user", uuid, (AuctionScope) null);
-                this.messageManager.sendPlayerMessage("suspension-user-success", uuid, (AuctionScope) null);
-            }
-        } else {
-            this.plugin.setSuspendAllAuctions(true);
-            AuctionScope.cancelAllAuctions();
-            this.messageManager.broadcastAuctionScopeMessage("suspension-global", null);
-        }
-    }
-
-    @CommandMethod("auction|auc resume [player]")
-    @CommandPermission(Permission.AUCTION_ADMIN_RESUME)
-    public void auctionResume(CommandSender sender, @Argument("player") String playerName) {
-        UUID uuid = this.uuidFromSender(sender);
-        if(playerName != null) {
-            Player player = this.plugin.getServer().getPlayer(playerName);
-            if(player == null) {
-                this.messageManager.sendPlayerMessage("unsuspension-user-fail-is-offline", uuid, (AuctionScope) null);
-            } else if(player.hasPermission(Permission.AUCTION_ADMIN_RESUME)) {
-                this.messageManager.sendPlayerMessage("unsuspension-fail-permissions", uuid, (AuctionScope) null);
-            } else if(!this.plugin.isSuspendedUser(player.getUniqueId())) {
-                this.messageManager.sendPlayerMessage("unsuspension-user-fail-not-suspended", uuid, (AuctionScope) null);
-            } else {
-                this.plugin.removeSuspendedUser(player.getUniqueId());
-                this.plugin.saveSuspendedUsers();
-                this.messageManager.sendPlayerMessage("unsuspension-user", uuid, (AuctionScope) null);
-                this.messageManager.sendPlayerMessage("unsuspension-user-success", uuid, (AuctionScope) null);
-            }
-        } else {
-            this.plugin.setSuspendAllAuctions(false);
-            this.messageManager.broadcastAuctionScopeMessage("unsuspension-global", null);
-        }
-    }
-
     @CommandMethod("auction|auc start <quantity> <price> <increment> <time> [buynow] [sealed]")
     @CommandPermission(Permission.AUCTION_START)
     public void auctionStart(CommandSender sender, @Argument("quantity") String quantity,
@@ -272,6 +211,67 @@ public class AuctionCommands {
                     auction.info(sender, false);
                 }
             }
+        }
+    }
+
+    @CommandMethod("auction|auc reload")
+    @CommandPermission(Permission.AUCTION_ADMIN_RELOAD)
+    public void auctionReload(CommandSender sender) {
+        UUID uuid = this.uuidFromSender(sender);
+        if(AuctionScope.areAuctionsRunning()) { // Don't reload if any auctions are running.{
+            this.messageManager.sendPlayerMessage("plugin-reload-fail-auctions-running", uuid, (AuctionScope) null);
+        } else {
+            this.plugin.loadConfig();
+            this.messageManager.sendPlayerMessage("plugin-reloaded", uuid, (AuctionScope) null);
+        }
+    }
+
+    @CommandMethod("auction|auc suspend [player]")
+    @CommandPermission(Permission.AUCTION_ADMIN_SUSPEND)
+    public void auctionSuspend(CommandSender sender, @Argument("player") String playerName) {
+        UUID uuid = this.uuidFromSender(sender);
+        if(playerName != null) {
+            Player player = this.plugin.getServer().getPlayer(playerName);
+            if(player == null) {
+                this.messageManager.sendPlayerMessage("suspension-user-fail-is-offline", uuid, (AuctionScope) null);
+            } else if(player.hasPermission(Permission.AUCTION_ADMIN_SUSPEND)) {
+                this.messageManager.sendPlayerMessage("suspension-user-fail-is-admin", uuid, (AuctionScope) null);
+            } else if(this.plugin.isSuspendedUser(player.getUniqueId())) {
+                this.messageManager.sendPlayerMessage("suspension-user-fail-already-suspended", uuid, (AuctionScope) null);
+            } else {
+                this.plugin.addSuspendedUser(player.getUniqueId());
+                this.plugin.saveSuspendedUsers();
+                this.messageManager.sendPlayerMessage("suspension-user", uuid, (AuctionScope) null);
+                this.messageManager.sendPlayerMessage("suspension-user-success", uuid, (AuctionScope) null);
+            }
+        } else {
+            this.plugin.setSuspendAllAuctions(true);
+            AuctionScope.cancelAllAuctions();
+            this.messageManager.broadcastAuctionScopeMessage("suspension-global", null);
+        }
+    }
+
+    @CommandMethod("auction|auc resume [player]")
+    @CommandPermission(Permission.AUCTION_ADMIN_RESUME)
+    public void auctionResume(CommandSender sender, @Argument("player") String playerName) {
+        UUID uuid = this.uuidFromSender(sender);
+        if(playerName != null) {
+            Player player = this.plugin.getServer().getPlayer(playerName);
+            if(player == null) {
+                this.messageManager.sendPlayerMessage("unsuspension-user-fail-is-offline", uuid, (AuctionScope) null);
+            } else if(player.hasPermission(Permission.AUCTION_ADMIN_RESUME)) {
+                this.messageManager.sendPlayerMessage("unsuspension-fail-permissions", uuid, (AuctionScope) null);
+            } else if(!this.plugin.isSuspendedUser(player.getUniqueId())) {
+                this.messageManager.sendPlayerMessage("unsuspension-user-fail-not-suspended", uuid, (AuctionScope) null);
+            } else {
+                this.plugin.removeSuspendedUser(player.getUniqueId());
+                this.plugin.saveSuspendedUsers();
+                this.messageManager.sendPlayerMessage("unsuspension-user", uuid, (AuctionScope) null);
+                this.messageManager.sendPlayerMessage("unsuspension-user-success", uuid, (AuctionScope) null);
+            }
+        } else {
+            this.plugin.setSuspendAllAuctions(false);
+            this.messageManager.broadcastAuctionScopeMessage("unsuspension-global", null);
         }
     }
 
