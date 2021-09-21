@@ -3,7 +3,6 @@ package com.gmail.virustotalop.obsidianauctions.command;
 import cloud.commandframework.exceptions.NoPermissionException;
 import com.gmail.virustotalop.obsidianauctions.Permission;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
-import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageManager;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.google.inject.Inject;
 import org.bukkit.command.CommandSender;

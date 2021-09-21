@@ -22,7 +22,7 @@ permissions:
       auction.toggle: true
       auction.queue: true
       auction.info: true
-  action.basic:
+  auction.basic:
     description: Gives access to basic player auction commands
     children:
       auction.use: true
