@@ -26,11 +26,31 @@ public class CommandPermissionHandler implements BiConsumer<CommandSender, NoPer
         String missing = ex.getMissingPermission()
                 .replace("(", "")
                 .replace(")", "");
-        System.out.println("missing: " + missing);
-        if(missing.equals(Permission.AUCTION_BID)) {
-            this.sendMessage(sender, "bid-fail-permissions");
-        } else if(missing.equals(Permission.AUCTION_USE)) {
+        //System.out.println("missing: " + missing);
+        if(missing.contains("|") || missing.equals(Permission.AUCTION_USE)) {
             this.sendMessage(sender, "auction-use-permissions");
+        } else if(missing.equals(Permission.AUCTION_TOGGLE)) {
+            this.sendMessage(sender, "auction-toggle-permissions");
+        } else if(missing.equals(Permission.AUCTION_START)) {
+            this.sendMessage(sender, "auction-fail-permissions");
+        } else if(missing.equals(Permission.AUCTION_END)) {
+            this.sendMessage(sender, "auction-end-permissions");
+        } else if(missing.equals(Permission.AUCTION_CANCEL)) {
+            this.sendMessage(sender, "auction-cancel-permissions");
+        } else if(missing.equals(Permission.AUCTION_QUEUE)) {
+            this.sendMessage(sender, "auction-queue-permissions");
+        } else if(missing.equals(Permission.AUCTION_INFO)) {
+            this.sendMessage(sender, "auction-info-permissions");
+        } else if(missing.equals(Permission.AUCTION_ADMIN_RELOAD)) {
+            this.sendMessage(sender, "plugin-reload-fail-permissions");
+        } else if(missing.equals(Permission.AUCTION_ADMIN_SUSPEND)) {
+            this.sendMessage(sender, "suspension-fail-permissions");
+        } else if(missing.equals(Permission.AUCTION_ADMIN_RESUME)) {
+            this.sendMessage(sender, "unsuspension-fail-permissions");
+        } else if(missing.equals(Permission.AUCTION_ADMIN_CONFISCATE)) {
+            this.sendMessage(sender, "confiscate-fail-permissions");
+        } else if(missing.equals(Permission.AUCTION_BID)) { //Handle bid
+            this.sendMessage(sender, "bid-fail-permissions");
         }
     }
 
@@ -39,7 +59,7 @@ public class CommandPermissionHandler implements BiConsumer<CommandSender, NoPer
         if(sender instanceof Player) {
             uuid = ((Player) sender).getUniqueId();
         }
-        System.out.println("Sending player message: " + key);
+        //System.out.println("Sending player message: " + key);
         this.manager.sendPlayerMessage(key, uuid, (Auction) null);
     }
 }
