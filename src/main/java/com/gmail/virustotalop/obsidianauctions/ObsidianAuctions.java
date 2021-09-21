@@ -51,7 +51,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
 import java.util.logging.Level;
 
@@ -84,6 +86,8 @@ public class ObsidianAuctions extends JavaPlugin {
     private static List<AuctionLot> orphanLots = new ArrayList<>();
     private Collection<UUID> voluntarilyDisabledUsers = new HashSet<>();
     private Collection<UUID> suspendedUsers = new HashSet<>();
+
+    private Queue<String> logQueue;
 
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
@@ -179,6 +183,7 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        this.logQueue = new ConcurrentLinkedQueue<>();
         this.adventure = BukkitAudiences.create(this);
         if(this.adventure == null) {
             this.getLogger().log(Level.SEVERE, "Unable to create adventure, shutting down...");
@@ -247,17 +252,17 @@ public class ObsidianAuctions extends JavaPlugin {
 
         //Load in inventory click listener
 
-        BukkitScheduler bukkitScheduler = getServer().getScheduler();
+        BukkitScheduler scheduler = this.getServer().getScheduler();
         if(queueTimer > 0) {
-            bukkitScheduler.cancelTask(queueTimer);
+            scheduler.cancelTask(queueTimer);
         }
-        queueTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, () -> AuctionScope.checkAuctionQueue(), 20L, 20L);
+        queueTimer = scheduler.scheduleSyncRepeatingTask(this, () -> AuctionScope.checkAuctionQueue(), 20L, 20L);
 
         long playerScopeCheckInterval = config.getLong("auctionscope-change-check-interval");
-        if(playerScopeCheckTimer > 0) bukkitScheduler.cancelTask(playerScopeCheckTimer);
+        if(playerScopeCheckTimer > 0) scheduler.cancelTask(playerScopeCheckTimer);
 
         if(playerScopeCheckInterval > 0) {
-            playerScopeCheckTimer = bukkitScheduler.scheduleSyncRepeatingTask(this, () -> {
+            playerScopeCheckTimer = scheduler.scheduleSyncRepeatingTask(this, () -> {
                 AuctionScope.sendFairwellMessages();
                 AuctionScope.sendWelcomeMessages();
             }, playerScopeCheckInterval, playerScopeCheckInterval);
@@ -277,7 +282,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.commandParser.parse(injector.getInstance(AuctionCommands.class));
 
         this.messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
-
+        scheduler.runTaskTimerAsynchronously(this, this::writeCurrentLog, 20, 20);
     }
 
     private <T> Collection<T> collectInstances(Class<T> superClazz, Injector injector) {
@@ -404,6 +409,7 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+        this.writeCurrentLog();
         AuctionScope.cancelAllAuctions();
         this.getServer().getScheduler().cancelTask(queueTimer);
         instance = null;
@@ -424,20 +430,27 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     public void log(String playerName, String message, AuctionScope auctionScope) {
         if(AuctionConfig.getBoolean("log-auctions", auctionScope)) {
-            try(BufferedWriter out = new BufferedWriter(new FileWriter(this.auctionLog, true))) {
-                String scopeId = "NOSCOPE";
-                if(auctionScope != null) {
-                    scopeId = auctionScope.getScopeId();
-                }
-                String dateStr = (new Date()).toString();
-                String strippedMessage = ChatColor.stripColor(message);
-                String log = dateStr + " (" + playerName + ", " + scopeId + "): " + strippedMessage;
-                out.write(log);
-                out.newLine();
-                out.flush();
-            } catch(IOException e) {
-                e.printStackTrace();
+            String scopeId = "NOSCOPE";
+            if(auctionScope != null) {
+                scopeId = auctionScope.getScopeId();
             }
+            String dateStr = (new Date()).toString();
+            String strippedMessage = ChatColor.stripColor(message);
+            String log = dateStr + " (" + playerName + ", " + scopeId + "): " + strippedMessage;
+            this.logQueue.add(log);
+        }
+    }
+
+    private void writeCurrentLog() {
+        try(BufferedWriter out = new BufferedWriter(new FileWriter(this.auctionLog, true))) {
+            String polled;
+            while((polled = this.logQueue.poll()) != null) {
+                out.write(polled);
+                out.newLine();
+            }
+            out.flush();
+        } catch(IOException e) {
+            e.printStackTrace();
         }
     }
 
