@@ -6,9 +6,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.google.inject.Inject;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -138,19 +136,18 @@ public class AuctionMessageManager extends MessageManager {
         } else if(player != null) {
             for(String message : messages) {
                 this.adventure.player(player).sendMessage(MiniMessage.get().parse(message));
-                ObsidianAuctions.get().log(player.getName(), message, auctionScope);
+                ObsidianAuctions.get().log(player.getName(), this.stripTags(message), auctionScope);
             }
         } else if(sender != null) {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             for(String message : messages) {
-                console.sendMessage(ChatColor.stripColor(GsonComponentSerializer
-                        .gson()
-                        .serialize(MiniMessage.get().parse(message))));
-                ObsidianAuctions.get().log("CONSOLE", message, auctionScope);
+                String stripped = this.stripTags(message);
+                console.sendMessage(stripped);
+                ObsidianAuctions.get().log("CONSOLE", stripped, auctionScope);
             }
         } else {
             for(String message : messages) {
-                ObsidianAuctions.get().log("NO TARGET!", message, auctionScope);
+                ObsidianAuctions.get().log("NO TARGET!", this.stripTags(message), auctionScope);
             }
         }
     }
@@ -181,9 +178,13 @@ public class AuctionMessageManager extends MessageManager {
             }
         }
         for(String message : messages) {
-            message = MiniMessage.get().stripTokens(message);
-            Bukkit.getConsoleSender().sendMessage(message);
-            ObsidianAuctions.get().log("BROADCAST", message, auctionScope);
+            String stripped = this.stripTags(message);
+            Bukkit.getConsoleSender().sendMessage(stripped);
+            ObsidianAuctions.get().log("BROADCAST", stripped, auctionScope);
         }
+    }
+
+    private String stripTags(String message) {
+        return MiniMessage.get().stripTokens(message);
     }
 }
