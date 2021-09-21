@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'eclipse'
     id 'idea'
 }
@@ -8,12 +8,11 @@ plugins {
 group = 'com.gmail.virustotalop'
 version = '5.0.0'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 processResources {
-    from(sourceSets.main.resources) {
-        include 'plugin.yml'
+    filesMatching('plugin.yml') {
         expand 'pluginVersion': project.version
     }
 }

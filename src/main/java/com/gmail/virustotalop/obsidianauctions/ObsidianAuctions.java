@@ -58,9 +58,11 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 /**
+ * ObsidianAuctions
  * A Bukkit based Minecraft plugin to facilitate auctions.
  *
  * @author Joshua "flobi" Hatfield
+ * @author virustotalop
  */
 public class ObsidianAuctions extends JavaPlugin {
 
