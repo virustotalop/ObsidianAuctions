@@ -79,6 +79,9 @@ public class AuctionCommands {
                              @Argument("time") String time, @Argument("buynow") String buyNow,
                              @Argument("sealed") String sealedStr) {
         if(this.canAuction(sender)) {
+            if(buyNow == null) {
+                buyNow = "0";
+            }
             boolean sealed = false;
             if(sealedStr != null) {
                 String lower = sealedStr.toLowerCase();
@@ -86,6 +89,7 @@ public class AuctionCommands {
                     sealed = true;
                 }
             }
+
             UUID uuid = this.uuidFromSender(sender);
             Player player = this.plugin.getServer().getPlayer(uuid);
             AuctionScope userScope = AuctionScope.getPlayerScope(player);
