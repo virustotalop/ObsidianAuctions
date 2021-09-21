@@ -17,6 +17,11 @@ processResources {
     }
 }
 
+tasks.withType(AbstractArchiveTask) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
 test {
     useJUnitPlatform()
 }
