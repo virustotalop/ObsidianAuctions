@@ -494,19 +494,6 @@ public class ObsidianAuctions extends JavaPlugin {
     /**
      * Gets the active auction instance from the scope where the player is.
      *
-     * @param playerName player in reference
-     * @return auction instance
-     */
-    public Auction getPlayerAuction(String playerName) {
-        if(playerName == null) {
-            return null;
-        }
-        return getPlayerAuction(Bukkit.getPlayer(playerName));
-    }
-
-    /**
-     * Gets the active auction instance from the scope where the player is.
-     *
      * @param player player in reference
      * @return auction instance
      */
