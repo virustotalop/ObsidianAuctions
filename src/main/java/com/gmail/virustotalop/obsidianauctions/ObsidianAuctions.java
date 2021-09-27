@@ -462,15 +462,17 @@ public class ObsidianAuctions extends JavaPlugin {
      * @return success level
      */
     private boolean setupEconomy() {
-        if(Bukkit.getPluginManager().getPlugin("Vault") == null) {
+        try {
+            Class.forName("net.milkbowl.vault.economy.Economy");
+            RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
+            if(rsp == null) {
+                return false;
+            }
+            econ = rsp.getProvider();
+            return econ != null;
+        } catch(ClassNotFoundException ex) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
-        if(rsp == null) {
-            return false;
-        }
-        econ = rsp.getProvider();
-        return econ != null;
     }
 
     /**
@@ -480,7 +482,7 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     private boolean setupPermissions() {
         try {
-            Class<?> vaultClazz = Class.forName("net.milkbowl.vault.permission.Permission");
+            Class.forName("net.milkbowl.vault.permission.Permission");
             RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> rsp = Bukkit
                     .getServicesManager()
                     .getRegistration(net.milkbowl.vault.permission.Permission.class);
