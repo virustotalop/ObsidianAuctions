@@ -1,4 +1,5 @@
 language: "en-US"
+allow-mobspawners: true
 enable-chat-messages: true
 enable-actionbar-messages: true
 queue-gui-name: "&9ObsidianAuctions Queue"
