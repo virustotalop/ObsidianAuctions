@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,10 +124,8 @@ public class Items {
         if(item == null || pages == null) return;
         ItemMeta itemMeta = item.getItemMeta();
         if(itemMeta == null) return;
-        List<String> pageList = new ArrayList<String>();
-        for(int i = 0; i < pages.length; i++) {
-            pageList.add(pages[i]);
-        }
+        List<String> pageList = new ArrayList<>();
+        Collections.addAll(pageList, pages);
         itemMeta.setLore(pageList);
         item.setItemMeta(itemMeta);
     }

@@ -78,8 +78,7 @@ public class PlayerListener implements Listener {
 
         // Check inscope disabled commands, doesn't matter if participating:
         List<String> disabledCommands = AuctionConfig.getStringList("disabled-commands-inscope", playerScope);
-        for(int i = 0; i < disabledCommands.size(); i++) {
-            String disabledCommand = disabledCommands.get(i);
+        for(String disabledCommand : disabledCommands) {
             if(disabledCommand.isEmpty()) continue;
             if(message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
@@ -97,8 +96,7 @@ public class PlayerListener implements Listener {
         }
 
         disabledCommands = AuctionConfig.getStringList("disabled-commands-participating", playerScope);
-        for(int i = 0; i < disabledCommands.size(); i++) {
-            String disabledCommand = disabledCommands.get(i);
+        for(String disabledCommand : disabledCommands) {
             if(disabledCommand.isEmpty()) {
                 continue;
             }

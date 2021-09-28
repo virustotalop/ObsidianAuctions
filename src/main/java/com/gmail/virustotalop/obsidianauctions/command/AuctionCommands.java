@@ -163,7 +163,7 @@ public class AuctionCommands {
                 this.messageManager.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
                 return;
             }
-            if(player == null || uuid.equals(auction.getOwnerUUID()) || player.hasPermission(Permission.AUCTION_ADMIN_CANCEL)) {
+            if(uuid.equals(auction.getOwnerUUID()) || player.hasPermission(Permission.AUCTION_ADMIN_CANCEL)) {
                 if(AuctionConfig.getInt("cancel-prevention-seconds", userScope) > auction.getRemainingTime() || AuctionConfig.getDouble("cancel-prevention-percent", userScope) > (double) auction.getRemainingTime() / (double) auction.getTotalTime() * 100D) {
                     this.messageManager.sendPlayerMessage("auction-fail-cancel-prevention", uuid, (AuctionScope) null);
                 } else {

@@ -49,7 +49,7 @@ public class ActionBarManager {
                         this.playerMessages.remove(uuid);
                     } else {
                         String message = this.playerMessages.get(uuid);
-                        this.adventure.player(player).sendActionBar(MiniMessage.get().parse(message));
+                        this.adventure.player(player).sendActionBar(MiniMessage.miniMessage().parse(message));
                     }
                 }
                 if(ticks == 0) {

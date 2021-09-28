@@ -17,7 +17,7 @@ import java.util.UUID;
 public class AuctionParticipant {
 
     private final UUID playerUUID;
-    private AuctionScope auctionScope = null;
+    private final AuctionScope auctionScope;
     private Location lastKnownGoodLocation = null;
     private boolean sentEscapeWarning = false;
     private boolean sentArenaWarning = false;

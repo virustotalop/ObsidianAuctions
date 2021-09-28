@@ -13,7 +13,6 @@ import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -50,7 +49,7 @@ public class Auction {
     private AuctionBid currentBid = null;
     public ArrayList<AuctionBid> sealedBids = new ArrayList<>();
 
-    public boolean sealed = false;
+    public boolean sealed;
 
     public long nextTickTime = 0;
 
@@ -61,7 +60,7 @@ public class Auction {
     //added
     private final ItemStack guiItem;
 
-    public MessageManager messageManager = null;
+    public MessageManager messageManager;
 
     /**
      * Gets the AuctionScope which hosts this auction.
@@ -102,7 +101,7 @@ public class Auction {
                 itemMeta.setLore(lore);
                 this.guiItem.setItemMeta(itemMeta);
             } else {
-                List<String> lore = new ArrayList<String>();
+                List<String> lore = new ArrayList<>();
                 lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
                 //lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
                 //lore.add(ChatColor.BLUE + "Buy it now price: " + this.buyNow);
@@ -111,7 +110,7 @@ public class Auction {
                 this.guiItem.setItemMeta(itemMeta);
             }
         } else {
-            List<String> lore = new ArrayList<String>();
+            List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
             //lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
             //lore.add(ChatColor.BLUE + "Buy it now price: " + this.buyNow);
@@ -140,37 +139,35 @@ public class Auction {
 
         // Check banned items:
         List<String> bannedItems = AuctionConfig.getStringList("banned-items", this.scope);
-        for(int i = 0; i < bannedItems.size(); i++) {
-            if(Items.isSameItem(typeStack, bannedItems.get(i))) {
+        for(String bannedItem : bannedItems) {
+            if(Items.isSameItem(typeStack, bannedItem)) {
                 this.messageManager.sendPlayerMessage("auction-fail-banned", this.ownerUUID, this);
                 return false;
             }
         }
 
         Map<String, String> taxedItems = AuctionConfig.getStringStringMap("taxed-items", this.scope);
-        if(taxedItems != null) {
-            for(Map.Entry<String, String> entry : taxedItems.entrySet()) {
-                if(Items.isSameItem(typeStack, entry.getKey())) {
-                    String itemTax = entry.getValue();
+        for(Map.Entry<String, String> entry : taxedItems.entrySet()) {
+            if(Items.isSameItem(typeStack, entry.getKey())) {
+                String itemTax = entry.getValue();
 
-                    if(itemTax.endsWith("a")) {
-                        try {
-                            preAuctionTax = Double.valueOf(itemTax.substring(0, itemTax.length() - 1));
-                        } catch(Exception e) {
-                            // Clearly this isn't a valid number, just forget about it.
-                            preAuctionTax = AuctionConfig.getDouble("auction-start-tax", this.scope);
-                        }
-                    } else if(!itemTax.endsWith("%")) {
-                        try {
-                            preAuctionTax = Double.valueOf(itemTax);
-                            preAuctionTax *= this.quantity;
-                        } catch(Exception e) {
-                            // Clearly this isn't a valid number, just forget about it.
-                            preAuctionTax = AuctionConfig.getDouble("auction-start-tax", this.scope);
-                        }
+                if(itemTax.endsWith("a")) {
+                    try {
+                        preAuctionTax = Double.parseDouble(itemTax.substring(0, itemTax.length() - 1));
+                    } catch(Exception e) {
+                        // Clearly this isn't a valid number, just forget about it.
+                        preAuctionTax = AuctionConfig.getDouble("auction-start-tax", this.scope);
                     }
-                    break;
+                } else if(!itemTax.endsWith("%")) {
+                    try {
+                        preAuctionTax = Double.parseDouble(itemTax);
+                        preAuctionTax *= this.quantity;
+                    } catch(Exception e) {
+                        // Clearly this isn't a valid number, just forget about it.
+                        preAuctionTax = AuctionConfig.getDouble("auction-start-tax", this.scope);
+                    }
                 }
+                break;
             }
         }
 
@@ -254,18 +251,10 @@ public class Auction {
      * @param fullBroadcast whether to send the message to everyone in the hosting AuctionScope
      */
     public void info(CommandSender sender, boolean fullBroadcast) {
-        List<String> messageKeys = new ArrayList<String>();
-        String playerName = null;
+        List<String> messageKeys = new ArrayList<>();
         UUID playerUUID = null;
         if(sender instanceof Player) {
-            playerName = sender.getName();
             playerUUID = ((Player) sender).getUniqueId();
-        }
-
-        ItemStack itemType = this.getLotType();
-        Map<Enchantment, Integer> enchantments = itemType.getEnchantments();
-        if(enchantments == null || enchantments.size() == 0) {
-            enchantments = Items.getStoredEnchantments(itemType);
         }
         if(!this.active) {
             if(sender instanceof Player) {
@@ -354,10 +343,10 @@ public class Auction {
      * Disposes of the remains of a terminated auction, purging the timer, refunding sealed bid losers and removing self from host scope.
      */
     private void dispose() {
-        this.plugin.getServer().getScheduler().cancelTask(countdownTimer);
+        this.plugin.getServer().getScheduler().cancelTask(this.countdownTimer);
         this.sealed = false;
-        for(int i = 0; i < this.sealedBids.size(); i++) {
-            this.sealedBids.get(i).cancelBid();
+        for(AuctionBid sealedBid : this.sealedBids) {
+            sealedBid.cancelBid();
         }
         this.scope.setActiveAuction(null);
     }
@@ -395,7 +384,6 @@ public class Auction {
         if(bidder == null) {
             return;
         }
-        String playerName = bidder.getName();
         UUID playerUUID = bidder.getUniqueId();
 
         if(AreaManager.isInArena(bidder)) {
@@ -484,8 +472,8 @@ public class Auction {
             return;
         }
 
-        AuctionBid winner = null;
-        AuctionBid loser = null;
+        AuctionBid winner;
+        AuctionBid loser;
 
         if(AuctionConfig.getBoolean("use-old-bid-logic", this.scope)) {
             if(bid.getMaxBidAmount() > this.currentBid.getMaxBidAmount()) {
@@ -498,15 +486,10 @@ public class Auction {
             winner.raiseBid(Math.max(winner.getBidAmount(), Math.min(winner.getMaxBidAmount(), loser.getBidAmount() + this.minBidIncrement)));
         } else {
             // If you follow what this does, congratulations.
-            long baseBid = 0;
-            if(bid.getBidAmount() >= this.currentBid.getBidAmount() + this.minBidIncrement) {
-                baseBid = bid.getBidAmount();
-            } else {
-                baseBid = this.currentBid.getBidAmount() + this.minBidIncrement;
-            }
+            long baseBid = Math.max(bid.getBidAmount(), this.currentBid.getBidAmount() + this.minBidIncrement);
 
-            Integer prevSteps = (int) Math.floor((double) (this.currentBid.getMaxBidAmount() - baseBid + this.minBidIncrement) / this.minBidIncrement / 2);
-            Integer newSteps = (int) Math.floor((double) (bid.getMaxBidAmount() - baseBid) / this.minBidIncrement / 2);
+            int prevSteps = (int) Math.floor((double) (this.currentBid.getMaxBidAmount() - baseBid + this.minBidIncrement) / this.minBidIncrement / 2);
+            int newSteps = (int) Math.floor((double) (bid.getMaxBidAmount() - baseBid) / this.minBidIncrement / 2);
 
             if(newSteps >= prevSteps) {
                 winner = bid;
@@ -598,7 +581,7 @@ public class Auction {
         }
 
         // see if antisnipe is enabled...
-        if(!this.sealed && AuctionConfig.getBoolean("anti-snipe", this.scope) == true && this.getRemainingTime() <= AuctionConfig.getInt("anti-snipe-prevention-seconds", this.scope)) {
+        if(!this.sealed && AuctionConfig.getBoolean("anti-snipe", this.scope) && this.getRemainingTime() <= AuctionConfig.getInt("anti-snipe-prevention-seconds", this.scope)) {
             this.addToRemainingTime(AuctionConfig.getInt("anti-snipe-prevention-seconds", this.scope));
             this.messageManager.broadcastAuctionMessage("anti-snipe-time-added", this);
         }
@@ -664,9 +647,9 @@ public class Auction {
         String[] lore = Items.getLore(heldItem);
         List<String> bannedLore = AuctionConfig.getStringList("banned-lore", scope);
         if(lore != null && bannedLore != null) {
-            for(int i = 0; i < bannedLore.size(); i++) {
-                for(int j = 0; j < lore.length; j++) {
-                    if(lore[j].toLowerCase().contains(bannedLore.get(i).toLowerCase())) {
+            for(String s : bannedLore) {
+                for(String value : lore) {
+                    if(value.toLowerCase().contains(s.toLowerCase())) {
                         this.messageManager.sendPlayerMessage("auction-fail-banned-lore", this.ownerUUID, this);
                         this.lot = null;
                         return false;

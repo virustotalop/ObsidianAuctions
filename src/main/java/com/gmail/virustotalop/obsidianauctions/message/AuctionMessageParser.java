@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class AuctionMessageParser {
 
@@ -44,8 +43,7 @@ public class AuctionMessageParser {
     public List<String> parseMessages(List<String> messageKeys, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) {
         List<String> messageList = new ArrayList<>();
 
-        for(int l = 0; l < messageKeys.size(); l++) {
-            String messageKey = messageKeys.get(l);
+        for(String messageKey : messageKeys) {
             if(messageKey == null) {
                 continue;
             }
@@ -53,7 +51,7 @@ public class AuctionMessageParser {
             List<String> partialMessageList = AuctionConfig.getLanguageStringList(messageKey, auctionScope);
 
             if(partialMessageList == null || partialMessageList.size() == 0) {
-                String originalMessage = null;
+                String originalMessage;
                 originalMessage = AuctionConfig.getLanguageString(messageKey, auctionScope);
 
                 if(originalMessage == null || originalMessage.length() == 0) {
@@ -77,8 +75,7 @@ public class AuctionMessageParser {
         }
 
         // Search to see if auction info is required:
-        for(int l = 0; l < messageList.size(); l++) {
-            String message = messageList.get(l);
+        for(String message : messageList) {
             if(message.length() > 0 && message.contains("%auction-")) {
                 if(auction != null) {
                     replacements.put("%auction-owner-name%", auction.getOwnerName()); //%A1
@@ -100,8 +97,7 @@ public class AuctionMessageParser {
         }
 
         // Search to see if auction bid info is required:
-        for(int l = 0; l < messageList.size(); l++) {
-            String message = messageList.get(l);
+        for(String message : messageList) {
             if(message.length() > 0 && (message.contains("%current-") || message.contains("%auction-bid"))) {
                 if(auction != null) {
                     AuctionBid currentBid = auction.getCurrentBid();
@@ -124,8 +120,7 @@ public class AuctionMessageParser {
         }
 
         // Search to see if auction lot info is required:
-        for(int l = 0; l < messageList.size(); l++) {
-            String message = messageList.get(l);
+        for(String message : messageList) {
             if(message.length() > 0 && message.contains("%item-")) {
                 if(auction != null) {
                     lot = auction.getLotType();
@@ -243,8 +238,7 @@ public class AuctionMessageParser {
             // Only one repeatable can be processed per line.
             if(message.contains("%repeatable")) {
                 // Mental note: I'm not caching these because there is no reason to use them more than once per message.
-                if(message.contains("%repeatable-enchantments%")) // Enchantments
-                {
+                if(message.contains("%repeatable-enchantments%")) { // Enchantments
                     if(lot != null) {
                         // Stored enchantments and regular ones are treated identically.
                         Map<Enchantment, Integer> enchantments = lot.getEnchantments();
@@ -258,9 +252,7 @@ public class AuctionMessageParser {
                         }
                         if(enchantments != null && enchantments.size() > 0) {
                             for(Map.Entry<Enchantment, Integer> enchantmentEntry : enchantments.entrySet()) {
-                                if(message.length() > 0) {
-                                    newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-enchantment%", Items.getEnchantmentName(enchantmentEntry)));
-                                }
+                                newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-enchantment%", Items.getEnchantmentName(enchantmentEntry)));
                             }
                         }
                     }
@@ -285,11 +277,11 @@ public class AuctionMessageParser {
                                 }
                             }
                             List<Color> colors = payload.getColors();
-                            for(int k = 0; k < colors.size(); k++) {
+                            for(Color value : colors) {
                                 if(!payloadAspects.isEmpty()) {
                                     payloadAspects += payloadSeparator;
                                 }
-                                Color color = colors.get(k);
+                                Color color = value;
                                 String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
                                 String fireworkColor = AuctionConfig.getLanguageString("firework-colors." + colorRGB, auctionScope);
                                 if(fireworkColor == null) {
@@ -311,19 +303,15 @@ public class AuctionMessageParser {
                                 }
                                 payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-trail", auctionScope));
                             }
-                            if(message.length() > 0) {
-                                newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
-                            }
+                            newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
                         }
                         continue;
                     }
                 } else if(message.contains("%repeatable-lore%")) {
                     if(auction != null) {
                         String[] lore = Items.getLore(lot);
-                        for(int j = 0; j < lore.length; j++) {
-                            if(message.length() > 0) {
-                                newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-lore%", lore[j]));
-                            }
+                        for(String s : lore) {
+                            newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-lore%", s));
                         }
                     }
                 }
@@ -333,11 +321,9 @@ public class AuctionMessageParser {
                 }
             }
         }
-        if(newMessageList != null) {
-            if(ObsidianAuctions.placeHolderApiEnabled) {
-                for(int i = 0; i < newMessageList.size(); i++) {
-                    newMessageList.set(i, PlaceholderAPIUtil.setPlaceHolders(player, newMessageList.get(i)));
-                }
+        if(ObsidianAuctions.placeHolderApiEnabled) {
+            for(int i = 0; i < newMessageList.size(); i++) {
+                newMessageList.set(i, PlaceholderAPIUtil.setPlaceHolders(player, newMessageList.get(i)));
             }
         }
         return newMessageList;
@@ -350,8 +336,7 @@ public class AuctionMessageParser {
         boolean not = false;
         String inner = "";
         boolean copy = true;
-        for(int i = 0; i < chars.length; i++) {
-            char ch = chars[i];
+        for(char ch : chars) {
             if(ch == '{' || ch == '}') { //Looking for a pattern
                 if(open && ch == '}') {
                     open = false;

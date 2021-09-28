@@ -222,8 +222,8 @@ public class AuctionLot implements Serializable {
         this.lotType = lotType.getType();
         this.lotDurability = lotType.getDurability();
         this.sourceStackQuantity = lotType.getAmount();
-        this.lotEnchantments = new HashMap<Integer, Integer>();
-        this.storedEnchantments = new HashMap<Integer, Integer>();
+        this.lotEnchantments = new HashMap<>();
+        this.storedEnchantments = new HashMap<>();
         Map<Enchantment, Integer> enchantmentList = lotType.getEnchantments();
 
         for(Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {

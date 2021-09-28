@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Functions {
 
     public static String formatTime(int seconds, AuctionScope auctionScope) {
-        String returnTime = "-";
+        String returnTime;
         if(seconds >= 60) {
             returnTime = AuctionConfig.getLanguageString("time-format-minsec", auctionScope);
             returnTime = returnTime.replace("%s", Integer.toString(seconds % 60));

@@ -38,7 +38,7 @@ public class AuctionMessageManager extends MessageManager {
 
     @Override
     public void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, Auction auction) {
-        CommandSender recipient = null;
+        CommandSender recipient;
         if(playerUUID == null) {
             recipient = Bukkit.getConsoleSender();
         } else {
@@ -63,7 +63,7 @@ public class AuctionMessageManager extends MessageManager {
 
     @Override
     public void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, AuctionScope auctionScope) {
-        CommandSender recipient = null;
+        CommandSender recipient;
         if(playerUUID == null) {
             recipient = Bukkit.getConsoleSender();
         } else {
@@ -135,7 +135,7 @@ public class AuctionMessageManager extends MessageManager {
             broadcastMessage(messages, auctionScope);
         } else if(player != null) {
             for(String message : messages) {
-                this.adventure.player(player).sendMessage(MiniMessage.get().parse(message));
+                this.adventure.player(player).sendMessage(MiniMessage.miniMessage().parse(message));
                 ObsidianAuctions.get().log(player.getName(), this.stripTags(message), auctionScope);
             }
         } else if(sender != null) {
@@ -153,7 +153,7 @@ public class AuctionMessageManager extends MessageManager {
     }
 
     /**
-     * Broadcast a message to everyone in an auctionscope.
+     * Broadcast a message to everyone in an auctionScope.
      *
      * @param messages     messages to send
      * @param auctionScope scope to send it to
@@ -169,10 +169,10 @@ public class AuctionMessageManager extends MessageManager {
 
             for(String message : messages) {
                 if(ObsidianAuctions.enableChatMessages) {
-                    this.adventure.player(player).sendMessage(MiniMessage.get().parse(message));
+                    this.adventure.player(player).sendMessage(MiniMessage.miniMessage().parse(message));
                 }
                 if(ObsidianAuctions.enableActionbarMessages) {
-                    this.adventure.player(player).sendActionBar(MiniMessage.get().parse(message));
+                    this.adventure.player(player).sendActionBar(MiniMessage.miniMessage().parse(message));
                     this.actionBar.addPlayer(player, message);
                 }
             }
@@ -185,6 +185,6 @@ public class AuctionMessageManager extends MessageManager {
     }
 
     private String stripTags(String message) {
-        return MiniMessage.get().stripTokens(message);
+        return MiniMessage.miniMessage().stripTokens(message);
     }
 }
