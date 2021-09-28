@@ -35,7 +35,7 @@ public class LanguageItem {
         }
         if(this.compound != null) {
             NBTCompound stackComp = new NBTCompound(itemStack);
-            return this.compound.fuzzyMatches(stackComp);
+            return NBTCompound.fuzzyMatches(this.compound, stackComp);
         }
         return true;
     }

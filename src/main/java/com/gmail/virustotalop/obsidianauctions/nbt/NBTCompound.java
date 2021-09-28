@@ -42,10 +42,28 @@ public class NBTCompound {
         return compound.getClass().equals(compoundClass);
     }
 
+    public static boolean fuzzyMatches(NBTCompound compare, NBTCompound compound) {
+        for(String key : compare.getKeys()) {
+            Object get = compare.get(key);
+            if(get == null) {
+                return false;
+            } else if(isCompound(get)) {
+                Object compareCompound = compare.get(key);
+                if(!isCompound(compareCompound)) {
+                    return false;
+                }
+                return fuzzyMatches(new NBTCompound(compareCompound), new NBTCompound(get));
+            } else if(!compare.get(key).equals(compound.get(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private final Object inner;
 
     public NBTCompound(Object compound) {
-        this.inner = compound;
+        this.inner = isCompound(compound) ? compound : null;
     }
 
     public NBTCompound(String json) throws Exception {
@@ -56,7 +74,7 @@ public class NBTCompound {
         this.inner = this.retrieveNBTCompoundFromItem(itemStack);
     }
 
-    public Object getInner() {
+    public Object getNMSCompound() {
         return this.inner;
     }
 
@@ -85,19 +103,7 @@ public class NBTCompound {
         return null;
     }
 
-    public boolean fuzzyMatches(NBTCompound compound) {
-        for(String key : this.getKeys()) {
-            Object get = this.get(key);
-            if(get == null) {
-                return false;
-            } else if(isCompound(get)) {
-                return fuzzyMatches(new NBTCompound(get));
-            } else if(!this.get(key).equals(compound.get(key))) {
-                return false;
-            }
-        }
-        return true;
-    }
+
 
     private Object parseNBTCompoundFromJson(String json) throws Exception {
         return parse.invoke(null, json);
