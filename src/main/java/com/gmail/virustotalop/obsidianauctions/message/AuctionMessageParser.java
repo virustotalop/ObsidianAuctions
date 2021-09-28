@@ -8,6 +8,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
+import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
 import com.gmail.virustotalop.obsidianauctions.util.PlaceholderAPIUtil;
 import com.google.inject.Inject;
 import org.bukkit.ChatColor;
@@ -141,7 +142,7 @@ public class AuctionMessageParser {
                         }
                         if(lot.getType().getMaxDurability() > 0) {
                             DecimalFormat decimalFormat = new DecimalFormat("#%");
-                            replacements.put("%item-durability-left%", decimalFormat.format((1 - ((double) lot.getDurability() / (double) lot.getType().getMaxDurability())))); //%L6
+                            replacements.put("%item-durability-left%", decimalFormat.format((1 - ((double) LegacyUtil.getDurability(lot) / (double) lot.getType().getMaxDurability())))); //%L6
                         }
                         Map<Enchantment, Integer> enchantments = lot.getEnchantments();
                         if(enchantments == null || enchantments.size() == 0) {
@@ -200,7 +201,7 @@ public class AuctionMessageParser {
                 conditionals.put("has-book-title", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty()); //9
                 conditionals.put("has-book-author", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty()); //0
                 conditionals.put("item-has-lore", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0); //A
-                conditionals.put("has-durability", lot != null && lot.getType().getMaxDurability() > 0 && lot.getDurability() > 0); //B
+                conditionals.put("has-durability", lot != null && lot.getType().getMaxDurability() > 0 && LegacyUtil.getDurability(lot) > 0); //B
                 conditionals.put("is-firework", lot != null && (lotTypeStr.equals("FIREWORK")
                         || lotTypeStr.equals("FIREWORK_CHARGE") || lotTypeStr.equals("FIREWORK_ROCKET"))); //C
                 conditionals.put("is-buynow", auction != null && auction.getBuyNow() != 0); //D

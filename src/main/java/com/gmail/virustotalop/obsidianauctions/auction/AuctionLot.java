@@ -2,6 +2,7 @@ package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
+import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -220,7 +221,7 @@ public class AuctionLot implements Serializable {
 
         // The rest of this remains for backward compatibility.
         this.lotType = lotType.getType();
-        this.lotDurability = lotType.getDurability();
+        this.lotDurability = LegacyUtil.getDurability(lotType);
         this.sourceStackQuantity = lotType.getAmount();
         this.lotEnchantments = new HashMap<>();
         this.storedEnchantments = new HashMap<>();

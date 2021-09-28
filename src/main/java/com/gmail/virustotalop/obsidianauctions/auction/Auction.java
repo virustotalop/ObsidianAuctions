@@ -606,7 +606,7 @@ public class Auction {
 
         ItemStack itemType = this.lot.getTypeStack();
 
-        if(!AuctionConfig.getBoolean("allow-damaged-items", scope) && itemType.getType().getMaxDurability() > 0 && itemType.getDurability() > 0) {
+        if(!AuctionConfig.getBoolean("allow-damaged-items", scope) && itemType.getType().getMaxDurability() > 0 && LegacyUtil.getDurability(itemType) > 0) {
             this.messageManager.sendPlayerMessage("auction-fail-damaged-item", this.ownerUUID, this);
             this.lot = null;
             return false;
