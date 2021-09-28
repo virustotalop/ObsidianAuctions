@@ -32,7 +32,7 @@ public class Auction {
 
     protected ObsidianAuctions plugin;
     private final String[] args;
-    private final UUID ownerUUID;
+    private UUID ownerUUID;
     private String ownerName;
     private final AuctionScope scope;
 
@@ -307,6 +307,7 @@ public class Auction {
     public void confiscate(Player authority) {
         Bukkit.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
         this.ownerName = authority.getName();
+        this.ownerUUID = authority.getUniqueId();
         this.messageManager.broadcastAuctionMessage("confiscate-success", this);
         if(this.lot != null) {
             this.lot.winLot(authority.getUniqueId(), authority.getName());
