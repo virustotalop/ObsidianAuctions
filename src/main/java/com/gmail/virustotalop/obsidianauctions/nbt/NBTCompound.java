@@ -44,7 +44,7 @@ public class NBTCompound {
 
     public static boolean fuzzyMatches(NBTCompound compare, NBTCompound compound) {
         for(String key : compare.getKeys()) {
-            Object get = compare.get(key);
+            Object get = compound.get(key);
             if(get == null) {
                 return false;
             } else if(isCompound(get)) {
