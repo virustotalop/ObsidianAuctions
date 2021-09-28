@@ -11,6 +11,8 @@ public class NBTCompound {
 
     private static final String version;
 
+    private static Class<?> compoundClass;
+
     private static Method parse;
     private static Method getKeys;
     private static Method get;
@@ -20,20 +22,31 @@ public class NBTCompound {
         try {
             Class<?> parser = Class.forName("net.minecraft.server." + version + ".MojangsonParser");
             parse = parser.getDeclaredMethod("parse", String.class);
-            Class<?> compound = Class.forName("net.minecraft.server." + version + ".NBTTagCompound");
-            for(Method method : compound.getDeclaredMethods()) {
+            compoundClass = Class.forName("net.minecraft.server." + version + ".NBTTagCompound");
+            for(Method method : compoundClass.getDeclaredMethods()) {
                 if(method.getReturnType().equals(Set.class)) {
                     getKeys = method;
                     break;
                 }
             }
-            get = compound.getDeclaredMethod("get", String.class);
+            get = compoundClass.getDeclaredMethod("get", String.class);
         } catch(ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
         }
     }
 
+    public static boolean isCompound(Object compound) {
+        if(compound == null) {
+            return false;
+        }
+        return compound.getClass().equals(compoundClass);
+    }
+
     private final Object inner;
+
+    public NBTCompound(Object compound) {
+        this.inner = compound;
+    }
 
     public NBTCompound(String json) throws Exception {
         this.inner = this.parseNBTCompoundFromJson(json);
@@ -62,11 +75,28 @@ public class NBTCompound {
 
     public Object get(String key) {
         try {
+            if(!this.hasKey(key)) {
+                return null;
+            }
             return get.invoke(this.inner, key);
         } catch(IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean fuzzyMatches(NBTCompound compound) {
+        for(String key : this.getKeys()) {
+            Object get = this.get(key);
+            if(get == null) {
+                return false;
+            } else if(isCompound(get)) {
+                return fuzzyMatches(new NBTCompound(get));
+            } else if(!this.get(key).equals(compound.get(key))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Object parseNBTCompoundFromJson(String json) throws Exception {

@@ -35,15 +35,7 @@ public class LanguageItem {
         }
         if(this.compound != null) {
             NBTCompound stackComp = new NBTCompound(itemStack);
-            for(String key : this.compound.getKeys()) {
-                Object tag = stackComp.get(key);
-                if(tag == null) {
-                    return false;
-                }
-                if(!tag.equals(this.compound.get(key))) {
-                    return false;
-                }
-            }
+            return this.compound.fuzzyMatches(stackComp);
         }
         return true;
     }
