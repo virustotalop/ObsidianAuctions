@@ -195,7 +195,7 @@ auction-info:
   - '{!is-broadcast}{end}{is-firework}{end}Firework Flight
   Duration: <green>%item-firework-power%'
   - '{!is-broadcast}{end}{is-firework}{end}Firework payload:
-  <green>{repeatable-firework-payload}'
+  <green>%repeatable-firework-payload%'
   - '{!is-broadcast}{end}{is-buynow}{end}Buy now for <red>%auction-buy-now%
   <blue>with <green>/bid buy<blue>.'
   - '{!is-broadcast}{end}{not-sealed}{end}The
