@@ -1,0 +1,28 @@
+name: Bug Report
+description: Report incorrect or buggy behavior
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before making a report please ensure you were running the latest stable build and have tried the latest development build.
+  - type: textarea
+    attributes:
+      label: Current Behavior
+      description: What is happening?
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: What is expected to happen?
+  - type: textarea
+    attributes:
+      label: Steps to reproduce to the bug
+      description: A description of the problem, a screenshot, video etc that can be used to understand the issue.
+  - type: checkboxes
+    attributes: 
+      label: Agreements
+      description: Please take the time to make sure you have followed these steps.
+      options:
+        - label: I have tried the latest stable build and the latest dev build
+          required: true
+        - label: I am running a supported Minecraft version 1.12.x - 1.17.x
+          required: true
