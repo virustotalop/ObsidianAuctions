@@ -59,6 +59,7 @@ auctionscope-change-check-interval: 20
 
 banned-items:
   - BEDROCK
+  - BARRIER
 
 taxed-items:
   'AIR': 100%
