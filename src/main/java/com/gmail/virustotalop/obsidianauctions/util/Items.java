@@ -30,6 +30,41 @@ public class Items {
     private static Map<Integer, String> enchantmentNames = new HashMap<>();
     private static Map<Integer, String> enchantmentLevels = new HashMap<>();
 
+    static {
+        enchantmentNames.put(0, "Protection");
+        enchantmentNames.put(1, "Fire Protection");
+        enchantmentNames.put(2, "Feather Falling");
+        enchantmentNames.put(3, "Blast Protection");
+        enchantmentNames.put(4, "Projectile Protection");
+        enchantmentNames.put(5, "Respiration");
+        enchantmentNames.put(6, "Aqua Afinity");
+        enchantmentNames.put(8, "Depth Strider");
+        enchantmentNames.put(16, "Sharpness");
+        enchantmentNames.put(17, "Smite");
+        enchantmentNames.put(18, "Bane of Arthropods");
+        enchantmentNames.put(19, "Knockback");
+        enchantmentNames.put(20, "Fire Aspect");
+        enchantmentNames.put(21, "Looting");
+        enchantmentNames.put(32, "Efficiency");
+        enchantmentNames.put(33, "Silk Touch");
+        enchantmentNames.put(34, "Unbreaking");
+        enchantmentNames.put(35, "Fortune");
+        enchantmentNames.put(48, "Power");
+        enchantmentNames.put(49, "Punch");
+        enchantmentNames.put(50, "Flame");
+        enchantmentNames.put(51, "Infinity");
+        enchantmentNames.put(61, "Luck of the Sea");
+        enchantmentNames.put(62, "Lure");
+        enchantmentNames.put(70, "Mending");
+
+        enchantmentLevels.put(0, "");
+        enchantmentLevels.put(1, "I");
+        enchantmentLevels.put(2, "II");
+        enchantmentLevels.put(3, "III");
+        enchantmentLevels.put(4, "IV");
+        enchantmentLevels.put(5, "V");
+    }
+
     private static int firstPartial(ItemStack item, ItemStack[] inventory) {
         if(item == null) {
             return -1;
@@ -598,47 +633,10 @@ public class Items {
         int enchantmentId = enchantment.getKey().getId();
         int enchantmentLevel = enchantment.getValue();
         String enchantmentName = null;
-        if(enchantmentNames.size() == 0) {
-            enchantmentNames = new HashMap<>();
-            enchantmentNames.put(0, "Protection");
-            enchantmentNames.put(1, "Fire Protection");
-            enchantmentNames.put(2, "Feather Falling");
-            enchantmentNames.put(3, "Blast Protection");
-            enchantmentNames.put(4, "Projectile Protection");
-            enchantmentNames.put(5, "Respiration");
-            enchantmentNames.put(6, "Aqua Afinity");
-            enchantmentNames.put(8, "Depth Strider");
-            enchantmentNames.put(16, "Sharpness");
-            enchantmentNames.put(17, "Smite");
-            enchantmentNames.put(18, "Bane of Arthropods");
-            enchantmentNames.put(19, "Knockback");
-            enchantmentNames.put(20, "Fire Aspect");
-            enchantmentNames.put(21, "Looting");
-            enchantmentNames.put(32, "Efficiency");
-            enchantmentNames.put(33, "Silk Touch");
-            enchantmentNames.put(34, "Unbreaking");
-            enchantmentNames.put(35, "Fortune");
-            enchantmentNames.put(48, "Power");
-            enchantmentNames.put(49, "Punch");
-            enchantmentNames.put(50, "Flame");
-            enchantmentNames.put(51, "Infinity");
-            enchantmentNames.put(61, "Luck of the Sea");
-            enchantmentNames.put(62, "Lure");
-            enchantmentNames.put(70, "Mending");
-        }
         if(enchantmentNames.get(enchantmentId) != null) {
             enchantmentName = enchantmentNames.get(enchantmentId) + " ";
         } else {
             enchantmentName = "UNKNOWN ";
-        }
-        if(enchantmentLevels.size() == 0) {
-            enchantmentLevels = new HashMap<Integer, String>();
-            enchantmentLevels.put(0, "");
-            enchantmentLevels.put(1, "I");
-            enchantmentLevels.put(2, "II");
-            enchantmentLevels.put(3, "III");
-            enchantmentLevels.put(4, "IV");
-            enchantmentLevels.put(5, "V");
         }
         if(enchantmentLevels.get(enchantmentLevel) != null) {
             enchantmentName += enchantmentLevels.get(enchantmentLevel) + " ";
@@ -647,6 +645,4 @@ public class Items {
         }
         return enchantmentName;
     }
-    //}
-
 }
