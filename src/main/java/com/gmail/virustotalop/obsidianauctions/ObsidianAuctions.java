@@ -78,7 +78,7 @@ public class ObsidianAuctions extends JavaPlugin {
     // Config files info.
     public static Configuration config = null;
     public static Configuration textConfig = null;
-    private static File dataFolder;
+    private File dataFolder;
     private static int queueTimer;
 
 
@@ -134,7 +134,7 @@ public class ObsidianAuctions extends JavaPlugin {
      * @param filename name of file
      */
     private void saveObject(Object object, String filename) {
-        File saveFile = new File(dataFolder, filename);
+        File saveFile = new File(this.dataFolder, filename);
         try {
             if(saveFile.exists()) {
                 saveFile.delete();
@@ -193,12 +193,12 @@ public class ObsidianAuctions extends JavaPlugin {
             return;
         }
         instance = this;
-        dataFolder = getDataFolder();
-        if(!dataFolder.exists()) {
-            dataFolder.mkdir();
+        this.dataFolder = this.getDataFolder();
+        if(!this.dataFolder.exists()) {
+            this.dataFolder.mkdir();
         }
 
-        this.auctionLog = new File(dataFolder, "auctions.log");
+        this.auctionLog = new File(this.dataFolder, "auctions.log");
         if(!this.auctionLog.exists()) {
             try {
                 this.auctionLog.createNewFile();
@@ -210,7 +210,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.saveResource("config.yml", false);
         this.saveResource("language.yml", false);
 
-        File languagesDirectory = new File(dataFolder, "item_languages");
+        File languagesDirectory = new File(this.dataFolder, "item_languages");
         if(!languagesDirectory.exists()) {
             languagesDirectory.mkdirs();
         }
@@ -270,9 +270,9 @@ public class ObsidianAuctions extends JavaPlugin {
             }, playerScopeCheckInterval, playerScopeCheckInterval);
         }
 
-        File orphanLotsFile = new File(this.getDataFolder(), "orphanLots.ser");
-        File voluntarilyDisabledUsersFile = new File(this.getDataFolder(), "voluntarilyDisabledUsers.ser");
-        File suspendedUserFile = new File(this.getDataFolder(), "suspendedUsers.ser");
+        File orphanLotsFile = new File(this.dataFolder, "orphanLots.ser");
+        File voluntarilyDisabledUsersFile = new File(this.dataFolder, "voluntarilyDisabledUsers.ser");
+        File suspendedUserFile = new File(this.dataFolder, "suspendedUsers.ser");
         orphanLots = FileLoadUtil.loadListAuctionLot(orphanLotsFile);
         this.voluntarilyDisabledUsers = FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
         this.suspendedUsers = FileLoadUtil.loadUUIDSet(suspendedUserFile);
@@ -299,7 +299,7 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     private Injector inject(String language) {
-        File itemLanguagesFolder = new File(dataFolder, "item_languages");
+        File itemLanguagesFolder = new File(this.dataFolder, "item_languages");
         File itemConfig = new File(itemLanguagesFolder, language + ".yml");
         Configuration i18nItemConfig = Configuration.load(itemConfig);
 
@@ -320,9 +320,9 @@ public class ObsidianAuctions extends JavaPlugin {
      * Loads config.yml and language.yml configuration files.
      */
     public void loadConfig() {
-        File configFile = new File(dataFolder, "config.yml");
+        File configFile = new File(this.dataFolder, "config.yml");
 
-        File textConfigFile = new File(dataFolder, "language.yml");
+        File textConfigFile = new File(this.dataFolder, "language.yml");
 
 
         config = Configuration.load(configFile);
@@ -385,7 +385,7 @@ public class ObsidianAuctions extends JavaPlugin {
         textConfig.save();*/
 
         // Build auction scopes.
-        AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), dataFolder);
+        AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), this.dataFolder);
 
         //Gui queue inventory name
         ObsidianAuctions.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
