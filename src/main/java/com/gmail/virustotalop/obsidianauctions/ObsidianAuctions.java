@@ -18,7 +18,7 @@ import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
-import com.gmail.virustotalop.obsidianauctions.util.FileLoadUtil;
+import com.gmail.virustotalop.obsidianauctions.util.FileUtil;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -33,15 +33,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -122,34 +117,7 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     public void saveOrphanLot(AuctionLot auctionLot) {
         this.orphanLots.add(auctionLot);
-        saveObject(this.orphanLots, "orphanLots.ser");
-    }
-
-    /**
-     * Saves an object to a file.
-     *
-     * @param object   object to save
-     * @param filename name of file
-     */
-    private void saveObject(Object object, String filename) {
-        File saveFile = new File(this.dataFolder, filename);
-        try {
-            if(saveFile.exists()) {
-                saveFile.delete();
-            }
-            FileOutputStream file = new FileOutputStream(saveFile.getAbsolutePath());
-            OutputStream buffer = new BufferedOutputStream(file);
-            ObjectOutput output = new ObjectOutputStream(buffer);
-            try {
-                output.writeObject(object);
-            } finally {
-                output.close();
-                buffer.close(); //make sure these are closed
-                file.close(); //make sure these are closed
-            }
-        } catch(IOException ex) {
-            ex.printStackTrace();
-        }
+        FileUtil.save(this.orphanLots, "orphanLots.ser");
     }
 
     /**
@@ -168,7 +136,7 @@ public class ObsidianAuctions extends JavaPlugin {
                     it.remove();
                 }
             }
-            saveObject(this.orphanLots, "orphanLots.ser");
+            FileUtil.save(this.orphanLots, "orphanLots.ser");
         }
     }
 
@@ -265,12 +233,9 @@ public class ObsidianAuctions extends JavaPlugin {
             }, playerScopeCheckInterval, playerScopeCheckInterval);
         }
 
-        File orphanLotsFile = new File(this.dataFolder, "orphanLots.ser");
-        File voluntarilyDisabledUsersFile = new File(this.dataFolder, "voluntarilyDisabledUsers.ser");
-        File suspendedUserFile = new File(this.dataFolder, "suspendedUsers.ser");
-        this.orphanLots = FileLoadUtil.loadListAuctionLot(orphanLotsFile);
-        this.voluntarilyDisabledUsers = FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
-        this.suspendedUsers = FileLoadUtil.loadUUIDSet(suspendedUserFile);
+        this.orphanLots = FileUtil.load("orphanLots.ser", new ArrayList<>());
+        this.voluntarilyDisabledUsers = FileUtil.load("voluntarilyDisabledUsers.ser", new HashSet<>());
+        this.suspendedUsers = FileUtil.load("suspendedUsers.ser", new HashSet<>());
 
         this.commandManager = this.createCommandManager(injector);
         this.commandParser = new AnnotationParser(this.commandManager,
@@ -517,7 +482,7 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     public void saveVoluntarilyDisabled() {
-        this.saveObject(this.voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
+        FileUtil.save(this.voluntarilyDisabledUsers, "voluntarilyDisabledUsers.ser");
     }
 
     public boolean isSuspendedUser(UUID uuid) {
@@ -533,7 +498,7 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     public void saveSuspendedUsers() {
-        this.saveObject(this.suspendedUsers, "suspendedUsers.ser");
+        FileUtil.save(this.suspendedUsers, "suspendedUsers.ser");
     }
 
     public Map<UUID, String> getPlayerScopeCache() {
