@@ -19,6 +19,7 @@ import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.FileUtil;
+import com.gmail.virustotalop.obsidianauctions.util.InjectUtil;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -247,20 +248,9 @@ public class ObsidianAuctions extends JavaPlugin {
         scheduler.runTaskTimerAsynchronously(this, this::writeCurrentLog, 20, 20);
     }
 
-    private <T> Collection<T> collectInstances(Class<T> superClazz, Injector injector) {
-        Collection<T> bindings = new ArrayList<>();
-        injector.getAllBindings().values().forEach(binding -> {
-            Class<?> bindingClazz = binding.getKey().getTypeLiteral().getRawType();
-            if(superClazz.isAssignableFrom(bindingClazz)) {
-                bindings.add((T) binding.getProvider().get());
-            }
-        });
-        return bindings;
-    }
-
-    private Injector inject(String language) {
+    private Injector inject(String itemLanguage) {
         File itemLanguagesFolder = new File(this.dataFolder, "item_languages");
-        File itemConfig = new File(itemLanguagesFolder, language + ".yml");
+        File itemConfig = new File(itemLanguagesFolder, itemLanguage + ".yml");
         Configuration i18nItemConfig = Configuration.load(itemConfig);
 
         AuctionModule module = new AuctionModule(this, this.adventure, i18nItemConfig);
@@ -271,7 +261,7 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     private void registerListeners(Injector injector) {
-        this.collectInstances(Listener.class, injector).forEach(listener -> {
+        InjectUtil.collect(Listener.class, injector).forEach(listener -> {
             this.getServer().getPluginManager().registerEvents(listener, this);
         });
     }
