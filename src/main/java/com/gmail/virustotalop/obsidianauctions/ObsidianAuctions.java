@@ -79,8 +79,6 @@ public class ObsidianAuctions extends JavaPlugin {
     public static Configuration config = null;
     public static Configuration textConfig = null;
     private File dataFolder;
-    private static int queueTimer;
-
 
     private static int playerScopeCheckTimer;
     private static final Map<UUID, String> playerScopeCache = new HashMap<>();
@@ -255,10 +253,7 @@ public class ObsidianAuctions extends JavaPlugin {
         //Load in inventory click listener
 
         BukkitScheduler scheduler = this.getServer().getScheduler();
-        if(queueTimer > 0) {
-            scheduler.cancelTask(queueTimer);
-        }
-        queueTimer = scheduler.scheduleSyncRepeatingTask(this, () -> AuctionScope.checkAuctionQueue(), 20L, 20L);
+        scheduler.scheduleSyncRepeatingTask(this, () -> AuctionScope.checkAuctionQueue(), 20L, 20L);
 
         long playerScopeCheckInterval = config.getLong("auctionscope-change-check-interval");
         if(playerScopeCheckTimer > 0) scheduler.cancelTask(playerScopeCheckTimer);
@@ -413,7 +408,6 @@ public class ObsidianAuctions extends JavaPlugin {
     public void onDisable() {
         this.writeCurrentLog();
         AuctionScope.cancelAllAuctions();
-        this.getServer().getScheduler().cancelTask(queueTimer);
         instance = null;
         this.logToBukkit("plugin-disabled", Level.INFO);
         this.auctionLog = null;
