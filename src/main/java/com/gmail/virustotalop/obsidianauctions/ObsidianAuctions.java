@@ -83,7 +83,7 @@ public class ObsidianAuctions extends JavaPlugin {
     private static int playerScopeCheckTimer;
     private static final Map<UUID, String> playerScopeCache = new HashMap<>();
 
-    private static List<AuctionLot> orphanLots = new ArrayList<>();
+    private List<AuctionLot> orphanLots = new ArrayList<>();
     private Collection<UUID> voluntarilyDisabledUsers = new HashSet<>();
     private Collection<UUID> suspendedUsers = new HashSet<>();
 
@@ -121,8 +121,8 @@ public class ObsidianAuctions extends JavaPlugin {
      * @param auctionLot AuctionLot to save.
      */
     public void saveOrphanLot(AuctionLot auctionLot) {
-        ObsidianAuctions.orphanLots.add(auctionLot);
-        saveObject(ObsidianAuctions.orphanLots, "orphanLots.ser");
+        this.orphanLots.add(auctionLot);
+        saveObject(this.orphanLots, "orphanLots.ser");
     }
 
     /**
@@ -159,16 +159,16 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     // Eliminate orphan lots (i.e. try to give the items to a player again).
     public void killOrphan(Player player) {
-        if(orphanLots != null && orphanLots.size() > 0) {
-            Iterator<AuctionLot> iter = orphanLots.iterator();
-            while(iter.hasNext()) {
-                AuctionLot lot = iter.next();
+        if(this.orphanLots != null && this.orphanLots.size() > 0) {
+            Iterator<AuctionLot> it = this.orphanLots.iterator();
+            while(it.hasNext()) {
+                AuctionLot lot = it.next();
                 if(lot.getOwner().equalsIgnoreCase(player.getName())) {
                     lot.cancelLot();
-                    iter.remove();
+                    it.remove();
                 }
             }
-            saveObject(orphanLots, "orphanLots.ser");
+            saveObject(this.orphanLots, "orphanLots.ser");
         }
     }
 
@@ -268,7 +268,7 @@ public class ObsidianAuctions extends JavaPlugin {
         File orphanLotsFile = new File(this.dataFolder, "orphanLots.ser");
         File voluntarilyDisabledUsersFile = new File(this.dataFolder, "voluntarilyDisabledUsers.ser");
         File suspendedUserFile = new File(this.dataFolder, "suspendedUsers.ser");
-        orphanLots = FileLoadUtil.loadListAuctionLot(orphanLotsFile);
+        this.orphanLots = FileLoadUtil.loadListAuctionLot(orphanLotsFile);
         this.voluntarilyDisabledUsers = FileLoadUtil.loadUUIDSet(voluntarilyDisabledUsersFile);
         this.suspendedUsers = FileLoadUtil.loadUUIDSet(suspendedUserFile);
 
