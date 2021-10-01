@@ -652,4 +652,23 @@ public class Items {
         }
         return enchantmentName;
     }
+
+    public static Boolean isPlayerHead(ItemStack lot) {
+        if(lot == null) {
+            return false;
+        }
+        String lotType = lot.getType().name();
+        return lotType.equals("PLAYER_HEAD") || (lotType.equals("SKULL_ITEM") && LegacyUtil.getDurability(lot) == 3);
+    }
+
+    public static String getPlayerHeadOwner(ItemStack lot) {
+        if(!isPlayerHead(lot)) {
+            return null;
+        }
+        SkullMeta itemMeta = (SkullMeta) lot.getItemMeta();
+        if(!itemMeta.hasOwner()) {
+            return "Unknown";
+        }
+        return itemMeta.getOwningPlayer().getName();
+    }
 }

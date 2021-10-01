@@ -216,3 +216,5 @@
 'MOB_SPAWNER<sep>{BlockEntityTag:{SpawnData:{id:"minecraft:zombie_horse"}}}': 'Zombie Horse Mob Spawner'
 'MOB_SPAWNER<sep>{BlockEntityTag:{SpawnData:{id:"minecraft:zombie_villager"}}}': 'Zombie Villager Mob Spawner'
 'MOB_SPAWNER<sep>{BlockEntityTag:{SpawnData:{id:"minecraft:zombie_pigman"}}}': 'Zombie Pigman Mob Spawner'
+'SKULL_ITEM<sep>3': '%item-player-head-owner%''s Player Head'
+'PLAYER_HEAD': '%item-player-head-owner%''s Player Head'

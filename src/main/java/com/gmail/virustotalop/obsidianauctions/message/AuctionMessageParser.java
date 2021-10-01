@@ -22,6 +22,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,7 @@ public class AuctionMessageParser {
 
     private List<String> parseMessageTokens(List<String> messageList, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) {
         List<String> newMessageList = new ArrayList<>();
-        Map<String, String> replacements = new HashMap<>();
+        Map<String, String> replacements = new LinkedHashMap<>();
         ItemStack lot = null;
 
         if(auction == null && auctionScope != null) {
@@ -138,6 +139,9 @@ public class AuctionMessageParser {
                             }
                             replacements.put("%item-firework-power%", String.valueOf(fireworkPower)); //%L3
                         }
+                        if(Items.isPlayerHead(lot)) {
+                            replacements.put("%item-player-head-owner%", Items.getPlayerHeadOwner(lot));
+                        }
                         if(Items.getBookAuthor(lot) != null) {
                             replacements.put("%item-book-author%", Items.getBookAuthor(lot)); //%L4
                         }
@@ -206,8 +210,8 @@ public class AuctionMessageParser {
                 conditionals.put("has-book-author", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty()); //0
                 conditionals.put("item-has-lore", lot != null && Items.getLore(lot) != null && Items.getLore(lot).length > 0); //A
                 conditionals.put("has-durability", lot != null && lot.getType().getMaxDurability() > 0 && LegacyUtil.getDurability(lot) > 0); //B
-                conditionals.put("is-firework", lot != null && (lotTypeStr.equals("FIREWORK")
-                        || lotTypeStr.equals("FIREWORK_CHARGE") || lotTypeStr.equals("FIREWORK_ROCKET"))); //C
+                conditionals.put("is-firework", lot != null && (lotTypeStr.equals("FIREWORK") || lotTypeStr.equals("FIREWORK_CHARGE") || lotTypeStr.equals("FIREWORK_ROCKET"))); //C
+                conditionals.put("is-player-head", Items.isPlayerHead(lot));
                 conditionals.put("is-buynow", auction != null && auction.getBuyNow() != 0); //D
                 conditionals.put("has-enchantments", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0))); //E
                 conditionals.put("allow-max-bids", AuctionConfig.getBoolean("allow-max-bids", auctionScope)); //F
