@@ -4,7 +4,7 @@ import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.I18nItemConfig;
 import com.gmail.virustotalop.obsidianauctions.nbt.NBTCompound;
-import com.gmail.virustotalop.obsidianauctions.util.MaterialUtil;
+import com.gmail.virustotalop.obsidianauctions.util.EnumUtil;
 import com.google.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -41,7 +41,7 @@ public class I18nTranslationFactory implements TranslationFactory {
         }
         ItemMeta itemMeta = itemStack.getItemMeta();
         if(!itemMeta.hasLocalizedName()) {
-            return MaterialUtil.formatName(type.name());
+            return EnumUtil.formatName(type.name());
         }
         return itemMeta.getLocalizedName();
     }

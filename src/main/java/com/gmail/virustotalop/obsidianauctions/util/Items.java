@@ -27,35 +27,32 @@ import java.util.Map.Entry;
 
 public class Items {
 
-    private static Map<Integer, String> enchantmentNames = new HashMap<>();
+    private static Map<Enchantment, String> enchantmentNames = new HashMap<>();
     private static Map<Integer, String> enchantmentLevels = new HashMap<>();
 
     static {
-        enchantmentNames.put(0, "Protection");
-        enchantmentNames.put(1, "Fire Protection");
-        enchantmentNames.put(2, "Feather Falling");
-        enchantmentNames.put(3, "Blast Protection");
-        enchantmentNames.put(4, "Projectile Protection");
-        enchantmentNames.put(5, "Respiration");
-        enchantmentNames.put(6, "Aqua Afinity");
-        enchantmentNames.put(8, "Depth Strider");
-        enchantmentNames.put(16, "Sharpness");
-        enchantmentNames.put(17, "Smite");
-        enchantmentNames.put(18, "Bane of Arthropods");
-        enchantmentNames.put(19, "Knockback");
-        enchantmentNames.put(20, "Fire Aspect");
-        enchantmentNames.put(21, "Looting");
-        enchantmentNames.put(32, "Efficiency");
-        enchantmentNames.put(33, "Silk Touch");
-        enchantmentNames.put(34, "Unbreaking");
-        enchantmentNames.put(35, "Fortune");
-        enchantmentNames.put(48, "Power");
-        enchantmentNames.put(49, "Punch");
-        enchantmentNames.put(50, "Flame");
-        enchantmentNames.put(51, "Infinity");
-        enchantmentNames.put(61, "Luck of the Sea");
-        enchantmentNames.put(62, "Lure");
-        enchantmentNames.put(70, "Mending");
+        registerEnchantment("PROTECTION_ENVIRONMENTAL", "Protection");
+        registerEnchantment("PROTECTION_FIRE", "Fire Protection");
+        registerEnchantment("PROTECTION_FALL", "Feather Falling");
+        registerEnchantment("PROTECTION_EXPLOSIONS", "Blast Protection");
+        registerEnchantment("PROTECTION_PROJECTILE", "Projectile Protection");
+        registerEnchantment("OXYGEN", "Respiration");
+        registerEnchantment("WATER_WORKER", "Aqua Afinity");
+        registerEnchantment("DEPTH_STRIDER", "Depth Strider");
+        registerEnchantment("BINDING_CURSE", "Curse of Bindings");
+        registerEnchantment("DAMAGE_ALL", "Sharpness");
+        registerEnchantment("DAMAGE_UNDEAD", "Smite");
+        registerEnchantment("DAMAGE_ARTHROPODS", "Bane of Arthropods");
+        registerEnchantment("LOOT_BONUS_MOBS", "Looting");
+        registerEnchantment("DIG_SPEED", "Efficiency");
+        registerEnchantment("DURABILITY", "Unbreaking");
+        registerEnchantment("LOOT_BONUS_BLOCKS", "Fortune");
+        registerEnchantment("ARROW_DAMAGE", "Power");
+        registerEnchantment("ARROW_KNOCKBACK", "Punch");
+        registerEnchantment("ARROW_FIRE", "Flame");
+        registerEnchantment("ARROW_INFINITE", "Infinity");
+        registerEnchantment("LUCK", "Luck of the Sea");
+        registerEnchantment("VANISHING_CURSE", "Curse of Vanishing");
 
         enchantmentLevels.put(0, "");
         enchantmentLevels.put(1, "I");
@@ -63,6 +60,15 @@ public class Items {
         enchantmentLevels.put(3, "III");
         enchantmentLevels.put(4, "IV");
         enchantmentLevels.put(5, "V");
+    }
+
+    private static boolean registerEnchantment(String enchantmentName, String alias) {
+        Enchantment enchantment = Enchantment.getByName(enchantmentName);
+        if(enchantment == null) {
+            return false;
+        }
+        enchantmentNames.put(enchantment, alias);
+        return true;
     }
 
     private static int firstPartial(ItemStack item, ItemStack[] inventory) {
@@ -606,7 +612,7 @@ public class Items {
         }
         ItemMeta itemMeta = itemStack.getItemMeta();
         if(!itemMeta.hasLocalizedName()) {
-            return MaterialUtil.formatName(itemStack.getType().name());
+            return EnumUtil.formatName(itemStack.getType().name());
         }
         return itemMeta.getLocalizedName();
         /*Class<?> craftItemStack = itemStack.getClass();
@@ -630,18 +636,18 @@ public class Items {
     }
 
     public static String getEnchantmentName(Entry<Enchantment, Integer> enchantment) {
-        int enchantmentId = enchantment.getKey().getId();
+        Enchantment enchantmentType = enchantment.getKey();
         int enchantmentLevel = enchantment.getValue();
-        String enchantmentName = null;
-        if(enchantmentNames.get(enchantmentId) != null) {
-            enchantmentName = enchantmentNames.get(enchantmentId) + " ";
+        String enchantmentName;
+        if(enchantmentNames.get(enchantmentType) != null) {
+            enchantmentName = enchantmentNames.get(enchantmentType) + " ";
         } else {
-            enchantmentName = "UNKNOWN ";
+            enchantmentName = EnumUtil.formatName(enchantmentType.getName()) + " ";
         }
         if(enchantmentLevels.get(enchantmentLevel) != null) {
             enchantmentName += enchantmentLevels.get(enchantmentLevel) + " ";
         } else {
-            enchantmentName += enchantmentLevel;
+            enchantmentName += enchantmentLevel + " ";
         }
         return enchantmentName;
     }

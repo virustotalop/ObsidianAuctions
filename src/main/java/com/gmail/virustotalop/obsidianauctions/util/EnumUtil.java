@@ -1,8 +1,12 @@
 package com.gmail.virustotalop.obsidianauctions.util;
 
-public final class MaterialUtil {
+public final class EnumUtil {
 
-    private MaterialUtil() {}
+    private EnumUtil() {}
+
+    public static String formatName(Enum<?> en) {
+        return formatName(en.name());
+    }
 
     public static String formatName(String name) {
         char[] chars = name.toCharArray();
