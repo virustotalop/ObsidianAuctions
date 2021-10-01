@@ -208,7 +208,8 @@ public class Items {
         if(itemMeta == null) {
             return null;
         } else if(itemMeta instanceof FireworkMeta) {
-            return ((FireworkMeta) itemMeta).getPower();
+            FireworkMeta fireworkMeta = ((FireworkMeta) itemMeta);
+            return fireworkMeta.getPower();
         }
         return null;
     }

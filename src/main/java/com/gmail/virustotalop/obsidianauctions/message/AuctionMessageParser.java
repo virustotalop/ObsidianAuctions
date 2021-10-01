@@ -131,8 +131,12 @@ public class AuctionMessageParser {
                         if(replacements.get("%item-display-name%") == null || replacements.get("%item-display-name%").isEmpty()) {
                             replacements.put("%item-display-name%", replacements.get("%item-material-name%"));
                         }
-                        if(Items.getFireworkPower(lot) != null) {
-                            replacements.put("%item-firework-power%", Integer.toString(Items.getFireworkPower(lot))); //%L3
+                        if(Items.getFireworkPower(lot) != null || lot.getType().name().equals("FIREWORK_CHARGE")) {
+                            Integer fireworkPower = Items.getFireworkPower(lot);
+                            if(fireworkPower == null) {
+                                fireworkPower = 0;
+                            }
+                            replacements.put("%item-firework-power%", String.valueOf(fireworkPower)); //%L3
                         }
                         if(Items.getBookAuthor(lot) != null) {
                             replacements.put("%item-book-author%", Items.getBookAuthor(lot)); //%L4
@@ -263,48 +267,49 @@ public class AuctionMessageParser {
                         for(int j = 0; j < payloads.length; j++) {
                             FireworkEffect payload = payloads[j];
                             // %A lists all aspects of the payload
+                            if(payload != null) {
+                                String payloadAspects = "";
+                                String payloadSeparator = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-payload-separator", auctionScope));
 
-                            String payloadAspects = "";
-                            String payloadSeparator = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-payload-separator", auctionScope));
+                                FireworkEffect.Type type = payload.getType();
+                                if(type != null) {
+                                    if(!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
+                                    String fireworkShape = AuctionConfig.getLanguageString("firework-shapes." + type.toString(), auctionScope);
+                                    if(fireworkShape == null) {
+                                        payloadAspects += type.toString();
+                                    } else {
+                                        payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkShape);
+                                    }
+                                }
+                                List<Color> colors = payload.getColors();
+                                for(Color value : colors) {
+                                    if(!payloadAspects.isEmpty()) {
+                                        payloadAspects += payloadSeparator;
+                                    }
+                                    Color color = value;
+                                    String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
+                                    String fireworkColor = AuctionConfig.getLanguageString("firework-colors." + colorRGB, auctionScope);
+                                    if(fireworkColor == null) {
+                                        payloadAspects += "#" + colorRGB;
+                                    } else {
+                                        payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkColor);
+                                    }
+                                }
+                                if(payload.hasFlicker()) {
+                                    if(!payloadAspects.isEmpty()) {
+                                        payloadAspects += payloadSeparator;
+                                    }
 
-                            FireworkEffect.Type type = payload.getType();
-                            if(type != null) {
-                                if(!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
-                                String fireworkShape = AuctionConfig.getLanguageString("firework-shapes." + type.toString(), auctionScope);
-                                if(fireworkShape == null) {
-                                    payloadAspects += type.toString();
-                                } else {
-                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkShape);
+                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-twinkle", auctionScope));
                                 }
+                                if(payload.hasTrail()) {
+                                    if(!payloadAspects.isEmpty()) {
+                                        payloadAspects += payloadSeparator;
+                                    }
+                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-trail", auctionScope));
+                                }
+                                newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
                             }
-                            List<Color> colors = payload.getColors();
-                            for(Color value : colors) {
-                                if(!payloadAspects.isEmpty()) {
-                                    payloadAspects += payloadSeparator;
-                                }
-                                Color color = value;
-                                String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
-                                String fireworkColor = AuctionConfig.getLanguageString("firework-colors." + colorRGB, auctionScope);
-                                if(fireworkColor == null) {
-                                    payloadAspects += "#" + colorRGB;
-                                } else {
-                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkColor);
-                                }
-                            }
-                            if(payload.hasFlicker()) {
-                                if(!payloadAspects.isEmpty()) {
-                                    payloadAspects += payloadSeparator;
-                                }
-
-                                payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-twinkle", auctionScope));
-                            }
-                            if(payload.hasTrail()) {
-                                if(!payloadAspects.isEmpty()) {
-                                    payloadAspects += payloadSeparator;
-                                }
-                                payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-trail", auctionScope));
-                            }
-                            newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
                         }
                         continue;
                     }
