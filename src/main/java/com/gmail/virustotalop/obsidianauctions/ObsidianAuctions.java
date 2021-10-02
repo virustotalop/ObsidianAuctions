@@ -229,7 +229,7 @@ public class ObsidianAuctions extends JavaPlugin {
 
         if(playerScopeCheckInterval > 0) {
             playerScopeCheckTimer = scheduler.scheduleSyncRepeatingTask(this, () -> {
-                AuctionScope.sendFairwellMessages();
+                AuctionScope.sendFarewellMessages();
                 AuctionScope.sendWelcomeMessages();
             }, playerScopeCheckInterval, playerScopeCheckInterval);
         }

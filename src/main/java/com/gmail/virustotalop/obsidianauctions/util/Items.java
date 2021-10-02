@@ -15,9 +15,8 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.ApiStatus;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Items {
+@ApiStatus.Internal
+@ApiStatus.NonExtendable
+public final class Items {
 
     private static Map<Enchantment, String> enchantmentNames = new HashMap<>();
     private static Map<Integer, String> enchantmentLevels = new HashMap<>();
@@ -94,6 +95,7 @@ public class Items {
     }
 
     // Most of this function was copied from CraftBukkit.  The above functions too.
+    
     public static void saferItemGive(PlayerInventory playerInventory, ItemStack item) {
         // After bukkit is fixed:
         // player.getInventory().addItem(givingItems);
@@ -148,6 +150,7 @@ public class Items {
 
     }
 
+    
     public static String[] getLore(ItemStack item) {
         if(item == null) return null;
         ItemMeta itemMeta = item.getItemMeta();
@@ -161,6 +164,7 @@ public class Items {
         return pages;
     }
 
+    
     public static void setLore(ItemStack item, String[] pages) {
         if(item == null || pages == null) return;
         ItemMeta itemMeta = item.getItemMeta();
@@ -171,6 +175,7 @@ public class Items {
         item.setItemMeta(itemMeta);
     }
 
+    
     public static Map<Enchantment, Integer> getStoredEnchantments(ItemStack item) {
         if(item == null) {
             return null;
@@ -185,6 +190,7 @@ public class Items {
         return null;
     }
 
+    
     public static void addStoredEnchantment(ItemStack item, Integer enchantment, Integer level, boolean ignoreLevelRestriction) {
         if(item == null) {
             return;
@@ -200,6 +206,7 @@ public class Items {
         }
     }
 
+    
     public static Integer getFireworkPower(ItemStack item) {
         if(item == null) {
             return null;
@@ -214,6 +221,7 @@ public class Items {
         return null;
     }
 
+    
     public static void setFireworkPower(ItemStack item, Integer power) {
         if(item == null) {
             return;
@@ -228,6 +236,7 @@ public class Items {
         }
     }
 
+    
     public static FireworkEffect[] getFireworkEffects(ItemStack item) {
         if(item == null) {
             return null;
@@ -250,6 +259,7 @@ public class Items {
         return null;
     }
 
+    
     public static void setFireworkEffects(ItemStack item, FireworkEffect[] effects) {
         if(item == null || effects == null) {
             return;
@@ -270,50 +280,7 @@ public class Items {
         }
     }
 
-    public static Object getNbtTag(ItemStack item) {
-        Object tag = null;
-        try {
-            Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + VersionUtil.getVersion() + ".inventory.CraftItemStack");
-            Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", ItemStack.class);
-            Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", ItemStack.class);
-            Object craftCopy = asCraftCopy.invoke(null, item);
-            Object itemStack = asNMSCopy.invoke(null, craftCopy);
-            Method tagField = itemStack.getClass().getMethod("getTag");
-            tag = tagField.invoke(itemStack);
-        } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
-        return tag;
-    }
-
-    public static String getHeadOwner(ItemStack item) {
-        if(item == null) {
-            return null;
-        }
-        ItemMeta itemMeta = item.getItemMeta();
-        if(itemMeta == null) {
-            return null;
-        }
-        if(itemMeta instanceof SkullMeta) {
-            return ((SkullMeta) itemMeta).getOwner();
-        }
-        return null;
-    }
-
-    public static void setHeadOwner(ItemStack item, String headName) {
-        if(item == null) {
-            return;
-        }
-        ItemMeta itemMeta = item.getItemMeta();
-        if(itemMeta == null) {
-            return;
-        } else if(itemMeta instanceof SkullMeta) {
-            SkullMeta skullMeta = ((SkullMeta) itemMeta);
-            skullMeta.setOwner(headName);
-            item.setItemMeta(skullMeta);
-        }
-    }
-
+    
     public static Integer getRepairCost(ItemStack item) {
         if(item == null) {
             return null;
@@ -327,6 +294,7 @@ public class Items {
         return null;
     }
 
+    
     public static void setRepairCost(ItemStack item, Integer repairCost) {
         if(item == null) return;
         ItemMeta itemMeta = item.getItemMeta();
@@ -339,6 +307,7 @@ public class Items {
         return;
     }
 
+    
     public static String getDisplayName(ItemStack item) {
         if(item == null) return null;
         ItemMeta itemMeta = item.getItemMeta();
@@ -346,6 +315,7 @@ public class Items {
         return itemMeta.getDisplayName();
     }
 
+    
     public static void setDisplayName(ItemStack item, String name) {
         if(item == null) return;
         if(name == null) return;
@@ -355,6 +325,7 @@ public class Items {
         item.setItemMeta(itemMeta);
     }
 
+    
     public static String getBookAuthor(ItemStack book) {
         if(book == null) return null;
         ItemMeta itemMeta = book.getItemMeta();
@@ -365,6 +336,7 @@ public class Items {
         return null;
     }
 
+    
     public static void setBookAuthor(ItemStack book, String author) {
         if(book == null) return;
         ItemMeta itemMeta = book.getItemMeta();
@@ -377,6 +349,7 @@ public class Items {
         return;
     }
 
+    
     public static String getBookTitle(ItemStack book) {
         if(book == null) return null;
         ItemMeta itemMeta = book.getItemMeta();
@@ -387,6 +360,7 @@ public class Items {
         return null;
     }
 
+    
     public static void setBookTitle(ItemStack book, String title) {
         if(book == null) return;
         ItemMeta itemMeta = book.getItemMeta();
@@ -399,6 +373,7 @@ public class Items {
         return;
     }
 
+    
     public static String[] getBookPages(ItemStack book) {
         if(book == null) return null;
         ItemMeta itemMeta = book.getItemMeta();
@@ -414,6 +389,7 @@ public class Items {
         return null;
     }
 
+    
     public static void setBookPages(ItemStack book, String[] pages) {
         if(book == null || pages == null) return;
         ItemMeta itemMeta = book.getItemMeta();
@@ -426,6 +402,7 @@ public class Items {
     }
 
     // Some of this was taken from Vault's item classes.
+    
     public static boolean isSameItem(ItemStack item, String searchString) {
         Material mat;
         short damageId = 0;
@@ -442,66 +419,25 @@ public class Items {
         return isSameItem(item, new ItemStack(mat, 1));
     }
 
+
+    
     public static boolean isSameItem(ItemStack item1, ItemStack item2) {
         return item1.isSimilar(item2);
     }
 
-    private static boolean isSame(String[] strings1, String[] strings2) {
-        if(strings1 == null && strings2 == null) return true;
-        if(strings1 == null || strings2 == null) return false;
-        if(strings1.length != strings2.length) return false;
-        for(int i = 0; i < strings1.length; i++) {
-            if(!isSame(strings1[i], strings2[i])) return false;
-        }
-        return true;
-    }
-
-    private static boolean isSame(Map<Enchantment, Integer> storedEnchantments1, Map<Enchantment, Integer> storedEnchantments2) {
-        if(storedEnchantments1 == null && storedEnchantments2 == null) return true;
-        if(storedEnchantments1 == null || storedEnchantments2 == null) return false;
-        return storedEnchantments1.equals(storedEnchantments2);
-    }
-
-    private static boolean isSame(String str1, String str2) {
-        if(str1 == null && str2 == null) return true;
-        if(str1 == null || str2 == null) return false;
-        return str1.equals(str2);
-    }
-
-    private static boolean isSame(Integer int1, Integer int2) {
-        if(int1 == null && int2 == null) return true;
-        if(int1 == null || int2 == null) return false;
-        return int1.equals(int2);
-    }
-
-    private static boolean isSame(FireworkEffect[] effects1, FireworkEffect[] effects2) {
-        if(effects1 == null && effects2 == null) return true;
-        if(effects1 == null || effects2 == null) return false;
-        if(effects1.length != effects2.length) return false;
-        for(int i = 0; i < effects1.length; i++) {
-            if(!isSame(effects1[i].hashCode(), effects2[i].hashCode())) return false;
-        }
-        return true;
-    }
-
+    
     public static int getMaxStackSize(ItemStack item) {
-        if(item == null)
+        if(item == null) {
             return 0;
-
+        }
         int maxStackSize = item.getType().getMaxStackSize();
-        // If bukkit has any bad stack sized, override them now.
-
         return maxStackSize;
     }
 
-    public static boolean isStackable(int id) {
-        return getMaxStackSize(new ItemStack(id)) > 1;
-    }
-
+    
     public static int getSpaceForItem(Player player, ItemStack item) {
         int maxstack = getMaxStackSize(item);
         int space = 0;
-
         ItemStack[] items = player.getInventory().getStorageContents();
         for(ItemStack current : items) {
             if(current == null) {
@@ -512,31 +448,21 @@ public class Items {
                 space += maxstack - current.getAmount();
             }
         }
-
         return space;
     }
 
+    
     public static boolean hasSpace(Player player, int needed, ItemStack item) {
         return getSpaceForItem(player, item) >= needed;
     }
 
-    public static boolean hasSpace(Player player, ArrayList<ItemStack> lot) {
-        int needed = 0;
-
-        for(ItemStack item : lot) {
-            if(item != null) {
-                needed += item.getAmount();
-            }
-        }
-        return hasSpace(player, needed, lot.get(0));
-
-    }
-
+    
     public static boolean hasAmount(String ownerName, int amount, ItemStack compareItem) {
         int has = getAmount(ownerName, compareItem);
         return has >= amount;
     }
 
+    
     public static int getAmount(String ownerName, ItemStack compareItem) {
         if(Bukkit.getPlayer(ownerName) == null) return 0;
         PlayerInventory inventory = Bukkit.getPlayer(ownerName).getInventory();
@@ -550,6 +476,7 @@ public class Items {
         return has;
     }
 
+    
     public static void remove(String playerName, int amount, ItemStack compareItem) {
         Player player = Bukkit.getPlayer(playerName);
         if(player != null) {
@@ -607,35 +534,7 @@ public class Items {
         return false;
     }
 
-    public static String getItemName(ItemStack itemStack) {
-        if(itemStack == null) {
-            return null;
-        }
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if(!itemMeta.hasLocalizedName()) {
-            return EnumUtil.formatName(itemStack.getType().name());
-        }
-        return itemMeta.getLocalizedName();
-        /*Class<?> craftItemStack = itemStack.getClass();
-        try {
-            Field handleField = craftItemStack.getDeclaredField("handle");
-            handleField.setAccessible(true);
-            Object nmsItemStack = handleField.get(itemStack);
-            Method getItem = nmsItemStack.getClass().getMethod("getItem");
-            Object item = getItem.invoke(nmsItemStack);
-            Class<?> itemClass = Class.forName("net.minecraft.server." + VersionUtil.getVersion() + ".Item");
-            Method getName = itemClass.getDeclaredMethod("getName");
-            String name = (String) getName.invoke(item);
-            if(!name.startsWith("item.minecraft")) { //For legacy support before proper keying
-                name += ".name";
-            }
-            return name;
-        } catch(NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;*/
-    }
-
+    
     public static String getEnchantmentName(Entry<Enchantment, Integer> enchantment) {
         Enchantment enchantmentType = enchantment.getKey();
         int enchantmentLevel = enchantment.getValue();
@@ -653,22 +552,44 @@ public class Items {
         return enchantmentName;
     }
 
+    
     public static Boolean isPlayerHead(ItemStack lot) {
         if(lot == null) {
+            return false;
+        } else if(lot.getItemMeta() == null) {
             return false;
         }
         String lotType = lot.getType().name();
         return lotType.equals("PLAYER_HEAD") || (lotType.equals("SKULL_ITEM") && LegacyUtil.getDurability(lot) == 3);
     }
 
+    
     public static String getPlayerHeadOwner(ItemStack lot) {
         if(!isPlayerHead(lot)) {
             return null;
         }
         SkullMeta itemMeta = (SkullMeta) lot.getItemMeta();
         if(!itemMeta.hasOwner()) {
-            return "Unknown";
+            return null;
         }
         return itemMeta.getOwningPlayer().getName();
+    }
+
+    
+    public static void setPlayerHeadOwner(ItemStack item, String headName) {
+        if(item == null) {
+            return;
+        }
+        ItemMeta itemMeta = item.getItemMeta();
+        if(itemMeta == null) {
+            return;
+        } else if(itemMeta instanceof SkullMeta) {
+            SkullMeta skullMeta = ((SkullMeta) itemMeta);
+            skullMeta.setOwner(headName);
+            item.setItemMeta(skullMeta);
+        }
+    }
+
+    private Items() {
     }
 }

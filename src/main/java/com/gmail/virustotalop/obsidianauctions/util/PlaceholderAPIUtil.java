@@ -2,9 +2,11 @@ package com.gmail.virustotalop.obsidianauctions.util;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.reflect.Method;
 
+@ApiStatus.Internal
 public class PlaceholderAPIUtil {
 
     private static Method setPlaceHolders;

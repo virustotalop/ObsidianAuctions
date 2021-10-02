@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ public class AuctionParticipant {
      * @param playerUUID player name to check
      * @return whether he is in the appropriate scope
      */
+    @ApiStatus.Internal
     public static boolean checkLocation(UUID playerUUID) {
         AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
         if(participant == null) return true;
@@ -41,6 +43,7 @@ public class AuctionParticipant {
      * @param location   location to check
      * @return whether he would be in the appropriate scope
      */
+    @ApiStatus.Internal
     public static boolean checkLocation(UUID playerUUID, Location location) {
         AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
         if(participant == null) {
@@ -55,6 +58,7 @@ public class AuctionParticipant {
      * @param playerUUID      player to force
      * @param locationForGaze location for gaze
      */
+    @ApiStatus.Internal
     public static void forceLocation(UUID playerUUID, Location locationForGaze) {
         AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
         if(participant == null) {
@@ -89,6 +93,7 @@ public class AuctionParticipant {
      * @param location   teleport destination to check
      * @return true if it IS okay to teleport this player
      */
+    @ApiStatus.Internal
     public static boolean checkTeleportLocation(UUID playerUUID, Location location) {
         AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
         if(participant == null) {
@@ -195,7 +200,6 @@ public class AuctionParticipant {
     public boolean isParticipating() {
         boolean participating = false;
         Auction scopeAuction = this.auctionScope.getActiveAuction();
-
         if(scopeAuction != null) {
             if(scopeAuction.getOwnerName().equals(this.playerUUID)) {
                 participating = true;
@@ -219,9 +223,7 @@ public class AuctionParticipant {
                 }
             }
         }
-
-        if(!participating) ObsidianAuctions.auctionParticipants.remove(this);
-        {
+        if(!participating) ObsidianAuctions.auctionParticipants.remove(this);{
             return participating;
         }
     }

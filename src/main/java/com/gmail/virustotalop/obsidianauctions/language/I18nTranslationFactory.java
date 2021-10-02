@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+@ApiStatus.Internal
 public class I18nTranslationFactory implements TranslationFactory {
 
     private final Map<Material, Collection<LanguageItem>> items;

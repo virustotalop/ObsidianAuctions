@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,11 +35,10 @@ import java.util.UUID;
 public class AuctionScope {
 
     private Auction activeAuction = null;
-    private final List<Auction> otherPluginsAuctions = null;
-    private String scopeId = null;
-    private String name = null;
-    private String type = null;
-    private final ArrayList<Auction> auctionQueue = new ArrayList<Auction>();
+    private String scopeId;
+    private String name;
+    private String type;
+    private final List<Auction> auctionQueue = new ArrayList<>();
     private long lastAuctionDestroyTime = 0;
 
     // Definitions
@@ -48,8 +48,8 @@ public class AuctionScope {
     private String regionId = null;
     private boolean locationChecked = false;
 
-    private ConfigurationSection config = null;
-    private ConfigurationSection textConfig = null;
+    private ConfigurationSection config;
+    private ConfigurationSection textConfig;
 
     public static List<String> auctionScopesOrder = new ArrayList<>();
     public static Map<String, AuctionScope> auctionScopes = new HashMap<>();
@@ -296,6 +296,7 @@ public class AuctionScope {
      *
      * @return config for the scope
      */
+    @ApiStatus.Internal
     public ConfigurationSection getConfig() {
         return this.config.getConfigurationSection("config");
     }
@@ -323,6 +324,7 @@ public class AuctionScope {
      *
      * @return language config for the scope
      */
+    @ApiStatus.Internal
     public ConfigurationSection getTextConfig() {
         return this.textConfig;
     }
@@ -426,7 +428,7 @@ public class AuctionScope {
     }
 
     /**
-     * Big red button.
+     * Cancels all running auctions AKA the Big red button.
      */
     public static void cancelAllAuctions() {
         for(Map.Entry<String, AuctionScope> auctionScopesEntry : AuctionScope.auctionScopes.entrySet()) {
@@ -453,14 +455,8 @@ public class AuctionScope {
         return false;
     }
 
-    public int getOtherPluginsAuctionsLength() {
-        if(this.otherPluginsAuctions == null) {
-            return 0;
-        }
-        return this.otherPluginsAuctions.size();
-    }
-
-    public static void sendFairwellMessages() {
+    @ApiStatus.Internal
+    public static void sendFarewellMessages() {
         Iterator<UUID> playerIterator = ObsidianAuctions.get().getPlayerScopeCache().keySet().iterator();
         while(playerIterator.hasNext()) {
             UUID playerUUID = playerIterator.next();
@@ -484,6 +480,7 @@ public class AuctionScope {
         }
     }
 
+    @ApiStatus.Internal
     public static void sendWelcomeMessages() {
         Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
         for(Player player : players) {
@@ -491,6 +488,7 @@ public class AuctionScope {
         }
     }
 
+    @ApiStatus.Internal
     public static void sendWelcomeMessage(Player player, boolean isOnJoin) {
         String welcomeMessageKey = "auctionscope-welcome";
         if(isOnJoin) {

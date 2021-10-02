@@ -200,7 +200,7 @@ public class AuctionLot implements Serializable {
         Items.setBookTitle(lotTypeLock, this.bookTitle);
         Items.setBookPages(lotTypeLock, this.bookPages);
         Items.setRepairCost(lotTypeLock, this.repairCost);
-        Items.setHeadOwner(lotTypeLock, this.headOwner);
+        Items.setPlayerHeadOwner(lotTypeLock, this.headOwner);
         Items.setFireworkPower(lotTypeLock, this.power);
         Items.setFireworkEffects(lotTypeLock, this.effects);
         Items.setLore(lotTypeLock, this.lore);
@@ -241,7 +241,7 @@ public class AuctionLot implements Serializable {
         this.bookTitle = Items.getBookTitle(lotType);
         this.bookPages = Items.getBookPages(lotType);
         this.repairCost = Items.getRepairCost(lotType);
-        this.headOwner = Items.getHeadOwner(lotType);
+        this.headOwner = Items.getPlayerHeadOwner(lotType);
         this.power = Items.getFireworkPower(lotType);
         this.effects = Items.getFireworkEffects(lotType);
         this.lore = Items.getLore(lotType);

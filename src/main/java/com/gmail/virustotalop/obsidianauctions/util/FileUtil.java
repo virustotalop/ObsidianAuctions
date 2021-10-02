@@ -1,6 +1,7 @@
 package com.gmail.virustotalop.obsidianauctions.util;
 
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -15,10 +16,9 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
+@ApiStatus.Internal
+@ApiStatus.NonExtendable
 public final class FileUtil {
-
-    private FileUtil() {
-    }
 
     /**
      * Load an object from a file
@@ -27,6 +27,7 @@ public final class FileUtil {
      * @param loadIfNull the object to be used if the loaded value is null
      * @return the resulting string list
      */
+    
     @SuppressWarnings({"unchecked", "finally"})
     public static <T> T load(String fileName, T loadIfNull) {
         Object importedObject = null;
@@ -56,6 +57,7 @@ public final class FileUtil {
      * @param object   object to save
      * @param fileName name of file
      */
+    
     public static void save(Object object, String fileName) {
         File saveFile = new File(ObsidianAuctions.get().getDataFolder(), fileName);
         try {
@@ -75,5 +77,8 @@ public final class FileUtil {
         } catch(IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private FileUtil() {
     }
 }

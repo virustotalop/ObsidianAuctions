@@ -4,11 +4,14 @@ import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.text.DecimalFormat;
 import java.util.UUID;
 
-public class Functions {
+@ApiStatus.Internal
+@ApiStatus.NonExtendable
+public final class Functions {
 
     public static String formatTime(int seconds, AuctionScope auctionScope) {
         String returnTime;
@@ -128,6 +131,7 @@ public class Functions {
         return formatAmount(getUnsafeMoney(safeMoney));
     }
 
+    
     public static String formatAmount(double unsafeMoney) {
         String vaultFormat = ObsidianAuctions.get().getEconomy().format(unsafeMoney);
         return vaultFormat;//decFormat.format(vaultFormat);
@@ -154,5 +158,8 @@ public class Functions {
 
     public static double getUnsafeMoney(long money) {
         return (double) money / Math.pow(10, ObsidianAuctions.decimalPlaces);
+    }
+
+    private Functions() {
     }
 }

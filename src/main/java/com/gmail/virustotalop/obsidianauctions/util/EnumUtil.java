@@ -1,8 +1,10 @@
 package com.gmail.virustotalop.obsidianauctions.util;
 
-public final class EnumUtil {
+import org.jetbrains.annotations.ApiStatus;
 
-    private EnumUtil() {}
+@ApiStatus.Internal
+@ApiStatus.NonExtendable
+public final class EnumUtil {
 
     public static String formatName(Enum<?> en) {
         return formatName(en.name());
@@ -22,5 +24,8 @@ public final class EnumUtil {
             }
         }
         return new String(chars);
+    }
+
+    private EnumUtil() {
     }
 }

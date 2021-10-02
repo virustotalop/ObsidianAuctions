@@ -4,7 +4,9 @@ import com.gmail.virustotalop.obsidianauctions.nbt.NBTCompound;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class LanguageItem {
 
     private final Material type;

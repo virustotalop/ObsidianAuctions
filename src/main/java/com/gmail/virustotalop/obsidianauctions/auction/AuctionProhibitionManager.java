@@ -136,7 +136,7 @@ public class AuctionProhibitionManager {
         Player player = Bukkit.getPlayer(playerUUID);
         for(int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
             AuctionProhibition prohibition = this.involuntarilyDisabledUsers.get(i);
-            if(prohibition.getPlayerUUID().equals(playerUUID) && prohibition.getProhibiterPlugin().equals(prohibiterPlugin)) {
+            if(prohibition.getPlayerUUID().equals(playerUUID) && prohibition.getProhibitingPlugin().equals(prohibiterPlugin)) {
                 if(player != null) {
                     if(prohibition.getDisableMessage() == null) {
                         // Send stock message.

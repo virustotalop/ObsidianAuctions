@@ -17,6 +17,7 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@ApiStatus.Internal
 public class AuctionMessageParser {
 
     private final TranslationFactory translation;
@@ -140,7 +142,11 @@ public class AuctionMessageParser {
                             replacements.put("%item-firework-power%", String.valueOf(fireworkPower)); //%L3
                         }
                         if(Items.isPlayerHead(lot)) {
-                            replacements.put("%item-player-head-owner%", Items.getPlayerHeadOwner(lot));
+                            String owner = Items.getPlayerHeadOwner(lot);
+                            if(owner == null) {
+                                owner = "Unknown";
+                            }
+                            replacements.put("%item-player-head-owner%", owner);
                         }
                         if(Items.getBookAuthor(lot) != null) {
                             replacements.put("%item-book-author%", Items.getBookAuthor(lot)); //%L4

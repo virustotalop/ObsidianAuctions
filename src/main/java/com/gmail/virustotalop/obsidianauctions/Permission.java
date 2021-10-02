@@ -1,5 +1,9 @@
 package com.gmail.virustotalop.obsidianauctions;
 
+import org.jetbrains.annotations.ApiStatus;
+
+@ApiStatus.Internal
+@ApiStatus.NonExtendable
 public final class Permission {
 
     public static final String AUCTION_USE = "auction.use";

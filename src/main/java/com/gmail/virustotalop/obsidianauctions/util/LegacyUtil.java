@@ -3,9 +3,11 @@ package com.gmail.virustotalop.obsidianauctions.util;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.reflect.Method;
 
+@ApiStatus.Internal
 public final class LegacyUtil {
 
     private static final boolean durabilityExists = methodExists(ItemStack.class, "getDurability");

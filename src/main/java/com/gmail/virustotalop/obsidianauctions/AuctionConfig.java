@@ -3,6 +3,7 @@ package com.gmail.virustotalop.obsidianauctions;
 import com.clubobsidian.wrappy.ConfigurationSection;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
  *
  * @author Joshua "flobi" Hatfield
  */
+@ApiStatus.Internal
 public class AuctionConfig {
     /**
      * Gets a double from the config converted to floAuction's proprietary "safe money."
