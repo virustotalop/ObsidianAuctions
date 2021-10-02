@@ -1,4 +1,4 @@
-package com.github.virustotalop.obsidianauctions.test.message;
+package com.github.virustotalop.obsidianauctions.test.message.mock;
 
 import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
 import org.bukkit.inventory.ItemStack;

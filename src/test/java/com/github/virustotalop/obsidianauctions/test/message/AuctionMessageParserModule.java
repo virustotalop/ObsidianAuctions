@@ -1,5 +1,6 @@
 package com.github.virustotalop.obsidianauctions.test.message;
 
+import com.github.virustotalop.obsidianauctions.test.message.mock.MockTranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageParser;
 import com.google.inject.Binder;
