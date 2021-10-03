@@ -185,7 +185,7 @@ public class AuctionMessageParser {
             if(message.length() > 0 && message.contains("%player-auction-queue") || message.contains("%auction-")) {
                 if(auctionScope != null) {
                     if(player != null) {
-                        replacements.put("%player-auction-queue-position%", Integer.toString(auctionScope.getQueuePosition(player.getName()))); //%S1
+                        replacements.put("%player-auction-queue-position%", Integer.toString(auctionScope.getQueuePosition(player.getUniqueId()))); //%S1
                     }
                     replacements.put("%auction-queue-length%", Integer.toString(auctionScope.getAuctionQueueLength())); //%S2
                     replacements.put("%auction-scope-name%", auctionScope.getName()); //%S3

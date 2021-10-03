@@ -322,13 +322,13 @@ public class AuctionScope {
     /**
      * Gets the position of the named player's auction in the queue or zero if not in queue.
      *
-     * @param playerName name of player
+     * @param playerUUID uuid of player
      * @return players position in queue or zero if not in queue
      */
-    public int getQueuePosition(String playerName) {
+    public int getQueuePosition(UUID playerUUID) {
         for(int i = 0; i < this.auctionQueue.size(); i++) {
             Auction auction = this.auctionQueue.get(i);
-            if(auction.getOwnerName().equalsIgnoreCase(playerName)) {
+            if(auction.getOwnerUUID().equals(playerUUID)) {
                 return i + 1;
             }
         }
