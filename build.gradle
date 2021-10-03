@@ -70,6 +70,4 @@ dependencies {
 	compileOnly name: 'vault'
 	compileOnly name: 'mobarena'
 	compileOnly name: 'war'
-	compileOnly name: 'worldguard'
-	compileOnly name: 'worldedit'
 }

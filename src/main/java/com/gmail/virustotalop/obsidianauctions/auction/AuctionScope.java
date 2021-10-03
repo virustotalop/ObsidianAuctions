@@ -5,16 +5,11 @@ import com.clubobsidian.wrappy.ConfigurationSection;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
@@ -53,7 +48,6 @@ public class AuctionScope {
 
     public static List<String> auctionScopesOrder = new ArrayList<>();
     public static Map<String, AuctionScope> auctionScopes = new HashMap<>();
-    private static WorldGuardPlugin worldGuardPlugin = null;
 
     /**
      * Constructor to make new scopes from the name, config and language config files.
@@ -93,17 +87,6 @@ public class AuctionScope {
                 this.minHouseLocation = new Location(Bukkit.getWorld(world), this.config.getDouble("house-min-x"), this.config.getDouble("house-min-y"), this.config.getDouble("house-min-z"));
                 this.maxHouseLocation = new Location(Bukkit.getWorld(world), this.config.getDouble("house-max-x"), this.config.getDouble("house-max-y"), this.config.getDouble("house-max-z"));
             }
-        } else if(this.type.equalsIgnoreCase("worldguardregion")) {
-            if(worldGuardPlugin == null) {
-                // get the list of regions that contain the given location
-                Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
-
-                // WorldGuard may not be loaded
-                if(plugin != null && plugin instanceof WorldGuardPlugin) {
-                    worldGuardPlugin = (WorldGuardPlugin) plugin;
-                }
-            }
-            this.regionId = config.getString("region-id");
         }
         this.locationChecked = true;
         return this.worlds != null || this.minHouseLocation != null || this.maxHouseLocation != null || this.regionId != null;
@@ -276,17 +259,6 @@ public class AuctionScope {
                 return false;
             } else
                 return !(location.getY() > Math.max(this.minHouseLocation.getY(), this.maxHouseLocation.getY())) && !(location.getY() < Math.min(this.minHouseLocation.getY(), this.maxHouseLocation.getY()));
-        } else if(this.type.equalsIgnoreCase("worldguardregion")) {
-            if(worldGuardPlugin == null) {
-                return false;
-            }
-            RegionManager regionManager = AuctionScope.worldGuardPlugin.getRegionManager(location.getWorld());
-            ApplicableRegionSet applicableRegions = regionManager.getApplicableRegions(location);
-            for(ProtectedRegion region : applicableRegions) {
-                if(region.getId().equalsIgnoreCase(this.regionId)) {
-                    return true;
-                }
-            }
         }
         return false;
     }
