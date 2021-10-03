@@ -73,7 +73,7 @@ public class AuctionBid {
         } else {
             amountToReserve = this.maxBidAmount;
         }
-        if(Functions.withdrawPlayer(this.bidderName, amountToReserve)) {
+        if(Functions.withdrawPlayer(this.bidderUUID, amountToReserve)) {
             this.reserve = Functions.getUnsafeMoney(amountToReserve);
             return true;
         } else {
@@ -92,7 +92,7 @@ public class AuctionBid {
             AuctionParticipant.addParticipant(this.getBidderUUID(), this.auction.getScope());
         } else {
             // Refund reserve.
-            Functions.depositPlayer(this.bidderName, this.reserve);
+            Functions.depositPlayer(this.bidderUUID, this.reserve);
             this.reserve = 0;
         }
 
@@ -129,20 +129,20 @@ public class AuctionBid {
 
         if(taxPercent > 0D) {
             taxes = unsafeBidAmount * (taxPercent / 100D);
-
             this.auction.extractedPostTax = taxes;
             this.auction.messageManager.sendPlayerMessage("auction-end-tax", this.auction.getOwnerUUID(), this.auction);
             unsafeBidAmount -= taxes;
-            String taxDestinationUser = AuctionConfig.getString("deposit-tax-to-user", this.auction.getScope());
-            if(!taxDestinationUser.isEmpty())
-                ObsidianAuctions.get().getEconomy().depositPlayer(taxDestinationUser, taxes);
+            UUID taxDestinationUser = AuctionConfig.getUUID("deposit-tax-to-user", this.auction.getScope());
+            if(taxDestinationUser != null) {
+                Functions.depositPlayer(taxDestinationUser, taxes);
+            }
         }
 
         // Apply winnings to auction owner.
-        ObsidianAuctions.get().getEconomy().depositPlayer(this.auction.getOwnerName(), unsafeBidAmount);
+        Functions.depositPlayer(this.auction.getOwnerUUID(), unsafeBidAmount);
 
         // Refund remaining reserve.
-        ObsidianAuctions.get().getEconomy().depositPlayer(this.bidderName, this.reserve - unsafeBidAmount - taxes);
+        Functions.depositPlayer(this.bidderUUID, this.reserve - unsafeBidAmount - taxes);
 
         this.reserve = 0;
     }
@@ -237,7 +237,7 @@ public class AuctionBid {
                 this.bidAmount = Functions.getSafeMoney(Double.parseDouble(this.args[0]));
                 /*Should fix the bug that allowed over-sized payments
                  */
-                if(this.bidAmount > ObsidianAuctions.get().getEconomy().getBalance(this.bidderName)) {
+                if(!Functions.hasBalance(this.bidderUUID, this.bidAmount)) {
                     this.error = "bid-fail-cant-allocate-funds";
                     return false;
                 } else if(this.bidAmount == 0) {

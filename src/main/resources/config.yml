@@ -35,7 +35,7 @@ min-auction-interval-secs: 10
 
 auction-start-tax: 0
 auction-end-tax-percent: 0
-deposit-tax-to-user: ''
+deposit-tax-to-user: '' #Should be a uuid
 
 cancel-prevention-seconds: 15
 cancel-prevention-percent: 50

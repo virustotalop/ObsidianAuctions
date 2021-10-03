@@ -8,6 +8,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Class for handling configuration and language values for floAuction using the AuctionScope preference.
@@ -118,6 +119,24 @@ public class AuctionConfig {
 
         if(result == null) {
             result = ObsidianAuctions.config.getString(path);
+        }
+        return result;
+    }
+
+    /**
+     * Gets a uuid value from the config.
+     *
+     * @param path         the location in the config of the value
+     * @param auctionScope the preferred AuctionScope for retrieval
+     * @return uuid from the config
+     */
+    public static UUID getUUID(String path, AuctionScope auctionScope) {
+        UUID result = null;
+        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+            result = auctionScope.getConfig().getUUID(path);
+        }
+        if(result == null) {
+            result = ObsidianAuctions.config.getUUID(path);
         }
         return result;
     }

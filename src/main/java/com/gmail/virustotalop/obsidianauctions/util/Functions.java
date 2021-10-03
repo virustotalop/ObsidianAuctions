@@ -4,6 +4,8 @@ import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.text.DecimalFormat;
@@ -131,23 +133,38 @@ public final class Functions {
         return formatAmount(getUnsafeMoney(safeMoney));
     }
 
-    
     public static String formatAmount(double unsafeMoney) {
         String vaultFormat = ObsidianAuctions.get().getEconomy().format(unsafeMoney);
-        return vaultFormat;//decFormat.format(vaultFormat);
+        return vaultFormat;
     }
 
-    public static boolean withdrawPlayer(String playerName, long safeMoney) {
-        return withdrawPlayer(playerName, getUnsafeMoney(safeMoney));
+    public static boolean hasBalance(UUID uuid, double preAuctionTax) {
+        OfflinePlayer player = getOfflinePlayer(uuid);
+        if(player == null) {
+            return false;
+        }
+        return ObsidianAuctions.get().getEconomy().has(player, preAuctionTax);
     }
 
-    public static boolean withdrawPlayer(String playerName, double unsafeMoney) {
-        EconomyResponse receipt = ObsidianAuctions.get().getEconomy().withdrawPlayer(playerName, unsafeMoney);
+    public static boolean withdrawPlayer(UUID uuid, long safeMoney) {
+        return withdrawPlayer(uuid, getUnsafeMoney(safeMoney));
+    }
+
+    public static boolean withdrawPlayer(UUID uuid, double unsafeMoney) {
+        OfflinePlayer player = getOfflinePlayer(uuid);
+        if(player == null) {
+            return false;
+        }
+        EconomyResponse receipt = ObsidianAuctions.get().getEconomy().withdrawPlayer(player, unsafeMoney);
         return receipt.transactionSuccess();
     }
 
-    public static boolean depositPlayer(String playerName, double unsafeMoney) {
-        EconomyResponse receipt = ObsidianAuctions.get().getEconomy().depositPlayer(playerName, unsafeMoney);
+    public static boolean depositPlayer(UUID uuid, double unsafeMoney) {
+        OfflinePlayer player = getOfflinePlayer(uuid);
+        if(player == null) {
+            return false;
+        }
+        EconomyResponse receipt = ObsidianAuctions.get().getEconomy().depositPlayer(player, unsafeMoney);
         return receipt.transactionSuccess();
     }
 
@@ -158,6 +175,11 @@ public final class Functions {
 
     public static double getUnsafeMoney(long money) {
         return (double) money / Math.pow(10, ObsidianAuctions.decimalPlaces);
+    }
+
+    public static OfflinePlayer getOfflinePlayer(UUID uuid) {
+        OfflinePlayer player = Bukkit.getServer().getPlayer(uuid);
+        return player != null ? player : Bukkit.getServer().getOfflinePlayer(uuid);
     }
 
     private Functions() {
