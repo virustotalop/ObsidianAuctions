@@ -30,9 +30,9 @@ import java.util.UUID;
 public class AuctionScope {
 
     private Auction activeAuction = null;
-    private String scopeId;
-    private String name;
-    private String type;
+    private final String scopeId;
+    private final String name;
+    private final String type;
     private final List<Auction> auctionQueue = new ArrayList<>();
     private long lastAuctionDestroyTime = 0;
 
@@ -40,11 +40,10 @@ public class AuctionScope {
     private List<String> worlds = null;
     private Location minHouseLocation = null;
     private Location maxHouseLocation = null;
-    private String regionId = null;
     private boolean locationChecked = false;
 
-    private ConfigurationSection config;
-    private ConfigurationSection textConfig;
+    private final ConfigurationSection config;
+    private final ConfigurationSection textConfig;
 
     public static List<String> auctionScopesOrder = new ArrayList<>();
     public static Map<String, AuctionScope> auctionScopes = new HashMap<>();
@@ -58,11 +57,7 @@ public class AuctionScope {
      */
     public AuctionScope(String scopeId, ConfigurationSection config, ConfigurationSection textConfig) {
         this.scopeId = scopeId;
-        this.name = config.getString("name");
-
-        if(this.name == null)
-            this.name = scopeId;
-
+        this.name = this.resolveName(config);
         this.type = config.getString("type");
         this.config = config;
         this.textConfig = textConfig;
@@ -75,7 +70,7 @@ public class AuctionScope {
      */
     private boolean scopeLocationIsValid() {
         if(this.locationChecked) {
-            return worlds != null || this.minHouseLocation != null || this.maxHouseLocation != null || this.regionId != null;
+            return worlds != null || this.minHouseLocation != null || this.maxHouseLocation != null;
         } else if(this.type.equalsIgnoreCase("worlds")) {
             this.worlds = config.getStringList("worlds");
         } else if(type.equalsIgnoreCase("house")) {
@@ -89,7 +84,12 @@ public class AuctionScope {
             }
         }
         this.locationChecked = true;
-        return this.worlds != null || this.minHouseLocation != null || this.maxHouseLocation != null || this.regionId != null;
+        return this.worlds != null || this.minHouseLocation != null || this.maxHouseLocation != null;
+    }
+
+    private String resolveName(ConfigurationSection config) {
+        String name = config.getString("name");
+        return name != null ? name : this.scopeId;
     }
 
     /**
@@ -243,7 +243,7 @@ public class AuctionScope {
             return false;
         }
         if(this.type.equalsIgnoreCase("worlds")) {
-            for(int i = 0; i < worlds.size(); i++) {
+            for(int i = 0; i < this.worlds.size(); i++) {
                 if(this.worlds.get(i).equalsIgnoreCase(worldName) || this.worlds.get(i).equalsIgnoreCase("*")) {
                     return true;
                 }
@@ -326,10 +326,10 @@ public class AuctionScope {
      * @return players position in queue or zero if not in queue
      */
     public int getQueuePosition(String playerName) {
-        for(int t = 0; t < this.auctionQueue.size(); t++) {
-            Auction auction = this.auctionQueue.get(t);
+        for(int i = 0; i < this.auctionQueue.size(); i++) {
+            Auction auction = this.auctionQueue.get(i);
             if(auction.getOwnerName().equalsIgnoreCase(playerName)) {
-                return t + 1;
+                return i + 1;
             }
         }
         return 0;
