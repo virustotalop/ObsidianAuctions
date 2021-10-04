@@ -1,7 +1,7 @@
 package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.gmail.virustotalop.obsidianauctions.area.AreaManager;
+import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -77,7 +77,7 @@ public class AuctionParticipant {
             player.teleport(participant.lastKnownGoodLocation);
             participant.sendEscapeWarning();
             return;
-        } else if(AreaManager.isInArena(player)) {
+        } else if(ObsidianAuctions.get().getArenaManager().isInArena(player)) {
             player.teleport(participant.lastKnownGoodLocation);
             participant.sendArenaWarning();
             return;
@@ -103,7 +103,7 @@ public class AuctionParticipant {
         } else if(!AuctionParticipant.checkLocation(playerUUID, location)) {
             participant.sendEscapeWarning();
             return false;
-        } else if(AreaManager.isInArena(location)) {
+        } else if(ObsidianAuctions.get().getArenaManager().isInArena(location)) {
             participant.sendArenaWarning();
             return false;
         }

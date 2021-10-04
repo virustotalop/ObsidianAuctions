@@ -3,7 +3,7 @@ main: com.gmail.virustotalop.obsidianauctions.ObsidianAuctions
 version: ${pluginVersion}
 description: An auction plugin that is a fork of floAuction.
 authors: [flobi, VirusTotal]
-softdepend: [Vault, PlaceholderAPI]
+softdepend: [Vault, PlaceholderAPI, War, MobArena]
 api-version: "1.13"
 
 #Fork of floAuction, name has been changed to help with confusion.

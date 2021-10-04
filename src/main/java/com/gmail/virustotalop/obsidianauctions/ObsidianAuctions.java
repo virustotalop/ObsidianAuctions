@@ -8,7 +8,7 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import com.clubobsidian.wrappy.Configuration;
-import com.gmail.virustotalop.obsidianauctions.area.AreaManager;
+import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionLot;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
@@ -87,6 +87,7 @@ public class ObsidianAuctions extends JavaPlugin {
 
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
+    private ArenaManager arenaManager;
 
     //Adventure
     private BukkitAudiences adventure;
@@ -217,8 +218,6 @@ public class ObsidianAuctions extends JavaPlugin {
         Injector injector = this.inject(language);
         this.registerListeners(injector);
 
-        AreaManager.loadArenaListeners(this);
-
         //Load in inventory click listener
 
         BukkitScheduler scheduler = this.getServer().getScheduler();
@@ -257,6 +256,7 @@ public class ObsidianAuctions extends JavaPlugin {
         Injector injector = Guice.createInjector(module);
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
+        this.arenaManager = injector.getInstance(ArenaManager.class);
         return injector;
     }
 
@@ -523,6 +523,10 @@ public class ObsidianAuctions extends JavaPlugin {
 
     public Permission getPermission() {
         return this.perms;
+    }
+
+    public ArenaManager getArenaManager() {
+        return this.arenaManager;
     }
 
     private void logToBukkit(String key, Level level) {
