@@ -39,19 +39,6 @@ public class ArenaManager {
         this.loadRegions(config, plugin);
     }
 
-    /*
-
-    arenas:
-    some-world-name-that-does-not-exist:
-        regions:
-        global-region:
-            type: global
-        cuboid-region:
-            type: cuboid
-            min: 0,0,0
-         max: 64,64,64
-     */
-
     private void loadRegions(Configuration config, ObsidianAuctions plugin) {
         //Run one tick after load, this is to ensure that all worlds are actually loaded
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
