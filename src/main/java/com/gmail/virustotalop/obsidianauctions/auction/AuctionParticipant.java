@@ -201,7 +201,7 @@ public class AuctionParticipant {
         boolean participating = false;
         Auction scopeAuction = this.auctionScope.getActiveAuction();
         if(scopeAuction != null) {
-            if(scopeAuction.getOwnerName().equals(this.playerUUID)) {
+            if(scopeAuction.getOwnerUUID().equals(this.playerUUID)) {
                 participating = true;
             } else if(scopeAuction.getCurrentBid() != null && scopeAuction.getCurrentBid().getBidderUUID().equals(this.playerUUID)) {
                 participating = true;
@@ -215,7 +215,7 @@ public class AuctionParticipant {
         for(int i = 0; i < this.auctionScope.getAuctionQueueLength(); i++) {
             Auction queuedAuction = this.auctionScope.getAuctionQueue().get(i);
             if(queuedAuction != null) {
-                if(queuedAuction.getOwnerName().equals(this.playerUUID)) {
+                if(queuedAuction.getOwnerUUID().equals(this.playerUUID)) {
                     participating = true;
                 }
                 if(queuedAuction.getCurrentBid() != null && queuedAuction.getCurrentBid().getBidderUUID().equals(this.playerUUID)) {

@@ -130,7 +130,6 @@ public class AuctionScope {
      */
     public void queueAuction(Auction auctionToQueue) {
         UUID playerUUID = auctionToQueue.getOwnerUUID();
-        String playerName = auctionToQueue.getOwnerName();
         MessageManager messageManager = auctionToQueue.messageManager;
 
         if(this.activeAuction == null) {
@@ -144,7 +143,7 @@ public class AuctionScope {
             if(AuctionConfig.getInt("max-auction-queue-length", this) <= 0) {
                 messageManager.sendPlayerMessage("auction-fail-auction-exists", playerUUID, auctionToQueue);
                 return;
-            } else if(this.activeAuction.getOwnerName().equalsIgnoreCase(playerName)) {
+            } else if(this.activeAuction.getOwnerUUID().equals(playerUUID)) {
                 messageManager.sendPlayerMessage("auction-queue-fail-current-auction", playerUUID, auctionToQueue);
                 return;
             } else if(AuctionConfig.getInt("max-auction-queue-length", this) <= auctionQueue.size()) {
@@ -155,7 +154,7 @@ public class AuctionScope {
         for(int i = 0; i < this.auctionQueue.size(); i++) {
             if(this.auctionQueue.get(i) != null) {
                 Auction queuedAuction = this.auctionQueue.get(i);
-                if(queuedAuction.getOwnerName().equalsIgnoreCase(playerName)) {
+                if(queuedAuction.getOwnerUUID().equals(playerUUID)) {
                     messageManager.sendPlayerMessage("auction-queue-fail-in-queue", playerUUID, auctionToQueue);
                     return;
                 }

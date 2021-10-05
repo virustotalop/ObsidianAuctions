@@ -162,7 +162,7 @@ public class AuctionBid {
         } else if(!AuctionParticipant.checkLocation(this.bidderUUID)) {
             this.error = "bid-fail-outside-auctionhouse";
             return false;
-        } else if(bidderName.equalsIgnoreCase(auction.getOwnerName()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", this.auction.getScope())) {
+        } else if(bidderUUID.equals(auction.getOwnerUUID()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", this.auction.getScope())) {
             this.error = "bid-fail-is-auction-owner";
             return false;
         }
