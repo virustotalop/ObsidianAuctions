@@ -30,6 +30,15 @@ allow-damaged-items: false
 allow-gamemode-change: false
 allow-arenas: false
 
+arenas:
+  some-world-name-that-does-not-exist:
+    global-region:
+      type: global
+    cuboid-region:
+      type: cuboid
+      min: 0,0,0
+      max: 64,64,64
+
 max-auction-queue-length: 2
 min-auction-interval-secs: 10
 

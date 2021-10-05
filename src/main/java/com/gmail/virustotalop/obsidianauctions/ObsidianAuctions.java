@@ -8,7 +8,7 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import com.clubobsidian.wrappy.Configuration;
-import com.gmail.virustotalop.obsidianauctions.area.AreaManager;
+import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionLot;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
@@ -87,6 +87,7 @@ public class ObsidianAuctions extends JavaPlugin {
 
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
+    private ArenaManager arenaManager;
 
     //Adventure
     private BukkitAudiences adventure;
@@ -214,10 +215,8 @@ public class ObsidianAuctions extends JavaPlugin {
         }
 
         String language = config.getString("language");
-        Injector injector = this.inject(language);
+        Injector injector = this.inject(config, language);
         this.registerListeners(injector);
-
-        AreaManager.loadArenaListeners(this);
 
         //Load in inventory click listener
 
@@ -248,15 +247,16 @@ public class ObsidianAuctions extends JavaPlugin {
         scheduler.runTaskTimerAsynchronously(this, this::writeCurrentLog, 20, 20);
     }
 
-    private Injector inject(String itemLanguage) {
+    private Injector inject(Configuration config, String itemLanguage) {
         File itemLanguagesFolder = new File(this.dataFolder, "item_languages");
         File itemConfig = new File(itemLanguagesFolder, itemLanguage + ".yml");
         Configuration i18nItemConfig = Configuration.load(itemConfig);
 
-        AuctionModule module = new AuctionModule(this, this.adventure, i18nItemConfig);
+        AuctionModule module = new AuctionModule(this, this.adventure, config, i18nItemConfig);
         Injector injector = Guice.createInjector(module);
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
+        this.arenaManager = injector.getInstance(ArenaManager.class);
         return injector;
     }
 
@@ -523,6 +523,10 @@ public class ObsidianAuctions extends JavaPlugin {
 
     public Permission getPermission() {
         return this.perms;
+    }
+
+    public ArenaManager getArenaManager() {
+        return this.arenaManager;
     }
 
     private void logToBukkit(String key, Level level) {

@@ -140,7 +140,7 @@ public class AuctionCommands {
             this.messageManager.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
         } else {
             Player player = this.plugin.getServer().getPlayer(uuid);
-            String playerName = player.getName();
+            UUID playerUUID = player.getUniqueId();
             AuctionScope userScope = AuctionScope.getPlayerScope(player);
             if(userScope == null) {
                 this.messageManager.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
@@ -152,7 +152,7 @@ public class AuctionCommands {
             }
             List<Auction> auctionQueue = userScope.getAuctionQueue();
             for(int i = 0; i < auctionQueue.size(); i++) {
-                if(auctionQueue.get(i).getOwnerName().equalsIgnoreCase(playerName)) {
+                if(auctionQueue.get(i).getOwnerUUID().equals(playerUUID)) {
                     auctionQueue.remove(i);
                     this.messageManager.sendPlayerMessage("auction-cancel-queued", uuid, (AuctionScope) null);
                     return;
