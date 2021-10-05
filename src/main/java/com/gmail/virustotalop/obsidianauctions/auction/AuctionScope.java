@@ -187,9 +187,8 @@ public class AuctionScope {
         }
         MessageManager messageManager = auction.messageManager;
 
-        String playerName = auction.getOwnerName();
         UUID playerUUID = auction.getOwnerUUID();
-        Player player = Bukkit.getPlayer(playerName);
+        Player player = Bukkit.getPlayer(playerUUID);
         if(player == null || !player.isOnline()) {
             return;
         } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(auction.getOwnerUUID(), false)) {
