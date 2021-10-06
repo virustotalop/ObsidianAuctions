@@ -79,8 +79,20 @@ public class AuctionScope {
                 this.minHouseLocation = null;
                 this.maxHouseLocation = null;
             } else {
-                this.minHouseLocation = new Location(Bukkit.getWorld(world), this.config.getDouble("house-min-x"), this.config.getDouble("house-min-y"), this.config.getDouble("house-min-z"));
-                this.maxHouseLocation = new Location(Bukkit.getWorld(world), this.config.getDouble("house-max-x"), this.config.getDouble("house-max-y"), this.config.getDouble("house-max-z"));
+                double configMinX = this.config.getDouble("house-min-x");
+                double configMinY = this.config.getDouble("house-min-y");
+                double configMinZ = this.config.getDouble("house-min-z");
+                double configMaxX = this.config.getDouble("house-max-x");
+                double configMaxY = this.config.getDouble("house-max-y");
+                double configMaxZ = this.config.getDouble("house-max-z");
+                double minX = Math.min(configMinX, configMaxX);
+                double minY = Math.min(configMinY, configMaxY);
+                double minZ = Math.min(configMinZ, configMaxZ);
+                double maxX = Math.max(configMinX, configMaxX);
+                double maxY = Math.max(configMinY, configMaxY);
+                double maxZ = Math.max(configMinZ, configMaxZ);
+                this.minHouseLocation = new Location(Bukkit.getWorld(world), minX, minY, minZ);
+                this.maxHouseLocation = new Location(Bukkit.getWorld(world), maxX, maxY, maxZ);
             }
         }
         this.locationChecked = true;
