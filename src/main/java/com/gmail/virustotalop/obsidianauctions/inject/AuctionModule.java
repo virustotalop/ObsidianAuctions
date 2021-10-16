@@ -17,6 +17,7 @@ import com.gmail.virustotalop.obsidianauctions.message.ActionBarManager;
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageManager;
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageParser;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
+import com.gmail.virustotalop.obsidianauctions.papi.PlaceholderAPI;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -28,13 +29,16 @@ public class AuctionModule implements Module {
     private final BukkitAudiences adventure;
     private final Configuration config;
     private final Configuration i18nItemConfig;
+    private final Class<? extends PlaceholderAPI> papiClazz;
 
     public AuctionModule(ObsidianAuctions plugin, BukkitAudiences adventure,
-                         Configuration config, Configuration i18nItemConfig) {
+                         Configuration config, Configuration i18nItemConfig,
+                         Class<? extends PlaceholderAPI> papiClazz) {
         this.plugin = plugin;
         this.adventure = adventure;
         this.config = config;
         this.i18nItemConfig = i18nItemConfig;
+        this.papiClazz = papiClazz;
     }
 
     @Override
@@ -44,6 +48,7 @@ public class AuctionModule implements Module {
         binder.bind(BukkitAudiences.class).toInstance(this.adventure);
         binder.bind(Configuration.class).annotatedWith(Config.class).toInstance(this.config);
         binder.bind(Configuration.class).annotatedWith(I18nItemConfig.class).toInstance(this.i18nItemConfig);
+        binder.bind(PlaceholderAPI.class).to(this.papiClazz).asEagerSingleton();
         binder.bind(ArenaManager.class).asEagerSingleton();
         binder.bind(TranslationFactory.class).to(I18nTranslationFactory.class).asEagerSingleton();
         binder.bind(ActionBarManager.class).asEagerSingleton();

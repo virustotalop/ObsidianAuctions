@@ -9,7 +9,7 @@ import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
-import com.gmail.virustotalop.obsidianauctions.util.PlaceholderAPIUtil;
+import com.gmail.virustotalop.obsidianauctions.papi.PlaceholderAPI;
 import com.google.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -31,10 +31,12 @@ import java.util.Map;
 public class AuctionMessageParser {
 
     private final TranslationFactory translation;
+    private final PlaceholderAPI papi;
 
     @Inject
-    private AuctionMessageParser(TranslationFactory translation) {
+    private AuctionMessageParser(TranslationFactory translation, PlaceholderAPI papi) {
         this.translation = translation;
+        this.papi = papi;
     }
 
     /**
@@ -337,10 +339,8 @@ public class AuctionMessageParser {
                 }
             }
         }
-        if(ObsidianAuctions.placeHolderApiEnabled) {
-            for(int i = 0; i < newMessageList.size(); i++) {
-                newMessageList.set(i, PlaceholderAPIUtil.setPlaceHolders(player, newMessageList.get(i)));
-            }
+        for(int i = 0; i < newMessageList.size(); i++) {
+            newMessageList.set(i, this.papi.setPlaceHolders(player, newMessageList.get(i)));
         }
         return newMessageList;
     }

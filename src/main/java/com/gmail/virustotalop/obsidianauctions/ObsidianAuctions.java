@@ -18,6 +18,9 @@ import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
+import com.gmail.virustotalop.obsidianauctions.papi.NoImplPapi;
+import com.gmail.virustotalop.obsidianauctions.papi.PapiImpl;
+import com.gmail.virustotalop.obsidianauctions.papi.PlaceholderAPI;
 import com.gmail.virustotalop.obsidianauctions.util.FileUtil;
 import com.gmail.virustotalop.obsidianauctions.util.InjectUtil;
 import com.google.inject.Guice;
@@ -111,11 +114,6 @@ public class ObsidianAuctions extends JavaPlugin {
     public static boolean allowRenamedItems;
     public static int actionBarTicks;
 
-    /* Check if addon plugins are enabled
-     *
-     */
-    public static boolean placeHolderApiEnabled = false;
-
     /**
      * Used by AuctinLot to store auction lots which could not be given to players because they were offline.
      *
@@ -201,12 +199,13 @@ public class ObsidianAuctions extends JavaPlugin {
             return;
         }
 
+        Class<? extends PlaceholderAPI> papiClazz = NoImplPapi.class;
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            ObsidianAuctions.placeHolderApiEnabled = true;
+            papiClazz = PapiImpl.class;
         }
 
         String language = config.getString("language");
-        Injector injector = this.inject(config, language);
+        Injector injector = this.inject(config, language, papiClazz);
         this.registerListeners(injector);
 
         //Load in inventory click listener
@@ -256,12 +255,12 @@ public class ObsidianAuctions extends JavaPlugin {
         return this.setupPermissions();
     }
 
-    private Injector inject(Configuration config, String itemLanguage) {
+    private Injector inject(Configuration config, String itemLanguage, Class<? extends PlaceholderAPI> papiClazz) {
         File itemLanguagesFolder = new File(this.dataFolder, "item_languages");
         File itemConfig = new File(itemLanguagesFolder, itemLanguage + ".yml");
         Configuration i18nItemConfig = Configuration.load(itemConfig);
 
-        AuctionModule module = new AuctionModule(this, this.adventure, config, i18nItemConfig);
+        AuctionModule module = new AuctionModule(this, this.adventure, config, i18nItemConfig, papiClazz);
         Injector injector = Guice.createInjector(module);
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
