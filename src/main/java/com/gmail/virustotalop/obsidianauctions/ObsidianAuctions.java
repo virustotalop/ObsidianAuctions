@@ -64,6 +64,10 @@ public class ObsidianAuctions extends JavaPlugin {
 
     private static ObsidianAuctions instance;
 
+    public static ObsidianAuctions get() {
+        return instance;
+    }
+
     public static int decimalPlaces = 0;
     public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{0,1})?$";
     private File auctionLog = null;
@@ -146,7 +150,6 @@ public class ObsidianAuctions extends JavaPlugin {
     // Vault objects
     private Economy econ = null;
     private Permission perms = null;
-    // private static Chat chat = null;
 
     /**
      * Called by Bukkit when initializing.  Sets up basic plugin settings.
@@ -175,6 +178,7 @@ public class ObsidianAuctions extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+
         this.saveResource("config.yml", false);
         this.saveResource("language.yml", false);
 
@@ -184,8 +188,7 @@ public class ObsidianAuctions extends JavaPlugin {
         }
 
         this.saveResource("item_languages/en-US.yml", false);
-
-        loadConfig();
+        this.loadConfig();
 
         if(Bukkit.getPluginManager().getPlugin("Vault") == null) {
             logToBukkit("plugin-disabled-no-vault", Level.SEVERE);
@@ -193,22 +196,10 @@ public class ObsidianAuctions extends JavaPlugin {
             return;
         }
 
-        if(!this.setupEconomy()) {
-            logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
+        if(!this.setupVault()) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
-        } else {
-            decimalPlaces = Math.max(econ.fractionalDigits(), 0);
-            config.set("decimal-places", decimalPlaces);
-            if(decimalPlaces < 1) {
-                decimalRegex = "^[0-9]{1,13}$";
-            } else if(decimalPlaces == 1) {
-                decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
-            } else {
-                decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
-            }
         }
-        this.setupPermissions();
 
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             ObsidianAuctions.placeHolderApiEnabled = true;
@@ -245,6 +236,24 @@ public class ObsidianAuctions extends JavaPlugin {
 
         this.messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
         scheduler.runTaskTimerAsynchronously(this, this::writeCurrentLog, 20, 20);
+    }
+
+    private boolean setupVault() {
+        if(!this.setupEconomy()) {
+            logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
+            return false;
+        } else {
+            decimalPlaces = Math.max(econ.fractionalDigits(), 0);
+            config.set("decimal-places", decimalPlaces);
+            if(decimalPlaces < 1) {
+                decimalRegex = "^[0-9]{1,13}$";
+            } else if(decimalPlaces == 1) {
+                decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
+            } else {
+                decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
+            }
+        }
+        return this.setupPermissions();
     }
 
     private Injector inject(Configuration config, String itemLanguage) {
@@ -417,8 +426,8 @@ public class ObsidianAuctions extends JavaPlugin {
             if(rsp == null) {
                 return false;
             }
-            econ = rsp.getProvider();
-            return econ != null;
+            this.econ = rsp.getProvider();
+            return this.econ != null;
         } catch(ClassNotFoundException ex) {
             return false;
         }
@@ -435,8 +444,8 @@ public class ObsidianAuctions extends JavaPlugin {
             RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> rsp = Bukkit
                     .getServicesManager()
                     .getRegistration(net.milkbowl.vault.permission.Permission.class);
-            perms = rsp.getProvider();
-            return perms != null;
+            this.perms = rsp.getProvider();
+            return this.perms != null;
         } catch(ClassNotFoundException e) {
             return false;
         }
@@ -544,10 +553,6 @@ public class ObsidianAuctions extends JavaPlugin {
             String messageListItem = i.next();
             this.getLogger().log(level, chatPrepClean(messageListItem, null));
         }
-    }
-
-    public static ObsidianAuctions get() {
-        return instance;
     }
 
     public void setSuspendAllAuctions(boolean suspend) {
