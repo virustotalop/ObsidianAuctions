@@ -7,12 +7,12 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public class CuboidRegion extends Region {
     
-    private int minX;
-    private int minY;
-    private int minZ;
-    private int maxX;
-    private int maxY;
-    private int maxZ;
+    private final int minX;
+    private final int minY;
+    private final int minZ;
+    private final int maxX;
+    private final int maxY;
+    private final int maxZ;
 
     public CuboidRegion(String name, World world, Point min, Point max) {
         super(name, world);
