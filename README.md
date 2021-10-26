@@ -1,9 +1,9 @@
 <div align="center">
 <h1>ObsidianAuctions</h1>
 
-<p>An auction plugin for spigot 1.12.2+, you can find it <a href="https://www.spigotmc.org/resources/obsidianauctions.5595/">here on spigot!</a></p>
-<p>5.0.0 is under heavy development and is not currently considered production ready. You can find the old code on the 4.1.1 branch but it is not recommended to run old builds due to them having numerous bugs which is why 5.0.0 has quite a bit of the old code rewritten.</p>
- </div>
+<p>An auction plugin for spigot 1.12.2-1.17.1, you can find it <a href="https://www.spigotmc.org/resources/obsidianauctions.5595/">here on spigot!</a></p>
+<p>5.0.0 is under heavy development and is not currently considered production ready.</p>
+</div>
 
 ## FAQ
 * What is ObsidianAuctions?
@@ -24,10 +24,7 @@
 * Support for modern Minecraft 1.12-1.17
 * Easier to configure language file
   * Support for [minimessage](https://docs.adventure.kyori.net/minimessage.html#format)
- 
- 
-**Future Features**
-* Configurable disallowed auction areas
+* Configurable disallowed auction areas 
  
  
 ## How to file a bug report
