@@ -225,8 +225,9 @@ public class AuctionParticipant {
                 }
             }
         }
-        if(!participating) ObsidianAuctions.auctionParticipants.remove(this);{
-            return participating;
+        if(!participating) {
+            ObsidianAuctions.auctionParticipants.remove(this);
         }
+        return participating;
     }
 }
