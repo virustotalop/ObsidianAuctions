@@ -4,6 +4,7 @@ import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
@@ -48,6 +49,7 @@ public class AuctionModule implements Module {
         binder.bind(BukkitAudiences.class).toInstance(this.adventure);
         binder.bind(Configuration.class).annotatedWith(Config.class).toInstance(this.config);
         binder.bind(Configuration.class).annotatedWith(I18nItemConfig.class).toInstance(this.i18nItemConfig);
+        binder.bind(AuctionScopeManager.class).asEagerSingleton();
         binder.bind(PlaceholderAPI.class).to(this.papiClazz).asEagerSingleton();
         binder.bind(ArenaManager.class).asEagerSingleton();
         binder.bind(TranslationFactory.class).to(I18nTranslationFactory.class).asEagerSingleton();

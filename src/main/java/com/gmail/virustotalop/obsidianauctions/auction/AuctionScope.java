@@ -45,9 +45,6 @@ public class AuctionScope {
     private final ConfigurationSection config;
     private final ConfigurationSection textConfig;
 
-    public static List<String> auctionScopesOrder = new ArrayList<>();
-    public static Map<String, AuctionScope> auctionScopes = new HashMap<>();
-
     /**
      * Constructor to make new scopes from the name, config and language config files.
      *
@@ -130,7 +127,7 @@ public class AuctionScope {
     public void setActiveAuction(Auction auction) {
         if(this.activeAuction != null && auction == null) {
             this.lastAuctionDestroyTime = System.currentTimeMillis();
-            checkAuctionQueue();
+            ObsidianAuctions.get().getAuctionScopeManager().checkAuctionQueue();
         }
         this.activeAuction = auction;
     }
@@ -175,7 +172,7 @@ public class AuctionScope {
         if((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
             this.auctionQueue.add(auctionToQueue);
             AuctionParticipant.addParticipant(playerUUID, this);
-            AuctionScope.checkAuctionQueue();
+            ObsidianAuctions.get().getAuctionScopeManager().checkAuctionQueue();
             if(this.auctionQueue.contains(auctionToQueue)) {
                 messageManager.sendPlayerMessage("auction-queue-enter", playerUUID, auctionToQueue);
             }
@@ -185,7 +182,7 @@ public class AuctionScope {
     /**
      * Checks the auction queue to see if the next auction is ready to start.
      */
-    private void checkThisAuctionQueue() {
+    void checkThisAuctionQueue() {
         if(this.activeAuction != null) {
             return;
         } else if(System.currentTimeMillis() - this.lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) {
@@ -227,7 +224,7 @@ public class AuctionScope {
      * @param player player to check
      * @return whether he's in the scope
      */
-    private boolean isPlayerInScope(Player player) {
+    public boolean isPlayerInScope(Player player) {
         if(player == null) {
             return false;
         }
@@ -240,7 +237,7 @@ public class AuctionScope {
      * @param location location to check
      * @return whether it's in the scope
      */
-    private boolean isLocationInScope(Location location) {
+    public boolean isLocationInScope(Location location) {
         if(location == null) {
             return false;
         }
@@ -321,15 +318,6 @@ public class AuctionScope {
     }
 
     /**
-     * Checks the auction queues for each scope, starting any auctions which are ready.
-     */
-    public static void checkAuctionQueue() {
-        for(Map.Entry<String, AuctionScope> auctionScopesEntry : auctionScopes.entrySet()) {
-            auctionScopesEntry.getValue().checkThisAuctionQueue();
-        }
-    }
-
-    /**
      * Gets the position of the named player's auction in the queue or zero if not in queue.
      *
      * @param playerUUID uuid of player
@@ -345,151 +333,16 @@ public class AuctionScope {
         return 0;
     }
 
-    /**
-     * Gets the AuctionScope instance in which the player is.
-     *
-     * @param player player to check
-     * @return scope where the player is
-     */
-    public static AuctionScope getPlayerScope(Player player) {
-        if(player == null) {
-            return null;
-        }
-        for(int i = 0; i < AuctionScope.auctionScopesOrder.size(); i++) {
-            String auctionScopeId = AuctionScope.auctionScopesOrder.get(i);
-            AuctionScope auctionScope = AuctionScope.auctionScopes.get(auctionScopeId);
-            if(auctionScope.isPlayerInScope(player)) {
-                return auctionScope;
-            }
-        }
-        return null;
+    @ApiStatus.Internal
+    public void clearAuctionQueue() {
+        this.auctionQueue.clear();
     }
 
-    /**
-     * Gets the AuctionScope instance in which the location is.
-     *
-     * @param location the location to check
-     * @return scope where the location is
-     */
-    public static AuctionScope getLocationScope(Location location) {
-        if(location == null) {
-            return null;
-        }
-        for(int i = 0; i < AuctionScope.auctionScopesOrder.size(); i++) {
-            String auctionScopeId = AuctionScope.auctionScopesOrder.get(i);
-            AuctionScope auctionScope = AuctionScope.auctionScopes.get(auctionScopeId);
-            if(auctionScope.isLocationInScope(location)) {
-                return auctionScope;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Builds list of AuctionScope instances based on the configuration loaded by the plugin.
-     *
-     * @param auctionScopesConfig
-     * @param dataFolder
-     */
-    public static void setupScopeList(ConfigurationSection auctionScopesConfig, File dataFolder) {
-        AuctionScope.auctionScopes.clear();
-        AuctionScope.auctionScopesOrder.clear();
-        if(auctionScopesConfig != null) {
-            for(String scopeName : auctionScopesConfig.getKeys()) {
-                AuctionScope.auctionScopesOrder.add(scopeName);
-                ConfigurationSection auctionScopeConfig = auctionScopesConfig.getConfigurationSection(scopeName);
-                File scopeTextConfigFile = new File(dataFolder, "language-" + scopeName + ".yml");
-                Configuration scopeTextConfig = null;
-                if(scopeTextConfigFile.exists()) {
-                    scopeTextConfig = Configuration.load(scopeTextConfigFile);
-                }
-                AuctionScope auctionScope = new AuctionScope(scopeName, auctionScopeConfig, scopeTextConfig);
-                AuctionScope.auctionScopes.put(scopeName, auctionScope);
-            }
-        }
-    }
-
-    /**
-     * Cancels all running auctions AKA the Big red button.
-     */
-    public static void cancelAllAuctions() {
-        for(Map.Entry<String, AuctionScope> auctionScopesEntry : AuctionScope.auctionScopes.entrySet()) {
-            AuctionScope auctionScope = auctionScopesEntry.getValue();
-            auctionScope.auctionQueue.clear();
-            if(auctionScope.activeAuction != null) {
-                auctionScope.activeAuction.cancel();
-            }
-        }
-    }
-
-    /**
-     * Checks to see if any auctions are running.
-     *
-     * @return
-     */
-    public static boolean areAuctionsRunning() {
-        for(Map.Entry<String, AuctionScope> auctionScopesEntry : AuctionScope.auctionScopes.entrySet()) {
-            AuctionScope auctionScope = auctionScopesEntry.getValue();
-            if(auctionScope.getActiveAuction() != null || auctionScope.getAuctionQueueLength() > 0) {
-                return true;
-            }
+    public boolean cancelActiveAuction() {
+        if(this.activeAuction != null) {
+            this.activeAuction.cancel();
+            return true;
         }
         return false;
-    }
-
-    @ApiStatus.Internal
-    public static void sendFarewellMessages() {
-        Iterator<UUID> playerIterator = ObsidianAuctions.get().getPlayerScopeCache().keySet().iterator();
-        while(playerIterator.hasNext()) {
-            UUID playerUUID = playerIterator.next();
-            if(!AuctionParticipant.isParticipating(playerUUID)) {
-                Player player = Bukkit.getPlayer(playerUUID);
-                if(player != null && player.isOnline()) {
-                    String oldScopeId = ObsidianAuctions.get().getPlayerScopeCache().get(playerUUID);
-                    AuctionScope oldScope = AuctionScope.auctionScopes.get(oldScopeId);
-                    AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-                    String playerScopeId = null;
-                    if(playerScope != null) {
-                        playerScopeId = playerScope.getScopeId();
-                    }
-                    if(playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
-                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerUUID, oldScope);
-                        playerIterator.remove();
-                        ObsidianAuctions.get().getPlayerScopeCache().remove(playerUUID);
-                    }
-                }
-            }
-        }
-    }
-
-    @ApiStatus.Internal
-    public static void sendWelcomeMessages() {
-        Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
-        for(Player player : players) {
-            AuctionScope.sendWelcomeMessage(player, false);
-        }
-    }
-
-    @ApiStatus.Internal
-    public static void sendWelcomeMessage(Player player, boolean isOnJoin) {
-        String welcomeMessageKey = "auctionscope-welcome";
-        if(isOnJoin) {
-            welcomeMessageKey += "-onjoin";
-        }
-        UUID playerUUID = player.getUniqueId();
-        if(!AuctionParticipant.isParticipating(playerUUID)) {
-            AuctionScope playerScope = AuctionScope.getPlayerScope(player);
-            String oldScopeId = ObsidianAuctions.get().getPlayerScopeCache().get(playerUUID);
-            if(playerScope == null) {
-                if(oldScopeId != null) {
-                    ObsidianAuctions.get().getPlayerScopeCache().remove(playerUUID);
-                }
-            } else {
-                if(oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
-                    ObsidianAuctions.get().getMessageManager().sendPlayerMessage(welcomeMessageKey, playerUUID, playerScope);
-                    ObsidianAuctions.get().getPlayerScopeCache().put(playerUUID, playerScope.getScopeId());
-                }
-            }
-        }
     }
 }

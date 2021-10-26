@@ -9,6 +9,7 @@ import com.gmail.virustotalop.obsidianauctions.arena.region.GlobalRegion;
 import com.gmail.virustotalop.obsidianauctions.arena.region.Point;
 import com.gmail.virustotalop.obsidianauctions.arena.region.Region;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
 import com.google.inject.Inject;
 import org.bukkit.Bukkit;
@@ -31,11 +32,12 @@ import java.util.logging.Level;
  */
 public class ArenaManager {
 
-    private final Map<String, Collection<Region>> regions;
+    private final Map<String, Collection<Region>> regions = new HashMap<>();;
+    private final AuctionScopeManager scope;
 
     @Inject
-    private ArenaManager(@Config Configuration config, ObsidianAuctions plugin) {
-        this.regions = new HashMap<>();
+    private ArenaManager(@Config Configuration config, ObsidianAuctions plugin, AuctionScopeManager scope) {
+        this.scope = scope;
         this.loadRegions(config, plugin);
     }
 
@@ -94,7 +96,7 @@ public class ArenaManager {
     public boolean isInArena(Location location) {
         if(location == null) {
             return false;
-        } else if(AuctionConfig.getBoolean("allow-arenas", AuctionScope.getLocationScope(location))) {
+        } else if(AuctionConfig.getBoolean("allow-arenas", this.scope.getLocationScope(location))) {
             return false;
         }
         Collection<Region> regions = this.regions.get(location.getWorld().getName());

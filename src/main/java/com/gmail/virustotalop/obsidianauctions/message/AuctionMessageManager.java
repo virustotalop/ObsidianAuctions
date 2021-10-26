@@ -3,6 +3,7 @@ package com.gmail.virustotalop.obsidianauctions.message;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
 import com.google.inject.Inject;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -23,12 +24,15 @@ public class AuctionMessageManager extends MessageManager {
     private final ActionBarManager actionBar;
     private final BukkitAudiences adventure;
     private final AuctionMessageParser parser;
+    private final AuctionScopeManager scope;
 
     @Inject
-    private AuctionMessageManager(ActionBarManager actionBar, BukkitAudiences adventure, AuctionMessageParser parser) {
+    private AuctionMessageManager(ActionBarManager actionBar, BukkitAudiences adventure,
+                                  AuctionMessageParser parser, AuctionScopeManager scope) {
         this.actionBar = actionBar;
         this.adventure = adventure;
         this.parser = parser;
+        this.scope = scope;
     }
 
     @Override
@@ -51,7 +55,7 @@ public class AuctionMessageManager extends MessageManager {
             auctionScope = auction.getScope();
         }
         if(auctionScope == null && recipient instanceof Player) {
-            auctionScope = AuctionScope.getPlayerScope((Player) recipient);
+            auctionScope = this.scope.getPlayerScope((Player) recipient);
         }
         this.sendMessage(messageKeys, recipient, auctionScope, false);
     }
@@ -72,7 +76,7 @@ public class AuctionMessageManager extends MessageManager {
             recipient = Bukkit.getPlayer(playerUUID);
         }
         if(auctionScope == null && recipient instanceof Player) {
-            auctionScope = AuctionScope.getPlayerScope((Player) recipient);
+            auctionScope = this.scope.getPlayerScope((Player) recipient);
         }
         this.sendMessage(messageKeys, recipient, auctionScope, false);
     }
@@ -165,7 +169,7 @@ public class AuctionMessageManager extends MessageManager {
         for(Player player : onlinePlayers) {
             if(ObsidianAuctions.get().isVoluntarilyDisabled(player.getUniqueId())) {
                 continue;
-            } else if(auctionScope != null && !auctionScope.equals(AuctionScope.getPlayerScope(player))) {
+            } else if(auctionScope != null && !auctionScope.equals(this.scope.getPlayerScope(player))) {
                 continue;
             }
 

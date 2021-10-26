@@ -5,6 +5,7 @@ import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
 import com.google.inject.Inject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,10 +19,12 @@ import java.util.UUID;
 public class ArenaListener implements Listener {
 
     private final ArenaManager areaManager;
+    private final AuctionScopeManager scope;
 
     @Inject
-    private ArenaListener(ArenaManager areaManager) {
+    private ArenaListener(ArenaManager areaManager, AuctionScopeManager scope) {
         this.areaManager = areaManager;
+        this.scope = scope;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -51,7 +54,7 @@ public class ArenaListener implements Listener {
     }
 
     private boolean canNotJoinArenas(Player player) {
-        return !AuctionConfig.getBoolean("allow-arenas", AuctionScope.getPlayerScope(player));
+        return !AuctionConfig.getBoolean("allow-arenas", this.scope.getPlayerScope(player));
     }
 
     private boolean participating(UUID playerUUID) {

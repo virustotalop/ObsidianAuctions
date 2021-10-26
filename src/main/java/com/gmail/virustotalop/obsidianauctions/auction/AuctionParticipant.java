@@ -32,8 +32,11 @@ public class AuctionParticipant {
     @ApiStatus.Internal
     public static boolean checkLocation(UUID playerUUID) {
         AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
-        if(participant == null) return true;
-        return (participant.auctionScope.equals(AuctionScope.getPlayerScope(Bukkit.getPlayer(playerUUID))));
+        if(participant == null) {
+            return true;
+        }
+        Player player = Bukkit.getPlayer(playerUUID);
+        return participant.auctionScope.equals(ObsidianAuctions.get().getAuctionScopeManager().getPlayerScope(player));
     }
 
     /**
@@ -49,7 +52,7 @@ public class AuctionParticipant {
         if(participant == null) {
             return true;
         }
-        return (participant.auctionScope.equals(AuctionScope.getLocationScope(location)));
+        return participant.auctionScope.equals(ObsidianAuctions.get().getAuctionScopeManager().getLocationScope(location));
     }
 
     /**

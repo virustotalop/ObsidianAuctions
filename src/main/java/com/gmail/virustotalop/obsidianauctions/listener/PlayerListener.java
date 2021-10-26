@@ -5,6 +5,7 @@ import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.google.inject.Inject;
 import org.bukkit.entity.Player;
@@ -24,12 +25,14 @@ import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
-    private final MessageManager messageManager;
+    private final MessageManager message;
+    private final AuctionScopeManager scope;
     private final ObsidianAuctions plugin;
 
     @Inject
-    private PlayerListener(MessageManager messageManager, ObsidianAuctions plugin) {
-        this.messageManager = messageManager;
+    private PlayerListener(MessageManager message, AuctionScopeManager scope, ObsidianAuctions plugin) {
+        this.message = message;
+        this.scope = scope;
         this.plugin = plugin;
     }
 
@@ -37,7 +40,7 @@ public class PlayerListener implements Listener {
     public void playerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         this.plugin.killOrphan(player);
-        AuctionScope.sendWelcomeMessage(player, true);
+        this.scope.sendWelcomeMessage(player, true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -50,7 +53,7 @@ public class PlayerListener implements Listener {
     public void onPlayerChangedGameMode(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        AuctionScope playerScope = AuctionScope.getPlayerScope(player);
+        AuctionScope playerScope = this.scope.getPlayerScope(player);
         Auction playerAuction = ObsidianAuctions.get().getPlayerAuction(player);
         if(AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) {
             return;
@@ -58,7 +61,7 @@ public class PlayerListener implements Listener {
 
         if(AuctionParticipant.isParticipating(playerUUID)) {
             event.setCancelled(true);
-            this.messageManager.sendPlayerMessage("gamemodechange-fail-participating", playerUUID, (AuctionScope) null);
+            this.message.sendPlayerMessage("gamemodechange-fail-participating", playerUUID, (AuctionScope) null);
         }
     }
 
@@ -74,7 +77,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        AuctionScope playerScope = AuctionScope.getPlayerScope(player);
+        AuctionScope playerScope = this.scope.getPlayerScope(player);
 
         // Check inscope disabled commands, doesn't matter if participating:
         List<String> disabledCommands = AuctionConfig.getStringList("disabled-commands-inscope", playerScope);
@@ -82,7 +85,7 @@ public class PlayerListener implements Listener {
             if(disabledCommand.isEmpty()) continue;
             if(message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
-                this.messageManager.sendPlayerMessage("disabled-command-inscope", playerUUID, (AuctionScope) null);
+                this.message.sendPlayerMessage("disabled-command-inscope", playerUUID, (AuctionScope) null);
                 return;
             }
         }
@@ -102,7 +105,7 @@ public class PlayerListener implements Listener {
             }
             if(message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
-                this.messageManager.sendPlayerMessage("disabled-command-participating", playerUUID, (AuctionScope) null);
+                this.message.sendPlayerMessage("disabled-command-participating", playerUUID, (AuctionScope) null);
                 return;
             }
         }

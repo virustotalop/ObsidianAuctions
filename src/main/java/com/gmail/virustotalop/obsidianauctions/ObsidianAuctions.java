@@ -14,6 +14,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionLot;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
@@ -84,7 +85,6 @@ public class ObsidianAuctions extends JavaPlugin {
     private File dataFolder;
 
     private static int playerScopeCheckTimer;
-    private static final Map<UUID, String> playerScopeCache = new HashMap<>();
 
     private List<AuctionLot> orphanLots = new ArrayList<>();
     private Collection<UUID> voluntarilyDisabledUsers = new HashSet<>();
@@ -95,6 +95,7 @@ public class ObsidianAuctions extends JavaPlugin {
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
     private ArenaManager arenaManager;
+    private AuctionScopeManager scopeManager;
 
     //Adventure
     private BukkitAudiences adventure;
@@ -211,15 +212,15 @@ public class ObsidianAuctions extends JavaPlugin {
         //Load in inventory click listener
 
         BukkitScheduler scheduler = this.getServer().getScheduler();
-        scheduler.scheduleSyncRepeatingTask(this, () -> AuctionScope.checkAuctionQueue(), 20L, 20L);
+        scheduler.scheduleSyncRepeatingTask(this, () -> this.scopeManager.checkAuctionQueue(), 20L, 20L);
 
         long playerScopeCheckInterval = config.getLong("auctionscope-change-check-interval");
         if(playerScopeCheckTimer > 0) scheduler.cancelTask(playerScopeCheckTimer);
 
         if(playerScopeCheckInterval > 0) {
             playerScopeCheckTimer = scheduler.scheduleSyncRepeatingTask(this, () -> {
-                AuctionScope.sendFarewellMessages();
-                AuctionScope.sendWelcomeMessages();
+                this.scopeManager.sendFarewellMessages();
+                this.scopeManager.sendWelcomeMessages();
             }, playerScopeCheckInterval, playerScopeCheckInterval);
         }
 
@@ -265,6 +266,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
         this.arenaManager = injector.getInstance(ArenaManager.class);
+        this.scopeManager = injector.getInstance(AuctionScopeManager.class);
         return injector;
     }
 
@@ -342,9 +344,6 @@ public class ObsidianAuctions extends JavaPlugin {
 
         textConfig.save();*/
 
-        // Build auction scopes.
-        AuctionScope.setupScopeList(config.getConfigurationSection("auction-scopes"), this.dataFolder);
-
         //Gui queue inventory name
         ObsidianAuctions.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
         ObsidianAuctions.itemBlacklist = config.getStringList("name-blacklist");
@@ -370,7 +369,7 @@ public class ObsidianAuctions extends JavaPlugin {
     @Override
     public void onDisable() {
         this.writeCurrentLog();
-        AuctionScope.cancelAllAuctions();
+        this.scopeManager.cancelAllAuctions();
         instance = null;
         this.logToBukkit("plugin-disabled", Level.INFO);
         this.auctionLog = null;
@@ -460,7 +459,7 @@ public class ObsidianAuctions extends JavaPlugin {
         if(player == null) {
             return null;
         }
-        AuctionScope auctionScope = AuctionScope.getPlayerScope(player);
+        AuctionScope auctionScope = this.scopeManager.getPlayerScope(player);
         if(auctionScope == null) {
             return null;
         }
@@ -499,10 +498,6 @@ public class ObsidianAuctions extends JavaPlugin {
         FileUtil.save(this.suspendedUsers, "suspendedUsers.ser");
     }
 
-    public Map<UUID, String> getPlayerScopeCache() {
-        return playerScopeCache;
-    }
-
     /**
      * Prepares chat, prepending prefix and removing colors.
      *
@@ -535,6 +530,10 @@ public class ObsidianAuctions extends JavaPlugin {
 
     public ArenaManager getArenaManager() {
         return this.arenaManager;
+    }
+
+    public AuctionScopeManager getAuctionScopeManager() {
+        return this.scopeManager;
     }
 
     private void logToBukkit(String key, Level level) {
