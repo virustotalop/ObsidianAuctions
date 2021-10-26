@@ -1,9 +1,12 @@
 package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.google.inject.Inject;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.UUID;
 
 public class AuctionManagerListener implements Listener {
 
@@ -16,6 +19,12 @@ public class AuctionManagerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
-        this.auctionManager.clearPlayerScope(event.getPlayer());
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+        this.auctionManager.clearPlayerScope(player);
+        AuctionParticipant participant = this.auctionManager.getParticipant(uuid);
+        if(participant != null) {
+            this.auctionManager.removeParticipant(participant);
+        }
     }
 }

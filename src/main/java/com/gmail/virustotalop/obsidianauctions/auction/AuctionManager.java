@@ -188,7 +188,7 @@ public class AuctionManager {
      * @param playerUUID uuid of participant
      * @return participant instance
      */
-    private AuctionParticipant getParticipant(UUID playerUUID) {
+    AuctionParticipant getParticipant(UUID playerUUID) {
         for(int i = 0; i < this.auctionParticipants.size(); i++) {
             AuctionParticipant participant = this.auctionParticipants.get(i);
             if(playerUUID.equals(participant.getPlayerUUID())) {
