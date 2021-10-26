@@ -179,7 +179,7 @@ public class AuctionManager {
     }
 
     public boolean removeParticipant(AuctionParticipant participant) {
-        return this.auctionParticipants.removeAll(auctionParticipants);
+        return this.auctionParticipants.remove(participant);
     }
 
     /**
