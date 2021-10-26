@@ -1,5 +1,6 @@
 package com.gmail.virustotalop.obsidianauctions.auction;
 
+import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.google.inject.Inject;
 import org.bukkit.Bukkit;
@@ -102,7 +103,7 @@ public class AuctionProhibitionManager {
      * @return success as prohibiting
      */
     public boolean prohibitPlayer(Plugin prohibiterPlugin, UUID playerUUID, String enableMessage, String reminderMessage, String disableMessage) {
-        if(AuctionParticipant.isParticipating(playerUUID)) {
+        if(ObsidianAuctions.get().getAuctionScopeManager().isParticipant(playerUUID)) {
             return false;
         } else if(this.isOnProhibition(prohibiterPlugin, playerUUID, false)) {
             return true;

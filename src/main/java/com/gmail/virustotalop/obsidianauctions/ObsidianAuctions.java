@@ -11,10 +11,9 @@ import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionLot;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
@@ -75,7 +74,6 @@ public class ObsidianAuctions extends JavaPlugin {
     private File auctionLog = null;
     private boolean suspendAllAuctions = false;
     public static boolean isDamagedAllowed;
-    public static List<AuctionParticipant> auctionParticipants = new ArrayList<>();
 
     // Config files info.
     public static Configuration config = null;
@@ -93,7 +91,7 @@ public class ObsidianAuctions extends JavaPlugin {
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
     private ArenaManager arenaManager;
-    private AuctionScopeManager scopeManager;
+    private AuctionManager scopeManager;
 
     //Adventure
     private BukkitAudiences adventure;
@@ -259,7 +257,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
         this.arenaManager = injector.getInstance(ArenaManager.class);
-        this.scopeManager = injector.getInstance(AuctionScopeManager.class);
+        this.scopeManager = injector.getInstance(AuctionManager.class);
         return injector;
     }
 
@@ -525,7 +523,7 @@ public class ObsidianAuctions extends JavaPlugin {
         return this.arenaManager;
     }
 
-    public AuctionScopeManager getAuctionScopeManager() {
+    public AuctionManager getAuctionScopeManager() {
         return this.scopeManager;
     }
 

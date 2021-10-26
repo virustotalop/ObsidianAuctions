@@ -575,7 +575,7 @@ public class Auction {
                 this.messageManager.sendPlayerMessage(reason, prevBid.getBidderUUID(), this);
             }
         }
-        AuctionParticipant.addParticipant(newBid.getBidderUUID(), this.scope);
+        ObsidianAuctions.get().getAuctionScopeManager().addParticipant(newBid.getBidderUUID(), this.scope);
         if(this.currentBid.getBidAmount() >= this.buyNow) {
             this.buyNow = 0;
         }

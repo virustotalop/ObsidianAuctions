@@ -5,17 +5,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class AuctionScopeManagerListener implements Listener {
+public class AuctionManagerListener implements Listener {
 
-    private final AuctionScopeManager scope;
+    private final AuctionManager auctionManager;
 
     @Inject
-    private AuctionScopeManagerListener(AuctionScopeManager scope) {
-        this.scope = scope;
+    private AuctionManagerListener(AuctionManager auctionManager) {
+        this.auctionManager = auctionManager;
     }
 
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
-        this.scope.clearPlayerScope(event.getPlayer());
+        this.auctionManager.clearPlayerScope(event.getPlayer());
     }
 }

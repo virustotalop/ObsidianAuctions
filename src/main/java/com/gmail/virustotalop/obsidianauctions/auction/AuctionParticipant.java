@@ -1,11 +1,7 @@
 package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.UUID;
 
@@ -23,175 +19,22 @@ public class AuctionParticipant {
     private boolean sentArenaWarning = false;
 
     /**
-     * Check to see if the participant is currently located within the AuctionScope in which he's participating. Nonparticipating players always return true.
-     *
-     * @param playerUUID player name to check
-     * @return whether he is in the appropriate scope
-     */
-    @ApiStatus.Internal
-    public static boolean checkLocation(UUID playerUUID) {
-        AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
-        if(participant == null) {
-            return true;
-        }
-        Player player = Bukkit.getPlayer(playerUUID);
-        return participant.auctionScope.equals(ObsidianAuctions.get().getAuctionScopeManager().getPlayerScope(player));
-    }
-
-    /**
-     * Check to see if the participant would be located within the AuctionScope in which he's participating if he were located elsewhere. Nonparticipating players always return true.
-     *
-     * @param playerUUID player name to check
-     * @param location   location to check
-     * @return whether he would be in the appropriate scope
-     */
-    @ApiStatus.Internal
-    public static boolean checkLocation(UUID playerUUID, Location location) {
-        AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
-        if(participant == null) {
-            return true;
-        }
-        return participant.auctionScope.equals(ObsidianAuctions.get().getAuctionScopeManager().getLocationScope(location));
-    }
-
-    /**
-     * Force a player back into the AuctionScope in which he's participating at the last known location he was spotted inside the scope.  Sends a one time message when moving the player. If a locationForGaze is included, it will make the player look the direction that location is looking.  Does nothing to nonparticipating players or players already in their scope.
-     *
-     * @param playerUUID      player to force
-     * @param locationForGaze location for gaze
-     */
-    @ApiStatus.Internal
-    public static void forceLocation(UUID playerUUID, Location locationForGaze) {
-        AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
-        if(participant == null) {
-            return;
-        } else if(!participant.isParticipating()) {
-            return;
-        }
-
-        Player player = Bukkit.getPlayer(playerUUID);
-        Location location = player.getLocation();
-        if(locationForGaze != null) {
-            location.setDirection(new Vector(0, 0, 0));
-            location.setPitch(locationForGaze.getPitch());
-            location.setYaw(locationForGaze.getYaw());
-        } else if(!AuctionParticipant.checkLocation(playerUUID)) {
-            player.teleport(participant.lastKnownGoodLocation);
-            participant.sendEscapeWarning();
-            return;
-        } else if(ObsidianAuctions.get().getArenaManager().isInArena(player)) {
-            player.teleport(participant.lastKnownGoodLocation);
-            participant.sendArenaWarning();
-            return;
-        }
-
-        participant.lastKnownGoodLocation = location;
-    }
-
-    /**
-     * Checks whether to teleport a participant based on whether the destination would be outside the participants AuctionScope.  Sends a one time notification if it's not okay to teleport.
-     *
-     * @param playerUUID name of player to check
-     * @param location   teleport destination to check
-     * @return true if it IS okay to teleport this player
-     */
-    @ApiStatus.Internal
-    public static boolean checkTeleportLocation(UUID playerUUID, Location location) {
-        AuctionParticipant participant = AuctionParticipant.getParticipant(playerUUID);
-        if(participant == null) {
-            return true;
-        } else if(!participant.isParticipating()) {
-            return true;
-        } else if(!AuctionParticipant.checkLocation(playerUUID, location)) {
-            participant.sendEscapeWarning();
-            return false;
-        } else if(ObsidianAuctions.get().getArenaManager().isInArena(location)) {
-            participant.sendArenaWarning();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Send a one time warning about attempting to enter an arena.
-     */
-    private void sendArenaWarning() {
-        if(this.sentArenaWarning) {
-            return;
-        }
-        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", this.playerUUID, (AuctionScope) null);
-        this.sentArenaWarning = true;
-    }
-
-    /**
-     * Send a one time warning about attempting to escape the auction scope.
-     */
-    private void sendEscapeWarning() {
-        if(this.sentEscapeWarning) {
-            return;
-        }
-        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerUUID, (AuctionScope) null);
-        this.sentEscapeWarning = true;
-    }
-
-    /**
-     * Checks to see if a player is participating in an auction in any AuctionScope.
-     *
-     * @param playerUUID player to check
-     * @return whether the player is participating
-     */
-    public static boolean isParticipating(UUID playerUUID) {
-        boolean participating = false;
-        for(int i = 0; i < ObsidianAuctions.auctionParticipants.size(); i++) {
-            AuctionParticipant participant = ObsidianAuctions.auctionParticipants.get(i);
-            if(participant.isParticipating() && playerUUID.equals(participant.playerUUID)) {
-                participating = true;
-            }
-        }
-        return participating;
-    }
-
-    /**
-     * Adds a player as a participant in an AuctionScope if they are participating.
-     *
-     * @param playerUUID   player to add
-     * @param auctionScope scope for which to add player
-     */
-    public static void addParticipant(UUID playerUUID, AuctionScope auctionScope) {
-        Player player = Bukkit.getServer().getPlayer(playerUUID);
-        if(AuctionParticipant.getParticipant(playerUUID) == null) {
-            AuctionParticipant participant = new AuctionParticipant(playerUUID, auctionScope);
-            participant.lastKnownGoodLocation = player.getLocation();
-            ObsidianAuctions.auctionParticipants.add(participant);
-            participant.isParticipating();
-        }
-    }
-
-    /**
-     * Retrieve the participant instance for a given player name.
-     *
-     * @param playerUUID name of participant
-     * @return participant instance
-     */
-    private static AuctionParticipant getParticipant(UUID playerUUID) {
-        for(int i = 0; i < ObsidianAuctions.auctionParticipants.size(); i++) {
-            AuctionParticipant participant = ObsidianAuctions.auctionParticipants.get(i);
-            if(playerUUID.equals(participant.playerUUID)) {
-                return participant;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Constructor to build instance by player name and scope.
      *
      * @param playerUUID   player name
      * @param auctionScope auction scope
      */
-    private AuctionParticipant(UUID playerUUID, AuctionScope auctionScope) {
+    AuctionParticipant(UUID playerUUID, AuctionScope auctionScope) {
         this.playerUUID = playerUUID;
         this.auctionScope = auctionScope;
+    }
+
+    public UUID getPlayerUUID() {
+        return this.playerUUID;
+    }
+
+    public AuctionScope getAuctionScope() {
+        return this.auctionScope;
     }
 
     /**
@@ -226,8 +69,38 @@ public class AuctionParticipant {
             }
         }
         if(!participating) {
-            ObsidianAuctions.auctionParticipants.remove(this);
+            ObsidianAuctions.get().getAuctionScopeManager().removeParticipant(this);
         }
         return participating;
+    }
+
+    /**
+     * Send a one time warning about attempting to enter an arena.
+     */
+    void sendArenaWarning() {
+        if(this.sentArenaWarning) {
+            return;
+        }
+        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", this.playerUUID, (AuctionScope) null);
+        this.sentArenaWarning = true;
+    }
+
+    /**
+     * Send a one time warning about attempting to escape the auction scope.
+     */
+    void sendEscapeWarning() {
+        if(this.sentEscapeWarning) {
+            return;
+        }
+        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerUUID, (AuctionScope) null);
+        this.sentEscapeWarning = true;
+    }
+
+    Location getLastKnownGoodLocation() {
+        return this.lastKnownGoodLocation;
+    }
+
+    void setLastKnownGoodLocation(Location location) {
+        this.lastKnownGoodLocation = location;
     }
 }

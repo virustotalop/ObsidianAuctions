@@ -4,8 +4,8 @@ import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManagerListener;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionManagerListener;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
@@ -50,7 +50,7 @@ public class AuctionModule implements Module {
         binder.bind(BukkitAudiences.class).toInstance(this.adventure);
         binder.bind(Configuration.class).annotatedWith(Config.class).toInstance(this.config);
         binder.bind(Configuration.class).annotatedWith(I18nItemConfig.class).toInstance(this.i18nItemConfig);
-        binder.bind(AuctionScopeManager.class).asEagerSingleton();
+        binder.bind(AuctionManager.class).asEagerSingleton();
         binder.bind(PlaceholderAPI.class).to(this.papiClazz).asEagerSingleton();
         binder.bind(ArenaManager.class).asEagerSingleton();
         binder.bind(TranslationFactory.class).to(I18nTranslationFactory.class).asEagerSingleton();
@@ -61,7 +61,7 @@ public class AuctionModule implements Module {
         binder.bind(InventoryClickListener.class).asEagerSingleton();
         binder.bind(PlayerListener.class).asEagerSingleton();
         binder.bind(ArenaListener.class).asEagerSingleton();
-        binder.bind(AuctionScopeManagerListener.class).asEagerSingleton();
+        binder.bind(AuctionManagerListener.class).asEagerSingleton();
         binder.bind(AuctionCommands.class).asEagerSingleton();
         binder.bind(CommandPermissionHandler.class).asEagerSingleton();
     }

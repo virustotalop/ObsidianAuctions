@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
@@ -20,14 +21,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class AuctionScopeManager {
+public class AuctionManager {
 
+    private final List<AuctionParticipant> auctionParticipants = new ArrayList<>();
     private final List<String> auctionScopesOrder = new ArrayList<>();
     private final Map<String, AuctionScope> auctionScopes = new HashMap<>();
     private final Map<UUID, String> playerScopeCache = new HashMap<>();
 
     @Inject
-    private AuctionScopeManager(JavaPlugin plugin, @Config Configuration config) {
+    private AuctionManager(JavaPlugin plugin, @Config Configuration config) {
         this.loadScopeList(config, plugin);
     }
 
@@ -49,6 +51,151 @@ public class AuctionScopeManager {
                 this.auctionScopes.put(scopeName, auctionScope);
             }
         }
+    }
+
+    /**
+     * Check to see if the participant is currently located within the AuctionScope in which he's participating. Nonparticipating players always return true.
+     *
+     * @param playerUUID player name to check
+     * @return whether he is in the appropriate scope
+     */
+    @ApiStatus.Internal
+    public boolean checkLocation(UUID playerUUID) {
+        AuctionParticipant participant = this.getParticipant(playerUUID);
+        if(participant == null) {
+            return true;
+        }
+        Player player = Bukkit.getPlayer(playerUUID);
+        return participant.getAuctionScope().equals(this.getPlayerScope(player));
+    }
+
+    /**
+     * Check to see if the participant would be located within the AuctionScope in which he's participating if he were located elsewhere. Nonparticipating players always return true.
+     *
+     * @param playerUUID player name to check
+     * @param location   location to check
+     * @return whether he would be in the appropriate scope
+     */
+    @ApiStatus.Internal
+    public boolean checkLocation(UUID playerUUID, Location location) {
+        AuctionParticipant participant = this.getParticipant(playerUUID);
+        if(participant == null) {
+            return true;
+        }
+        return participant.getAuctionScope().equals(this.getLocationScope(location));
+    }
+
+    /**
+     * Force a player back into the AuctionScope in which he's participating at the last known location they were spotted
+     * inside the scope. Sends a one time message when moving the player. If a locationForGaze is included, it will make
+     * the player look the direction that location is looking. Does nothing to nonparticipating players or players
+     * already in their scope.
+     *
+     * @param playerUUID      player to force
+     * @param locationForGaze location for gaze
+     */
+    @ApiStatus.Internal
+    public void forceLocation(UUID playerUUID, Location locationForGaze) {
+        AuctionParticipant participant = this.getParticipant(playerUUID);
+        if(participant == null) {
+            return;
+        } else if(!participant.isParticipating()) {
+            return;
+        }
+
+        Player player = Bukkit.getPlayer(playerUUID);
+        Location location = player.getLocation();
+        if(locationForGaze != null) {
+            location.setDirection(new Vector(0, 0, 0));
+            location.setPitch(locationForGaze.getPitch());
+            location.setYaw(locationForGaze.getYaw());
+        } else if(!this.checkLocation(playerUUID)) {
+            player.teleport(participant.getLastKnownGoodLocation());
+            participant.sendEscapeWarning();
+            return;
+        } else if(ObsidianAuctions.get().getArenaManager().isInArena(player)) { //Can't get rid of this due to circular dependencies
+            player.teleport(participant.getLastKnownGoodLocation());
+            participant.sendArenaWarning();
+            return;
+        }
+        participant.setLastKnownGoodLocation(location);
+    }
+
+    /**
+     * Checks whether to teleport a participant based on whether the destination would be outside the participants AuctionScope.  Sends a one time notification if it's not okay to teleport.
+     *
+     * @param playerUUID name of player to check
+     * @param location   teleport destination to check
+     * @return true if it IS okay to teleport this player
+     */
+    @ApiStatus.Internal
+    public boolean checkTeleportLocation(UUID playerUUID, Location location) {
+        AuctionParticipant participant = this.getParticipant(playerUUID);
+        if(participant == null) {
+            return true;
+        } else if(!participant.isParticipating()) {
+            return true;
+        } else if(!this.checkLocation(playerUUID, location)) {
+            participant.sendEscapeWarning();
+            return false;
+        } else if(ObsidianAuctions.get().getArenaManager().isInArena(location)) {
+            participant.sendArenaWarning();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks to see if a player is participating in an auction in any AuctionScope.
+     *
+     * @param playerUUID player to check
+     * @return whether the player is participating
+     */
+    public boolean isParticipant(UUID playerUUID) {
+        boolean participating = false;
+        for(int i = 0; i < this.auctionParticipants.size(); i++) {
+            AuctionParticipant participant = this.auctionParticipants.get(i);
+            if(participant.isParticipating() && playerUUID.equals(participant.getPlayerUUID())) {
+                participating = true;
+            }
+        }
+        return participating;
+    }
+
+    /**
+     * Adds a player as a participant in an AuctionScope if they are participating.
+     *
+     * @param playerUUID   player to add
+     * @param auctionScope scope for which to add player
+     */
+    public void addParticipant(UUID playerUUID, AuctionScope auctionScope) {
+        Player player = Bukkit.getServer().getPlayer(playerUUID);
+        if(this.getParticipant(playerUUID) == null) {
+            AuctionParticipant participant = new AuctionParticipant(playerUUID, auctionScope);
+            participant.setLastKnownGoodLocation(player.getLocation());
+            this.auctionParticipants.add(participant);
+            participant.isParticipating();
+        }
+    }
+
+    public boolean removeParticipant(AuctionParticipant participant) {
+        return this.auctionParticipants.removeAll(auctionParticipants);
+    }
+
+    /**
+     * Retrieve the participant instance for a given uuid.
+     *
+     * @param playerUUID uuid of participant
+     * @return participant instance
+     */
+    private AuctionParticipant getParticipant(UUID playerUUID) {
+        for(int i = 0; i < this.auctionParticipants.size(); i++) {
+            AuctionParticipant participant = this.auctionParticipants.get(i);
+            if(playerUUID.equals(participant.getPlayerUUID())) {
+                return participant;
+            }
+        }
+        return null;
     }
 
 
@@ -115,7 +262,7 @@ public class AuctionScopeManager {
         Iterator<UUID> playerIterator = this.playerScopeCache.keySet().iterator();
         while(playerIterator.hasNext()) {
             UUID playerUUID = playerIterator.next();
-            if(!AuctionParticipant.isParticipating(playerUUID)) {
+            if(!this.isParticipant(playerUUID)) {
                 Player player = Bukkit.getPlayer(playerUUID);
                 if(player != null && player.isOnline()) {
                     String oldScopeId = this.playerScopeCache.get(playerUUID);
@@ -150,7 +297,7 @@ public class AuctionScopeManager {
             welcomeMessageKey += "-onjoin";
         }
         UUID playerUUID = player.getUniqueId();
-        if(!AuctionParticipant.isParticipating(playerUUID)) {
+        if(!this.isParticipant(playerUUID)) {
             AuctionScope playerScope = this.getPlayerScope(player);
             String oldScopeId = this.playerScopeCache.get(playerUUID);
             if(playerScope == null) {
@@ -179,4 +326,5 @@ public class AuctionScopeManager {
     void clearPlayerScope(Player player) {
         this.playerScopeCache.remove(player.getUniqueId());
     }
+
 }

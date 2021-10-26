@@ -171,7 +171,7 @@ public class AuctionScope {
         }
         if((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
             this.auctionQueue.add(auctionToQueue);
-            AuctionParticipant.addParticipant(playerUUID, this);
+            ObsidianAuctions.get().getAuctionScopeManager().addParticipant(playerUUID, this);
             ObsidianAuctions.get().getAuctionScopeManager().checkAuctionQueue();
             if(this.auctionQueue.contains(auctionToQueue)) {
                 messageManager.sendPlayerMessage("auction-queue-enter", playerUUID, auctionToQueue);

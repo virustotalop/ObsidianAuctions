@@ -3,9 +3,8 @@ package com.gmail.virustotalop.obsidianauctions.listener;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.google.inject.Inject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,10 +18,10 @@ import java.util.UUID;
 public class ArenaListener implements Listener {
 
     private final ArenaManager areaManager;
-    private final AuctionScopeManager scope;
+    private final AuctionManager scope;
 
     @Inject
-    private ArenaListener(ArenaManager areaManager, AuctionScopeManager scope) {
+    private ArenaListener(ArenaManager areaManager, AuctionManager scope) {
         this.areaManager = areaManager;
         this.scope = scope;
     }
@@ -58,6 +57,6 @@ public class ArenaListener implements Listener {
     }
 
     private boolean participating(UUID playerUUID) {
-        return AuctionParticipant.isParticipating(playerUUID);
+        return ObsidianAuctions.get().getAuctionScopeManager().isParticipant(playerUUID);
     }
 }

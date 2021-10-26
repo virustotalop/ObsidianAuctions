@@ -8,7 +8,7 @@ import com.gmail.virustotalop.obsidianauctions.arena.region.CuboidRegion;
 import com.gmail.virustotalop.obsidianauctions.arena.region.GlobalRegion;
 import com.gmail.virustotalop.obsidianauctions.arena.region.Point;
 import com.gmail.virustotalop.obsidianauctions.arena.region.Region;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
 import com.google.inject.Inject;
 import org.bukkit.Bukkit;
@@ -32,10 +32,10 @@ import java.util.logging.Level;
 public class ArenaManager {
 
     private final Map<String, Collection<Region>> regions = new HashMap<>();;
-    private final AuctionScopeManager scope;
+    private final AuctionManager scope;
 
     @Inject
-    private ArenaManager(@Config Configuration config, ObsidianAuctions plugin, AuctionScopeManager scope) {
+    private ArenaManager(@Config Configuration config, ObsidianAuctions plugin, AuctionManager scope) {
         this.scope = scope;
         this.loadRegions(config, plugin);
     }

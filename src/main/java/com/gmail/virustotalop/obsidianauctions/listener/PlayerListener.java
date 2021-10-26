@@ -3,9 +3,8 @@ package com.gmail.virustotalop.obsidianauctions.listener;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionParticipant;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.google.inject.Inject;
 import org.bukkit.entity.Player;
@@ -26,11 +25,11 @@ import java.util.UUID;
 public class PlayerListener implements Listener {
 
     private final MessageManager message;
-    private final AuctionScopeManager scope;
+    private final AuctionManager scope;
     private final ObsidianAuctions plugin;
 
     @Inject
-    private PlayerListener(MessageManager message, AuctionScopeManager scope, ObsidianAuctions plugin) {
+    private PlayerListener(MessageManager message, AuctionManager scope, ObsidianAuctions plugin) {
         this.message = message;
         this.scope = scope;
         this.plugin = plugin;
@@ -46,7 +45,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
         // Hopefully the teleport and portal things I just added will make this obsolete, but I figure I'll keep it just to make sure.
-        AuctionParticipant.forceLocation(event.getPlayer().getUniqueId(), null);
+        ObsidianAuctions.get().getAuctionScopeManager().forceLocation(event.getPlayer().getUniqueId(), null);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -59,7 +58,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if(AuctionParticipant.isParticipating(playerUUID)) {
+        if(ObsidianAuctions.get().getAuctionScopeManager().isParticipant(playerUUID)) {
             event.setCancelled(true);
             this.message.sendPlayerMessage("gamemodechange-fail-participating", playerUUID, (AuctionScope) null);
         }
@@ -94,7 +93,7 @@ public class PlayerListener implements Listener {
         if(playerScope == null) {
             return;
         }
-        if(!AuctionParticipant.isParticipating(playerUUID)) {
+        if(!ObsidianAuctions.get().getAuctionScopeManager().isParticipant(playerUUID)) {
             return;
         }
 
@@ -113,18 +112,18 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
-        AuctionParticipant.forceLocation(event.getPlayer().getUniqueId(), event.getTo());
+        ObsidianAuctions.get().getAuctionScopeManager().forceLocation(event.getPlayer().getUniqueId(), event.getTo());
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if(!AuctionParticipant.checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
+        if(!ObsidianAuctions.get().getAuctionScopeManager().checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
             event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerPortalEvent(PlayerPortalEvent event) {
-        if(!AuctionParticipant.checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
+        if(!ObsidianAuctions.get().getAuctionScopeManager().checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
             event.setCancelled(true);
     }
 }
