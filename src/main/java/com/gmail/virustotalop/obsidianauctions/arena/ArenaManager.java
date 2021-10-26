@@ -8,7 +8,6 @@ import com.gmail.virustotalop.obsidianauctions.arena.region.CuboidRegion;
 import com.gmail.virustotalop.obsidianauctions.arena.region.GlobalRegion;
 import com.gmail.virustotalop.obsidianauctions.arena.region.Point;
 import com.gmail.virustotalop.obsidianauctions.arena.region.Region;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
 import com.google.inject.Inject;
