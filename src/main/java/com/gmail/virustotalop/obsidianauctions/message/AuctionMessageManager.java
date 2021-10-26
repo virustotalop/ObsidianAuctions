@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @ApiStatus.Internal
-public class AuctionMessageManager extends MessageManager {
+public class AuctionMessageManager implements MessageManager {
 
     private final ActionBarManager actionBar;
     private final BukkitAudiences adventure;

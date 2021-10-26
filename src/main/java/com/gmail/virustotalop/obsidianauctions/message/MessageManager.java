@@ -6,7 +6,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class MessageManager {
+public interface MessageManager {
 
     /**
      * Sends a message to a player.
@@ -15,7 +15,7 @@ public abstract class MessageManager {
      * @param auction    the auction being referenced if any
      * @param messageKey message key to be used by floAuction
      */
-    public abstract void sendPlayerMessage(String messageKey, UUID playerUUID, Auction auction);
+    void sendPlayerMessage(String messageKey, UUID playerUUID, Auction auction);
 
     /**
      * Sends a message to a player.
@@ -24,7 +24,7 @@ public abstract class MessageManager {
      * @param auction     the auction being referenced if any
      * @param messageKeys list of message keys used by floAuction
      */
-    public abstract void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, Auction auction);
+    void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, Auction auction);
 
     /**
      * Sends a message to a player.
@@ -33,7 +33,7 @@ public abstract class MessageManager {
      * @param playerUUID   uuid of player or null for console
      * @param auctionScope the auction scope being referenced if any
      */
-    public abstract void sendPlayerMessage(String messageKey, UUID playerUUID, AuctionScope auctionScope);
+    void sendPlayerMessage(String messageKey, UUID playerUUID, AuctionScope auctionScope);
 
     /**
      * Sends a message to a player.
@@ -42,7 +42,7 @@ public abstract class MessageManager {
      * @param playerUUID   uuid of player or null for console
      * @param auctionScope the auction scope being referenced if any
      */
-    public abstract void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, AuctionScope auctionScope);
+    void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, AuctionScope auctionScope);
 
     /**
      * Sends a message to anyone in the scope of a given auction.
@@ -50,7 +50,7 @@ public abstract class MessageManager {
      * @param messageKey message key to be used by floAuction
      * @param auction    list of message keys used by floAuction
      */
-    public abstract void broadcastAuctionMessage(String messageKey, Auction auction);
+    void broadcastAuctionMessage(String messageKey, Auction auction);
 
 
     /**
@@ -59,7 +59,7 @@ public abstract class MessageManager {
      * @param messageKeys message keys to be used by floAuction
      * @param auction     list of message keys used by floAuction
      */
-    public abstract void broadcastAuctionMessage(List<String> messageKeys, Auction auction);
+    void broadcastAuctionMessage(List<String> messageKeys, Auction auction);
 
     /**
      * Send a message to a specific AuctionScope or whole server if scope is null.
@@ -67,7 +67,7 @@ public abstract class MessageManager {
      * @param messageKey   message key to be used by floAuction
      * @param auctionScope scope to send message or null to broadcast to all
      */
-    public abstract void broadcastAuctionScopeMessage(String messageKey, AuctionScope auctionScope);
+    void broadcastAuctionScopeMessage(String messageKey, AuctionScope auctionScope);
 
     /**
      * Send a message to a specific AuctionScope or whole server if scope is null.
@@ -75,5 +75,5 @@ public abstract class MessageManager {
      * @param messageKeys  list of message keys used by floAuction
      * @param auctionScope scope to send message or null to broadcast to all
      */
-    public abstract void broadcastAuctionScopeMessage(List<String> messageKeys, AuctionScope auctionScope);
+    void broadcastAuctionScopeMessage(List<String> messageKeys, AuctionScope auctionScope);
 }
