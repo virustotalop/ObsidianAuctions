@@ -1,7 +1,6 @@
 package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -210,7 +209,7 @@ public class AuctionParticipant {
                 participating = true;
             }
             for(int i = 0; i < scopeAuction.sealedBids.size(); i++) {
-                if(scopeAuction.sealedBids.get(i).getBidderName().equals(playerUUID)) {
+                if(scopeAuction.sealedBids.get(i).getBidderName().equals(this.playerUUID)) {
                     participating = true;
                 }
             }

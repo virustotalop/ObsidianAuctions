@@ -20,7 +20,6 @@ public final class LegacyUtil {
         return 0;
     }
 
-
     public static ItemStack getItemInMainHand(Player player) {
         if(mainHandExists) {
             return player.getInventory().getItemInMainHand();

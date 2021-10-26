@@ -75,8 +75,7 @@ public class AuctionScopeManager {
         if(location == null) {
             return null;
         }
-        for(int i = 0; i < this.auctionScopesOrder.size(); i++) {
-            String auctionScopeId = this.auctionScopesOrder.get(i);
+        for(String auctionScopeId : this.auctionScopesOrder) {
             AuctionScope auctionScope = this.auctionScopes.get(auctionScopeId);
             if(auctionScope.isLocationInScope(location)) {
                 return auctionScope;
@@ -99,7 +98,7 @@ public class AuctionScopeManager {
     /**
      * Checks to see if any auctions are running.
      *
-     * @return
+     * @return whether at least one auction is running
      */
     public boolean areAuctionsRunning() {
         for(Map.Entry<String, AuctionScope> auctionScopesEntry : this.auctionScopes.entrySet()) {

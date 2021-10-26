@@ -46,11 +46,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -116,7 +114,7 @@ public class ObsidianAuctions extends JavaPlugin {
     public static int actionBarTicks;
 
     /**
-     * Used by AuctinLot to store auction lots which could not be given to players because they were offline.
+     * Used by AuctionLot to store auction lots which could not be given to players because they were offline.
      *
      * @param auctionLot AuctionLot to save.
      */
@@ -157,11 +155,6 @@ public class ObsidianAuctions extends JavaPlugin {
     public void onEnable() {
         this.logQueue = new ConcurrentLinkedQueue<>();
         this.adventure = BukkitAudiences.create(this);
-        if(this.adventure == null) {
-            this.getLogger().log(Level.SEVERE, "Unable to create adventure, shutting down...");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
         instance = this;
         this.dataFolder = this.getDataFolder();
         if(!this.dataFolder.exists()) {
@@ -539,7 +532,7 @@ public class ObsidianAuctions extends JavaPlugin {
     private void logToBukkit(String key, Level level) {
         List<String> messageList = AuctionConfig.getLanguageStringList(key, null);
 
-        String originalMessage = null;
+        String originalMessage;
         if(messageList == null || messageList.size() == 0) {
             originalMessage = AuctionConfig.getLanguageString(key, null);
 
