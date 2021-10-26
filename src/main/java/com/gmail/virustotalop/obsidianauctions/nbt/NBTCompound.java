@@ -20,9 +20,9 @@ public class NBTCompound {
     static {
         version = VersionUtil.getVersion();
         try {
-            Class<?> parser = Class.forName("net.minecraft.server." + version + ".MojangsonParser");
+            Class<?> parser = findParserClass();
             parse = parser.getDeclaredMethod("parse", String.class);
-            compoundClass = Class.forName("net.minecraft.server." + version + ".NBTTagCompound");
+            compoundClass = findCompoundClass();
             for(Method method : compoundClass.getDeclaredMethods()) {
                 if(method.getReturnType().equals(Set.class)) {
                     getKeys = method;
@@ -30,8 +30,32 @@ public class NBTCompound {
                 }
             }
             get = compoundClass.getDeclaredMethod("get", String.class);
-        } catch(ClassNotFoundException | NoSuchMethodException e) {
+        } catch(NoSuchMethodException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static Class<?> findCompoundClass() {
+        try {
+            return Class.forName("net.minecraft.server." + version + ".NBTTagCompound");
+        } catch(ClassNotFoundException ex) {
+            try {
+                return Class.forName("net.minecraft.nbt.NBTTagCompound");
+            } catch(ClassNotFoundException e) {
+                return null;
+            }
+        }
+    }
+
+    private static Class<?> findParserClass() {
+        try {
+            return Class.forName("net.minecraft.server." + version + ".MojangsonParser");
+        } catch(ClassNotFoundException ex) {
+            try {
+                return Class.forName("net.minecraft.nbt.MojangsonParser");
+            } catch(ClassNotFoundException e) {
+                return null;
+            }
         }
     }
 
