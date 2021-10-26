@@ -5,6 +5,7 @@ import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScopeManagerListener;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
@@ -60,6 +61,7 @@ public class AuctionModule implements Module {
         binder.bind(InventoryClickListener.class).asEagerSingleton();
         binder.bind(PlayerListener.class).asEagerSingleton();
         binder.bind(ArenaListener.class).asEagerSingleton();
+        binder.bind(AuctionScopeManagerListener.class).asEagerSingleton();
         binder.bind(AuctionCommands.class).asEagerSingleton();
         binder.bind(CommandPermissionHandler.class).asEagerSingleton();
     }

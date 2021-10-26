@@ -175,4 +175,9 @@ public class AuctionScopeManager {
             auctionScopesEntry.getValue().checkThisAuctionQueue();
         }
     }
+
+    @ApiStatus.Internal
+    void clearPlayerScope(Player player) {
+        this.playerScopeCache.remove(player.getUniqueId());
+    }
 }
