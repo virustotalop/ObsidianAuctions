@@ -89,7 +89,7 @@ public class AuctionBid {
         if(this.auction.isSealed()) {
             // Queue reserve refund.
             this.auction.getSealedBids().add(this);
-            ObsidianAuctions.get().getAuctionScopeManager().addParticipant(this.getBidderUUID(), this.auction.getScope());
+            ObsidianAuctions.get().getAuctionManager().addParticipant(this.getBidderUUID(), this.auction.getScope());
         } else {
             // Refund reserve.
             Functions.depositPlayer(this.bidderUUID, this.reserve);
@@ -159,7 +159,7 @@ public class AuctionBid {
         } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(this.bidderUUID, false)) {
             this.error = "remote-plugin-prohibition-reminder";
             return false;
-        } else if(!ObsidianAuctions.get().getLocationManager().checkLocation(this.bidderUUID)) {
+        } else if(!ObsidianAuctions.get().getAuctionLocationManager().checkLocation(this.bidderUUID)) {
             this.error = "bid-fail-outside-auctionhouse";
             return false;
         } else if(bidderUUID.equals(auction.getOwnerUUID()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", this.auction.getScope())) {

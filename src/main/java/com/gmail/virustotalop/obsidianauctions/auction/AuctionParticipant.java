@@ -69,7 +69,7 @@ public class AuctionParticipant {
             }
         }
         if(!participating) {
-            ObsidianAuctions.get().getAuctionScopeManager().removeParticipant(this);
+            ObsidianAuctions.get().getAuctionManager().removeParticipant(this);
         }
         return participating;
     }

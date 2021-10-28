@@ -57,6 +57,6 @@ public class ArenaListener implements Listener {
     }
 
     private boolean participating(UUID playerUUID) {
-        return ObsidianAuctions.get().getAuctionScopeManager().isParticipant(playerUUID);
+        return ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID);
     }
 }

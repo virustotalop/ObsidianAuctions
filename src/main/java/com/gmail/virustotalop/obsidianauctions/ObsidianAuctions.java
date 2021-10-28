@@ -91,7 +91,7 @@ public class ObsidianAuctions extends JavaPlugin {
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
     private AuctionLocationManager locationManager;
-    private AuctionManager scopeManager;
+    private AuctionManager auctionManager;
 
     //Adventure
     private BukkitAudiences adventure;
@@ -203,15 +203,15 @@ public class ObsidianAuctions extends JavaPlugin {
         //Load in inventory click listener
 
         BukkitScheduler scheduler = this.getServer().getScheduler();
-        scheduler.scheduleSyncRepeatingTask(this, () -> this.scopeManager.checkAuctionQueue(), 20L, 20L);
+        scheduler.scheduleSyncRepeatingTask(this, () -> this.auctionManager.checkAuctionQueue(), 20L, 20L);
 
         long playerScopeCheckInterval = config.getLong("auctionscope-change-check-interval");
         if(playerScopeCheckTimer > 0) scheduler.cancelTask(playerScopeCheckTimer);
 
         if(playerScopeCheckInterval > 0) {
             playerScopeCheckTimer = scheduler.scheduleSyncRepeatingTask(this, () -> {
-                this.scopeManager.sendFarewellMessages();
-                this.scopeManager.sendWelcomeMessages();
+                this.auctionManager.sendFarewellMessages();
+                this.auctionManager.sendWelcomeMessages();
             }, playerScopeCheckInterval, playerScopeCheckInterval);
         }
 
@@ -257,7 +257,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
         this.locationManager = injector.getInstance(AuctionLocationManager.class);
-        this.scopeManager = injector.getInstance(AuctionManager.class);
+        this.auctionManager = injector.getInstance(AuctionManager.class);
         return injector;
     }
 
@@ -360,7 +360,7 @@ public class ObsidianAuctions extends JavaPlugin {
     @Override
     public void onDisable() {
         this.writeCurrentLog();
-        this.scopeManager.cancelAllAuctions();
+        this.auctionManager.cancelAllAuctions();
         instance = null;
         this.logToBukkit("plugin-disabled", Level.INFO);
         this.auctionLog = null;
@@ -450,7 +450,7 @@ public class ObsidianAuctions extends JavaPlugin {
         if(player == null) {
             return null;
         }
-        AuctionScope auctionScope = this.scopeManager.getPlayerScope(player);
+        AuctionScope auctionScope = this.auctionManager.getPlayerScope(player);
         if(auctionScope == null) {
             return null;
         }
@@ -519,12 +519,12 @@ public class ObsidianAuctions extends JavaPlugin {
         return this.perms;
     }
 
-    public AuctionLocationManager getLocationManager() {
+    public AuctionLocationManager getAuctionLocationManager() {
         return this.locationManager;
     }
 
-    public AuctionManager getAuctionScopeManager() {
-        return this.scopeManager;
+    public AuctionManager getAuctionManager() {
+        return this.auctionManager;
     }
 
     private void logToBukkit(String key, Level level) {

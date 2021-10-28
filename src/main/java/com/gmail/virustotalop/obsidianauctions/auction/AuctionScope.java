@@ -1,6 +1,5 @@
 package com.gmail.virustotalop.obsidianauctions.auction;
 
-import com.clubobsidian.wrappy.Configuration;
 import com.clubobsidian.wrappy.ConfigurationSection;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
@@ -12,13 +11,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -127,7 +121,7 @@ public class AuctionScope {
     public void setActiveAuction(Auction auction) {
         if(this.activeAuction != null && auction == null) {
             this.lastAuctionDestroyTime = System.currentTimeMillis();
-            ObsidianAuctions.get().getAuctionScopeManager().checkAuctionQueue();
+            ObsidianAuctions.get().getAuctionManager().checkAuctionQueue();
         }
         this.activeAuction = auction;
     }
@@ -171,8 +165,8 @@ public class AuctionScope {
         }
         if((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
             this.auctionQueue.add(auctionToQueue);
-            ObsidianAuctions.get().getAuctionScopeManager().addParticipant(playerUUID, this);
-            ObsidianAuctions.get().getAuctionScopeManager().checkAuctionQueue();
+            ObsidianAuctions.get().getAuctionManager().addParticipant(playerUUID, this);
+            ObsidianAuctions.get().getAuctionManager().checkAuctionQueue();
             if(this.auctionQueue.contains(auctionToQueue)) {
                 messageManager.sendPlayerMessage("auction-queue-enter", playerUUID, auctionToQueue);
             }

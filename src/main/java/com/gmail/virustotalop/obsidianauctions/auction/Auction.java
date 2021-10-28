@@ -9,7 +9,6 @@ import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -127,7 +126,7 @@ public class Auction {
     public boolean start() {
         Player owner = this.plugin.getServer().getPlayer(this.ownerUUID);
 
-        if(ObsidianAuctions.get().getLocationManager().isInArena(owner)) {
+        if(ObsidianAuctions.get().getAuctionLocationManager().isInArena(owner)) {
             this.messageManager.sendPlayerMessage("auction-fail-arena", this.ownerUUID, this);
             return false;
         }
@@ -384,7 +383,7 @@ public class Auction {
         }
         UUID playerUUID = bidder.getUniqueId();
 
-        if(ObsidianAuctions.get().getLocationManager().isInArena(bidder)) {
+        if(ObsidianAuctions.get().getAuctionLocationManager().isInArena(bidder)) {
             this.messageManager.sendPlayerMessage("bid-fail-arena", playerUUID, this);
             return;
         }
@@ -573,7 +572,7 @@ public class Auction {
                 this.messageManager.sendPlayerMessage(reason, prevBid.getBidderUUID(), this);
             }
         }
-        ObsidianAuctions.get().getAuctionScopeManager().addParticipant(newBid.getBidderUUID(), this.scope);
+        ObsidianAuctions.get().getAuctionManager().addParticipant(newBid.getBidderUUID(), this.scope);
         if(this.currentBid.getBidAmount() >= this.buyNow) {
             this.buyNow = 0;
         }

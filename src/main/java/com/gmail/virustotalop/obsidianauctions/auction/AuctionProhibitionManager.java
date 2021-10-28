@@ -103,7 +103,7 @@ public class AuctionProhibitionManager {
      * @return success as prohibiting
      */
     public boolean prohibitPlayer(Plugin prohibiterPlugin, UUID playerUUID, String enableMessage, String reminderMessage, String disableMessage) {
-        if(ObsidianAuctions.get().getAuctionScopeManager().isParticipant(playerUUID)) {
+        if(ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
             return false;
         } else if(this.isOnProhibition(prohibiterPlugin, playerUUID, false)) {
             return true;

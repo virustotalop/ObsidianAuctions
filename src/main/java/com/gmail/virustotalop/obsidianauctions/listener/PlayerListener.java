@@ -62,7 +62,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if(ObsidianAuctions.get().getAuctionScopeManager().isParticipant(playerUUID)) {
+        if(ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
             event.setCancelled(true);
             this.message.sendPlayerMessage("gamemodechange-fail-participating", playerUUID, (AuctionScope) null);
         }
@@ -97,7 +97,7 @@ public class PlayerListener implements Listener {
         if(playerScope == null) {
             return;
         }
-        if(!ObsidianAuctions.get().getAuctionScopeManager().isParticipant(playerUUID)) {
+        if(!ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
             return;
         }
 
