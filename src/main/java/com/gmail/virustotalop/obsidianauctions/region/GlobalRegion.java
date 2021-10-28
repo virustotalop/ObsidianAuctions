@@ -13,6 +13,10 @@ public class GlobalRegion extends Region {
 
     @Override
     public boolean isWithin(Location location) {
-        return location.getWorld().getName().equals(this.getWorld().getName());
+        World world = this.getWorld();
+        if(world == null) {
+            return false;
+        }
+        return location.getWorld().getName().equals(world.getName());
     }
 }

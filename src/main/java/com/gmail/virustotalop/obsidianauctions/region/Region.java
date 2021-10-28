@@ -5,17 +5,18 @@ import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 @ApiStatus.Internal
 public abstract class Region {
 
     private final String name;
-    private final World world;
+    private final WeakReference<World> world;
 
     public Region(@NotNull String name, @NotNull  World world) {
         this.name = name;
-        this.world = world;
+        this.world = new WeakReference<>(world);
     }
 
     public String getName() {
@@ -23,16 +24,25 @@ public abstract class Region {
     }
 
     public World getWorld() {
-        return this.world;
+        return this.world.get();
     }
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(!(o instanceof Region)) return false;
+        if(this == o) {
+            return true;
+        } else if(!(o instanceof Region)) {
+            return false;
+        }
         Region that = (Region) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(world.getName(), that.world.getName());
+        if(this.world.get() == null) {
+            if(that.world.get() == null && Objects.equals(this.name, that.name)) {
+                return true;
+            }
+            return false;
+        }
+        return Objects.equals(this.name, that.name) &&
+                Objects.equals(this.world.get().getName(), that.world.get().getName());
     }
 
     @Override
