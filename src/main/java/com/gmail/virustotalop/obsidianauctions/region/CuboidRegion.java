@@ -36,6 +36,7 @@ public class CuboidRegion extends Region {
             return false;
         } else if(z > this.maxZ || z < this.minZ) {
             return false;
-        } else return location.getWorld().getName().equals(this.getWorld().getName());
+        }
+        return location.getWorld().getName().equals(this.getWorld().getName());
     }
 }
