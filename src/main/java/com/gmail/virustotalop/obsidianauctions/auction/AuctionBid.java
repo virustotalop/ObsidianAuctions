@@ -159,7 +159,7 @@ public class AuctionBid {
         } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(this.bidderUUID, false)) {
             this.error = "remote-plugin-prohibition-reminder";
             return false;
-        } else if(!ObsidianAuctions.get().getAuctionScopeManager().checkLocation(this.bidderUUID)) {
+        } else if(!ObsidianAuctions.get().getLocationManager().checkLocation(this.bidderUUID)) {
             this.error = "bid-fail-outside-auctionhouse";
             return false;
         } else if(bidderUUID.equals(auction.getOwnerUUID()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", this.auction.getScope())) {

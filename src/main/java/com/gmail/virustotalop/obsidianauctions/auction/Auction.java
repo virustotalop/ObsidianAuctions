@@ -2,7 +2,6 @@ package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
 import com.gmail.virustotalop.obsidianauctions.event.AuctionBidEvent;
 import com.gmail.virustotalop.obsidianauctions.event.AuctionEndEvent;
 import com.gmail.virustotalop.obsidianauctions.event.AuctionStartEvent;
@@ -129,7 +128,7 @@ public class Auction {
     public boolean start() {
         Player owner = Bukkit.getServer().getPlayer(this.ownerUUID);
 
-        if(ObsidianAuctions.get().getArenaManager().isInArena(owner)) {
+        if(ObsidianAuctions.get().getLocationManager().isInArena(owner)) {
             this.messageManager.sendPlayerMessage("auction-fail-arena", this.ownerUUID, this);
             return false;
         }
@@ -386,7 +385,7 @@ public class Auction {
         }
         UUID playerUUID = bidder.getUniqueId();
 
-        if(ObsidianAuctions.get().getArenaManager().isInArena(bidder)) {
+        if(ObsidianAuctions.get().getLocationManager().isInArena(bidder)) {
             this.messageManager.sendPlayerMessage("bid-fail-arena", playerUUID, this);
             return;
         }

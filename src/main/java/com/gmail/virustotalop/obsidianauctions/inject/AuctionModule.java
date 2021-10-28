@@ -2,7 +2,7 @@ package com.gmail.virustotalop.obsidianauctions.inject;
 
 import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.gmail.virustotalop.obsidianauctions.arena.ArenaManager;
+import com.gmail.virustotalop.obsidianauctions.auction.LocationManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManagerListener;
@@ -52,7 +52,7 @@ public class AuctionModule implements Module {
         binder.bind(Configuration.class).annotatedWith(I18nItemConfig.class).toInstance(this.i18nItemConfig);
         binder.bind(AuctionManager.class).asEagerSingleton();
         binder.bind(PlaceholderAPI.class).to(this.papiClazz).asEagerSingleton();
-        binder.bind(ArenaManager.class).asEagerSingleton();
+        binder.bind(LocationManager.class).asEagerSingleton();
         binder.bind(TranslationFactory.class).to(I18nTranslationFactory.class).asEagerSingleton();
         binder.bind(ActionBarManager.class).asEagerSingleton();
         binder.bind(AuctionMessageParser.class).asEagerSingleton();
