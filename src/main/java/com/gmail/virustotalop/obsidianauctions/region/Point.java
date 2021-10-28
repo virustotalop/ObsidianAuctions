@@ -2,6 +2,8 @@ package com.gmail.virustotalop.obsidianauctions.region;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.Objects;
+
 @ApiStatus.Internal
 public class Point {
 
@@ -46,5 +48,21 @@ public class Point {
 
     public int getZ() {
         return this.z;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) {
+            return true;
+        } else if(!(o instanceof Point)) {
+            return false;
+        }
+        Point that = (Point) o;
+        return this.x == that.x && this.y == that.y && this.z == that.z;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.x, this.y, this.z);
     }
 }
