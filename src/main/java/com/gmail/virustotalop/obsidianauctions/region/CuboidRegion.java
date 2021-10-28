@@ -1,4 +1,4 @@
-package com.gmail.virustotalop.obsidianauctions.arena.region;
+package com.gmail.virustotalop.obsidianauctions.region;
 
 import org.bukkit.Location;
 import org.bukkit.World;
