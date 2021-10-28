@@ -95,8 +95,8 @@ public class AuctionMessageParser {
                     replacements.put("%auction-bid-increment%", Functions.formatAmount(auction.getMinBidIncrement())); //%A5
                     replacements.put("%auction-buy-now%", Functions.formatAmount(auction.getBuyNow())); //%A6
                     replacements.put("%auction-remaining-time%", Functions.formatTime(auction.getRemainingTime(), auctionScope)); //%A7
-                    replacements.put("%auction-pre-tax%", Functions.formatAmount(auction.extractedPreTax)); //%A8
-                    replacements.put("%auction-post-tax%", Functions.formatAmount(auction.extractedPostTax)); //%A9
+                    replacements.put("%auction-pre-tax%", Functions.formatAmount(auction.getExtractedPreTax())); //%A8
+                    replacements.put("%auction-post-tax%", Functions.formatAmount(auction.getExtractedPostTax())); //%A9
                 }
                 break;
             }
@@ -211,8 +211,8 @@ public class AuctionMessageParser {
                 conditionals.put("can-bid", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.bid")); //3
                 conditionals.put("has-display-name", lot != null && ObsidianAuctions.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
                 conditionals.put("has-enchantment", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
-                conditionals.put("is-sealed", auction != null && auction.sealed); //6
-                conditionals.put("not-sealed", auction != null && !auction.sealed && auction.getCurrentBid() != null); //7
+                conditionals.put("is-sealed", auction != null && auction.isSealed()); //6
+                conditionals.put("not-sealed", auction != null && !auction.isSealed() && auction.getCurrentBid() != null); //7
                 conditionals.put("is-broadcast", isBroadcast); //8
                 conditionals.put("has-book-title", lot != null && Items.getBookTitle(lot) != null && !Items.getBookTitle(lot).isEmpty()); //9
                 conditionals.put("has-book-author", lot != null && Items.getBookAuthor(lot) != null && !Items.getBookAuthor(lot).isEmpty()); //0

@@ -54,10 +54,10 @@ public class AuctionBid {
         long previousSealedReserve = 0;
         AuctionBid currentBid = this.auction.getCurrentBid();
 
-        for(int i = 0; i < this.auction.sealedBids.size(); i++) {
-            if(this.auction.sealedBids.get(i).getBidderName().equalsIgnoreCase(this.getBidderName())) {
-                previousSealedReserve += this.auction.sealedBids.get(i).getBidAmount();
-                this.auction.sealedBids.remove(i);
+        for(int i = 0; i < this.auction.getSealedBids().size(); i++) {
+            if(this.auction.getSealedBids().get(i).getBidderName().equalsIgnoreCase(this.getBidderName())) {
+                previousSealedReserve += this.auction.getSealedBids().get(i).getBidAmount();
+                this.auction.getSealedBids().remove(i);
                 i--;
             }
         }
@@ -86,9 +86,9 @@ public class AuctionBid {
      * Refunds reserve for unsealed auctions or queues reserve refund for sealed auctions.
      */
     public void cancelBid() {
-        if(this.auction.sealed) {
+        if(this.auction.isSealed()) {
             // Queue reserve refund.
-            this.auction.sealedBids.add(this);
+            this.auction.getSealedBids().add(this);
             ObsidianAuctions.get().getAuctionScopeManager().addParticipant(this.getBidderUUID(), this.auction.getScope());
         } else {
             // Refund reserve.
@@ -129,8 +129,8 @@ public class AuctionBid {
 
         if(taxPercent > 0D) {
             taxes = unsafeBidAmount * (taxPercent / 100D);
-            this.auction.extractedPostTax = taxes;
-            this.auction.messageManager.sendPlayerMessage("auction-end-tax", this.auction.getOwnerUUID(), this.auction);
+            this.auction.setExtractedPostTax(taxes);
+            this.auction.getMessageManager().sendPlayerMessage("auction-end-tax", this.auction.getOwnerUUID(), this.auction);
             unsafeBidAmount -= taxes;
             UUID taxDestinationUser = AuctionConfig.getUUID("deposit-tax-to-user", this.auction.getScope());
             if(taxDestinationUser != null) {
@@ -249,7 +249,7 @@ public class AuctionBid {
                 return false;
             }
         } else {
-            if(this.auction.sealed || !AuctionConfig.getBoolean("allow-auto-bid", this.auction.getScope())) {
+            if(this.auction.isSealed() || !AuctionConfig.getBoolean("allow-auto-bid", this.auction.getScope())) {
                 this.error = "bid-fail-bid-required";
                 return false;
             } else {
@@ -287,7 +287,7 @@ public class AuctionBid {
      * @return acceptability of max bid
      */
     private boolean parseArgMaxBid() {
-        if(!AuctionConfig.getBoolean("allow-max-bids", this.auction.getScope()) || this.auction.sealed) {
+        if(!AuctionConfig.getBoolean("allow-max-bids", this.auction.getScope()) || this.auction.isSealed()) {
             // Just ignore it.
             this.maxBidAmount = this.bidAmount;
             return true;

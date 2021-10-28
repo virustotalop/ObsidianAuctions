@@ -28,14 +28,14 @@ import java.util.UUID;
  */
 public class Auction {
 
-    protected ObsidianAuctions plugin;
+    private ObsidianAuctions plugin;
     private final String[] args;
     private UUID ownerUUID;
     private String ownerName;
     private final AuctionScope scope;
 
-    public double extractedPreTax = 0;
-    public double extractedPostTax = 0;
+    private double extractedPreTax = 0;
+    private double extractedPostTax = 0;
 
     private long startingBid = 0;
     private long minBidIncrement = 0;
@@ -46,11 +46,11 @@ public class Auction {
 
     private AuctionLot lot;
     private AuctionBid currentBid = null;
-    public ArrayList<AuctionBid> sealedBids = new ArrayList<>();
+    private List<AuctionBid> sealedBids = new ArrayList<>();
 
-    public boolean sealed;
+    private boolean sealed;
 
-    public long nextTickTime = 0;
+    private long nextTickTime = 0;
 
     // Scheduled timers:
     private int countdown = 0;
@@ -58,8 +58,7 @@ public class Auction {
 
     //added
     private final ItemStack guiItem;
-
-    public MessageManager messageManager;
+    private final MessageManager messageManager;
 
     /**
      * Gets the AuctionScope which hosts this auction.
@@ -126,7 +125,7 @@ public class Auction {
      * @return whether or not the auction start succeeded
      */
     public boolean start() {
-        Player owner = Bukkit.getServer().getPlayer(this.ownerUUID);
+        Player owner = this.plugin.getServer().getPlayer(this.ownerUUID);
 
         if(ObsidianAuctions.get().getLocationManager().isInArena(owner)) {
             this.messageManager.sendPlayerMessage("auction-fail-arena", this.ownerUUID, this);
@@ -200,7 +199,7 @@ public class Auction {
 
         // Check to see if any other plugins have a reason...or they can forever hold their piece.
         AuctionStartEvent auctionStartEvent = new AuctionStartEvent(owner, this);
-        Bukkit.getServer().getPluginManager().callEvent(auctionStartEvent);
+        this.plugin.getServer().getPluginManager().callEvent(auctionStartEvent);
 
         if(auctionStartEvent.isCancelled()) {
             this.messageManager.sendPlayerMessage("auction-fail-blocked-by-other-plugin", this.ownerUUID, this);
@@ -274,7 +273,7 @@ public class Auction {
      * Cancels the Auction instance and disposes of it normally.
      */
     public void cancel() {
-        Bukkit.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
+        this.plugin.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
         this.messageManager.broadcastAuctionMessage("auction-cancel", this);
 
         if(this.lot != null) {
@@ -293,7 +292,7 @@ public class Auction {
      * @param authority the name of a player authorized to confiscate auctions
      */
     public void confiscate(Player authority) {
-        Bukkit.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
+        this.plugin.getServer().getPluginManager().callEvent(new AuctionEndEvent(this, true));
         this.ownerName = authority.getName();
         this.ownerUUID = authority.getUniqueId();
         this.messageManager.broadcastAuctionMessage("confiscate-success", this);
@@ -311,7 +310,7 @@ public class Auction {
      */
     public void end() {
         AuctionEndEvent auctionEndEvent = new AuctionEndEvent(this, false);
-        Bukkit.getServer().getPluginManager().callEvent(auctionEndEvent);
+        this.plugin.getServer().getPluginManager().callEvent(auctionEndEvent);
         if(auctionEndEvent.isCancelled()) {
             this.messageManager.broadcastAuctionMessage("auction-cancel", this);
             if(this.lot != null) {
@@ -413,7 +412,7 @@ public class Auction {
 
                         // Let other plugins figure out any reasons why this buy shouldn't happen.
                         AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
-                        Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
+                        this.plugin.getServer().getPluginManager().callEvent(auctionBidEvent);
                         if(auctionBidEvent.isCancelled()) {
                             this.failBid(bid, "bid-fail-blocked-by-other-plugin");
                         } else {
@@ -440,7 +439,7 @@ public class Auction {
             }
             // Let other plugins figure out any reasons why this buy shouldn't happen.
             AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
-            Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
+            this.plugin.getServer().getPluginManager().callEvent(auctionBidEvent);
             if(auctionBidEvent.isCancelled()) {
                 failBid(bid, "bid-fail-blocked-by-other-plugin");
             } else {
@@ -455,7 +454,7 @@ public class Auction {
             if(bid.raiseOwnBid(this.currentBid)) {
                 // Let other plugins figure out any reasons why this buy shouldn't happen.
                 AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
-                Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
+                this.plugin.getServer().getPluginManager().callEvent(auctionBidEvent);
                 if(auctionBidEvent.isCancelled()) {
                     this.failBid(bid, "bid-fail-blocked-by-other-plugin");
                 } else {
@@ -506,7 +505,7 @@ public class Auction {
             if(winner.equals(bid)) {
                 // Let other plugins figure out any reasons why this buy shouldn't happen.
                 AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
-                Bukkit.getServer().getPluginManager().callEvent(auctionBidEvent);
+                this.plugin.getServer().getPluginManager().callEvent(auctionBidEvent);
                 if(auctionBidEvent.isCancelled()) {
                     failBid(bid, "bid-fail-blocked-by-other-plugin");
                 } else {
@@ -592,7 +591,7 @@ public class Auction {
      * @return acceptability of held item for auctioning
      */
     private boolean parseHeldItem() {
-        Player owner = Bukkit.getServer().getPlayer(this.ownerUUID);
+        Player owner = this.plugin.getServer().getPlayer(this.ownerUUID);
         if(this.lot != null) {
             return true;
         }
@@ -1036,7 +1035,7 @@ public class Auction {
     }
 
     public String getOwnerDisplayName() {
-        Player ownerPlayer = Bukkit.getServer().getPlayer(this.ownerUUID);
+        Player ownerPlayer = this.plugin.getServer().getPlayer(this.ownerUUID);
         if(ownerPlayer != null) {
             return ownerPlayer.getDisplayName();
         } else {
@@ -1048,4 +1047,27 @@ public class Auction {
         return this.guiItem;
     }
 
+    public boolean isSealed() {
+        return this.sealed;
+    }
+
+    public MessageManager getMessageManager() {
+        return this.messageManager;
+    }
+
+    public List<AuctionBid> getSealedBids() {
+        return this.sealedBids;
+    }
+
+    public double getExtractedPreTax() {
+        return this.extractedPreTax;
+    }
+
+    public double getExtractedPostTax() {
+        return this.extractedPostTax;
+    }
+
+    public void setExtractedPostTax(double taxes) {
+        this.extractedPostTax = taxes;
+    }
 }

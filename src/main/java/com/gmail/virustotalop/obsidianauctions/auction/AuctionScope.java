@@ -139,7 +139,7 @@ public class AuctionScope {
      */
     public void queueAuction(Auction auctionToQueue) {
         UUID playerUUID = auctionToQueue.getOwnerUUID();
-        MessageManager messageManager = auctionToQueue.messageManager;
+        MessageManager messageManager = auctionToQueue.getMessageManager();
 
         if(this.activeAuction == null) {
             // Queuing because of interval not yet timed out.
@@ -194,7 +194,7 @@ public class AuctionScope {
         if(auction == null) {
             return;
         }
-        MessageManager messageManager = auction.messageManager;
+        MessageManager messageManager = auction.getMessageManager();
 
         UUID playerUUID = auction.getOwnerUUID();
         Player player = Bukkit.getPlayer(playerUUID);

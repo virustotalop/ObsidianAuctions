@@ -51,8 +51,8 @@ public class AuctionParticipant {
             } else if(scopeAuction.getCurrentBid() != null && scopeAuction.getCurrentBid().getBidderUUID().equals(this.playerUUID)) {
                 participating = true;
             }
-            for(int i = 0; i < scopeAuction.sealedBids.size(); i++) {
-                if(scopeAuction.sealedBids.get(i).getBidderName().equals(this.playerUUID)) {
+            for(int i = 0; i < scopeAuction.getSealedBids().size(); i++) {
+                if(scopeAuction.getSealedBids().get(i).getBidderName().equals(this.playerUUID)) {
                     participating = true;
                 }
             }
