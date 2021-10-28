@@ -2,7 +2,7 @@ package com.gmail.virustotalop.obsidianauctions.listener;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.gmail.virustotalop.obsidianauctions.auction.LocationManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionLocationManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.google.inject.Inject;
@@ -17,11 +17,11 @@ import java.util.UUID;
 
 public class ArenaListener implements Listener {
 
-    private final LocationManager areaManager;
+    private final AuctionLocationManager areaManager;
     private final AuctionManager scope;
 
     @Inject
-    private ArenaListener(LocationManager areaManager, AuctionManager scope) {
+    private ArenaListener(AuctionLocationManager areaManager, AuctionManager scope) {
         this.areaManager = areaManager;
         this.scope = scope;
     }

@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
@@ -234,5 +233,4 @@ public class AuctionManager {
     void clearPlayerScope(Player player) {
         this.playerScopeCache.remove(player.getUniqueId());
     }
-
 }

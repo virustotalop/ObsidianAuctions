@@ -8,7 +8,7 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import com.clubobsidian.wrappy.Configuration;
-import com.gmail.virustotalop.obsidianauctions.auction.LocationManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionLocationManager;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionLot;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
@@ -90,7 +90,7 @@ public class ObsidianAuctions extends JavaPlugin {
 
     private MessageManager messageManager;
     private AuctionProhibitionManager prohibitionCache;
-    private LocationManager locationManager;
+    private AuctionLocationManager locationManager;
     private AuctionManager scopeManager;
 
     //Adventure
@@ -256,7 +256,7 @@ public class ObsidianAuctions extends JavaPlugin {
         Injector injector = Guice.createInjector(module);
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);
-        this.locationManager = injector.getInstance(LocationManager.class);
+        this.locationManager = injector.getInstance(AuctionLocationManager.class);
         this.scopeManager = injector.getInstance(AuctionManager.class);
         return injector;
     }
@@ -519,7 +519,7 @@ public class ObsidianAuctions extends JavaPlugin {
         return this.perms;
     }
 
-    public LocationManager getLocationManager() {
+    public AuctionLocationManager getLocationManager() {
         return this.locationManager;
     }
 

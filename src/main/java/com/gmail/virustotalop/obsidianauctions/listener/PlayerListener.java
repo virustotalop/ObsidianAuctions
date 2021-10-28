@@ -5,7 +5,7 @@ import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
-import com.gmail.virustotalop.obsidianauctions.auction.LocationManager;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionLocationManager;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.google.inject.Inject;
 import org.bukkit.entity.Player;
@@ -27,12 +27,12 @@ public class PlayerListener implements Listener {
 
     private final MessageManager message;
     private final AuctionManager auctionManager;
-    private final LocationManager locationManager;
+    private final AuctionLocationManager locationManager;
     private final ObsidianAuctions plugin;
 
     @Inject
     private PlayerListener(MessageManager message, AuctionManager auctionManager,
-                           LocationManager locationManager, ObsidianAuctions plugin) {
+                           AuctionLocationManager locationManager, ObsidianAuctions plugin) {
         this.message = message;
         this.auctionManager = auctionManager;
         this.locationManager = locationManager;

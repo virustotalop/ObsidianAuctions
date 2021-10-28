@@ -32,13 +32,13 @@ import java.util.logging.Level;
  * @author Joshua "flobi" Hatfield
  * @author virustotalop
  */
-public class LocationManager {
+public class AuctionLocationManager {
 
     private final Map<String, Collection<Region>> regions = new HashMap<>();
     private final AuctionManager auctionManager;
 
     @Inject
-    private LocationManager(@Config Configuration config, ObsidianAuctions plugin, AuctionManager auctionManager) {
+    private AuctionLocationManager(@Config Configuration config, ObsidianAuctions plugin, AuctionManager auctionManager) {
         this.auctionManager = auctionManager;
         this.loadRegions(config, plugin);
     }
