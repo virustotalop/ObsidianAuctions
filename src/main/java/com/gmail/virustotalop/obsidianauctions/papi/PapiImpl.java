@@ -1,9 +1,9 @@
 package com.gmail.virustotalop.obsidianauctions.papi;
 
-import com.google.inject.Inject;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import javax.inject.Inject;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;

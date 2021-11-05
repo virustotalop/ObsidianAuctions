@@ -4,10 +4,10 @@ import cloud.commandframework.exceptions.NoPermissionException;
 import com.gmail.virustotalop.obsidianauctions.Permission;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
-import com.google.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.inject.Inject;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 

@@ -3,9 +3,8 @@ package com.gmail.virustotalop.obsidianauctions.listener;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionLocationManager;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
-import com.google.inject.Inject;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
 public class ArenaListener implements Listener {

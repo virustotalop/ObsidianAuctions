@@ -1,13 +1,13 @@
 package com.gmail.virustotalop.obsidianauctions.message;
 
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
-import com.google.inject.Inject;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 
+import javax.inject.Inject;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
