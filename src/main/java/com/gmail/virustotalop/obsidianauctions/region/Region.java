@@ -1,5 +1,6 @@
 package com.gmail.virustotalop.obsidianauctions.region;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
@@ -12,42 +13,37 @@ import java.util.Objects;
 public abstract class Region {
 
     private final String name;
-    private final WeakReference<World> world;
+    private final String worldName;
 
     public Region(@NotNull String name, @NotNull  World world) {
         this.name = name;
-        this.world = new WeakReference<>(world);
+        this.worldName = world.getName();
     }
 
     public String getName() {
         return this.name;
     }
 
+    public String getWorldName() {
+        return this.worldName;
+    }
+
     public World getWorld() {
-        return this.world.get();
+        return Bukkit.getServer().getWorld(this.name);
     }
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) {
-            return true;
-        } else if(!(o instanceof Region)) {
-            return false;
-        }
-        Region that = (Region) o;
-        if(this.world.get() == null) {
-            if(that.world.get() == null && Objects.equals(this.name, that.name)) {
-                return true;
-            }
-            return false;
-        }
-        return Objects.equals(this.name, that.name) &&
-                Objects.equals(this.world.get().getName(), that.world.get().getName());
+        if(this == o) return true;
+        if(!(o instanceof Region)) return false;
+        Region region = (Region) o;
+        return Objects.equals(this.name, region.name) &&
+                Objects.equals(this.worldName, region.worldName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, world);
+        return Objects.hash(this.name, this.worldName);
     }
 
     public abstract boolean isWithin(Location location);

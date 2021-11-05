@@ -127,8 +127,6 @@ public class NBTCompound {
         return null;
     }
 
-
-
     private Object parseNBTCompoundFromJson(String json) throws Exception {
         return parse.invoke(null, json);
     }

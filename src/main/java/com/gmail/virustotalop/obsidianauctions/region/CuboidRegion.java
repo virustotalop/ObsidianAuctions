@@ -29,7 +29,6 @@ public class CuboidRegion extends Region {
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
-
         if(x > this.maxX || x < this.minX) {
             return false;
         } else if(y > this.maxY || y < this.minY) {
@@ -37,10 +36,6 @@ public class CuboidRegion extends Region {
         } else if(z > this.maxZ || z < this.minZ) {
             return false;
         }
-        World world = this.getWorld();
-        if(world == null) {
-            return false;
-        }
-        return location.getWorld().getName().equals(world.getName());
+        return location.getWorld().getName().equals(this.getWorldName());
     }
 }
