@@ -191,7 +191,7 @@ public final class Items {
     }
 
     
-    public static void addStoredEnchantment(ItemStack item, Integer enchantment, Integer level, boolean ignoreLevelRestriction) {
+    public static void addStoredEnchantment(ItemStack item, Enchantment enchantment, Integer level, boolean ignoreLevelRestriction) {
         if(item == null) {
             return;
         }
@@ -201,7 +201,7 @@ public final class Items {
         }
         if(itemMeta instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) itemMeta;
-            storageMeta.addStoredEnchant(new EnchantmentWrapper(enchantment), level, ignoreLevelRestriction);
+            storageMeta.addStoredEnchant(enchantment, level, ignoreLevelRestriction);
             item.setItemMeta(storageMeta);
         }
     }

@@ -33,23 +33,22 @@ public class AuctionLot implements Serializable {
     private UUID ownerUUID;
     private String ownerName;
 
+    private final String itemSerialized;
     private int quantity = 0;
-    private Material lotType;
-    private short lotDurability;
-    private Map<Integer, Integer> lotEnchantments;
-    private Map<Integer, Integer> storedEnchantments;
-    private int sourceStackQuantity = 0;
-    private String displayName = "";
-    private String bookAuthor = "";
-    private String bookTitle = "";
-    private String[] bookPages = null;
-    private Integer repairCost = null;
-    private String headOwner = null;
-    private Integer power = 0;
-    private FireworkEffect[] effects = null;
-    private String[] lore = null;
-    private String itemSerialized = null;
-
+    private final Material lotType;
+    private final short lotDurability;
+    private final Map<String, Integer> lotEnchantments;
+    private final Map<String, Integer> storedEnchantments;
+    private final int sourceStackQuantity;
+    private final String displayName;
+    private final String bookAuthor;
+    private final String bookTitle;
+    private final String[] bookPages;
+    private final Integer repairCost;
+    private final String headOwner;
+    private final Integer power;
+    private final FireworkEffect[] effects;
+    private final String[] lore;
 
     /**
      * Constructor that sets owner and lot type.
@@ -59,9 +58,49 @@ public class AuctionLot implements Serializable {
      * @param ownerName
      */
     public AuctionLot(ItemStack lotStack, UUID ownerUUID, String ownerName) {
-        setLotType(lotStack);
+        this.itemSerialized = this.getSerializedItem(lotStack);
+        this.lotType = lotStack.getType();
+        this.lotDurability = LegacyUtil.getDurability(lotStack);
+        this.sourceStackQuantity = lotStack.getAmount();
+        this.lotEnchantments = this.getLotEnchants(lotStack);
+        this.storedEnchantments = this.getStoredEnchants(lotStack);
+        this.displayName = Items.getDisplayName(lotStack);
+        this.bookAuthor = Items.getBookAuthor(lotStack);
+        this.bookTitle = Items.getBookTitle(lotStack);
+        this.bookPages = Items.getBookPages(lotStack);
+        this.repairCost = Items.getRepairCost(lotStack);
+        this.headOwner = Items.getPlayerHeadOwner(lotStack);
+        this.power = Items.getFireworkPower(lotStack);
+        this.effects = Items.getFireworkEffects(lotStack);
+        this.lore = Items.getLore(lotStack);
         this.ownerUUID = ownerUUID;
         this.ownerName = ownerName;
+    }
+
+    private String getSerializedItem(ItemStack lotStack) {
+        FileConfiguration tmpconfig = new YamlConfiguration();
+        tmpconfig.set("itemstack", lotStack);
+        return tmpconfig.saveToString();
+    }
+
+    private Map<String, Integer> getLotEnchants(ItemStack lotStack) {
+        Map<String, Integer> lotEnchantments = new HashMap<>();
+
+        for(Entry<Enchantment, Integer> enchantment : lotStack.getEnchantments().entrySet()) {
+            lotEnchantments.put(enchantment.getKey().getName(), enchantment.getValue());
+        }
+        return lotEnchantments;
+    }
+
+    private Map<String, Integer> getStoredEnchants(ItemStack lotStack) {
+        Map<String, Integer> storedEnchantments = new HashMap<>();
+        Map<Enchantment, Integer> enchantmentList = Items.getStoredEnchantments(lotStack);
+        if(enchantmentList != null) {
+            for(Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
+                storedEnchantments.put(enchantment.getKey().getName(), enchantment.getValue());
+            }
+        }
+        return storedEnchantments;
     }
 
     /**
@@ -188,11 +227,11 @@ public class AuctionLot implements Serializable {
         // The rest of this remains for backward compatibility.
         lotTypeLock = new ItemStack(this.lotType, 1, this.lotDurability);
 
-        for(Entry<Integer, Integer> enchantment : this.lotEnchantments.entrySet()) {
-            lotTypeLock.addUnsafeEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
+        for(Entry<String, Integer> enchantment : this.lotEnchantments.entrySet()) {
+            lotTypeLock.addUnsafeEnchantment(Enchantment.getByName(enchantment.getKey()), enchantment.getValue());
         }
-        for(Entry<Integer, Integer> enchantment : this.storedEnchantments.entrySet()) {
-            Items.addStoredEnchantment(lotTypeLock, enchantment.getKey(), enchantment.getValue(), true);
+        for(Entry<String, Integer> enchantment : this.storedEnchantments.entrySet()) {
+            Items.addStoredEnchantment(lotTypeLock, Enchantment.getByName(enchantment.getKey()), enchantment.getValue(), true);
         }
         lotTypeLock.setAmount(this.sourceStackQuantity);
         Items.setDisplayName(lotTypeLock, this.displayName);
@@ -207,45 +246,6 @@ public class AuctionLot implements Serializable {
         return lotTypeLock;
     }
 
-    /**
-     * Sets the items in this lot to have the properties of the referenced item stack.
-     *
-     * @param lotType
-     */
-    @SuppressWarnings("deprecation")
-    private void setLotType(ItemStack lotType) {
-//		this.itemSerialized = lotType.serialize();
-        FileConfiguration tmpconfig = new YamlConfiguration();
-        tmpconfig.set("itemstack", lotType);
-        this.itemSerialized = tmpconfig.saveToString();
-
-        // The rest of this remains for backward compatibility.
-        this.lotType = lotType.getType();
-        this.lotDurability = LegacyUtil.getDurability(lotType);
-        this.sourceStackQuantity = lotType.getAmount();
-        this.lotEnchantments = new HashMap<>();
-        this.storedEnchantments = new HashMap<>();
-        Map<Enchantment, Integer> enchantmentList = lotType.getEnchantments();
-
-        for(Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
-            this.lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
-        }
-
-        enchantmentList = Items.getStoredEnchantments(lotType);
-        if(enchantmentList != null) for(Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
-            this.storedEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
-        }
-
-        this.displayName = Items.getDisplayName(lotType);
-        this.bookAuthor = Items.getBookAuthor(lotType);
-        this.bookTitle = Items.getBookTitle(lotType);
-        this.bookPages = Items.getBookPages(lotType);
-        this.repairCost = Items.getRepairCost(lotType);
-        this.headOwner = Items.getPlayerHeadOwner(lotType);
-        this.power = Items.getFireworkPower(lotType);
-        this.effects = Items.getFireworkEffects(lotType);
-        this.lore = Items.getLore(lotType);
-    }
 
     /**
      * Gets the name of the owner of this lot.
