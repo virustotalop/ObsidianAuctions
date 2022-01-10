@@ -1,5 +1,6 @@
 package com.gmail.virustotalop.obsidianauctions.util;
 
+import com.gmail.virustotalop.obsidianauctions.item.ShulkerBox;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -588,6 +589,18 @@ public final class Items {
             skullMeta.setOwner(headName);
             item.setItemMeta(skullMeta);
         }
+    }
+
+    public static boolean shulkerBoxHasItems(ItemStack itemStack) {
+        if(itemStack.getType().name().endsWith("_SHULKER_BOX")) {
+            ShulkerBox box = new ShulkerBox(itemStack);
+            for(ItemStack item : box.getInventory().getContents()) {
+                if(item != null || item.getType() != Material.AIR) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private Items() {
