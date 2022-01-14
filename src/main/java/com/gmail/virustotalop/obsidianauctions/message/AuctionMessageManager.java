@@ -141,7 +141,7 @@ public class AuctionMessageManager implements MessageManager {
             broadcastMessage(messages, auctionScope);
         } else if(player != null) {
             for(String message : messages) {
-                this.adventure.player(player).sendMessage(MiniMessage.miniMessage().parse(message));
+                this.adventure.player(player).sendMessage(MiniMessage.miniMessage().deserialize(message));
                 ObsidianAuctions.get().log(player.getName(), this.stripTags(message), auctionScope);
             }
         } else if(sender != null) {
@@ -175,10 +175,10 @@ public class AuctionMessageManager implements MessageManager {
 
             for(String message : messages) {
                 if(ObsidianAuctions.enableChatMessages) {
-                    this.adventure.player(player).sendMessage(MiniMessage.miniMessage().parse(message));
+                    this.adventure.player(player).sendMessage(MiniMessage.miniMessage().deserialize(message));
                 }
                 if(ObsidianAuctions.enableActionbarMessages) {
-                    this.adventure.player(player).sendActionBar(MiniMessage.miniMessage().parse(message));
+                    this.adventure.player(player).sendActionBar(MiniMessage.miniMessage().deserialize(message));
                     this.actionBar.addPlayer(player, message);
                 }
             }
