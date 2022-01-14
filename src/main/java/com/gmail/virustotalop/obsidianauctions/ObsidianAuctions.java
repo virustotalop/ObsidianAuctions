@@ -18,9 +18,9 @@ import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
-import com.gmail.virustotalop.obsidianauctions.papi.NoImplPapi;
-import com.gmail.virustotalop.obsidianauctions.papi.PapiImpl;
-import com.gmail.virustotalop.obsidianauctions.papi.PlaceholderAPI;
+import com.gmail.virustotalop.obsidianauctions.placeholder.NoPlaceholderImpl;
+import com.gmail.virustotalop.obsidianauctions.placeholder.PapiPlaceholderImpl;
+import com.gmail.virustotalop.obsidianauctions.placeholder.Placeholder;
 import com.gmail.virustotalop.obsidianauctions.util.FileUtil;
 import com.gmail.virustotalop.obsidianauctions.util.InjectUtil;
 import com.google.inject.Guice;
@@ -191,13 +191,13 @@ public class ObsidianAuctions extends JavaPlugin {
             return;
         }
 
-        Class<? extends PlaceholderAPI> papiClazz = NoImplPapi.class;
+        Class<? extends Placeholder> placeholderClazz = NoPlaceholderImpl.class;
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            papiClazz = PapiImpl.class;
+            placeholderClazz = PapiPlaceholderImpl.class;
         }
 
         String language = config.getString("language");
-        Injector injector = this.inject(config, language, papiClazz);
+        Injector injector = this.inject(config, language, placeholderClazz);
         this.registerListeners(injector);
 
         //Load in inventory click listener
@@ -247,7 +247,7 @@ public class ObsidianAuctions extends JavaPlugin {
         return this.setupPermissions();
     }
 
-    private Injector inject(Configuration config, String itemLanguage, Class<? extends PlaceholderAPI> papiClazz) {
+    private Injector inject(Configuration config, String itemLanguage, Class<? extends Placeholder> papiClazz) {
         File itemLanguagesFolder = new File(this.dataFolder, "item_languages");
         File itemConfig = new File(itemLanguagesFolder, itemLanguage + ".yml");
         Configuration i18nItemConfig = Configuration.load(itemConfig);

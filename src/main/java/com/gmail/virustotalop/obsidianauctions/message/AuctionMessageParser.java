@@ -6,7 +6,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionBid;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.language.TranslationFactory;
-import com.gmail.virustotalop.obsidianauctions.papi.PlaceholderAPI;
+import com.gmail.virustotalop.obsidianauctions.placeholder.Placeholder;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
@@ -31,12 +31,12 @@ import java.util.Map;
 public class AuctionMessageParser {
 
     private final TranslationFactory translation;
-    private final PlaceholderAPI papi;
+    private final Placeholder placeholder;
 
     @Inject
-    private AuctionMessageParser(TranslationFactory translation, PlaceholderAPI papi) {
+    private AuctionMessageParser(TranslationFactory translation, Placeholder placeholder) {
         this.translation = translation;
-        this.papi = papi;
+        this.placeholder = placeholder;
     }
 
     /**
@@ -340,7 +340,7 @@ public class AuctionMessageParser {
             }
         }
         for(int i = 0; i < newMessageList.size(); i++) {
-            newMessageList.set(i, this.papi.setPlaceHolders(player, newMessageList.get(i)));
+            newMessageList.set(i, this.placeholder.replace(player, newMessageList.get(i)));
         }
         return newMessageList;
     }

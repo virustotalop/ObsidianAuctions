@@ -1,4 +1,4 @@
-package com.gmail.virustotalop.obsidianauctions.papi;
+package com.gmail.virustotalop.obsidianauctions.placeholder;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -8,16 +8,16 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 
-public class PapiImpl implements PlaceholderAPI {
+public class PapiPlaceholderImpl implements Placeholder {
 
     private final MethodHandle setPlaceHolders;
 
     @Inject
-    private PapiImpl() {
+    private PapiPlaceholderImpl() {
         this.setPlaceHolders = this.lookupSetPlaceHolders();
     }
 
-    public String setPlaceHolders(Player player, String message) {
+    public String replace(Player player, String message) {
         try {
             return (String) this.setPlaceHolders.invoke(player, message);
         } catch(Throwable throwable) {

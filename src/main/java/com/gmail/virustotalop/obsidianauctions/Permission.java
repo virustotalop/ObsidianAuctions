@@ -21,6 +21,6 @@ public final class Permission {
     public static final String AUCTION_ADMIN_CANCEL = "auction.admin.cancel";
     public static final String AUCTION_ADMIN_CONFISCATE = "auction.admin.confiscate";
 
-    private Permission() { }
-
+    private Permission() {
+    }
 }

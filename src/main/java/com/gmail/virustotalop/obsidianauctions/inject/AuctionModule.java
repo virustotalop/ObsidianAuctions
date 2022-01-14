@@ -19,7 +19,7 @@ import com.gmail.virustotalop.obsidianauctions.message.ActionBarManager;
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageManager;
 import com.gmail.virustotalop.obsidianauctions.message.AuctionMessageParser;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
-import com.gmail.virustotalop.obsidianauctions.papi.PlaceholderAPI;
+import com.gmail.virustotalop.obsidianauctions.placeholder.Placeholder;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -31,16 +31,16 @@ public class AuctionModule implements Module {
     private final BukkitAudiences adventure;
     private final Configuration config;
     private final Configuration i18nItemConfig;
-    private final Class<? extends PlaceholderAPI> papiClazz;
+    private final Class<? extends Placeholder> placeholderClazz;
 
     public AuctionModule(ObsidianAuctions plugin, BukkitAudiences adventure,
                          Configuration config, Configuration i18nItemConfig,
-                         Class<? extends PlaceholderAPI> papiClazz) {
+                         Class<? extends Placeholder> placeholderClazz) {
         this.plugin = plugin;
         this.adventure = adventure;
         this.config = config;
         this.i18nItemConfig = i18nItemConfig;
-        this.papiClazz = papiClazz;
+        this.placeholderClazz = placeholderClazz;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AuctionModule implements Module {
         binder.bind(Configuration.class).annotatedWith(Config.class).toInstance(this.config);
         binder.bind(Configuration.class).annotatedWith(I18nItemConfig.class).toInstance(this.i18nItemConfig);
         binder.bind(AuctionManager.class).asEagerSingleton();
-        binder.bind(PlaceholderAPI.class).to(this.papiClazz).asEagerSingleton();
+        binder.bind(Placeholder.class).to(this.placeholderClazz).asEagerSingleton();
         binder.bind(AuctionLocationManager.class).asEagerSingleton();
         binder.bind(TranslationFactory.class).to(I18nTranslationFactory.class).asEagerSingleton();
         binder.bind(ActionBarManager.class).asEagerSingleton();

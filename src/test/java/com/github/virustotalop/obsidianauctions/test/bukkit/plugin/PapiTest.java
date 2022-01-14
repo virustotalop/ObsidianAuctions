@@ -1,6 +1,6 @@
 package com.github.virustotalop.obsidianauctions.test.bukkit.plugin;
 
-import com.gmail.virustotalop.obsidianauctions.papi.NoImplPapi;
+import com.gmail.virustotalop.obsidianauctions.placeholder.NoPlaceholderImpl;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,8 +12,8 @@ public class PapiTest {
     @Test
     public void testNoImplPapi() {
         Player player = Mockito.mock(Player.class);
-        NoImplPapi papi = new NoImplPapi();
+        NoPlaceholderImpl papi = new NoPlaceholderImpl();
         String test = "test";
-        assertEquals(test, papi.setPlaceHolders(player, "test"));
+        assertEquals(test, papi.replace(player, "test"));
     }
 }
