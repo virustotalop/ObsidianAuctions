@@ -56,7 +56,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-def junitVersion = '5.8.1'
+def junitVersion = '5.8.2'
 def cloudVersion = '1.6.1'
 
 dependencies {
