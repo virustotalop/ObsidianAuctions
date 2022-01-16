@@ -6,7 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public class CuboidRegion extends Region {
-    
+
     private final int minX;
     private final int minY;
     private final int minZ;

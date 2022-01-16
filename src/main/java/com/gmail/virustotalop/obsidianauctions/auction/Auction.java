@@ -27,7 +27,7 @@ import java.util.UUID;
  */
 public class Auction {
 
-    private ObsidianAuctions plugin;
+    private final ObsidianAuctions plugin;
     private final String[] args;
     private UUID ownerUUID;
     private String ownerName;
@@ -45,7 +45,7 @@ public class Auction {
 
     private AuctionLot lot;
     private AuctionBid currentBid = null;
-    private List<AuctionBid> sealedBids = new ArrayList<>();
+    private final List<AuctionBid> sealedBids = new ArrayList<>();
 
     private boolean sealed;
 

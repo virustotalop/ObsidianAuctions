@@ -21,10 +21,10 @@ public class AuctionProhibition {
      * Protected constructor called when initializing prohibition.
      *
      * @param prohibitingPlugin prohibiting plugin
-     * @param playerUUID       prohibited player's uuid
-     * @param enableMessage    message to send when starting prohibition
-     * @param reminderMessage  message to send when reminding player of prohibition
-     * @param disableMessage   message to send when ending prohibition
+     * @param playerUUID        prohibited player's uuid
+     * @param enableMessage     message to send when starting prohibition
+     * @param reminderMessage   message to send when reminding player of prohibition
+     * @param disableMessage    message to send when ending prohibition
      */
     protected AuctionProhibition(Plugin prohibitingPlugin, UUID playerUUID, String enableMessage, String reminderMessage, String disableMessage) {
         this.prohibitingPlugin = prohibitingPlugin;

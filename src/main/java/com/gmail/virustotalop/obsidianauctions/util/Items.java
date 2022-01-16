@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -28,8 +27,8 @@ import java.util.Map.Entry;
 @ApiStatus.NonExtendable
 public final class Items {
 
-    private static Map<Enchantment, String> enchantmentNames = new HashMap<>();
-    private static Map<Integer, String> enchantmentLevels = new HashMap<>();
+    private static final Map<Enchantment, String> enchantmentNames = new HashMap<>();
+    private static final Map<Integer, String> enchantmentLevels = new HashMap<>();
 
     static {
         registerEnchantment("PROTECTION_ENVIRONMENTAL", "Protection");
@@ -95,7 +94,7 @@ public final class Items {
     }
 
     // Most of this function was copied from CraftBukkit.  The above functions too.
-    
+
     public static void saferItemGive(PlayerInventory playerInventory, ItemStack item) {
         // After bukkit is fixed:
         // player.getInventory().addItem(givingItems);
@@ -150,7 +149,7 @@ public final class Items {
 
     }
 
-    
+
     public static String[] getLore(ItemStack item) {
         if(item == null) return null;
         ItemMeta itemMeta = item.getItemMeta();
@@ -164,7 +163,7 @@ public final class Items {
         return pages;
     }
 
-    
+
     public static void setLore(ItemStack item, String[] pages) {
         if(item == null || pages == null) return;
         ItemMeta itemMeta = item.getItemMeta();
@@ -175,7 +174,7 @@ public final class Items {
         item.setItemMeta(itemMeta);
     }
 
-    
+
     public static Map<Enchantment, Integer> getStoredEnchantments(ItemStack item) {
         if(item == null) {
             return null;
@@ -190,7 +189,7 @@ public final class Items {
         return null;
     }
 
-    
+
     public static void addStoredEnchantment(ItemStack item, Enchantment enchantment, Integer level, boolean ignoreLevelRestriction) {
         if(item == null) {
             return;
@@ -206,7 +205,7 @@ public final class Items {
         }
     }
 
-    
+
     public static Integer getFireworkPower(ItemStack item) {
         if(item == null) {
             return null;
@@ -221,7 +220,7 @@ public final class Items {
         return null;
     }
 
-    
+
     public static void setFireworkPower(ItemStack item, Integer power) {
         if(item == null) {
             return;
@@ -236,7 +235,7 @@ public final class Items {
         }
     }
 
-    
+
     public static FireworkEffect[] getFireworkEffects(ItemStack item) {
         if(item == null) {
             return null;
@@ -259,7 +258,7 @@ public final class Items {
         return null;
     }
 
-    
+
     public static void setFireworkEffects(ItemStack item, FireworkEffect[] effects) {
         if(item == null || effects == null) {
             return;
@@ -280,7 +279,7 @@ public final class Items {
         }
     }
 
-    
+
     public static Integer getRepairCost(ItemStack item) {
         if(item == null) {
             return null;
@@ -294,7 +293,7 @@ public final class Items {
         return null;
     }
 
-    
+
     public static void setRepairCost(ItemStack item, Integer repairCost) {
         if(item == null) return;
         ItemMeta itemMeta = item.getItemMeta();
@@ -307,7 +306,7 @@ public final class Items {
         return;
     }
 
-    
+
     public static String getDisplayName(ItemStack item) {
         if(item == null) return null;
         ItemMeta itemMeta = item.getItemMeta();
@@ -315,7 +314,7 @@ public final class Items {
         return itemMeta.getDisplayName();
     }
 
-    
+
     public static void setDisplayName(ItemStack item, String name) {
         if(item == null) return;
         if(name == null) return;
@@ -325,7 +324,7 @@ public final class Items {
         item.setItemMeta(itemMeta);
     }
 
-    
+
     public static String getBookAuthor(ItemStack book) {
         if(book == null) return null;
         ItemMeta itemMeta = book.getItemMeta();
@@ -336,7 +335,7 @@ public final class Items {
         return null;
     }
 
-    
+
     public static void setBookAuthor(ItemStack book, String author) {
         if(book == null) return;
         ItemMeta itemMeta = book.getItemMeta();
@@ -349,7 +348,7 @@ public final class Items {
         return;
     }
 
-    
+
     public static String getBookTitle(ItemStack book) {
         if(book == null) return null;
         ItemMeta itemMeta = book.getItemMeta();
@@ -360,7 +359,7 @@ public final class Items {
         return null;
     }
 
-    
+
     public static void setBookTitle(ItemStack book, String title) {
         if(book == null) return;
         ItemMeta itemMeta = book.getItemMeta();
@@ -373,7 +372,7 @@ public final class Items {
         return;
     }
 
-    
+
     public static String[] getBookPages(ItemStack book) {
         if(book == null) return null;
         ItemMeta itemMeta = book.getItemMeta();
@@ -389,7 +388,7 @@ public final class Items {
         return null;
     }
 
-    
+
     public static void setBookPages(ItemStack book, String[] pages) {
         if(book == null || pages == null) return;
         ItemMeta itemMeta = book.getItemMeta();
@@ -402,7 +401,7 @@ public final class Items {
     }
 
     // Some of this was taken from Vault's item classes.
-    
+
     public static boolean isSameItem(ItemStack item, String searchString) {
         Material mat;
         short damageId = 0;
@@ -420,12 +419,11 @@ public final class Items {
     }
 
 
-    
     public static boolean isSameItem(ItemStack item1, ItemStack item2) {
         return item1.isSimilar(item2);
     }
 
-    
+
     public static int getMaxStackSize(ItemStack item) {
         if(item == null) {
             return 0;
@@ -434,7 +432,7 @@ public final class Items {
         return maxStackSize;
     }
 
-    
+
     public static int getSpaceForItem(Player player, ItemStack item) {
         int maxstack = getMaxStackSize(item);
         int space = 0;
@@ -451,18 +449,18 @@ public final class Items {
         return space;
     }
 
-    
+
     public static boolean hasSpace(Player player, int needed, ItemStack item) {
         return getSpaceForItem(player, item) >= needed;
     }
 
-    
+
     public static boolean hasAmount(String ownerName, int amount, ItemStack compareItem) {
         int has = getAmount(ownerName, compareItem);
         return has >= amount;
     }
 
-    
+
     public static int getAmount(String ownerName, ItemStack compareItem) {
         if(Bukkit.getPlayer(ownerName) == null) return 0;
         PlayerInventory inventory = Bukkit.getPlayer(ownerName).getInventory();
@@ -476,7 +474,7 @@ public final class Items {
         return has;
     }
 
-    
+
     public static void remove(String playerName, int amount, ItemStack compareItem) {
         Player player = Bukkit.getPlayer(playerName);
         if(player != null) {
@@ -534,7 +532,7 @@ public final class Items {
         return false;
     }
 
-    
+
     public static String getEnchantmentName(Entry<Enchantment, Integer> enchantment) {
         Enchantment enchantmentType = enchantment.getKey();
         int enchantmentLevel = enchantment.getValue();
@@ -552,7 +550,7 @@ public final class Items {
         return enchantmentName;
     }
 
-    
+
     public static Boolean isPlayerHead(ItemStack lot) {
         if(lot == null) {
             return false;
@@ -563,7 +561,7 @@ public final class Items {
         return lotType.equals("PLAYER_HEAD") || (lotType.equals("SKULL_ITEM") && LegacyUtil.getDurability(lot) == 3);
     }
 
-    
+
     public static String getPlayerHeadOwner(ItemStack lot) {
         if(!isPlayerHead(lot)) {
             return null;
@@ -575,7 +573,7 @@ public final class Items {
         return itemMeta.getOwningPlayer().getName();
     }
 
-    
+
     public static void setPlayerHeadOwner(ItemStack item, String headName) {
         if(item == null) {
             return;

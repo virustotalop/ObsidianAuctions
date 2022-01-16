@@ -200,8 +200,6 @@ public class ObsidianAuctions extends JavaPlugin {
         Injector injector = this.inject(config, language, placeholderClazz);
         this.registerListeners(injector);
 
-        //Load in inventory click listener
-
         BukkitScheduler scheduler = this.getServer().getScheduler();
         scheduler.scheduleSyncRepeatingTask(this, () -> this.auctionManager.checkAuctionQueue(), 20L, 20L);
 
@@ -560,11 +558,11 @@ public class ObsidianAuctions extends JavaPlugin {
                     Function.identity());
             CommandPermissionHandler handler = injector.getInstance(CommandPermissionHandler.class);
             commandManager.registerExceptionHandler(NoPermissionException.class, handler);
-            if (commandManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
+            if(commandManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
                 commandManager.registerBrigadier();
             }
             return commandManager;
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
         return null;

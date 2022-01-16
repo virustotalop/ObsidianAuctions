@@ -14,7 +14,7 @@ public abstract class Region {
     private final String name;
     private final String worldName;
 
-    public Region(@NotNull String name, @NotNull  World world) {
+    public Region(@NotNull String name, @NotNull World world) {
         this.name = name;
         this.worldName = world.getName();
     }

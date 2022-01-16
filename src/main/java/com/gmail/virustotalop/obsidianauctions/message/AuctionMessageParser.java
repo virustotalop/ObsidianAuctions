@@ -286,7 +286,7 @@ public class AuctionMessageParser {
                                 FireworkEffect.Type type = payload.getType();
                                 if(type != null) {
                                     if(!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
-                                    String fireworkShape = AuctionConfig.getLanguageString("firework-shapes." + type.toString(), auctionScope);
+                                    String fireworkShape = AuctionConfig.getLanguageString("firework-shapes." + type, auctionScope);
                                     if(fireworkShape == null) {
                                         payloadAspects += type.toString();
                                     } else {

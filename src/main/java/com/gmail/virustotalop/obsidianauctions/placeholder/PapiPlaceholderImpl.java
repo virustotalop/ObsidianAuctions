@@ -28,7 +28,7 @@ public class PapiPlaceholderImpl implements Placeholder {
 
     private MethodHandle lookupSetPlaceHolders() {
         try {
-            Class<?> placeholderAPI= Class.forName("me.clip.placeholderapi.PlaceholderAPI");
+            Class<?> placeholderAPI = Class.forName("me.clip.placeholderapi.PlaceholderAPI");
             Method reflect = placeholderAPI.getDeclaredMethod("setPlaceholders",
                     OfflinePlayer.class, String.class);
             return MethodHandles.lookup().unreflect(reflect);

@@ -46,7 +46,7 @@ public class AuctionLocationManager {
         //Run one tick after load, this is to ensure that all worlds are actually loaded
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             //Don't run if the plugin isn't even enabled
-            if(Bukkit.getServer().getPluginManager().getPlugin(plugin.getName()) == null  || !plugin.isEnabled()) {
+            if(Bukkit.getServer().getPluginManager().getPlugin(plugin.getName()) == null || !plugin.isEnabled()) {
                 return;
             }
             ConfigurationSection arenas = config.getConfigurationSection("arenas");
