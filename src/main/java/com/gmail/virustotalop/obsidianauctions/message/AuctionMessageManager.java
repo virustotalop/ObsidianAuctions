@@ -4,6 +4,7 @@ import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -173,12 +174,13 @@ public class AuctionMessageManager implements MessageManager {
                 continue;
             }
 
+            Audience audience = this.adventure.player(player);
             for(String message : messages) {
                 if(ObsidianAuctions.enableChatMessages) {
-                    this.adventure.player(player).sendMessage(MiniMessage.miniMessage().deserialize(message));
+                    audience.sendMessage(MiniMessage.miniMessage().deserialize(message));
                 }
                 if(ObsidianAuctions.enableActionbarMessages) {
-                    this.adventure.player(player).sendActionBar(MiniMessage.miniMessage().deserialize(message));
+                    audience.sendActionBar(MiniMessage.miniMessage().deserialize(message));
                     this.actionBar.addPlayer(player, message);
                 }
             }
