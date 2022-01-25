@@ -65,7 +65,7 @@ dependencies {
     testImplementation "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     testImplementation "org.mockito:mockito-core:4.2.0"
     implementation "com.github.clubobsidian:wrappy:2.3.2"
-    implementation "com.google.inject:guice:5.0.1"
+    implementation "com.google.inject:guice:5.1.0"
     implementation "cloud.commandframework:cloud-paper:$cloudVersion"
     implementation "cloud.commandframework:cloud-annotations:$cloudVersion"
     implementation "net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT"
