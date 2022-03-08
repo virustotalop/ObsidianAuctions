@@ -245,7 +245,6 @@ public class AuctionLot implements Serializable {
         return lotTypeLock;
     }
 
-
     /**
      * Gets the name of the owner of this lot.
      *

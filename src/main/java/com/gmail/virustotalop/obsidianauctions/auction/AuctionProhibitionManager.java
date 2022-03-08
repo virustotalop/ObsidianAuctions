@@ -14,12 +14,11 @@ import java.util.UUID;
 public class AuctionProhibitionManager {
 
     private final MessageManager messageManager;
-    private final List<AuctionProhibition> involuntarilyDisabledUsers;
+    private final List<AuctionProhibition> involuntarilyDisabledUsers = new ArrayList<>();
 
     @Inject
     private AuctionProhibitionManager(MessageManager messageManager) {
         this.messageManager = messageManager;
-        this.involuntarilyDisabledUsers = new ArrayList<>();
     }
 
     /**

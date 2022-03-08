@@ -25,7 +25,6 @@ public class CommandPermissionHandler implements BiConsumer<CommandSender, NoPer
         String missing = ex.getMissingPermission()
                 .replace("(", "")
                 .replace(")", "");
-        //System.out.println("missing: " + missing);
         if (missing.contains("|") || missing.equals(Permission.AUCTION_USE)) {
             this.sendMessage(sender, "auction-use-permissions");
         } else if (missing.equals(Permission.AUCTION_TOGGLE)) {
@@ -58,7 +57,6 @@ public class CommandPermissionHandler implements BiConsumer<CommandSender, NoPer
         if (sender instanceof Player) {
             uuid = ((Player) sender).getUniqueId();
         }
-        //System.out.println("Sending player message: " + key);
         this.manager.sendPlayerMessage(key, uuid, (Auction) null);
     }
 }
