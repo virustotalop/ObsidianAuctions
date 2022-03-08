@@ -37,13 +37,13 @@ public class AuctionManager {
         ConfigurationSection auctionScopesConfig = config.getConfigurationSection("auction-scopes");
         this.auctionScopes.clear();
         this.auctionScopesOrder.clear();
-        if(auctionScopesConfig != null) {
-            for(String scopeName : auctionScopesConfig.getKeys()) {
+        if (auctionScopesConfig != null) {
+            for (String scopeName : auctionScopesConfig.getKeys()) {
                 this.auctionScopesOrder.add(scopeName);
                 ConfigurationSection auctionScopeConfig = auctionScopesConfig.getConfigurationSection(scopeName);
                 File scopeTextConfigFile = new File(dataFolder, "language-" + scopeName + ".yml");
                 Configuration scopeTextConfig = null;
-                if(scopeTextConfigFile.exists()) {
+                if (scopeTextConfigFile.exists()) {
                     scopeTextConfig = Configuration.load(scopeTextConfigFile);
                 }
                 AuctionScope auctionScope = new AuctionScope(scopeName, auctionScopeConfig, scopeTextConfig);
@@ -60,9 +60,9 @@ public class AuctionManager {
      */
     public boolean isParticipant(UUID playerUUID) {
         boolean participating = false;
-        for(int i = 0; i < this.auctionParticipants.size(); i++) {
+        for (int i = 0; i < this.auctionParticipants.size(); i++) {
             AuctionParticipant participant = this.auctionParticipants.get(i);
-            if(participant.isParticipating() && playerUUID.equals(participant.getPlayerUUID())) {
+            if (participant.isParticipating() && playerUUID.equals(participant.getPlayerUUID())) {
                 participating = true;
             }
         }
@@ -77,7 +77,7 @@ public class AuctionManager {
      */
     public void addParticipant(UUID playerUUID, AuctionScope auctionScope) {
         Player player = Bukkit.getServer().getPlayer(playerUUID);
-        if(this.getParticipant(playerUUID) == null) {
+        if (this.getParticipant(playerUUID) == null) {
             AuctionParticipant participant = new AuctionParticipant(playerUUID, auctionScope);
             participant.setLastKnownGoodLocation(player.getLocation());
             this.auctionParticipants.add(participant);
@@ -96,9 +96,9 @@ public class AuctionManager {
      * @return participant instance
      */
     AuctionParticipant getParticipant(UUID playerUUID) {
-        for(int i = 0; i < this.auctionParticipants.size(); i++) {
+        for (int i = 0; i < this.auctionParticipants.size(); i++) {
             AuctionParticipant participant = this.auctionParticipants.get(i);
-            if(playerUUID.equals(participant.getPlayerUUID())) {
+            if (playerUUID.equals(participant.getPlayerUUID())) {
                 return participant;
             }
         }
@@ -113,7 +113,7 @@ public class AuctionManager {
      * @return scope where the player is
      */
     public AuctionScope getPlayerScope(Player player) {
-        if(player == null) {
+        if (player == null) {
             return null;
         }
         return this.getLocationScope(player.getLocation());
@@ -126,12 +126,12 @@ public class AuctionManager {
      * @return scope where the location is
      */
     public AuctionScope getLocationScope(Location location) {
-        if(location == null) {
+        if (location == null) {
             return null;
         }
-        for(String auctionScopeId : this.auctionScopesOrder) {
+        for (String auctionScopeId : this.auctionScopesOrder) {
             AuctionScope auctionScope = this.auctionScopes.get(auctionScopeId);
-            if(auctionScope.isLocationInScope(location)) {
+            if (auctionScope.isLocationInScope(location)) {
                 return auctionScope;
             }
         }
@@ -142,7 +142,7 @@ public class AuctionManager {
      * Cancels all running auctions AKA the Big red button.
      */
     public void cancelAllAuctions() {
-        for(Map.Entry<String, AuctionScope> auctionScopesEntry : this.auctionScopes.entrySet()) {
+        for (Map.Entry<String, AuctionScope> auctionScopesEntry : this.auctionScopes.entrySet()) {
             AuctionScope auctionScope = auctionScopesEntry.getValue();
             auctionScope.clearAuctionQueue();
             auctionScope.cancelActiveAuction();
@@ -155,9 +155,9 @@ public class AuctionManager {
      * @return whether at least one auction is running
      */
     public boolean areAuctionsRunning() {
-        for(Map.Entry<String, AuctionScope> auctionScopesEntry : this.auctionScopes.entrySet()) {
+        for (Map.Entry<String, AuctionScope> auctionScopesEntry : this.auctionScopes.entrySet()) {
             AuctionScope auctionScope = auctionScopesEntry.getValue();
-            if(auctionScope.getActiveAuction() != null || auctionScope.getAuctionQueueLength() > 0) {
+            if (auctionScope.getActiveAuction() != null || auctionScope.getAuctionQueueLength() > 0) {
                 return true;
             }
         }
@@ -167,19 +167,19 @@ public class AuctionManager {
     @ApiStatus.Internal
     public void sendFarewellMessages() {
         Iterator<UUID> playerIterator = this.playerScopeCache.keySet().iterator();
-        while(playerIterator.hasNext()) {
+        while (playerIterator.hasNext()) {
             UUID playerUUID = playerIterator.next();
-            if(!this.isParticipant(playerUUID)) {
+            if (!this.isParticipant(playerUUID)) {
                 Player player = Bukkit.getPlayer(playerUUID);
-                if(player != null && player.isOnline()) {
+                if (player != null && player.isOnline()) {
                     String oldScopeId = this.playerScopeCache.get(playerUUID);
                     AuctionScope oldScope = this.auctionScopes.get(oldScopeId);
                     AuctionScope playerScope = this.getPlayerScope(player);
                     String playerScopeId = null;
-                    if(playerScope != null) {
+                    if (playerScope != null) {
                         playerScopeId = playerScope.getScopeId();
                     }
-                    if(playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
+                    if (playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
                         ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerUUID, oldScope);
                         playerIterator.remove();
                         this.playerScopeCache.remove(playerUUID);
@@ -192,7 +192,7 @@ public class AuctionManager {
     @ApiStatus.Internal
     public void sendWelcomeMessages() {
         Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
-        for(Player player : players) {
+        for (Player player : players) {
             this.sendWelcomeMessage(player, false);
         }
     }
@@ -200,19 +200,19 @@ public class AuctionManager {
     @ApiStatus.Internal
     public void sendWelcomeMessage(Player player, boolean isOnJoin) {
         String welcomeMessageKey = "auctionscope-welcome";
-        if(isOnJoin) {
+        if (isOnJoin) {
             welcomeMessageKey += "-onjoin";
         }
         UUID playerUUID = player.getUniqueId();
-        if(!this.isParticipant(playerUUID)) {
+        if (!this.isParticipant(playerUUID)) {
             AuctionScope playerScope = this.getPlayerScope(player);
             String oldScopeId = this.playerScopeCache.get(playerUUID);
-            if(playerScope == null) {
-                if(oldScopeId != null) {
+            if (playerScope == null) {
+                if (oldScopeId != null) {
                     this.playerScopeCache.remove(playerUUID);
                 }
             } else {
-                if(oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
+                if (oldScopeId == null || oldScopeId.isEmpty() || !oldScopeId.equalsIgnoreCase(playerScope.getScopeId())) {
                     ObsidianAuctions.get().getMessageManager().sendPlayerMessage(welcomeMessageKey, playerUUID, playerScope);
                     this.playerScopeCache.put(playerUUID, playerScope.getScopeId());
                 }
@@ -224,7 +224,7 @@ public class AuctionManager {
      * Checks the auction queues for each scope, starting any auctions which are ready.
      */
     public void checkAuctionQueue() {
-        for(Map.Entry<String, AuctionScope> auctionScopesEntry : this.auctionScopes.entrySet()) {
+        for (Map.Entry<String, AuctionScope> auctionScopesEntry : this.auctionScopes.entrySet()) {
             auctionScopesEntry.getValue().checkThisAuctionQueue();
         }
     }

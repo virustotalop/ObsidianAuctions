@@ -32,7 +32,7 @@ public final class FileUtil {
     public static <T> T load(String fileName, T loadIfNull) {
         Object importedObject = null;
         File loadFile = new File(ObsidianAuctions.get().getDataFolder(), fileName);
-        if(loadFile.exists()) {
+        if (loadFile.exists()) {
             try {
                 InputStream inputStream = new FileInputStream(loadFile.getAbsolutePath());
                 InputStream buffer = new BufferedInputStream(inputStream);
@@ -41,11 +41,11 @@ public final class FileUtil {
                 input.close();
                 buffer.close(); //make sure these are closed
                 inputStream.close(); //make sure these are closed
-            } catch(IOException | ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 ex.printStackTrace();
             }
         }
-        if(importedObject == null) {
+        if (importedObject == null) {
             importedObject = loadIfNull;
         }
         return (T) importedObject;
@@ -61,7 +61,7 @@ public final class FileUtil {
     public static void save(Object object, String fileName) {
         File saveFile = new File(ObsidianAuctions.get().getDataFolder(), fileName);
         try {
-            if(saveFile.exists()) {
+            if (saveFile.exists()) {
                 saveFile.delete();
             }
             FileOutputStream file = new FileOutputStream(saveFile.getAbsolutePath());
@@ -74,7 +74,7 @@ public final class FileUtil {
                 buffer.close(); //make sure these are closed
                 file.close(); //make sure these are closed
             }
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }

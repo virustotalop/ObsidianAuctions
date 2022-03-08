@@ -8,13 +8,13 @@ import java.util.Objects;
 public class Point {
 
     public static Point create(String coords) {
-        if(coords == null) {
+        if (coords == null) {
             return null;
-        } else if(!coords.contains(",")) {
+        } else if (!coords.contains(",")) {
             return null;
         }
         String[] split = coords.split(",");
-        if(split.length != 3) {
+        if (split.length != 3) {
             return null;
         }
         try {
@@ -22,7 +22,7 @@ public class Point {
             int y = Integer.parseInt(split[1]);
             int z = Integer.parseInt(split[2]);
             return new Point(x, y, z);
-        } catch(NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             ex.printStackTrace();
             return null;
         }
@@ -52,9 +52,9 @@ public class Point {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) {
+        if (this == o) {
             return true;
-        } else if(!(o instanceof Point)) {
+        } else if (!(o instanceof Point)) {
             return false;
         }
         Point that = (Point) o;

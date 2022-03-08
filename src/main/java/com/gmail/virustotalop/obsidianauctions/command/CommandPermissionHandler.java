@@ -26,36 +26,36 @@ public class CommandPermissionHandler implements BiConsumer<CommandSender, NoPer
                 .replace("(", "")
                 .replace(")", "");
         //System.out.println("missing: " + missing);
-        if(missing.contains("|") || missing.equals(Permission.AUCTION_USE)) {
+        if (missing.contains("|") || missing.equals(Permission.AUCTION_USE)) {
             this.sendMessage(sender, "auction-use-permissions");
-        } else if(missing.equals(Permission.AUCTION_TOGGLE)) {
+        } else if (missing.equals(Permission.AUCTION_TOGGLE)) {
             this.sendMessage(sender, "auction-toggle-permissions");
-        } else if(missing.equals(Permission.AUCTION_START)) {
+        } else if (missing.equals(Permission.AUCTION_START)) {
             this.sendMessage(sender, "auction-fail-permissions");
-        } else if(missing.equals(Permission.AUCTION_END)) {
+        } else if (missing.equals(Permission.AUCTION_END)) {
             this.sendMessage(sender, "auction-end-permissions");
-        } else if(missing.equals(Permission.AUCTION_CANCEL)) {
+        } else if (missing.equals(Permission.AUCTION_CANCEL)) {
             this.sendMessage(sender, "auction-cancel-permissions");
-        } else if(missing.equals(Permission.AUCTION_QUEUE)) {
+        } else if (missing.equals(Permission.AUCTION_QUEUE)) {
             this.sendMessage(sender, "auction-queue-permissions");
-        } else if(missing.equals(Permission.AUCTION_INFO)) {
+        } else if (missing.equals(Permission.AUCTION_INFO)) {
             this.sendMessage(sender, "auction-info-permissions");
-        } else if(missing.equals(Permission.AUCTION_ADMIN_RELOAD)) {
+        } else if (missing.equals(Permission.AUCTION_ADMIN_RELOAD)) {
             this.sendMessage(sender, "plugin-reload-fail-permissions");
-        } else if(missing.equals(Permission.AUCTION_ADMIN_SUSPEND)) {
+        } else if (missing.equals(Permission.AUCTION_ADMIN_SUSPEND)) {
             this.sendMessage(sender, "suspension-fail-permissions");
-        } else if(missing.equals(Permission.AUCTION_ADMIN_RESUME)) {
+        } else if (missing.equals(Permission.AUCTION_ADMIN_RESUME)) {
             this.sendMessage(sender, "unsuspension-fail-permissions");
-        } else if(missing.equals(Permission.AUCTION_ADMIN_CONFISCATE)) {
+        } else if (missing.equals(Permission.AUCTION_ADMIN_CONFISCATE)) {
             this.sendMessage(sender, "confiscate-fail-permissions");
-        } else if(missing.equals(Permission.AUCTION_BID)) { //Handle bid
+        } else if (missing.equals(Permission.AUCTION_BID)) { //Handle bid
             this.sendMessage(sender, "bid-fail-permissions");
         }
     }
 
     private void sendMessage(CommandSender sender, String key) {
         UUID uuid = null;
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             uuid = ((Player) sender).getUniqueId();
         }
         //System.out.println("Sending player message: " + key);

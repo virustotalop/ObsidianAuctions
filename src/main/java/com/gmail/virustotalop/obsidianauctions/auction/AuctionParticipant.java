@@ -45,30 +45,30 @@ public class AuctionParticipant {
     public boolean isParticipating() {
         boolean participating = false;
         Auction scopeAuction = this.auctionScope.getActiveAuction();
-        if(scopeAuction != null) {
-            if(scopeAuction.getOwnerUUID().equals(this.playerUUID)) {
+        if (scopeAuction != null) {
+            if (scopeAuction.getOwnerUUID().equals(this.playerUUID)) {
                 participating = true;
-            } else if(scopeAuction.getCurrentBid() != null && scopeAuction.getCurrentBid().getBidderUUID().equals(this.playerUUID)) {
+            } else if (scopeAuction.getCurrentBid() != null && scopeAuction.getCurrentBid().getBidderUUID().equals(this.playerUUID)) {
                 participating = true;
             }
-            for(int i = 0; i < scopeAuction.getSealedBids().size(); i++) {
-                if(scopeAuction.getSealedBids().get(i).getBidderName().equals(this.playerUUID)) {
+            for (int i = 0; i < scopeAuction.getSealedBids().size(); i++) {
+                if (scopeAuction.getSealedBids().get(i).getBidderName().equals(this.playerUUID)) {
                     participating = true;
                 }
             }
         }
-        for(int i = 0; i < this.auctionScope.getAuctionQueueLength(); i++) {
+        for (int i = 0; i < this.auctionScope.getAuctionQueueLength(); i++) {
             Auction queuedAuction = this.auctionScope.getAuctionQueue().get(i);
-            if(queuedAuction != null) {
-                if(queuedAuction.getOwnerUUID().equals(this.playerUUID)) {
+            if (queuedAuction != null) {
+                if (queuedAuction.getOwnerUUID().equals(this.playerUUID)) {
                     participating = true;
                 }
-                if(queuedAuction.getCurrentBid() != null && queuedAuction.getCurrentBid().getBidderUUID().equals(this.playerUUID)) {
+                if (queuedAuction.getCurrentBid() != null && queuedAuction.getCurrentBid().getBidderUUID().equals(this.playerUUID)) {
                     participating = true;
                 }
             }
         }
-        if(!participating) {
+        if (!participating) {
             ObsidianAuctions.get().getAuctionManager().removeParticipant(this);
         }
         return participating;
@@ -78,7 +78,7 @@ public class AuctionParticipant {
      * Send a one time warning about attempting to enter an arena.
      */
     void sendArenaWarning() {
-        if(this.sentArenaWarning) {
+        if (this.sentArenaWarning) {
             return;
         }
         ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", this.playerUUID, (AuctionScope) null);
@@ -89,7 +89,7 @@ public class AuctionParticipant {
      * Send a one time warning about attempting to escape the auction scope.
      */
     void sendEscapeWarning() {
-        if(this.sentEscapeWarning) {
+        if (this.sentEscapeWarning) {
             return;
         }
         ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerUUID, (AuctionScope) null);

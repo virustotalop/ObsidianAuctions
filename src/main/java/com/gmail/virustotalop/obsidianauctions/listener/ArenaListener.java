@@ -28,14 +28,14 @@ public class ArenaListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onTeleport(PlayerTeleportEvent event) {
-        if(this.checkArena(event)) {
+        if (this.checkArena(event)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onMove(PlayerMoveEvent event) {
-        if(this.checkArena(event)) {
+        if (this.checkArena(event)) {
             event.setCancelled(true);
         }
     }
@@ -45,7 +45,7 @@ public class ArenaListener implements Listener {
         UUID playerUUID = player.getUniqueId();
         // Having arena check first is most optimal since we are just doing math here
         // and a world check
-        if(this.areaManager.isInArena(event.getTo()) && this.canNotJoinArenas(player) && this.participating(playerUUID)) {
+        if (this.areaManager.isInArena(event.getTo()) && this.canNotJoinArenas(player) && this.participating(playerUUID)) {
             ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", playerUUID, (AuctionScope) null);
             return true;
         }

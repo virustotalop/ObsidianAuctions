@@ -31,13 +31,13 @@ public class AuctionProhibitionManager {
      */
     public boolean isOnProhibition(UUID playerUUID, boolean sendReminderMessage) {
         AuctionProhibition prohibition = this.getProhibition(playerUUID);
-        if(prohibition != null) {
-            if(sendReminderMessage) {
+        if (prohibition != null) {
+            if (sendReminderMessage) {
                 Player player = Bukkit.getPlayer(playerUUID);
-                if(player == null) {
+                if (player == null) {
                     return true;
                 }
-                if(prohibition.getReminderMessage() == null) {
+                if (prohibition.getReminderMessage() == null) {
                     // Send stock message.
                     this.messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerUUID, (AuctionScope) null);
                 } else {
@@ -60,13 +60,13 @@ public class AuctionProhibitionManager {
      */
     public boolean isOnProhibition(Plugin prohibiterPlugin, UUID playerUUID, boolean sendReminderMessage) {
         AuctionProhibition prohibition = this.getProhibition(prohibiterPlugin, playerUUID);
-        if(prohibition != null) {
-            if(sendReminderMessage) {
+        if (prohibition != null) {
+            if (sendReminderMessage) {
                 Player player = Bukkit.getServer().getPlayer(playerUUID);
-                if(player == null) {
+                if (player == null) {
                     return true;
                 }
-                if(prohibition.getReminderMessage() == null) {
+                if (prohibition.getReminderMessage() == null) {
                     // Send stock message.
                     this.messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerUUID, (AuctionScope) null);
                 } else {
@@ -103,11 +103,11 @@ public class AuctionProhibitionManager {
      * @return success as prohibiting
      */
     public boolean prohibitPlayer(Plugin prohibiterPlugin, UUID playerUUID, String enableMessage, String reminderMessage, String disableMessage) {
-        if(ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
+        if (ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
             return false;
-        } else if(this.isOnProhibition(prohibiterPlugin, playerUUID, false)) {
+        } else if (this.isOnProhibition(prohibiterPlugin, playerUUID, false)) {
             return true;
-        } else if(this.getProhibition(playerUUID) != null) {
+        } else if (this.getProhibition(playerUUID) != null) {
             this.prohibitPlayer(prohibiterPlugin, playerUUID, disableMessage, reminderMessage, enableMessage);
             return true;
         }
@@ -115,10 +115,10 @@ public class AuctionProhibitionManager {
         this.prohibitPlayer(prohibiterPlugin, playerUUID, disableMessage, reminderMessage, enableMessage);
 
         Player player = Bukkit.getPlayer(playerUUID);
-        if(player == null) {
+        if (player == null) {
             return true;
         }
-        if(enableMessage == null) {
+        if (enableMessage == null) {
             // Send stock message.
             this.messageManager.sendPlayerMessage("remote-plugin-prohibition-enabled", playerUUID, (AuctionScope) null);
         } else {
@@ -135,11 +135,11 @@ public class AuctionProhibitionManager {
      */
     public void removeProhibition(Plugin prohibiterPlugin, UUID playerUUID) {
         Player player = Bukkit.getPlayer(playerUUID);
-        for(int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
+        for (int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
             AuctionProhibition prohibition = this.involuntarilyDisabledUsers.get(i);
-            if(prohibition.getPlayerUUID().equals(playerUUID) && prohibition.getProhibitingPlugin().equals(prohibiterPlugin)) {
-                if(player != null) {
-                    if(prohibition.getDisableMessage() == null) {
+            if (prohibition.getPlayerUUID().equals(playerUUID) && prohibition.getProhibitingPlugin().equals(prohibiterPlugin)) {
+                if (player != null) {
+                    if (prohibition.getDisableMessage() == null) {
                         // Send stock message.
                         this.messageManager.sendPlayerMessage("remote-plugin-prohibition-disabled", playerUUID, (AuctionScope) null);
                     } else {
@@ -152,9 +152,9 @@ public class AuctionProhibitionManager {
         }
 
         AuctionProhibition prohibition = getProhibition(playerUUID);
-        if(prohibition != null) {
-            if(player != null) {
-                if(prohibition.getEnableMessage() == null) {
+        if (prohibition != null) {
+            if (player != null) {
+                if (prohibition.getEnableMessage() == null) {
                     // Send stock message.
                     this.messageManager.sendPlayerMessage("remote-plugin-prohibition-enabled", playerUUID, (AuctionScope) null);
                 } else {
@@ -172,9 +172,9 @@ public class AuctionProhibitionManager {
      * @return prohibition instance
      */
     private AuctionProhibition getProhibition(Plugin prohibiterPlugin, UUID playerUUID) {
-        for(int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
+        for (int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
             AuctionProhibition prohibition = this.involuntarilyDisabledUsers.get(i);
-            if(prohibition.getPlayerUUID().equals(playerUUID) && prohibition.equals(prohibiterPlugin)) {
+            if (prohibition.getPlayerUUID().equals(playerUUID) && prohibition.equals(prohibiterPlugin)) {
                 return prohibition;
             }
         }
@@ -188,9 +188,9 @@ public class AuctionProhibitionManager {
      * @return prohibition instance
      */
     private AuctionProhibition getProhibition(UUID playerUUID) {
-        for(int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
+        for (int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
             AuctionProhibition prohibition = this.involuntarilyDisabledUsers.get(i);
-            if(prohibition.getPlayerUUID().equals(playerUUID)) {
+            if (prohibition.getPlayerUUID().equals(playerUUID)) {
                 return prohibition;
             }
         }

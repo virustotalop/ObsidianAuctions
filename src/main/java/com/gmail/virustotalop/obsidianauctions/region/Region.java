@@ -33,8 +33,8 @@ public abstract class Region {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(!(o instanceof Region)) return false;
+        if (this == o) return true;
+        if (!(o instanceof Region)) return false;
         Region region = (Region) o;
         return Objects.equals(this.name, region.name) &&
                 Objects.equals(this.worldName, region.worldName);

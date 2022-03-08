@@ -23,7 +23,7 @@ public class AuctionManagerListener implements Listener {
         UUID uuid = player.getUniqueId();
         this.auctionManager.clearPlayerScope(player);
         AuctionParticipant participant = this.auctionManager.getParticipant(uuid);
-        if(participant != null) {
+        if (participant != null) {
             this.auctionManager.removeParticipant(participant);
         }
     }

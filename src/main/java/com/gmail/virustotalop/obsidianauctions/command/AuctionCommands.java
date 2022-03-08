@@ -51,10 +51,10 @@ public class AuctionCommands {
     @CommandMethod("auction|auc on")
     @CommandPermission(Permission.AUCTION_TOGGLE)
     public void auctionOn(CommandSender sender) {
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             Player player = (Player) sender;
             UUID uuid = player.getUniqueId();
-            if(this.plugin.removeVoluntarilyDisabled(uuid)) {
+            if (this.plugin.removeVoluntarilyDisabled(uuid)) {
                 this.message.sendPlayerMessage("auction-enabled", uuid, (AuctionScope) null);
                 this.plugin.saveVoluntarilyDisabled();
             }
@@ -64,10 +64,10 @@ public class AuctionCommands {
     @CommandMethod("auction|auc off|quiet|ignore|silent|silence")
     @CommandPermission(Permission.AUCTION_TOGGLE)
     public void auctionOff(CommandSender sender) {
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             Player player = (Player) sender;
             UUID uuid = player.getUniqueId();
-            if(!this.plugin.isVoluntarilyDisabled(uuid)) {
+            if (!this.plugin.isVoluntarilyDisabled(uuid)) {
                 this.message.sendPlayerMessage("auction-disabled", uuid, (AuctionScope) null);
                 this.plugin.addVoluntarilyDisabled(uuid);
                 this.plugin.saveVoluntarilyDisabled();
@@ -81,14 +81,14 @@ public class AuctionCommands {
                              @Argument("price") String price, @Argument("increment") String increment,
                              @Argument("time") String time, @Argument("buynow") String buyNow,
                              @Argument("sealed") String sealedStr) {
-        if(this.canAuction(sender)) {
-            if(buyNow == null) {
+        if (this.canAuction(sender)) {
+            if (buyNow == null) {
                 buyNow = "0";
             }
             boolean sealed = false;
-            if(sealedStr != null) {
+            if (sealedStr != null) {
                 String lower = sealedStr.toLowerCase();
-                if(lower.equals("sealed") || lower.equals("yes") || lower.equals("true")) {
+                if (lower.equals("sealed") || lower.equals("yes") || lower.equals("true")) {
                     sealed = true;
                 }
             }
@@ -96,11 +96,11 @@ public class AuctionCommands {
             UUID uuid = this.uuidFromSender(sender);
             Player player = this.plugin.getServer().getPlayer(uuid);
             AuctionScope userScope = this.auctionManager.getPlayerScope(player);
-            if(!AuctionConfig.getBoolean("allow-sealed-auctions", userScope) && sealed) {
+            if (!AuctionConfig.getBoolean("allow-sealed-auctions", userScope) && sealed) {
                 this.message.sendPlayerMessage("auction-fail-no-sealed-auctions", uuid, (AuctionScope) null);
                 return;
             }
-            if(!AuctionConfig.getBoolean("allow-unsealed-auctions", userScope) && !sealed) {
+            if (!AuctionConfig.getBoolean("allow-unsealed-auctions", userScope) && !sealed) {
                 sealed = true;
             }
             ItemStack hand = LegacyUtil.getItemInMainHand(player).clone();
@@ -113,19 +113,19 @@ public class AuctionCommands {
     @CommandPermission(Permission.AUCTION_END)
     public void auctionEnd(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
-        if(uuid != null) {
+        if (uuid != null) {
             Player player = this.plugin.getServer().getPlayer(uuid);
             AuctionScope userScope = this.auctionManager.getPlayerScope(player);
-            if(userScope == null) {
+            if (userScope == null) {
                 this.message.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
             } else {
                 Auction auction = userScope.getActiveAuction();
-                if(auction == null) {
+                if (auction == null) {
                     this.message.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
                 } else {
-                    if(!AuctionConfig.getBoolean("allow-early-end", userScope)) {
+                    if (!AuctionConfig.getBoolean("allow-early-end", userScope)) {
                         this.message.sendPlayerMessage("auction-fail-no-early-end", uuid, (AuctionScope) null);
-                    } else if(!player.getUniqueId().equals(auction.getOwnerUUID())) {
+                    } else if (!player.getUniqueId().equals(auction.getOwnerUUID())) {
                         this.message.sendPlayerMessage("auction-fail-not-owner-end", uuid, (AuctionScope) null);
                     } else {
                         auction.end();
@@ -139,35 +139,35 @@ public class AuctionCommands {
     @CommandPermission(Permission.AUCTION_CANCEL)
     public void auctionCancel(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
-        if(uuid == null) {
+        if (uuid == null) {
             this.message.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
         } else {
             Player player = this.plugin.getServer().getPlayer(uuid);
             UUID playerUUID = player.getUniqueId();
             AuctionScope userScope = this.auctionManager.getPlayerScope(player);
-            if(userScope == null) {
+            if (userScope == null) {
                 this.message.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
                 return;
             }
-            if(userScope.getActiveAuction() == null && userScope.getAuctionQueueLength() == 0) {
+            if (userScope.getActiveAuction() == null && userScope.getAuctionQueueLength() == 0) {
                 this.message.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
                 return;
             }
             List<Auction> auctionQueue = userScope.getAuctionQueue();
-            for(int i = 0; i < auctionQueue.size(); i++) {
-                if(auctionQueue.get(i).getOwnerUUID().equals(playerUUID)) {
+            for (int i = 0; i < auctionQueue.size(); i++) {
+                if (auctionQueue.get(i).getOwnerUUID().equals(playerUUID)) {
                     auctionQueue.remove(i);
                     this.message.sendPlayerMessage("auction-cancel-queued", uuid, (AuctionScope) null);
                     return;
                 }
             }
             Auction auction = userScope.getActiveAuction();
-            if(auction == null) {
+            if (auction == null) {
                 this.message.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
                 return;
             }
-            if(uuid.equals(auction.getOwnerUUID()) || player.hasPermission(Permission.AUCTION_ADMIN_CANCEL)) {
-                if(AuctionConfig.getInt("cancel-prevention-seconds", userScope) > auction.getRemainingTime() || AuctionConfig.getDouble("cancel-prevention-percent", userScope) > (double) auction.getRemainingTime() / (double) auction.getTotalTime() * 100D) {
+            if (uuid.equals(auction.getOwnerUUID()) || player.hasPermission(Permission.AUCTION_ADMIN_CANCEL)) {
+                if (AuctionConfig.getInt("cancel-prevention-seconds", userScope) > auction.getRemainingTime() || AuctionConfig.getDouble("cancel-prevention-percent", userScope) > (double) auction.getRemainingTime() / (double) auction.getTotalTime() * 100D) {
                     this.message.sendPlayerMessage("auction-fail-cancel-prevention", uuid, (AuctionScope) null);
                 } else {
                     auction.cancel();
@@ -182,17 +182,17 @@ public class AuctionCommands {
     @CommandPermission(Permission.AUCTION_QUEUE)
     public void auctionQueue(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
-        if(uuid != null) {
+        if (uuid != null) {
             Player player = this.plugin.getServer().getPlayer(uuid);
             AuctionScope userScope = this.auctionManager.getPlayerScope(player);
-            if(userScope != null) {
+            if (userScope != null) {
                 List<Auction> auctionQueue = userScope.getAuctionQueue();
-                if(auctionQueue.isEmpty()) {
+                if (auctionQueue.isEmpty()) {
                     this.message.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
                 } else {
                     Inventory inv = this.plugin.getServer().createInventory(null, 18, ObsidianAuctions.guiQueueName);
-                    for(int i = 0; i < auctionQueue.size(); i++) {
-                        if(i == inv.getSize()) {
+                    for (int i = 0; i < auctionQueue.size(); i++) {
+                        if (i == inv.getSize()) {
                             break;
                         }
                         inv.setItem(i, auctionQueue.get(i).getGuiItem());
@@ -207,12 +207,12 @@ public class AuctionCommands {
     @CommandPermission(Permission.AUCTION_INFO)
     public void auctionInfo(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
-        if(uuid != null) {
+        if (uuid != null) {
             Player player = this.plugin.getServer().getPlayer(uuid);
             AuctionScope userScope = this.auctionManager.getPlayerScope(player);
-            if(userScope != null) {
+            if (userScope != null) {
                 Auction auction = userScope.getActiveAuction();
-                if(auction == null) {
+                if (auction == null) {
                     this.message.sendPlayerMessage("auction-info-no-auction", uuid, (AuctionScope) null);
                 } else {
                     auction.info(sender, false);
@@ -225,7 +225,7 @@ public class AuctionCommands {
     @CommandPermission(Permission.AUCTION_ADMIN_RELOAD)
     public void auctionReload(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
-        if(this.auctionManager.areAuctionsRunning()) { // Don't reload if any auctions are running.{
+        if (this.auctionManager.areAuctionsRunning()) { // Don't reload if any auctions are running.{
             this.message.sendPlayerMessage("plugin-reload-fail-auctions-running", uuid, (AuctionScope) null);
         } else {
             this.plugin.loadConfig();
@@ -237,13 +237,13 @@ public class AuctionCommands {
     @CommandPermission(Permission.AUCTION_ADMIN_SUSPEND)
     public void auctionSuspend(CommandSender sender, @Argument("player") String playerName) {
         UUID uuid = this.uuidFromSender(sender);
-        if(playerName != null) {
+        if (playerName != null) {
             Player player = this.plugin.getServer().getPlayer(playerName);
-            if(player == null) {
+            if (player == null) {
                 this.message.sendPlayerMessage("suspension-user-fail-is-offline", uuid, (AuctionScope) null);
-            } else if(player.hasPermission(Permission.AUCTION_ADMIN_SUSPEND)) {
+            } else if (player.hasPermission(Permission.AUCTION_ADMIN_SUSPEND)) {
                 this.message.sendPlayerMessage("suspension-user-fail-is-admin", uuid, (AuctionScope) null);
-            } else if(this.plugin.isSuspendedUser(player.getUniqueId())) {
+            } else if (this.plugin.isSuspendedUser(player.getUniqueId())) {
                 this.message.sendPlayerMessage("suspension-user-fail-already-suspended", uuid, (AuctionScope) null);
             } else {
                 this.plugin.addSuspendedUser(player.getUniqueId());
@@ -262,13 +262,13 @@ public class AuctionCommands {
     @CommandPermission(Permission.AUCTION_ADMIN_RESUME)
     public void auctionResume(CommandSender sender, @Argument("player") String playerName) {
         UUID uuid = this.uuidFromSender(sender);
-        if(playerName != null) {
+        if (playerName != null) {
             Player player = this.plugin.getServer().getPlayer(playerName);
-            if(player == null) {
+            if (player == null) {
                 this.message.sendPlayerMessage("unsuspension-user-fail-is-offline", uuid, (AuctionScope) null);
-            } else if(player.hasPermission(Permission.AUCTION_ADMIN_RESUME)) {
+            } else if (player.hasPermission(Permission.AUCTION_ADMIN_RESUME)) {
                 this.message.sendPlayerMessage("unsuspension-fail-permissions", uuid, (AuctionScope) null);
-            } else if(!this.plugin.isSuspendedUser(player.getUniqueId())) {
+            } else if (!this.plugin.isSuspendedUser(player.getUniqueId())) {
                 this.message.sendPlayerMessage("unsuspension-user-fail-not-suspended", uuid, (AuctionScope) null);
             } else {
                 this.plugin.removeSuspendedUser(player.getUniqueId());
@@ -286,17 +286,17 @@ public class AuctionCommands {
     @CommandPermission(Permission.AUCTION_ADMIN_CONFISCATE)
     public void auctionConfiscate(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
-        if(uuid != null) {
+        if (uuid != null) {
             Player player = this.plugin.getServer().getPlayer(uuid);
             AuctionScope userScope = this.auctionManager.getPlayerScope(player);
-            if(userScope == null) {
+            if (userScope == null) {
                 this.message.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
             } else {
                 Auction auction = userScope.getActiveAuction();
-                if(auction == null) {
+                if (auction == null) {
                     this.message.sendPlayerMessage("auction-fail-no-auction-exists", uuid, (AuctionScope) null);
                 } else {
-                    if(uuid.equals(auction.getOwnerUUID())) {
+                    if (uuid.equals(auction.getOwnerUUID())) {
                         this.message.sendPlayerMessage("confiscate-fail-self", uuid, (AuctionScope) null);
                     } else {
                         auction.confiscate(player);
@@ -311,7 +311,7 @@ public class AuctionCommands {
     @CommandMethod("bid <bid> <maxbid>")
     @CommandPermission(Permission.AUCTION_BID)
     public void bid(CommandSender sender, @Argument("bid") String bid, @Argument("maxbid") String maxBid) {
-        if(this.canBid(sender)) {
+        if (this.canBid(sender)) {
             Player player = (Player) sender;
             AuctionScope userScope = this.auctionManager.getPlayerScope(player);
             Auction auction = userScope.getActiveAuction();
@@ -322,23 +322,23 @@ public class AuctionCommands {
 
     private UUID uuidFromSender(CommandSender sender) {
         UUID uuid = null;
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             uuid = ((Player) sender).getUniqueId();
         }
         return uuid;
     }
 
     private boolean canAuction(CommandSender sender) {
-        if(!this.preAuctionLogic(sender, CommandType.AUCTION)) {
+        if (!this.preAuctionLogic(sender, CommandType.AUCTION)) {
             return false;
         }
         UUID uuid = this.uuidFromSender(sender);
         Player player = this.plugin.getServer().getPlayer(uuid);
         AuctionScope userScope = this.auctionManager.getPlayerScope(player);
-        if(!AuctionConfig.getBoolean("allow-sealed-auctions", userScope) && !AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
+        if (!AuctionConfig.getBoolean("allow-sealed-auctions", userScope) && !AuctionConfig.getBoolean("allow-unsealed-auctions", userScope)) {
             this.message.sendPlayerMessage("auction-fail-no-auctions-allowed", uuid, (AuctionScope) null);
             return false;
-        } else if(LegacyUtil.getItemInMainHand(player) == null || LegacyUtil.getItemInMainHand(player).getAmount() == 0) {
+        } else if (LegacyUtil.getItemInMainHand(player) == null || LegacyUtil.getItemInMainHand(player).getAmount() == 0) {
             this.message.sendPlayerMessage("auction-fail-hand-is-empty", uuid, (AuctionScope) null);
             return false;
         }
@@ -346,14 +346,14 @@ public class AuctionCommands {
     }
 
     private boolean canBid(CommandSender sender) {
-        if(!this.preAuctionLogic(sender, CommandType.BID)) {
+        if (!this.preAuctionLogic(sender, CommandType.BID)) {
             return false;
         }
         UUID uuid = this.uuidFromSender(sender);
         Player player = (Player) sender;
         AuctionScope scope = this.auctionManager.getPlayerScope(player);
         boolean active = scope.getActiveAuction() != null;
-        if(!active) {
+        if (!active) {
             this.message.sendPlayerMessage("bid-fail-no-auction", uuid, (AuctionScope) null);
         }
         return active;
@@ -361,33 +361,33 @@ public class AuctionCommands {
 
     private boolean preAuctionLogic(CommandSender sender, CommandType type) {
         UUID uuid = this.uuidFromSender(sender);
-        if(this.plugin.getSuspendAllAuctions()) {
+        if (this.plugin.getSuspendAllAuctions()) {
             this.message.sendPlayerMessage("suspension-global", uuid, (AuctionScope) null);
             return false;
-        } else if(uuid == null) {
-            if(type == CommandType.AUCTION) {
+        } else if (uuid == null) {
+            if (type == CommandType.AUCTION) {
                 this.message.sendPlayerMessage("auction-fail-console", uuid, (AuctionScope) null);
             } else {
                 this.message.sendPlayerMessage("bid-fail-console", uuid, (AuctionScope) null);
             }
             return false;
-        } else if(this.plugin.isVoluntarilyDisabled(uuid)) {
+        } else if (this.plugin.isVoluntarilyDisabled(uuid)) {
             this.message.sendPlayerMessage("auction-fail-disabled", uuid, (AuctionScope) null);
             return false;
-        } else if(this.plugin.isSuspendedUser(uuid)) {
+        } else if (this.plugin.isSuspendedUser(uuid)) {
             this.message.sendPlayerMessage("suspension-user", uuid, (AuctionScope) null);
             return false;
         }
         Player player = this.plugin.getServer().getPlayer(uuid);
         AuctionScope userScope = this.auctionManager.getPlayerScope(player);
-        if(!AuctionConfig.getBoolean("allow-gamemode-creative", userScope) && player.getGameMode() == GameMode.CREATIVE) {
-            if(type == CommandType.AUCTION) {
+        if (!AuctionConfig.getBoolean("allow-gamemode-creative", userScope) && player.getGameMode() == GameMode.CREATIVE) {
+            if (type == CommandType.AUCTION) {
                 this.message.sendPlayerMessage("auction-fail-gamemode-creative", uuid, (AuctionScope) null);
             } else {
                 this.message.sendPlayerMessage("bid-fail-gamemode-creative", uuid, (AuctionScope) null);
             }
             return false;
-        } else if(userScope == null) {
+        } else if (userScope == null) {
             this.message.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
             return false;
         }

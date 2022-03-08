@@ -15,7 +15,7 @@ public final class InjectUtil {
         List<T> bindings = new ArrayList<>();
         injector.getAllBindings().values().forEach(binding -> {
             Class<?> bindingClazz = binding.getKey().getTypeLiteral().getRawType();
-            if(superClazz.isAssignableFrom(bindingClazz)) {
+            if (superClazz.isAssignableFrom(bindingClazz)) {
                 bindings.add((T) binding.getProvider().get());
             }
         });

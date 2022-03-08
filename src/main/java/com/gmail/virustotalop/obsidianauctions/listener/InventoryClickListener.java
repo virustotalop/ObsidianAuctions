@@ -9,10 +9,10 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void inventoryClick(InventoryClickEvent e) {
-        if(e.getInventory() != null) {
-            if(e.getClick() != null) {
-                if(e.getWhoClicked().getOpenInventory() != null) {
-                    if(e.getWhoClicked().getOpenInventory().getTitle().equals(ObsidianAuctions.guiQueueName)) {
+        if (e.getInventory() != null) {
+            if (e.getClick() != null) {
+                if (e.getWhoClicked().getOpenInventory() != null) {
+                    if (e.getWhoClicked().getOpenInventory().getTitle().equals(ObsidianAuctions.guiQueueName)) {
                         e.setCancelled(true);
                     }
                 }

@@ -85,7 +85,7 @@ public class AuctionLot implements Serializable {
     private Map<String, Integer> getLotEnchants(ItemStack lotStack) {
         Map<String, Integer> lotEnchantments = new HashMap<>();
 
-        for(Entry<Enchantment, Integer> enchantment : lotStack.getEnchantments().entrySet()) {
+        for (Entry<Enchantment, Integer> enchantment : lotStack.getEnchantments().entrySet()) {
             lotEnchantments.put(enchantment.getKey().getName(), enchantment.getValue());
         }
         return lotEnchantments;
@@ -94,8 +94,8 @@ public class AuctionLot implements Serializable {
     private Map<String, Integer> getStoredEnchants(ItemStack lotStack) {
         Map<String, Integer> storedEnchantments = new HashMap<>();
         Map<Enchantment, Integer> enchantmentList = Items.getStoredEnchantments(lotStack);
-        if(enchantmentList != null) {
-            for(Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
+        if (enchantmentList != null) {
+            for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
                 storedEnchantments.put(enchantment.getKey().getName(), enchantment.getValue());
             }
         }
@@ -110,8 +110,8 @@ public class AuctionLot implements Serializable {
      * @return whether the items were moved
      */
     public boolean addItems(int addQuantity, boolean removeFromOwner) {
-        if(removeFromOwner) {
-            if(!Items.hasAmount(this.ownerName, addQuantity, getTypeStack())) {
+        if (removeFromOwner) {
+            if (!Items.hasAmount(this.ownerName, addQuantity, getTypeStack())) {
                 return false;
             }
             Items.remove(this.ownerName, addQuantity, getTypeStack());
@@ -142,7 +142,7 @@ public class AuctionLot implements Serializable {
      * @param playerUUID who receives the items
      */
     private void giveLot(UUID playerUUID, String playerName) {
-        if(this.quantity == 0) {
+        if (this.quantity == 0) {
             return;
         }
         ItemStack lotTypeLock = getTypeStack();
@@ -152,19 +152,19 @@ public class AuctionLot implements Serializable {
         this.ownerName = playerName;
 
         int maxStackSize = lotTypeLock.getType().getMaxStackSize();
-        if(player != null && player.isOnline()) {
+        if (player != null && player.isOnline()) {
             int amountToGive = 0;
-            if(Items.hasSpace(player, this.quantity, lotTypeLock)) {
+            if (Items.hasSpace(player, this.quantity, lotTypeLock)) {
                 amountToGive = this.quantity;
             } else {
                 amountToGive = Items.getSpaceForItem(player, lotTypeLock);
             }
             // Give whatever items space permits at this time.
             ItemStack typeStack = getTypeStack();
-            if(amountToGive > 0) {
+            if (amountToGive > 0) {
                 ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-give", playerUUID, (AuctionScope) null);
             }
-            while(amountToGive > 0) {
+            while (amountToGive > 0) {
                 ItemStack givingItems = lotTypeLock.clone();
                 givingItems.setAmount(Math.min(maxStackSize, amountToGive));
                 this.quantity -= givingItems.getAmount();
@@ -172,11 +172,11 @@ public class AuctionLot implements Serializable {
 
                 amountToGive -= maxStackSize;
             }
-            if(this.quantity > 0) {
+            if (this.quantity > 0) {
                 // Drop items at player's feet.
 
                 // Move items to drop lot.
-                while(this.quantity > 0) {
+                while (this.quantity > 0) {
                     ItemStack cloneStack = typeStack.clone();
                     cloneStack.setAmount(Math.min(this.quantity, Items.getMaxStackSize(typeStack)));
                     quantity -= cloneStack.getAmount();
@@ -209,15 +209,15 @@ public class AuctionLot implements Serializable {
     @SuppressWarnings("deprecation")
     public ItemStack getTypeStack() {
         ItemStack lotTypeLock = null;
-        if(this.itemSerialized != null) {
+        if (this.itemSerialized != null) {
 //			lotTypeLock = ItemStack.deserialize(this.itemSerialized);
             FileConfiguration tmpconfig = new YamlConfiguration();
             try {
                 tmpconfig.loadFromString(this.itemSerialized);
-                if(tmpconfig.isItemStack("itemstack")) {
+                if (tmpconfig.isItemStack("itemstack")) {
                     return tmpconfig.getItemStack("itemstack");
                 }
-            } catch(InvalidConfigurationException e) {
+            } catch (InvalidConfigurationException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -226,10 +226,10 @@ public class AuctionLot implements Serializable {
         // The rest of this remains for backward compatibility.
         lotTypeLock = new ItemStack(this.lotType, 1, this.lotDurability);
 
-        for(Entry<String, Integer> enchantment : this.lotEnchantments.entrySet()) {
+        for (Entry<String, Integer> enchantment : this.lotEnchantments.entrySet()) {
             lotTypeLock.addUnsafeEnchantment(Enchantment.getByName(enchantment.getKey()), enchantment.getValue());
         }
-        for(Entry<String, Integer> enchantment : this.storedEnchantments.entrySet()) {
+        for (Entry<String, Integer> enchantment : this.storedEnchantments.entrySet()) {
             Items.addStoredEnchantment(lotTypeLock, Enchantment.getByName(enchantment.getKey()), enchantment.getValue(), true);
         }
         lotTypeLock.setAmount(this.sourceStackQuantity);

@@ -37,11 +37,11 @@ public class AuctionConfig {
      */
     public static double getDouble(String path, AuctionScope auctionScope) {
         Double result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getDouble(path);
         }
 
-        if(result == null) {
+        if (result == null) {
             result = ObsidianAuctions.config.getDouble(path);
         }
         return result;
@@ -56,11 +56,11 @@ public class AuctionConfig {
      */
     public static int getInt(String path, AuctionScope auctionScope) {
         Integer result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getInteger(path);
         }
 
-        if(result == null) {
+        if (result == null) {
             result = ObsidianAuctions.config.getInteger(path);
         }
         return result;
@@ -75,11 +75,11 @@ public class AuctionConfig {
      */
     public static boolean getBoolean(String path, AuctionScope auctionScope) {
         Boolean result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getBoolean(path);
         }
 
-        if(result == null) {
+        if (result == null) {
             result = ObsidianAuctions.config.getBoolean(path);
         }
         return result;
@@ -94,11 +94,11 @@ public class AuctionConfig {
      */
     public static List<String> getStringList(String path, AuctionScope auctionScope) {
         List<String> result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getStringList(path);
         }
 
-        if(result == null) {
+        if (result == null) {
             result = ObsidianAuctions.config.getStringList(path);
         }
         return result;
@@ -113,11 +113,11 @@ public class AuctionConfig {
      */
     public static String getString(String path, AuctionScope auctionScope) {
         String result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getString(path);
         }
 
-        if(result == null) {
+        if (result == null) {
             result = ObsidianAuctions.config.getString(path);
         }
         return result;
@@ -132,10 +132,10 @@ public class AuctionConfig {
      */
     public static UUID getUUID(String path, AuctionScope auctionScope) {
         UUID result = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getUUID(path);
         }
-        if(result == null) {
+        if (result == null) {
             result = ObsidianAuctions.config.getUUID(path);
         }
         return result;
@@ -152,16 +152,16 @@ public class AuctionConfig {
         Map<String, String> result = new HashMap<>();
 
         ConfigurationSection section = null;
-        if(auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             section = auctionScope.getConfig().getConfigurationSection(path);
         }
 
-        if(section == null) {
+        if (section == null) {
             section = ObsidianAuctions.config.getConfigurationSection(path);
         }
 
-        if(section != null) {
-            for(String itemCode : section.getKeys()) {
+        if (section != null) {
+            for (String itemCode : section.getKeys()) {
                 result.put(itemCode, section.getString(itemCode));
             }
         }
@@ -177,11 +177,11 @@ public class AuctionConfig {
      */
     public static String getLanguageString(String path, AuctionScope auctionScope) {
         String result = null;
-        if(auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().hasKey(path)) {
             result = auctionScope.getTextConfig().getString(path);
         }
 
-        if(result == null) {
+        if (result == null) {
             result = ObsidianAuctions.textConfig.getString(path);
         }
         return result;
@@ -196,11 +196,11 @@ public class AuctionConfig {
      */
     public static List<String> getLanguageStringList(String path, AuctionScope auctionScope) {
         List<String> result = null;
-        if(auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().hasKey(path)) {
+        if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().hasKey(path)) {
             result = auctionScope.getTextConfig().getStringList(path);
         }
 
-        if(result == null) {
+        if (result == null) {
             result = ObsidianAuctions.textConfig.getStringList(path);
         }
         return result;

@@ -46,22 +46,22 @@ public class AuctionLocationManager {
         //Run one tick after load, this is to ensure that all worlds are actually loaded
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             //Don't run if the plugin isn't even enabled
-            if(Bukkit.getServer().getPluginManager().getPlugin(plugin.getName()) == null || !plugin.isEnabled()) {
+            if (Bukkit.getServer().getPluginManager().getPlugin(plugin.getName()) == null || !plugin.isEnabled()) {
                 return;
             }
             ConfigurationSection arenas = config.getConfigurationSection("arenas");
-            for(String worldName : arenas.getKeys()) {
+            for (String worldName : arenas.getKeys()) {
                 World bukkitWorld = plugin.getServer().getWorld(worldName);
-                if(bukkitWorld != null) {
+                if (bukkitWorld != null) {
                     Collection<Region> regionList = new ArrayList<>();
                     this.regions.put(worldName, regionList);
                     ConfigurationSection world = arenas.getConfigurationSection(worldName);
-                    for(String regionName : world.getKeys()) {
+                    for (String regionName : world.getKeys()) {
                         ConfigurationSection region = world.getConfigurationSection(regionName);
                         String regionType = region.getString("type").toLowerCase();
-                        if(regionType.equals("global")) {
+                        if (regionType.equals("global")) {
                             regionList.add(new GlobalRegion(regionName, bukkitWorld));
-                        } else if(regionType.equals("cuboid")) {
+                        } else if (regionType.equals("cuboid")) {
                             Point min = Point.create(region.getString("min"));
                             Point max = Point.create(region.getString("max"));
                             regionList.add(new CuboidRegion(regionName, bukkitWorld, min, max));
@@ -83,7 +83,7 @@ public class AuctionLocationManager {
     @ApiStatus.Internal
     public boolean checkLocation(UUID playerUUID) {
         AuctionParticipant participant = this.auctionManager.getParticipant(playerUUID);
-        if(participant == null) {
+        if (participant == null) {
             return true;
         }
         Player player = Bukkit.getPlayer(playerUUID);
@@ -100,7 +100,7 @@ public class AuctionLocationManager {
     @ApiStatus.Internal
     public boolean checkLocation(UUID playerUUID, Location location) {
         AuctionParticipant participant = this.auctionManager.getParticipant(playerUUID);
-        if(participant == null) {
+        if (participant == null) {
             return true;
         }
         return participant.getAuctionScope().equals(this.auctionManager.getLocationScope(location));
@@ -118,23 +118,23 @@ public class AuctionLocationManager {
     @ApiStatus.Internal
     public void forceLocation(UUID playerUUID, Location locationForGaze) {
         AuctionParticipant participant = this.auctionManager.getParticipant(playerUUID);
-        if(participant == null) {
+        if (participant == null) {
             return;
-        } else if(!participant.isParticipating()) {
+        } else if (!participant.isParticipating()) {
             return;
         }
 
         Player player = Bukkit.getPlayer(playerUUID);
         Location location = player.getLocation();
-        if(locationForGaze != null) {
+        if (locationForGaze != null) {
             location.setDirection(new Vector(0, 0, 0));
             location.setPitch(locationForGaze.getPitch());
             location.setYaw(locationForGaze.getYaw());
-        } else if(!this.checkLocation(playerUUID)) {
+        } else if (!this.checkLocation(playerUUID)) {
             player.teleport(participant.getLastKnownGoodLocation());
             participant.sendEscapeWarning();
             return;
-        } else if(this.isInArena(player)) { //Can't get rid of this due to circular dependencies
+        } else if (this.isInArena(player)) { //Can't get rid of this due to circular dependencies
             player.teleport(participant.getLastKnownGoodLocation());
             participant.sendArenaWarning();
             return;
@@ -152,14 +152,14 @@ public class AuctionLocationManager {
     @ApiStatus.Internal
     public boolean checkTeleportLocation(UUID playerUUID, Location location) {
         AuctionParticipant participant = this.auctionManager.getParticipant(playerUUID);
-        if(participant == null) {
+        if (participant == null) {
             return true;
-        } else if(!participant.isParticipating()) {
+        } else if (!participant.isParticipating()) {
             return true;
-        } else if(!this.checkLocation(playerUUID, location)) {
+        } else if (!this.checkLocation(playerUUID, location)) {
             participant.sendEscapeWarning();
             return false;
-        } else if(this.isInArena(location)) {
+        } else if (this.isInArena(location)) {
             participant.sendArenaWarning();
             return false;
         }
@@ -173,7 +173,7 @@ public class AuctionLocationManager {
      * @return whether or not the player is in an arena
      */
     public boolean isInArena(Player player) {
-        if(player == null) {
+        if (player == null) {
             return false;
         }
         return this.isInArena(player.getLocation());
@@ -186,15 +186,15 @@ public class AuctionLocationManager {
      * @return whether or not the location is in an arena
      */
     public boolean isInArena(Location location) {
-        if(location == null) {
+        if (location == null) {
             return false;
-        } else if(AuctionConfig.getBoolean("allow-arenas", this.auctionManager.getLocationScope(location))) {
+        } else if (AuctionConfig.getBoolean("allow-arenas", this.auctionManager.getLocationScope(location))) {
             return false;
         }
         Collection<Region> regions = this.regions.get(location.getWorld().getName());
-        if(regions != null) {
-            for(Region region : regions) {
-                if(region.isWithin(location)) {
+        if (regions != null) {
+            for (Region region : regions) {
+                if (region.isWithin(location)) {
                     return true;
                 }
             }

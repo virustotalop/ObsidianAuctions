@@ -60,13 +60,13 @@ public class AuctionScope {
      * @return true if valid location, false if invalid
      */
     private boolean scopeLocationIsValid() {
-        if(this.locationChecked) {
+        if (this.locationChecked) {
             return worlds != null || this.minHouseLocation != null || this.maxHouseLocation != null;
-        } else if(this.type.equalsIgnoreCase("worlds")) {
+        } else if (this.type.equalsIgnoreCase("worlds")) {
             this.worlds = config.getStringList("worlds");
-        } else if(type.equalsIgnoreCase("house")) {
+        } else if (type.equalsIgnoreCase("house")) {
             String world = config.getString("house-world");
-            if(world == null || world.isEmpty()) {
+            if (world == null || world.isEmpty()) {
                 this.minHouseLocation = null;
                 this.maxHouseLocation = null;
             } else {
@@ -119,7 +119,7 @@ public class AuctionScope {
      * @param auction auction instance to set as active
      */
     public void setActiveAuction(Auction auction) {
-        if(this.activeAuction != null && auction == null) {
+        if (this.activeAuction != null && auction == null) {
             this.lastAuctionDestroyTime = System.currentTimeMillis();
             ObsidianAuctions.get().getAuctionManager().checkAuctionQueue();
         }
@@ -135,39 +135,39 @@ public class AuctionScope {
         UUID playerUUID = auctionToQueue.getOwnerUUID();
         MessageManager messageManager = auctionToQueue.getMessageManager();
 
-        if(this.activeAuction == null) {
+        if (this.activeAuction == null) {
             // Queuing because of interval not yet timed out.
             // Allow a queue of 1 to override if 0 for this condition.
-            if(Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= this.auctionQueue.size()) {
+            if (Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= this.auctionQueue.size()) {
                 messageManager.sendPlayerMessage("auction-queue-fail-full", playerUUID, auctionToQueue);
                 return;
             }
         } else {
-            if(AuctionConfig.getInt("max-auction-queue-length", this) <= 0) {
+            if (AuctionConfig.getInt("max-auction-queue-length", this) <= 0) {
                 messageManager.sendPlayerMessage("auction-fail-auction-exists", playerUUID, auctionToQueue);
                 return;
-            } else if(this.activeAuction.getOwnerUUID().equals(playerUUID)) {
+            } else if (this.activeAuction.getOwnerUUID().equals(playerUUID)) {
                 messageManager.sendPlayerMessage("auction-queue-fail-current-auction", playerUUID, auctionToQueue);
                 return;
-            } else if(AuctionConfig.getInt("max-auction-queue-length", this) <= auctionQueue.size()) {
+            } else if (AuctionConfig.getInt("max-auction-queue-length", this) <= auctionQueue.size()) {
                 messageManager.sendPlayerMessage("auction-queue-fail-full", playerUUID, auctionToQueue);
                 return;
             }
         }
-        for(int i = 0; i < this.auctionQueue.size(); i++) {
-            if(this.auctionQueue.get(i) != null) {
+        for (int i = 0; i < this.auctionQueue.size(); i++) {
+            if (this.auctionQueue.get(i) != null) {
                 Auction queuedAuction = this.auctionQueue.get(i);
-                if(queuedAuction.getOwnerUUID().equals(playerUUID)) {
+                if (queuedAuction.getOwnerUUID().equals(playerUUID)) {
                     messageManager.sendPlayerMessage("auction-queue-fail-in-queue", playerUUID, auctionToQueue);
                     return;
                 }
             }
         }
-        if((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
+        if ((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
             this.auctionQueue.add(auctionToQueue);
             ObsidianAuctions.get().getAuctionManager().addParticipant(playerUUID, this);
             ObsidianAuctions.get().getAuctionManager().checkAuctionQueue();
-            if(this.auctionQueue.contains(auctionToQueue)) {
+            if (this.auctionQueue.contains(auctionToQueue)) {
                 messageManager.sendPlayerMessage("auction-queue-enter", playerUUID, auctionToQueue);
             }
         }
@@ -177,37 +177,37 @@ public class AuctionScope {
      * Checks the auction queue to see if the next auction is ready to start.
      */
     void checkThisAuctionQueue() {
-        if(this.activeAuction != null) {
+        if (this.activeAuction != null) {
             return;
-        } else if(System.currentTimeMillis() - this.lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) {
+        } else if (System.currentTimeMillis() - this.lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) {
             return;
-        } else if(this.auctionQueue.size() == 0) {
+        } else if (this.auctionQueue.size() == 0) {
             return;
         }
         Auction auction = this.auctionQueue.remove(0);
-        if(auction == null) {
+        if (auction == null) {
             return;
         }
         MessageManager messageManager = auction.getMessageManager();
 
         UUID playerUUID = auction.getOwnerUUID();
         Player player = Bukkit.getPlayer(playerUUID);
-        if(player == null || !player.isOnline()) {
+        if (player == null || !player.isOnline()) {
             return;
-        } else if(ObsidianAuctions.get().getProhibitionManager().isOnProhibition(auction.getOwnerUUID(), false)) {
+        } else if (ObsidianAuctions.get().getProhibitionManager().isOnProhibition(auction.getOwnerUUID(), false)) {
             messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerUUID, auction);
             return;
-        } else if(!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
+        } else if (!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
             messageManager.sendPlayerMessage("auction-fail-gamemode-creative", playerUUID, auction);
             return;
-        } else if(!ObsidianAuctions.get().getPermission().has(player, "auction.start")) {
+        } else if (!ObsidianAuctions.get().getPermission().has(player, "auction.start")) {
             messageManager.sendPlayerMessage("auction-fail-permissions", playerUUID, auction);
             return;
-        } else if(!auction.isValid()) {
+        } else if (!auction.isValid()) {
             return;
         }
         this.activeAuction = auction;
-        if(!auction.start()) {
+        if (!auction.start()) {
             this.activeAuction = null;
         }
     }
@@ -219,7 +219,7 @@ public class AuctionScope {
      * @return whether he's in the scope
      */
     public boolean isPlayerInScope(Player player) {
-        if(player == null) {
+        if (player == null) {
             return false;
         }
         return this.isLocationInScope(player.getLocation());
@@ -232,31 +232,31 @@ public class AuctionScope {
      * @return whether it's in the scope
      */
     public boolean isLocationInScope(Location location) {
-        if(location == null) {
+        if (location == null) {
             return false;
         }
         World world = location.getWorld();
-        if(world == null) {
+        if (world == null) {
             return false;
         }
         String worldName = world.getName();
-        if(!scopeLocationIsValid()) {
+        if (!scopeLocationIsValid()) {
             return false;
         }
-        if(this.type.equalsIgnoreCase("worlds")) {
-            for(int i = 0; i < this.worlds.size(); i++) {
-                if(this.worlds.get(i).equalsIgnoreCase(worldName) || this.worlds.get(i).equalsIgnoreCase("*")) {
+        if (this.type.equalsIgnoreCase("worlds")) {
+            for (int i = 0; i < this.worlds.size(); i++) {
+                if (this.worlds.get(i).equalsIgnoreCase(worldName) || this.worlds.get(i).equalsIgnoreCase("*")) {
                     return true;
                 }
             }
-        } else if(this.type.equalsIgnoreCase("house")) {
-            if(this.minHouseLocation == null || this.maxHouseLocation == null) {
+        } else if (this.type.equalsIgnoreCase("house")) {
+            if (this.minHouseLocation == null || this.maxHouseLocation == null) {
                 return false;
-            } else if(!location.getWorld().equals(this.minHouseLocation.getWorld())) {
+            } else if (!location.getWorld().equals(this.minHouseLocation.getWorld())) {
                 return false;
-            } else if(location.getX() > Math.max(this.minHouseLocation.getX(), this.maxHouseLocation.getX()) || location.getX() < Math.min(minHouseLocation.getX(), this.maxHouseLocation.getX())) {
+            } else if (location.getX() > Math.max(this.minHouseLocation.getX(), this.maxHouseLocation.getX()) || location.getX() < Math.min(minHouseLocation.getX(), this.maxHouseLocation.getX())) {
                 return false;
-            } else if(location.getZ() > Math.max(this.minHouseLocation.getZ(), this.maxHouseLocation.getZ()) || location.getZ() < Math.min(minHouseLocation.getZ(), this.maxHouseLocation.getZ())) {
+            } else if (location.getZ() > Math.max(this.minHouseLocation.getZ(), this.maxHouseLocation.getZ()) || location.getZ() < Math.min(minHouseLocation.getZ(), this.maxHouseLocation.getZ())) {
                 return false;
             } else
                 return !(location.getY() > Math.max(this.minHouseLocation.getY(), this.maxHouseLocation.getY())) && !(location.getY() < Math.min(this.minHouseLocation.getY(), this.maxHouseLocation.getY()));
@@ -318,9 +318,9 @@ public class AuctionScope {
      * @return players position in queue or zero if not in queue
      */
     public int getQueuePosition(UUID playerUUID) {
-        for(int i = 0; i < this.auctionQueue.size(); i++) {
+        for (int i = 0; i < this.auctionQueue.size(); i++) {
             Auction auction = this.auctionQueue.get(i);
-            if(auction.getOwnerUUID().equals(playerUUID)) {
+            if (auction.getOwnerUUID().equals(playerUUID)) {
                 return i + 1;
             }
         }
@@ -333,7 +333,7 @@ public class AuctionScope {
     }
 
     public boolean cancelActiveAuction() {
-        if(this.activeAuction != null) {
+        if (this.activeAuction != null) {
             this.activeAuction.cancel();
             return true;
         }

@@ -29,11 +29,11 @@ public class CuboidRegion extends Region {
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
-        if(x > this.maxX || x < this.minX) {
+        if (x > this.maxX || x < this.minX) {
             return false;
-        } else if(y > this.maxY || y < this.minY) {
+        } else if (y > this.maxY || y < this.minY) {
             return false;
-        } else if(z > this.maxZ || z < this.minZ) {
+        } else if (z > this.maxZ || z < this.minZ) {
             return false;
         }
         return location.getWorld().getName().equals(this.getWorldName());

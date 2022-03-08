@@ -46,16 +46,16 @@ public class AuctionMessageManager implements MessageManager {
     @Override
     public void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, Auction auction) {
         CommandSender recipient;
-        if(playerUUID == null) {
+        if (playerUUID == null) {
             recipient = Bukkit.getConsoleSender();
         } else {
             recipient = Bukkit.getPlayer(playerUUID);
         }
         AuctionScope auctionScope = null;
-        if(auction != null) {
+        if (auction != null) {
             auctionScope = auction.getScope();
         }
-        if(auctionScope == null && recipient instanceof Player) {
+        if (auctionScope == null && recipient instanceof Player) {
             auctionScope = this.auctionManager.getPlayerScope((Player) recipient);
         }
         this.sendMessage(messageKeys, recipient, auctionScope, false);
@@ -71,12 +71,12 @@ public class AuctionMessageManager implements MessageManager {
     @Override
     public void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, AuctionScope auctionScope) {
         CommandSender recipient;
-        if(playerUUID == null) {
+        if (playerUUID == null) {
             recipient = Bukkit.getConsoleSender();
         } else {
             recipient = Bukkit.getPlayer(playerUUID);
         }
-        if(auctionScope == null && recipient instanceof Player) {
+        if (auctionScope == null && recipient instanceof Player) {
             auctionScope = this.auctionManager.getPlayerScope((Player) recipient);
         }
         this.sendMessage(messageKeys, recipient, auctionScope, false);
@@ -91,7 +91,7 @@ public class AuctionMessageManager implements MessageManager {
 
     @Override
     public void broadcastAuctionMessage(List<String> messageKeys, Auction auction) {
-        if(auction == null) {
+        if (auction == null) {
             return;
         }
         AuctionScope auctionScope = auction.getScope();
@@ -122,14 +122,14 @@ public class AuctionMessageManager implements MessageManager {
         Auction auction = null;
         Player player = null;
 
-        if(auctionScope != null) {
+        if (auctionScope != null) {
             auction = auctionScope.getActiveAuction();
         }
 
-        if(sender != null) {
-            if(sender instanceof Player) {
+        if (sender != null) {
+            if (sender instanceof Player) {
                 player = (Player) sender;
-                if(!fullBroadcast && ObsidianAuctions.get().isVoluntarilyDisabled(player.getUniqueId())) {
+                if (!fullBroadcast && ObsidianAuctions.get().isVoluntarilyDisabled(player.getUniqueId())) {
                     // Don't send this user any messages.
                     return;
                 }
@@ -138,22 +138,22 @@ public class AuctionMessageManager implements MessageManager {
 
         List<String> messages = this.parser.parseMessages(messageKeys, auctionScope, auction, player, fullBroadcast);
 
-        if(fullBroadcast) {
+        if (fullBroadcast) {
             broadcastMessage(messages, auctionScope);
-        } else if(player != null) {
-            for(String message : messages) {
+        } else if (player != null) {
+            for (String message : messages) {
                 this.adventure.player(player).sendMessage(MiniMessage.miniMessage().deserialize(message));
                 ObsidianAuctions.get().log(player.getName(), this.stripTags(message), auctionScope);
             }
-        } else if(sender != null) {
+        } else if (sender != null) {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
-            for(String message : messages) {
+            for (String message : messages) {
                 String stripped = this.stripTags(message);
                 console.sendMessage(stripped);
                 ObsidianAuctions.get().log("CONSOLE", stripped, auctionScope);
             }
         } else {
-            for(String message : messages) {
+            for (String message : messages) {
                 ObsidianAuctions.get().log("NO TARGET!", this.stripTags(message), auctionScope);
             }
         }
@@ -167,25 +167,25 @@ public class AuctionMessageManager implements MessageManager {
      */
     private void broadcastMessage(List<String> messages, AuctionScope auctionScope) {
         Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
-        for(Player player : onlinePlayers) {
-            if(ObsidianAuctions.get().isVoluntarilyDisabled(player.getUniqueId())) {
+        for (Player player : onlinePlayers) {
+            if (ObsidianAuctions.get().isVoluntarilyDisabled(player.getUniqueId())) {
                 continue;
-            } else if(auctionScope != null && !auctionScope.equals(this.auctionManager.getPlayerScope(player))) {
+            } else if (auctionScope != null && !auctionScope.equals(this.auctionManager.getPlayerScope(player))) {
                 continue;
             }
 
             Audience audience = this.adventure.player(player);
-            for(String message : messages) {
-                if(ObsidianAuctions.enableChatMessages) {
+            for (String message : messages) {
+                if (ObsidianAuctions.enableChatMessages) {
                     audience.sendMessage(MiniMessage.miniMessage().deserialize(message));
                 }
-                if(ObsidianAuctions.enableActionbarMessages) {
+                if (ObsidianAuctions.enableActionbarMessages) {
                     audience.sendActionBar(MiniMessage.miniMessage().deserialize(message));
                     this.actionBar.addPlayer(player, message);
                 }
             }
         }
-        for(String message : messages) {
+        for (String message : messages) {
             String stripped = this.stripTags(message);
             Bukkit.getConsoleSender().sendMessage(stripped);
             ObsidianAuctions.get().log("BROADCAST", stripped, auctionScope);

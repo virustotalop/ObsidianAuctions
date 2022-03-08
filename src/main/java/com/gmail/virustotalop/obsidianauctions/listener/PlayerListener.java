@@ -58,11 +58,11 @@ public class PlayerListener implements Listener {
         UUID playerUUID = player.getUniqueId();
         AuctionScope playerScope = this.auctionManager.getPlayerScope(player);
         Auction playerAuction = ObsidianAuctions.get().getPlayerAuction(player);
-        if(AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) {
+        if (AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) {
             return;
         }
 
-        if(ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
+        if (ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
             event.setCancelled(true);
             this.message.sendPlayerMessage("gamemodechange-fail-participating", playerUUID, (AuctionScope) null);
         }
@@ -71,12 +71,12 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerPreprocessCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if(player == null) {
+        if (player == null) {
             return;
         }
         UUID playerUUID = player.getUniqueId();
         String message = event.getMessage();
-        if(message == null || message.isEmpty()) {
+        if (message == null || message.isEmpty()) {
             return;
         }
 
@@ -84,9 +84,9 @@ public class PlayerListener implements Listener {
 
         // Check inscope disabled commands, doesn't matter if participating:
         List<String> disabledCommands = AuctionConfig.getStringList("disabled-commands-inscope", playerScope);
-        for(String disabledCommand : disabledCommands) {
-            if(disabledCommand.isEmpty()) continue;
-            if(message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
+        for (String disabledCommand : disabledCommands) {
+            if (disabledCommand.isEmpty()) continue;
+            if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
                 this.message.sendPlayerMessage("disabled-command-inscope", playerUUID, (AuctionScope) null);
                 return;
@@ -94,19 +94,19 @@ public class PlayerListener implements Listener {
         }
 
         // Check participating disabled commands
-        if(playerScope == null) {
+        if (playerScope == null) {
             return;
         }
-        if(!ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
+        if (!ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
             return;
         }
 
         disabledCommands = AuctionConfig.getStringList("disabled-commands-participating", playerScope);
-        for(String disabledCommand : disabledCommands) {
-            if(disabledCommand.isEmpty()) {
+        for (String disabledCommand : disabledCommands) {
+            if (disabledCommand.isEmpty()) {
                 continue;
             }
-            if(message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
+            if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
                 this.message.sendPlayerMessage("disabled-command-participating", playerUUID, (AuctionScope) null);
                 return;
@@ -121,13 +121,13 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if(!this.locationManager.checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
+        if (!this.locationManager.checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
             event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerPortalEvent(PlayerPortalEvent event) {
-        if(!this.locationManager.checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
+        if (!this.locationManager.checkTeleportLocation(event.getPlayer().getUniqueId(), event.getTo()))
             event.setCancelled(true);
     }
 }

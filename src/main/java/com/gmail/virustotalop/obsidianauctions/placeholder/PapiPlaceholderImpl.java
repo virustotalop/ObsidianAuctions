@@ -20,7 +20,7 @@ public class PapiPlaceholderImpl implements Placeholder {
     public String replace(Player player, String message) {
         try {
             return (String) this.setPlaceHolders.invoke(player, message);
-        } catch(Throwable throwable) {
+        } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
         return null;
@@ -32,7 +32,7 @@ public class PapiPlaceholderImpl implements Placeholder {
             Method reflect = placeholderAPI.getDeclaredMethod("setPlaceholders",
                     OfflinePlayer.class, String.class);
             return MethodHandles.lookup().unreflect(reflect);
-        } catch(ClassNotFoundException | NoSuchMethodException | IllegalAccessException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;

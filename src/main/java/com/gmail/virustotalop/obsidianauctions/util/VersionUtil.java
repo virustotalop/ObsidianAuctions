@@ -9,7 +9,7 @@ public final class VersionUtil {
     private static final String VERSION;
 
     static {
-        if(Bukkit.getServer() == null) {
+        if (Bukkit.getServer() == null) {
             VERSION = null;
         } else {
             String name = Bukkit.getServer().getClass().getPackage().getName();

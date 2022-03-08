@@ -14,22 +14,22 @@ public final class LegacyUtil {
     private static final boolean mainHandExists = methodExists(PlayerInventory.class, "getItemInMainHand");
 
     public static short getDurability(ItemStack itemStack) {
-        if(durabilityExists) {
+        if (durabilityExists) {
             return itemStack.getDurability();
         }
         return 0;
     }
 
     public static ItemStack getItemInMainHand(Player player) {
-        if(mainHandExists) {
+        if (mainHandExists) {
             return player.getInventory().getItemInMainHand();
         }
         return player.getItemInHand();
     }
 
     private static boolean methodExists(Class<?> clazz, String methodName) {
-        for(Method method : clazz.getDeclaredMethods()) {
-            if(method.getName().equals(methodName)) {
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.getName().equals(methodName)) {
                 return true;
             }
         }

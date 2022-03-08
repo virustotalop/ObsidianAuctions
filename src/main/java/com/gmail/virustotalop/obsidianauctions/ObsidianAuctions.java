@@ -128,11 +128,11 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     // Eliminate orphan lots (i.e. try to give the items to a player again).
     public void killOrphan(Player player) {
-        if(this.orphanLots != null && this.orphanLots.size() > 0) {
+        if (this.orphanLots != null && this.orphanLots.size() > 0) {
             Iterator<AuctionLot> it = this.orphanLots.iterator();
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 AuctionLot lot = it.next();
-                if(lot.getOwner().equalsIgnoreCase(player.getName())) {
+                if (lot.getOwner().equalsIgnoreCase(player.getName())) {
                     lot.cancelLot();
                     it.remove();
                 }
@@ -155,16 +155,16 @@ public class ObsidianAuctions extends JavaPlugin {
         this.adventure = BukkitAudiences.create(this);
         instance = this;
         this.dataFolder = this.getDataFolder();
-        if(!this.dataFolder.exists()) {
+        if (!this.dataFolder.exists()) {
             this.dataFolder.mkdir();
         }
 
         this.auctionLog = new File(this.dataFolder, "auctions.log");
-        if(!this.auctionLog.exists()) {
+        if (!this.auctionLog.exists()) {
             try {
                 this.auctionLog.createNewFile();
                 this.auctionLog.setWritable(true);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -173,26 +173,26 @@ public class ObsidianAuctions extends JavaPlugin {
         this.saveResource("language.yml", false);
 
         File languagesDirectory = new File(this.dataFolder, "item_languages");
-        if(!languagesDirectory.exists()) {
+        if (!languagesDirectory.exists()) {
             languagesDirectory.mkdirs();
         }
 
         this.saveResource("item_languages/en-US.yml", false);
         this.loadConfig();
 
-        if(Bukkit.getPluginManager().getPlugin("Vault") == null) {
+        if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             logToBukkit("plugin-disabled-no-vault", Level.SEVERE);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
-        if(!this.setupVault()) {
+        if (!this.setupVault()) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
         Class<? extends Placeholder> placeholderClazz = NoPlaceholderImpl.class;
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             placeholderClazz = PapiPlaceholderImpl.class;
         }
 
@@ -204,9 +204,9 @@ public class ObsidianAuctions extends JavaPlugin {
         scheduler.scheduleSyncRepeatingTask(this, () -> this.auctionManager.checkAuctionQueue(), 20L, 20L);
 
         long playerScopeCheckInterval = config.getLong("auctionscope-change-check-interval");
-        if(playerScopeCheckTimer > 0) scheduler.cancelTask(playerScopeCheckTimer);
+        if (playerScopeCheckTimer > 0) scheduler.cancelTask(playerScopeCheckTimer);
 
-        if(playerScopeCheckInterval > 0) {
+        if (playerScopeCheckInterval > 0) {
             playerScopeCheckTimer = scheduler.scheduleSyncRepeatingTask(this, () -> {
                 this.auctionManager.sendFarewellMessages();
                 this.auctionManager.sendWelcomeMessages();
@@ -228,15 +228,15 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     private boolean setupVault() {
-        if(!this.setupEconomy()) {
+        if (!this.setupEconomy()) {
             logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
             return false;
         } else {
             decimalPlaces = Math.max(econ.fractionalDigits(), 0);
             config.set("decimal-places", decimalPlaces);
-            if(decimalPlaces < 1) {
+            if (decimalPlaces < 1) {
                 decimalRegex = "^[0-9]{1,13}$";
-            } else if(decimalPlaces == 1) {
+            } else if (decimalPlaces == 1) {
                 decimalRegex = "^[0-9]{0,13}(\\.[0-9])?$";
             } else {
                 decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
@@ -362,7 +362,7 @@ public class ObsidianAuctions extends JavaPlugin {
         instance = null;
         this.logToBukkit("plugin-disabled", Level.INFO);
         this.auctionLog = null;
-        if(this.adventure != null) {
+        if (this.adventure != null) {
             this.adventure.close();
             this.adventure = null;
         }
@@ -376,9 +376,9 @@ public class ObsidianAuctions extends JavaPlugin {
      * @param auctionScope the auction scope being referenced if any
      */
     public void log(String playerName, String message, AuctionScope auctionScope) {
-        if(AuctionConfig.getBoolean("log-auctions", auctionScope)) {
+        if (AuctionConfig.getBoolean("log-auctions", auctionScope)) {
             String scopeId = "NOSCOPE";
-            if(auctionScope != null) {
+            if (auctionScope != null) {
                 scopeId = auctionScope.getScopeId();
             }
             String dateStr = (new Date()).toString();
@@ -389,14 +389,14 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     private void writeCurrentLog() {
-        try(BufferedWriter out = new BufferedWriter(new FileWriter(this.auctionLog, true))) {
+        try (BufferedWriter out = new BufferedWriter(new FileWriter(this.auctionLog, true))) {
             String polled;
-            while((polled = this.logQueue.poll()) != null) {
+            while ((polled = this.logQueue.poll()) != null) {
                 out.write(polled);
                 out.newLine();
             }
             out.flush();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -410,12 +410,12 @@ public class ObsidianAuctions extends JavaPlugin {
         try {
             Class.forName("net.milkbowl.vault.economy.Economy");
             RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
-            if(rsp == null) {
+            if (rsp == null) {
                 return false;
             }
             this.econ = rsp.getProvider();
             return this.econ != null;
-        } catch(ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             return false;
         }
     }
@@ -433,7 +433,7 @@ public class ObsidianAuctions extends JavaPlugin {
                     .getRegistration(net.milkbowl.vault.permission.Permission.class);
             this.perms = rsp.getProvider();
             return this.perms != null;
-        } catch(ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             return false;
         }
     }
@@ -445,11 +445,11 @@ public class ObsidianAuctions extends JavaPlugin {
      * @return auction instance
      */
     public Auction getPlayerAuction(Player player) {
-        if(player == null) {
+        if (player == null) {
             return null;
         }
         AuctionScope auctionScope = this.auctionManager.getPlayerScope(player);
-        if(auctionScope == null) {
+        if (auctionScope == null) {
             return null;
         }
         return auctionScope.getActiveAuction();
@@ -529,14 +529,14 @@ public class ObsidianAuctions extends JavaPlugin {
         List<String> messageList = AuctionConfig.getLanguageStringList(key, null);
 
         String originalMessage;
-        if(messageList == null || messageList.size() == 0) {
+        if (messageList == null || messageList.size() == 0) {
             originalMessage = AuctionConfig.getLanguageString(key, null);
 
-            if(originalMessage != null && originalMessage.length() != 0) {
+            if (originalMessage != null && originalMessage.length() != 0) {
                 messageList = Arrays.asList(originalMessage.split("(\r?\n|\r)"));
             }
         }
-        for(Iterator<String> i = messageList.iterator(); i.hasNext(); ) {
+        for (Iterator<String> i = messageList.iterator(); i.hasNext(); ) {
             String messageListItem = i.next();
             this.getLogger().log(level, chatPrepClean(messageListItem, null));
         }
@@ -558,11 +558,11 @@ public class ObsidianAuctions extends JavaPlugin {
                     Function.identity());
             CommandPermissionHandler handler = injector.getInstance(CommandPermissionHandler.class);
             commandManager.registerExceptionHandler(NoPermissionException.class, handler);
-            if(commandManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
+            if (commandManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
                 commandManager.registerBrigadier();
             }
             return commandManager;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

@@ -29,7 +29,7 @@ public class ActionBarManager {
     public void addPlayer(Player player, String message) {
         int totalTicks = ObsidianAuctions.actionBarTicks;
         totalTicks -= 60;
-        if(totalTicks > 0) { //60 is default if less than or equal to we will just ignore
+        if (totalTicks > 0) { //60 is default if less than or equal to we will just ignore
             UUID uuid = player.getUniqueId();
             this.ticksRemaining.put(uuid, totalTicks);
             this.playerMessages.put(uuid, message);
@@ -39,14 +39,14 @@ public class ActionBarManager {
     private void runTask() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(ObsidianAuctions.get(), () -> {
             Iterator<Map.Entry<UUID, Integer>> it = this.ticksRemaining.entrySet().iterator();
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 Map.Entry<UUID, Integer> next = it.next();
                 int ticks = next.getValue();
                 ticks -= 1;
-                if(ticks % 20 == 0) {
+                if (ticks % 20 == 0) {
                     UUID uuid = next.getKey();
                     Player player = Bukkit.getServer().getPlayer(uuid);
-                    if(player == null) {
+                    if (player == null) {
                         it.remove();
                         this.playerMessages.remove(uuid);
                     } else {
@@ -54,7 +54,7 @@ public class ActionBarManager {
                         this.adventure.player(player).sendActionBar(MiniMessage.miniMessage().deserialize(message));
                     }
                 }
-                if(ticks == 0) {
+                if (ticks == 0) {
                     it.remove();
                 } else {
                     next.setValue(ticks);

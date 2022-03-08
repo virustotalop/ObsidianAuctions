@@ -30,12 +30,12 @@ public class LanguageItem {
     }
 
     public boolean matches(ItemStack itemStack) {
-        if(this.type != itemStack.getType()) {
+        if (this.type != itemStack.getType()) {
             return false;
-        } else if(this.durability != LegacyUtil.getDurability(itemStack)) {
+        } else if (this.durability != LegacyUtil.getDurability(itemStack)) {
             return false;
         }
-        if(this.compound != null) {
+        if (this.compound != null) {
             NBTCompound stackComp = new NBTCompound(itemStack);
             return NBTCompound.fuzzyMatches(this.compound, stackComp);
         }

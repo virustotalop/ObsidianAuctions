@@ -29,20 +29,20 @@ public class I18nTranslationFactory implements TranslationFactory {
 
     @Override
     public String getTranslation(ItemStack itemStack) {
-        if(itemStack == null) {
+        if (itemStack == null) {
             return null;
         }
         Material type = itemStack.getType();
         Collection<LanguageItem> items = this.items.get(type);
-        if(items != null) {
-            for(LanguageItem item : items) {
-                if(item.matches(itemStack)) {
+        if (items != null) {
+            for (LanguageItem item : items) {
+                if (item.matches(itemStack)) {
                     return item.getTranslation();
                 }
             }
         }
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if(!itemMeta.hasLocalizedName()) {
+        if (!itemMeta.hasLocalizedName()) {
             return EnumUtil.formatName(type.name());
         }
         return itemMeta.getLocalizedName();
@@ -50,10 +50,10 @@ public class I18nTranslationFactory implements TranslationFactory {
 
     private Map<Material, Collection<LanguageItem>> loadItems(Configuration config) {
         Map<Material, Collection<LanguageItem>> map = new HashMap<>();
-        for(String key : config.getKeys()) {
+        for (String key : config.getKeys()) {
             String translation = config.getString(key);
             LanguageItem item = this.parseItem(key, translation);
-            if(item != null) {
+            if (item != null) {
                 Material material = item.getType();
                 Collection<LanguageItem> items = map.computeIfAbsent(material, (col) -> new ArrayList<>());
                 items.add(item);
@@ -68,41 +68,41 @@ public class I18nTranslationFactory implements TranslationFactory {
         short durability = 0;
         NBTCompound compound = null;
         try {
-            if(hasSeparator) {
+            if (hasSeparator) {
                 String[] split = key.split("<sep>");
-                if(split.length != 2) {
+                if (split.length != 2) {
                     ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid length for: " + key);
                     return null;
                 }
 
                 String first = split[0];
                 String second = split[1];
-                if(this.invalidMaterial(first)) {
+                if (this.invalidMaterial(first)) {
                     return null;
                 }
                 material = Material.getMaterial(first);
-                if(this.isShort(second)) {
+                if (this.isShort(second)) {
                     durability = Short.parseShort(second);
                 } else {
                     try {
                         compound = new NBTCompound(second);
-                    } catch(Exception ex) {
+                    } catch (Exception ex) {
                         ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid nbt: " + second);
                         ex.printStackTrace();
                     }
                 }
             } else {
-                if(this.invalidMaterial(key)) {
+                if (this.invalidMaterial(key)) {
                     return null;
                 }
                 material = Material.valueOf(key);
             }
-            if(material == null) {
+            if (material == null) {
                 ObsidianAuctions.get().getLogger().log(Level.SEVERE, "No material found for: " + key);
                 return null;
             }
             return new LanguageItem(material, durability, compound, translation);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid item: " + key);
             ex.printStackTrace();
             return null;
@@ -117,7 +117,7 @@ public class I18nTranslationFactory implements TranslationFactory {
         try {
             Short.parseShort(parse);
             return true;
-        } catch(NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             return false;
         }
     }
