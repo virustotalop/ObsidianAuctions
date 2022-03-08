@@ -193,6 +193,6 @@ public class AuctionMessageManager implements MessageManager {
     }
 
     private String stripTags(String message) {
-        return MiniMessage.miniMessage().stripTokens(message);
+        return MiniMessage.miniMessage().stripTags(message);
     }
 }
