@@ -245,12 +245,12 @@ public class ObsidianAuctions extends JavaPlugin {
         return this.setupPermissions();
     }
 
-    private Injector inject(Configuration config, String itemLanguage, Class<? extends Placeholder> papiClazz) {
+    private Injector inject(Configuration config, String itemLanguage, Class<? extends Placeholder> placeholderClazz) {
         File itemLanguagesFolder = new File(this.dataFolder, "item_languages");
         File itemConfig = new File(itemLanguagesFolder, itemLanguage + ".yml");
         Configuration i18nItemConfig = Configuration.load(itemConfig);
 
-        AuctionModule module = new AuctionModule(this, this.adventure, config, i18nItemConfig, papiClazz);
+        AuctionModule module = new AuctionModule(this, this.adventure, config, i18nItemConfig, placeholderClazz);
         Injector injector = Guice.createInjector(module);
         this.messageManager = injector.getInstance(MessageManager.class);
         this.prohibitionCache = injector.getInstance(AuctionProhibitionManager.class);

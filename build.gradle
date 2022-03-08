@@ -58,6 +58,7 @@ repositories {
 
 def junitVersion = '5.8.2'
 def cloudVersion = '1.6.1'
+def adventureVersion = '4.10.0'
 
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
@@ -68,8 +69,8 @@ dependencies {
     implementation "com.google.inject:guice:5.1.0"
     implementation "cloud.commandframework:cloud-paper:$cloudVersion"
     implementation "cloud.commandframework:cloud-annotations:$cloudVersion"
-    implementation "net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT"
-    implementation "net.kyori:adventure-platform-bukkit:4.0.1-SNAPSHOT"
+    implementation "net.kyori:adventure-text-minimessage:$adventureVersion"
+    implementation "net.kyori:adventure-platform-bukkit:$adventureVersion"
     compileOnly "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     compileOnly "net.md-5:bungeecord-api:1.12-SNAPSHOT"
     compileOnly "org.jetbrains:annotations:23.0.0"
