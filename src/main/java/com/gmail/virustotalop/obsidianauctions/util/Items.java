@@ -400,8 +400,6 @@ public final class Items {
         }
     }
 
-    // Some of this was taken from Vault's item classes.
-
     public static boolean isSameItem(ItemStack item, String searchString) {
         Material mat;
         short damageId = 0;
