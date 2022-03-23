@@ -407,10 +407,13 @@ public final class Items {
         short damageId = 0;
         if (searchString.contains(",")) {
             String[] split = searchString.split(",");
-            mat = Material.valueOf(split[0]);
+            mat = Material.getMaterial(split[0]);
             damageId = Short.parseShort(split[1]);
         } else {
-            mat = Material.valueOf(searchString);
+            mat = Material.getMaterial(searchString);
+        }
+        if(mat == null) {
+            return false;
         }
         if (damageId != 0) {
             return isSameItem(item, new ItemStack(mat, 1, damageId));
