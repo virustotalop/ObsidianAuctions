@@ -53,6 +53,15 @@ public class AuctionManager {
     }
 
     /**
+     * Get all active AuctionScopes
+     *
+     * @return a copy of all the AuctionScopes
+     */
+    public List<AuctionScope> getAuctionScopes() {
+        return new ArrayList<>(this.auctionScopes.values());
+    }
+
+    /**
      * Checks to see if a player is participating in an auction in any AuctionScope.
      *
      * @param playerUUID player to check

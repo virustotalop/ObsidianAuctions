@@ -103,7 +103,6 @@ public class ObsidianAuctions extends JavaPlugin {
     /*Added values
      *
      */
-    public static String guiQueueName;
     public static List<String> itemBlacklist;
     public static boolean itemNameBlackListEnabled;
     public static boolean enableChatMessages;
@@ -333,8 +332,6 @@ public class ObsidianAuctions extends JavaPlugin {
 
         textConfig.save();*/
 
-        //Gui queue inventory name
-        ObsidianAuctions.guiQueueName = ChatColor.translateAlternateColorCodes('&', config.getString("queue-gui-name"));
         ObsidianAuctions.itemBlacklist = config.getStringList("name-blacklist");
         ObsidianAuctions.itemNameBlackListEnabled = config.getBoolean("name-blacklist-enabled");
         ObsidianAuctions.enableChatMessages = config.getBoolean("enable-chat-messages");

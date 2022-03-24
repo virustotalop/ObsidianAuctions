@@ -3,6 +3,7 @@ package com.gmail.virustotalop.obsidianauctions;
 import com.clubobsidian.wrappy.ConfigurationSection;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
@@ -120,7 +121,7 @@ public class AuctionConfig {
         if (result == null) {
             result = ObsidianAuctions.config.getString(path);
         }
-        return result;
+        return ChatColor.translateAlternateColorCodes('&', result);
     }
 
     /**

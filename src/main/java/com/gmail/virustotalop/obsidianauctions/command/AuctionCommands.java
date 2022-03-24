@@ -190,7 +190,8 @@ public class AuctionCommands {
                 if (auctionQueue.isEmpty()) {
                     this.message.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
                 } else {
-                    Inventory inv = this.plugin.getServer().createInventory(null, 18, ObsidianAuctions.guiQueueName);
+                    String queueName = AuctionConfig.getString("queue-gui-name", userScope);
+                    Inventory inv = this.plugin.getServer().createInventory(null, 18, queueName);
                     for (int i = 0; i < auctionQueue.size(); i++) {
                         if (i == inv.getSize()) {
                             break;

@@ -107,7 +107,7 @@ auction-scopes:
     config:
       disabled-commands-inscope: []
 
-#Name blacklist for items, if an item contains one of these it will not allowed to be auctioned
+#Name blacklist for items, if an item contains one of these it will not be allowed to be auctioned
 name-blacklist-enabled: true
 #Modified list from here: https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/blob/master/en
 name-blacklist:
