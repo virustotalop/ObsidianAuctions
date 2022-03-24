@@ -28,6 +28,7 @@ public class InventoryClickListener implements Listener {
                     for(AuctionScope scope : this.auctionManager.getAuctionScopes()) {
                         if (title.equals(AuctionConfig.getString("queue-gui-name", scope))) {
                             e.setCancelled(true);
+                            break;
                         }
                     }
                 }
