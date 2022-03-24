@@ -617,9 +617,9 @@ public class Auction {
         //Implementing allowing auctioned mob-spawners
         //if display name is not empty do function if not fall through to next if
         if (!displayName.isEmpty()) {
-            if (ObsidianAuctions.itemNameBlackListEnabled) {
+            if (AuctionConfig.getBoolean("name-blacklist-enabled", this.scope)) {
                 String lowerCaseDisplay = displayName.toLowerCase();
-                for (String string : ObsidianAuctions.itemBlacklist) {
+                for (String string : AuctionConfig.getStringList("name-blacklist", this.scope)) {
                     if (lowerCaseDisplay.contains(string)) {
                         this.messageManager.sendPlayerMessage("auction-fail-blacklist-name", this.ownerUUID, this);
                         return false;

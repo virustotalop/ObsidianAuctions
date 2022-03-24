@@ -209,7 +209,7 @@ public class AuctionMessageParser {
                 conditionals.put("is-admin", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.admin")); //1
                 conditionals.put("can-start", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.start")); //2
                 conditionals.put("can-bid", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.bid")); //3
-                conditionals.put("has-display-name", lot != null && ObsidianAuctions.allowRenamedItems && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
+                conditionals.put("has-display-name", lot != null && AuctionConfig.getBoolean("allow-renamed-items", auctionScope) && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
                 conditionals.put("has-enchantment", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
                 conditionals.put("is-sealed", auction != null && auction.isSealed()); //6
                 conditionals.put("not-sealed", auction != null && !auction.isSealed() && auction.getCurrentBid() != null); //7

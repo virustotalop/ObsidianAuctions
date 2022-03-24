@@ -1,6 +1,8 @@
 package com.gmail.virustotalop.obsidianauctions.message;
 
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
+import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -26,8 +28,8 @@ public class ActionBarManager {
         this.runTask();
     }
 
-    public void addPlayer(Player player, String message) {
-        int totalTicks = ObsidianAuctions.actionBarTicks;
+    public void addPlayer(Player player, String message, AuctionScope auctionScope) {
+        int totalTicks = AuctionConfig.getInt("action-bar-ticks", auctionScope);
         totalTicks -= 60;
         if (totalTicks > 0) { //60 is default if less than or equal to we will just ignore
             UUID uuid = player.getUniqueId();

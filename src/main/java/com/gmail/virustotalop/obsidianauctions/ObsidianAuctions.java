@@ -73,7 +73,6 @@ public class ObsidianAuctions extends JavaPlugin {
     public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{0,1})?$";
     private File auctionLog = null;
     private boolean suspendAllAuctions = false;
-    public static boolean isDamagedAllowed;
 
     // Config files info.
     public static Configuration config = null;
@@ -99,16 +98,6 @@ public class ObsidianAuctions extends JavaPlugin {
     //Cloud
     private CommandManager<CommandSender> commandManager;
     private AnnotationParser<CommandSender> commandParser;
-
-    /*Added values
-     *
-     */
-    public static List<String> itemBlacklist;
-    public static boolean itemNameBlackListEnabled;
-    public static boolean enableChatMessages;
-    public static boolean enableActionbarMessages;
-    public static boolean allowRenamedItems;
-    public static int actionBarTicks;
 
     /**
      * Used by AuctionLot to store auction lots which could not be given to players because they were offline.
@@ -331,16 +320,6 @@ public class ObsidianAuctions extends JavaPlugin {
         textConfig = cleanTextConfig;
 
         textConfig.save();*/
-
-        ObsidianAuctions.itemBlacklist = config.getStringList("name-blacklist");
-        ObsidianAuctions.itemNameBlackListEnabled = config.getBoolean("name-blacklist-enabled");
-        ObsidianAuctions.enableChatMessages = config.getBoolean("enable-chat-messages");
-        ObsidianAuctions.enableActionbarMessages = config.getBoolean("enable-actionbar-messages");
-        ObsidianAuctions.allowRenamedItems = config.getBoolean("allow-renamed-items");
-        ObsidianAuctions.actionBarTicks = config.get("action-bar-ticks", Integer.class, 60);
-
-        //Setup additional floAuction values
-        ObsidianAuctions.isDamagedAllowed = config.getBoolean("allow-damaged-items");
 
         //make values null at the end
         //defConfig = null;

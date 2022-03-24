@@ -1,5 +1,6 @@
 package com.gmail.virustotalop.obsidianauctions.message;
 
+import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
@@ -176,12 +177,12 @@ public class AuctionMessageManager implements MessageManager {
 
             Audience audience = this.adventure.player(player);
             for (String message : messages) {
-                if (ObsidianAuctions.enableChatMessages) {
+                if (AuctionConfig.getBoolean("enable-chat-messages", auctionScope)) {
                     audience.sendMessage(MiniMessage.miniMessage().deserialize(message));
                 }
-                if (ObsidianAuctions.enableActionbarMessages) {
+                if (AuctionConfig.getBoolean("enable-actionbar-messages", auctionScope)) {
                     audience.sendActionBar(MiniMessage.miniMessage().deserialize(message));
-                    this.actionBar.addPlayer(player, message);
+                    this.actionBar.addPlayer(player, message, auctionScope);
                 }
             }
         }
