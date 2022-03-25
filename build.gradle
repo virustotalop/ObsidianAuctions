@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'org.cadixdev.licenser' version '0.6.1'
     id 'eclipse'
     id 'idea'
 }
@@ -8,10 +9,15 @@ plugins {
 group = 'com.gmail.virustotalop'
 version = '5.0.0-SNAPSHOT'
 
+license {
+    header = project.file('HEADER.txt')
+}
+
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 }
+
 
 processResources {
     filesMatching('plugin.yml') {
