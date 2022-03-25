@@ -555,6 +555,9 @@ public class ObsidianAuctions extends JavaPlugin {
             if (commandManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
                 commandManager.registerBrigadier();
             }
+            if(commandManager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+                commandManager.registerAsynchronousCompletions();
+            }
             return commandManager;
         } catch (Exception e) {
             e.printStackTrace();
