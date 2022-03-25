@@ -7,15 +7,15 @@
 
 ## FAQ
 * What is ObsidianAuctions?
- * Obsidian auctions is a fork of the FloAuctions plugin that used to be used on ClubObsidian.
+  * Obsidian auctions is a chat based auction plugin, and it is fork of the FloAuctions plugin.
 * I have a bug can you fix it?
-  * Please file an issue
+  * Please file an [issue](https://github.com/virustotalop/ObsidianAuctions/issues/new/choose)
 * I have a feature can you make it?
-  * It depends on the complexity and if I have time to complete it. If I don't think it fits with the vision of ObsidianAuctions I will reject it. You may however fork this project and add it yourself. Alternatively if its a feature I don't have time to implement it I welcome pull requests. 
+  * File an [issue](https://github.com/virustotalop/ObsidianAuctions/issues/new/choose). 
 
  ## Differences
  
- Below are some of the differences between ObsidianAuctions and the old FloAuctions plugin
+Below are some differences between ObsidianAuctions and the old FloAuctions plugin
  
 * Auction queue GUI
 * Full UUID support
