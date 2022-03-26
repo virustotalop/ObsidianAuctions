@@ -63,7 +63,7 @@ repositories {
 }
 
 def junitVersion = '5.8.2'
-def cloudVersion = '1.6.1'
+def cloudVersion = '1.6.2'
 
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
