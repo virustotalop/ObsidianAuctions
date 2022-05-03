@@ -77,7 +77,6 @@ dependencies {
     implementation "net.kyori:adventure-text-minimessage:4.10.0"
     implementation "net.kyori:adventure-platform-bukkit:4.1.0"
     compileOnly "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
-    compileOnly "net.md-5:bungeecord-api:1.12-SNAPSHOT"
     compileOnly "org.jetbrains:annotations:23.0.0"
     compileOnly name: "vault"
 }
