@@ -224,7 +224,7 @@ public class ObsidianAuctions extends JavaPlugin {
         this.suspendedUsers = FileUtil.load("suspendedUsers.ser", new HashSet<>());
 
         this.commandManager = this.createCommandManager(injector);
-        this.commandParser = new AnnotationParser(this.commandManager,
+        this.commandParser = new AnnotationParser<>(this.commandManager,
                 CommandSender.class, parameters ->
                 SimpleCommandMeta.empty());
         this.commandParser.parse(injector.getInstance(AuctionCommands.class));
@@ -485,11 +485,10 @@ public class ObsidianAuctions extends JavaPlugin {
      * Prepares chat, prepending prefix and removing colors.
      *
      * @param message      message to prepare
-     * @param auctionScope the scope of the destination
      * @return prepared message
      */
-    private static String chatPrepClean(String message, AuctionScope auctionScope) {
-        message = AuctionConfig.getLanguageString("chat-prefix", auctionScope) + message;
+    private static String chatPrepClean(String message) {
+        message = AuctionConfig.getLanguageString("chat-prefix", null) + message;
         message = ChatColor.translateAlternateColorCodes('&', message);
         message = ChatColor.stripColor(message);
         return message;
@@ -530,9 +529,10 @@ public class ObsidianAuctions extends JavaPlugin {
                 messageList = Arrays.asList(originalMessage.split("(\r?\n|\r)"));
             }
         }
-        for (Iterator<String> i = messageList.iterator(); i.hasNext(); ) {
-            String messageListItem = i.next();
-            this.getLogger().log(level, chatPrepClean(messageListItem, null));
+        if (messageList != null) {
+            for (String messageListItem : messageList) {
+                this.getLogger().log(level, chatPrepClean(messageListItem));
+            }
         }
     }
 
@@ -546,7 +546,7 @@ public class ObsidianAuctions extends JavaPlugin {
 
     private CommandManager<CommandSender> createCommandManager(Injector injector) {
         try {
-            PaperCommandManager<CommandSender> commandManager = new PaperCommandManager(this,
+            PaperCommandManager<CommandSender> commandManager = new PaperCommandManager<>(this,
                     CommandExecutionCoordinator.simpleCoordinator(),
                     Function.identity(),
                     Function.identity());

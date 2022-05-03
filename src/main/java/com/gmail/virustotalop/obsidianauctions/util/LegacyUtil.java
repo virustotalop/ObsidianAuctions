@@ -38,6 +38,7 @@ public final class LegacyUtil {
         return 0;
     }
 
+    @SuppressWarnings("deprecation")
     public static ItemStack getItemInMainHand(Player player) {
         if (mainHandExists) {
             return player.getInventory().getItemInMainHand();

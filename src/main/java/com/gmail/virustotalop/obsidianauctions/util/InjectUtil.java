@@ -29,6 +29,7 @@ import java.util.List;
 @ApiStatus.NonExtendable
 public final class InjectUtil {
 
+    @SuppressWarnings("unchecked")
     public static <T> List<T> collect(@NotNull Class<T> superClazz, @NotNull Injector injector) {
         List<T> bindings = new ArrayList<>();
         injector.getAllBindings().values().forEach(binding -> {
