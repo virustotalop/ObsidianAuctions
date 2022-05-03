@@ -80,13 +80,12 @@ public final class Items {
         enchantmentLevels.put(5, "V");
     }
 
-    private static boolean registerEnchantment(String enchantmentName, String alias) {
+    private static void registerEnchantment(String enchantmentName, String alias) {
         Enchantment enchantment = Enchantment.getByName(enchantmentName);
         if (enchantment == null) {
-            return false;
+            return;
         }
         enchantmentNames.put(enchantment, alias);
-        return true;
     }
 
     private static int firstPartial(ItemStack item, ItemStack[] inventory) {
@@ -169,11 +168,17 @@ public final class Items {
 
 
     public static String[] getLore(ItemStack item) {
-        if (item == null) return null;
+        if (item == null) {
+            return null;
+        }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) return null;
+        if (itemMeta == null) {
+            return null;
+        }
         List<String> pageList = itemMeta.getLore();
-        if (pageList == null) return null;
+        if (pageList == null) {
+            return null;
+        }
         String[] pages = new String[pageList.size()];
         for (int i = 0; i < pageList.size(); i++) {
             pages[i] = pageList.get(i);
@@ -183,13 +188,16 @@ public final class Items {
 
 
     public static void setLore(ItemStack item, String[] pages) {
-        if (item == null || pages == null) return;
+        if (item == null || pages == null) {
+            return;
+        }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) return;
-        List<String> pageList = new ArrayList<>();
-        Collections.addAll(pageList, pages);
-        itemMeta.setLore(pageList);
-        item.setItemMeta(itemMeta);
+        if (itemMeta != null) {
+            List<String> pageList = new ArrayList<>();
+            Collections.addAll(pageList, pages);
+            itemMeta.setLore(pageList);
+            item.setItemMeta(itemMeta);
+        }
     }
 
 
@@ -198,9 +206,6 @@ public final class Items {
             return null;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
-            return null;
-        }
         if (itemMeta instanceof EnchantmentStorageMeta) {
             return ((EnchantmentStorageMeta) itemMeta).getStoredEnchants();
         }
@@ -229,9 +234,7 @@ public final class Items {
             return null;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
-            return null;
-        } else if (itemMeta instanceof FireworkMeta) {
+        if (itemMeta instanceof FireworkMeta) {
             FireworkMeta fireworkMeta = ((FireworkMeta) itemMeta);
             return fireworkMeta.getPower();
         }
@@ -244,9 +247,7 @@ public final class Items {
             return;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
-            return;
-        } else if (itemMeta instanceof FireworkMeta) {
+        if (itemMeta instanceof FireworkMeta) {
             FireworkMeta fireworkMeta = ((FireworkMeta) itemMeta);
             fireworkMeta.setPower(power);
             item.setItemMeta(fireworkMeta);
@@ -259,9 +260,7 @@ public final class Items {
             return null;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
-            return null;
-        } else if (itemMeta instanceof FireworkMeta) {
+        if (itemMeta instanceof FireworkMeta) {
             List<FireworkEffect> effectList = ((FireworkMeta) itemMeta).getEffects();
             FireworkEffect[] effects = new FireworkEffect[effectList.size()];
             for (int i = 0; i < effectList.size(); i++) {
@@ -282,9 +281,7 @@ public final class Items {
             return;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
-            return;
-        } else if (itemMeta instanceof FireworkMeta) {
+        if (itemMeta instanceof FireworkMeta) {
             FireworkMeta fireworkMeta = ((FireworkMeta) itemMeta);
             fireworkMeta.addEffects(effects);
             item.setItemMeta(fireworkMeta);
@@ -303,9 +300,7 @@ public final class Items {
             return null;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
-            return null;
-        } else if (itemMeta instanceof Repairable) {
+        if (itemMeta instanceof Repairable) {
             return ((Repairable) itemMeta).getRepairCost();
         }
         return null;
@@ -313,40 +308,44 @@ public final class Items {
 
 
     public static void setRepairCost(ItemStack item, Integer repairCost) {
-        if (item == null) return;
+        if (item == null) {
+            return;
+        }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) return;
         if (itemMeta instanceof Repairable) {
             Repairable repairable = ((Repairable) itemMeta);
             repairable.setRepairCost(repairCost);
             item.setItemMeta((ItemMeta) repairable);
         }
-        return;
     }
 
 
     public static String getDisplayName(ItemStack item) {
-        if (item == null) return null;
+        if (item == null) {
+            return null;
+        }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) return null;
-        return itemMeta.getDisplayName();
+        return itemMeta == null ? null : itemMeta.getDisplayName();
     }
 
 
     public static void setDisplayName(ItemStack item, String name) {
-        if (item == null) return;
-        if (name == null) return;
+        if (item == null || name == null) {
+            return;
+        }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) return;
-        itemMeta.setDisplayName(name);
-        item.setItemMeta(itemMeta);
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(name);
+            item.setItemMeta(itemMeta);
+        }
     }
 
 
     public static String getBookAuthor(ItemStack book) {
-        if (book == null) return null;
+        if (book == null) {
+            return null;
+        }
         ItemMeta itemMeta = book.getItemMeta();
-        if (itemMeta == null) return null;
         if (itemMeta instanceof BookMeta) {
             return ((BookMeta) itemMeta).getAuthor();
         }
@@ -355,22 +354,23 @@ public final class Items {
 
 
     public static void setBookAuthor(ItemStack book, String author) {
-        if (book == null) return;
+        if (book == null) {
+            return;
+        }
         ItemMeta itemMeta = book.getItemMeta();
-        if (itemMeta == null) return;
         if (itemMeta instanceof BookMeta) {
             BookMeta bookMeta = ((BookMeta) itemMeta);
             bookMeta.setAuthor(author);
             book.setItemMeta(bookMeta);
         }
-        return;
     }
 
 
     public static String getBookTitle(ItemStack book) {
-        if (book == null) return null;
+        if (book == null) {
+            return null;
+        }
         ItemMeta itemMeta = book.getItemMeta();
-        if (itemMeta == null) return null;
         if (itemMeta instanceof BookMeta) {
             return ((BookMeta) itemMeta).getTitle();
         }
@@ -379,22 +379,23 @@ public final class Items {
 
 
     public static void setBookTitle(ItemStack book, String title) {
-        if (book == null) return;
+        if (book == null) {
+            return;
+        }
         ItemMeta itemMeta = book.getItemMeta();
-        if (itemMeta == null) return;
         if (itemMeta instanceof BookMeta) {
             BookMeta bookMeta = ((BookMeta) itemMeta);
             bookMeta.setTitle(title);
             book.setItemMeta(bookMeta);
         }
-        return;
     }
 
 
     public static String[] getBookPages(ItemStack book) {
-        if (book == null) return null;
+        if (book == null) {
+            return null;
+        }
         ItemMeta itemMeta = book.getItemMeta();
-        if (itemMeta == null) return null;
         if (itemMeta instanceof BookMeta) {
             List<String> pageList = ((BookMeta) itemMeta).getPages();
             String[] pages = new String[pageList.size()];
@@ -410,7 +411,6 @@ public final class Items {
     public static void setBookPages(ItemStack book, String[] pages) {
         if (book == null || pages == null) return;
         ItemMeta itemMeta = book.getItemMeta();
-        if (itemMeta == null) return;
         if (itemMeta instanceof BookMeta) {
             BookMeta bookMeta = ((BookMeta) itemMeta);
             bookMeta.setPages(pages);
@@ -444,11 +444,7 @@ public final class Items {
 
 
     public static int getMaxStackSize(ItemStack item) {
-        if (item == null) {
-            return 0;
-        }
-        int maxStackSize = item.getType().getMaxStackSize();
-        return maxStackSize;
+        return item == null ? 0 : item.getType().getMaxStackSize();
     }
 
 
@@ -598,9 +594,7 @@ public final class Items {
             return;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
-            return;
-        } else if (itemMeta instanceof SkullMeta) {
+        if (itemMeta instanceof SkullMeta) {
             SkullMeta skullMeta = ((SkullMeta) itemMeta);
             skullMeta.setOwner(headName);
             item.setItemMeta(skullMeta);

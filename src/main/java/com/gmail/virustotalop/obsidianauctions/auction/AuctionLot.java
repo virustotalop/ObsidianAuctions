@@ -225,7 +225,7 @@ public class AuctionLot implements Serializable {
      * @return item stack of one item
      */
     public ItemStack getTypeStack() {
-        ItemStack lotTypeLock = null;
+        ItemStack lotTypeLock;
         if (this.itemSerialized != null) {
 //			lotTypeLock = ItemStack.deserialize(this.itemSerialized);
             FileConfiguration tmpconfig = new YamlConfiguration();
