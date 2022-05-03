@@ -61,12 +61,6 @@ public final class Functions {
                 removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-bid-increment", null))),
                 Integer.toString(AuctionConfig.getInt("default-auction-time", null)), "0"};
 
-        // Size increased in 2.10.0
-        if (resultArgs.length < 5) {
-            String[] tmp = resultArgs.clone();
-            resultArgs = new String[]{tmp[0], tmp[1], tmp[2], tmp[3], "0"};
-        }
-
         // Remove the "start" and "prep" args:
         String[] processArgs = inputArgs;
         if (processArgs.length > 0) {
@@ -152,8 +146,7 @@ public final class Functions {
     }
 
     public static String formatAmount(double unsafeMoney) {
-        String vaultFormat = ObsidianAuctions.get().getEconomy().format(unsafeMoney);
-        return vaultFormat;
+        return ObsidianAuctions.get().getEconomy().format(unsafeMoney);
     }
 
     public static boolean hasBalance(UUID uuid, double preAuctionTax) {
@@ -188,7 +181,7 @@ public final class Functions {
 
     public static long getSafeMoney(Double money) {
         DecimalFormat twoDForm = new DecimalFormat("#");
-        return Long.valueOf(twoDForm.format(money * Math.pow(10, ObsidianAuctions.decimalPlaces)));
+        return Long.parseLong(twoDForm.format(money * Math.pow(10, ObsidianAuctions.decimalPlaces)));
     }
 
     public static double getUnsafeMoney(long money) {

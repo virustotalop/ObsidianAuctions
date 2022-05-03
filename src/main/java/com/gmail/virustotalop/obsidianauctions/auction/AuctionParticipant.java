@@ -72,6 +72,7 @@ public class AuctionParticipant {
             for (int i = 0; i < scopeAuction.getSealedBids().size(); i++) {
                 if (scopeAuction.getSealedBids().get(i).getBidderName().equals(this.playerUUID)) {
                     participating = true;
+                    break;
                 }
             }
         }

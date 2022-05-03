@@ -158,7 +158,7 @@ public class AuctionCommands {
     public void auctionCancel(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
         if (uuid == null) {
-            this.message.sendPlayerMessage("auction-fail-no-scope", uuid, (AuctionScope) null);
+            this.message.sendPlayerMessage("auction-fail-no-scope", null, (AuctionScope) null);
         } else {
             Player player = this.plugin.getServer().getPlayer(uuid);
             UUID playerUUID = player.getUniqueId();
@@ -385,9 +385,9 @@ public class AuctionCommands {
             return false;
         } else if (uuid == null) {
             if (type == CommandType.AUCTION) {
-                this.message.sendPlayerMessage("auction-fail-console", uuid, (AuctionScope) null);
+                this.message.sendPlayerMessage("auction-fail-console", null, (AuctionScope) null);
             } else {
-                this.message.sendPlayerMessage("bid-fail-console", uuid, (AuctionScope) null);
+                this.message.sendPlayerMessage("bid-fail-console", null, (AuctionScope) null);
             }
             return false;
         } else if (this.plugin.isVoluntarilyDisabled(uuid)) {

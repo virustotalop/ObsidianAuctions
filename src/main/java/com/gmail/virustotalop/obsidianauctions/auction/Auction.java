@@ -110,16 +110,12 @@ public class Auction {
             if (this.guiItem.getItemMeta().hasLore()) {
                 List<String> lore = this.guiItem.getItemMeta().getLore();
                 lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
-                //lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
-                //lore.add(ChatColor.BLUE + "Buy it now price: " + this.buyNow);
                 ItemMeta itemMeta = this.guiItem.getItemMeta();
                 itemMeta.setLore(lore);
                 this.guiItem.setItemMeta(itemMeta);
             } else {
                 List<String> lore = new ArrayList<>();
                 lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
-                //lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
-                //lore.add(ChatColor.BLUE + "Buy it now price: " + this.buyNow);
                 ItemMeta itemMeta = this.guiItem.getItemMeta();
                 itemMeta.setLore(lore);
                 this.guiItem.setItemMeta(itemMeta);
@@ -127,8 +123,6 @@ public class Auction {
         } else {
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
-            //lore.add(ChatColor.BLUE + "Starting price: " + this.getStartingBid());
-            //lore.add(ChatColor.BLUE + "Buy it now price: " + this.buyNow);
             ItemMeta itemMeta = this.guiItem.getItemMeta();
             itemMeta.setLore(lore);
             this.guiItem.setItemMeta(itemMeta);

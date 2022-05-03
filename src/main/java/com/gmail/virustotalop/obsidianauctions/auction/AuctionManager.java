@@ -87,8 +87,7 @@ public class AuctionManager {
      */
     public boolean isParticipant(UUID playerUUID) {
         boolean participating = false;
-        for (int i = 0; i < this.auctionParticipants.size(); i++) {
-            AuctionParticipant participant = this.auctionParticipants.get(i);
+        for (AuctionParticipant participant : this.auctionParticipants) {
             if (participant.isParticipating() && playerUUID.equals(participant.getPlayerUUID())) {
                 participating = true;
             }
@@ -123,8 +122,7 @@ public class AuctionManager {
      * @return participant instance
      */
     AuctionParticipant getParticipant(UUID playerUUID) {
-        for (int i = 0; i < this.auctionParticipants.size(); i++) {
-            AuctionParticipant participant = this.auctionParticipants.get(i);
+        for (AuctionParticipant participant : this.auctionParticipants) {
             if (playerUUID.equals(participant.getPlayerUUID())) {
                 return participant;
             }

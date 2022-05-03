@@ -189,8 +189,7 @@ public class AuctionProhibitionManager {
      * @return prohibition instance
      */
     private AuctionProhibition getProhibition(Plugin prohibiterPlugin, UUID playerUUID) {
-        for (int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
-            AuctionProhibition prohibition = this.involuntarilyDisabledUsers.get(i);
+        for (AuctionProhibition prohibition : this.involuntarilyDisabledUsers) {
             if (prohibition.getPlayerUUID().equals(playerUUID) && prohibition.equals(prohibiterPlugin)) {
                 return prohibition;
             }
@@ -205,8 +204,7 @@ public class AuctionProhibitionManager {
      * @return prohibition instance
      */
     private AuctionProhibition getProhibition(UUID playerUUID) {
-        for (int i = 0; i < this.involuntarilyDisabledUsers.size(); i++) {
-            AuctionProhibition prohibition = this.involuntarilyDisabledUsers.get(i);
+        for (AuctionProhibition prohibition : this.involuntarilyDisabledUsers) {
             if (prohibition.getPlayerUUID().equals(playerUUID)) {
                 return prohibition;
             }

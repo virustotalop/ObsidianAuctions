@@ -19,7 +19,6 @@
 package com.gmail.virustotalop.obsidianauctions.listener;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
-import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import org.bukkit.event.EventHandler;

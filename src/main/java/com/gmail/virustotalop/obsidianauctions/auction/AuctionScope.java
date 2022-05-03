@@ -172,16 +172,15 @@ public class AuctionScope {
                 return;
             }
         }
-        for (int i = 0; i < this.auctionQueue.size(); i++) {
-            if (this.auctionQueue.get(i) != null) {
-                Auction queuedAuction = this.auctionQueue.get(i);
-                if (queuedAuction.getOwnerUUID().equals(playerUUID)) {
+        for (Auction auction : this.auctionQueue) {
+            if (auction != null) {
+                if (auction.getOwnerUUID().equals(playerUUID)) {
                     messageManager.sendPlayerMessage("auction-queue-fail-in-queue", playerUUID, auctionToQueue);
                     return;
                 }
             }
         }
-        if ((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) || auctionToQueue.isValid()) {
+        if ((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000L) || auctionToQueue.isValid()) {
             this.auctionQueue.add(auctionToQueue);
             ObsidianAuctions.get().getAuctionManager().addParticipant(playerUUID, this);
             ObsidianAuctions.get().getAuctionManager().checkAuctionQueue();
@@ -197,7 +196,7 @@ public class AuctionScope {
     void checkThisAuctionQueue() {
         if (this.activeAuction != null) {
             return;
-        } else if (System.currentTimeMillis() - this.lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000) {
+        } else if (System.currentTimeMillis() - this.lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000L) {
             return;
         } else if (this.auctionQueue.size() == 0) {
             return;
@@ -262,8 +261,8 @@ public class AuctionScope {
             return false;
         }
         if (this.type.equalsIgnoreCase("worlds")) {
-            for (int i = 0; i < this.worlds.size(); i++) {
-                if (this.worlds.get(i).equalsIgnoreCase(worldName) || this.worlds.get(i).equalsIgnoreCase("*")) {
+            for (String s : this.worlds) {
+                if (s.equalsIgnoreCase(worldName) || s.equalsIgnoreCase("*")) {
                     return true;
                 }
             }

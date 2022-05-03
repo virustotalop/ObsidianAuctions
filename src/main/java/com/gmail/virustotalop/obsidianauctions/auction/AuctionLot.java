@@ -224,7 +224,6 @@ public class AuctionLot implements Serializable {
      *
      * @return item stack of one item
      */
-    @SuppressWarnings("deprecation")
     public ItemStack getTypeStack() {
         ItemStack lotTypeLock = null;
         if (this.itemSerialized != null) {

@@ -46,7 +46,7 @@ public final class FileUtil {
      * @return the resulting string list
      */
 
-    @SuppressWarnings({"unchecked", "finally"})
+    @SuppressWarnings({"unchecked"})
     public static <T> T load(String fileName, T loadIfNull) {
         Object importedObject = null;
         File loadFile = new File(ObsidianAuctions.get().getDataFolder(), fileName);

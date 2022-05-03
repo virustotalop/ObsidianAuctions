@@ -132,7 +132,7 @@ public class AuctionBid {
             if (Items.isSameItem(typeStack, entry.getKey())) {
                 if (entry.getValue().endsWith("%")) {
                     try {
-                        taxPercent = Double.valueOf(entry.getValue().substring(0, entry.getValue().length() - 1));
+                        taxPercent = Double.parseDouble(entry.getValue().substring(0, entry.getValue().length() - 1));
                     } catch (Exception e) {
 						/* Clearly this isn't a valid number, just forget about it.
 						   taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", auction.getScope());
