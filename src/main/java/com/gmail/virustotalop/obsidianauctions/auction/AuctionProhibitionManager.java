@@ -190,7 +190,8 @@ public class AuctionProhibitionManager {
      */
     private AuctionProhibition getProhibition(Plugin prohibiterPlugin, UUID playerUUID) {
         for (AuctionProhibition prohibition : this.involuntarilyDisabledUsers) {
-            if (prohibition.getPlayerUUID().equals(playerUUID) && prohibition.equals(prohibiterPlugin)) {
+            if (prohibition.getPlayerUUID().equals(playerUUID) &&
+                    prohibition.getProhibitingPlugin().equals(prohibiterPlugin)) {
                 return prohibition;
             }
         }
