@@ -34,6 +34,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
 import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
+import com.gmail.virustotalop.obsidianauctions.config.ConfigMigrator;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.placeholder.NoPlaceholderImpl;
@@ -277,8 +278,19 @@ public class ObsidianAuctions extends JavaPlugin {
     public void loadConfig() {
         File configFile = new File(this.dataFolder, "config.yml");
         File textConfigFile = new File(this.dataFolder, "language.yml");
+        int version = Configuration.load(configFile).getInteger("config-version");
+        this.loadMainConfig(configFile, version);
+        this.loadLanguageConfig(textConfigFile, version);
+    }
+
+    private void loadMainConfig(File configFile, int version) {
         config = Configuration.load(configFile);
+        ConfigMigrator.migrateMainConfig(config, version);
+    }
+
+    private void loadLanguageConfig(File textConfigFile, int version) {
         textConfig = Configuration.load(textConfigFile);
+        ConfigMigrator.migrateLanguageConfig(textConfig, version);
     }
 
     /**

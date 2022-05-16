@@ -1,0 +1,1 @@
+package com.gmail.virustotalop.obsidianauctions.config.migrator;
