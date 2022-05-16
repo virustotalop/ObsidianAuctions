@@ -276,74 +276,9 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     public void loadConfig() {
         File configFile = new File(this.dataFolder, "config.yml");
-
         File textConfigFile = new File(this.dataFolder, "language.yml");
-
-
         config = Configuration.load(configFile);
         textConfig = Configuration.load(textConfigFile);
-
-        //TODO - copy defaults
-        /*
-        InputStream defConfigStream = plugin.getResource("config.yml");
-        InputStream defTextConfigStream = plugin.getResource("language.yml");
-         Configuration defConfig = null;
-        Configuration defTextConfig = null;
-        // Look for defaults in the jar
-        if(defConfigStream != null) {
-            defConfig = Configuration.load(defConfigStream, ConfigurationType.YAML);
-            try {
-                defConfigStream.close();
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if(defConfig != null) {
-            config.setDefaults(defConfig);
-        }
-
-        textConfig = null;
-
-        // Look for defaults in the jar
-        if(defTextConfigStream != null) {
-            InputStreamReader reader = new InputStreamReader(defTextConfigStream);
-            defTextConfig = Configuration.load(reader);
-            try {
-                reader.close();
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-            defTextConfigStream = null;
-        }
-        if(defTextConfig != null) {
-            textConfig.setDefaults(defTextConfig);
-        }
-
-        // Clean up the configuration of any unused values.
-        Configuration cleanConfig = new Configuration();
-        Map<String, Object> configValues = config.getDefaults().getValues();
-        for(Map.Entry<String, Object> configEntry : configValues.entrySet()) {
-            cleanConfig.set(configEntry.getKey(), config.get(configEntry.getKey()));
-        }
-
-        config = cleanConfig;
-        config.save();
-
-
-        Configuration cleanTextConfig = new Configuration();
-        Map<String, Object> textConfigValues = textConfig.getDefaults().getValues();
-        for(Map.Entry<String, Object> textConfigEntry : textConfigValues.entrySet()) {
-            cleanTextConfig.set(textConfigEntry.getKey(), textConfig.get(textConfigEntry.getKey()));
-        }
-        textConfig = cleanTextConfig;
-
-        textConfig.save();*/
-
-        //make values null at the end
-        //defConfig = null;
-        configFile = null;
-        //defTextConfig = null;
-        textConfigFile = null;
     }
 
     /**
