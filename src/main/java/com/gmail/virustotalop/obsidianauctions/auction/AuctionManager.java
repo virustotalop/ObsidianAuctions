@@ -86,13 +86,8 @@ public class AuctionManager {
      * @return whether the player is participating
      */
     public boolean isParticipant(UUID playerUUID) {
-        boolean participating = false;
-        for (AuctionParticipant participant : this.auctionParticipants) {
-            if (participant.isParticipating() && playerUUID.equals(participant.getPlayerUUID())) {
-                participating = true;
-            }
-        }
-        return participating;
+        AuctionParticipant participant = this.getParticipant(playerUUID);
+        return participant != null ? participant.isParticipating() : false;
     }
 
     /**
