@@ -131,7 +131,7 @@ public class AuctionMessageParser {
                         replacements.put("%current-bid-amount%", Functions.formatAmount(currentBid.getBidAmount())); //%B3
                         replacements.put("%auction-bid-starting%", Functions.formatAmount(auction.getStartingBid())); //%B4
                     } else {
-                        String bidderName = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-bidder-noone", auctionScope));
+                        String bidderName = AuctionConfig.getLanguageString("auction-info-bidder-noone", auctionScope);
                         String startingBid = Functions.formatAmount(auction.getStartingBid());
                         replacements.put("%current-bid-name%", bidderName); //%B1
                         replacements.put("%current-bid-display-name%", bidderName); //%B2
@@ -184,13 +184,13 @@ public class AuctionMessageParser {
                         }
                         if (enchantments != null) {
                             String enchantmentList = "";
-                            String enchantmentSeparator = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-enchantment-separator", auctionScope));
+                            String enchantmentSeparator = AuctionConfig.getLanguageString("auction-info-enchantment-separator", auctionScope);
                             for (Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
                                 if (!enchantmentList.isEmpty()) enchantmentList += enchantmentSeparator;
                                 enchantmentList += Items.getEnchantmentName(enchantment);
                             }
                             if (enchantmentList.isEmpty())
-                                enchantmentList = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-enchantment-none", auctionScope));
+                                enchantmentList =  AuctionConfig.getLanguageString("auction-info-enchantment-none", auctionScope);
                             replacements.put("%item-enchantments%", enchantmentList); //%L7
                         }
                     }
@@ -256,7 +256,7 @@ public class AuctionMessageParser {
 
         // Apply replacements and duplicate/remove rows that need it.
         for (int l = 0; l < messageList.size(); l++) {
-            String message = ChatColor.translateAlternateColorCodes('&', messageList.get(l));
+            String message = messageList.get(l);
 
             if (message.length() > 0) {
                 message = this.parseConditionals(message, conditionals);
@@ -299,7 +299,7 @@ public class AuctionMessageParser {
                             // %A lists all aspects of the payload
                             if (payload != null) {
                                 String payloadAspects = "";
-                                String payloadSeparator = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("auction-info-payload-separator", auctionScope));
+                                String payloadSeparator = AuctionConfig.getLanguageString("auction-info-payload-separator", auctionScope);
 
                                 FireworkEffect.Type type = payload.getType();
                                 if (type != null) {
@@ -308,7 +308,7 @@ public class AuctionMessageParser {
                                     if (fireworkShape == null) {
                                         payloadAspects += type.toString();
                                     } else {
-                                        payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkShape);
+                                        payloadAspects += fireworkShape;
                                     }
                                 }
                                 List<Color> colors = payload.getColors();
@@ -322,7 +322,7 @@ public class AuctionMessageParser {
                                     if (fireworkColor == null) {
                                         payloadAspects += "#" + colorRGB;
                                     } else {
-                                        payloadAspects += ChatColor.translateAlternateColorCodes('&', fireworkColor);
+                                        payloadAspects += fireworkColor;
                                     }
                                 }
                                 if (payload.hasFlicker()) {
@@ -330,13 +330,13 @@ public class AuctionMessageParser {
                                         payloadAspects += payloadSeparator;
                                     }
 
-                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-twinkle", auctionScope));
+                                    payloadAspects += AuctionConfig.getLanguageString("firework-twinkle", auctionScope);
                                 }
                                 if (payload.hasTrail()) {
                                     if (!payloadAspects.isEmpty()) {
                                         payloadAspects += payloadSeparator;
                                     }
-                                    payloadAspects += ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("firework-trail", auctionScope));
+                                    payloadAspects += AuctionConfig.getLanguageString("firework-trail", auctionScope);
                                 }
                                 newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
                             }
@@ -420,7 +420,6 @@ public class AuctionMessageParser {
      * @return prepared message
      */
     private static String chatPrep(String message, AuctionScope auctionScope) {
-        message = ChatColor.translateAlternateColorCodes('&', AuctionConfig.getLanguageString("chat-prefix", auctionScope)) + message;
-        return message;
+        return AuctionConfig.getLanguageString("chat-prefix", auctionScope) + message;
     }
 }
