@@ -35,6 +35,7 @@ import org.jetbrains.annotations.ApiStatus;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -103,9 +104,7 @@ public class AuctionMessageManager implements MessageManager {
 
     @Override
     public void broadcastAuctionMessage(String messageKey, Auction auction) {
-        List<String> messageKeys = new ArrayList<>();
-        messageKeys.add(messageKey);
-        this.broadcastAuctionMessage(messageKeys, auction);
+        this.broadcastAuctionMessage(Collections.singletonList(messageKey), auction);
     }
 
     @Override
