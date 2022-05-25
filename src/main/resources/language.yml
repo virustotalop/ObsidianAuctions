@@ -203,7 +203,7 @@ auction-info:
   Starting bid: <gold>%auction-bid-starting%<blue>. Bid increment: <gold>%auction-bid-increment%<blue>.
   {is-buynow}Buy now: <gold>%auction-buy-now%<blue>. {end-is-buynow}{is-broadcast}{end}Type
   <click:run_command:/auction info><green><hover:show_text:"<red>Click to run command!</red>"><underlined>/auction info</underlined></click><blue> for full details.'
-  - '{!is-broadcast}{end}{has-durability}{end}&lItem damaged: <gold>%item-durability-left% <green>remaining.'
+  - '{!is-broadcast}{end}{has-durability}{end}Item damaged: <gold>%item-durability-left% <green>remaining.'
   - '{!is-broadcast}{end}{has-enchantments}{end}Enchantments:
   <green>%item-enchantments%'
   - '{!is-broadcast}{end}{has-book-title}{end}Book is titled:
