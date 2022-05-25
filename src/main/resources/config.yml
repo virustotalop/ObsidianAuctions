@@ -3,7 +3,7 @@ language: "en-US"
 allow-mobspawners: true
 enable-chat-messages: true
 enable-actionbar-messages: true
-queue-gui-name: "&9ObsidianAuctions Queue"
+queue-gui-name: "<blue>ObsidianAuctions Queue"
 renamed-items-override: false
 action-bar-ticks: 60
 use-old-bid-logic: false

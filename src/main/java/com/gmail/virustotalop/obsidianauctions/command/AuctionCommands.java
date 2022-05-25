@@ -28,6 +28,7 @@ import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
+import com.gmail.virustotalop.obsidianauctions.util.AdventureUtil;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
@@ -208,7 +209,7 @@ public class AuctionCommands {
                 if (auctionQueue.isEmpty()) {
                     this.message.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
                 } else {
-                    String queueName = AuctionConfig.getString("queue-gui-name", userScope);
+                    String queueName = AdventureUtil.miniToLegacy(AuctionConfig.getString("queue-gui-name", userScope));
                     Inventory inv = this.plugin.getServer().createInventory(null, 18, queueName);
                     for (int i = 0; i < auctionQueue.size(); i++) {
                         if (i == inv.getSize()) {
