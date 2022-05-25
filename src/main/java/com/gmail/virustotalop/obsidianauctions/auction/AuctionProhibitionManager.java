@@ -99,12 +99,12 @@ public class AuctionProhibitionManager {
     /**
      * Mark a player as prohibited from auctioning and notify them.  Will return false if unable to prohibit user.  Plugin instituted prohibitions cannot be instituted while a player is participating in an auction.
      *
-     * @param prohibiterPlugin plugin requesting prohibition
+     * @param prohibitingPlugin plugin requesting prohibition
      * @param playerUUID       player being prohibited
      * @return success as prohibiting
      */
-    public boolean prohibitPlayer(Plugin prohibiterPlugin, UUID playerUUID) {
-        return this.prohibitPlayer(prohibiterPlugin, playerUUID, null, null, null);
+    public boolean prohibitPlayer(Plugin prohibitingPlugin, UUID playerUUID) {
+        return this.prohibitPlayer(prohibitingPlugin, playerUUID, null, null, null);
     }
 
     /**
