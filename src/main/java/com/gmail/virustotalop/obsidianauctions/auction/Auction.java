@@ -103,31 +103,17 @@ public class Auction {
         this.scope = scope;
         this.sealed = sealed;
         this.messageManager = messageManager;
-        this.guiItem = guiItem;
+        this.guiItem = this.addGuiMeta(guiItem);
+    }
 
-        //Override gui item item meta
-        if (this.guiItem.hasItemMeta()) {
-            if (this.guiItem.getItemMeta().hasLore()) {
-                List<String> lore = this.guiItem.getItemMeta().getLore();
-                lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
-                ItemMeta itemMeta = this.guiItem.getItemMeta();
-                itemMeta.setLore(lore);
-                this.guiItem.setItemMeta(itemMeta);
-            } else {
-                List<String> lore = new ArrayList<>();
-                lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
-                ItemMeta itemMeta = this.guiItem.getItemMeta();
-                itemMeta.setLore(lore);
-                this.guiItem.setItemMeta(itemMeta);
-            }
-        } else {
-            List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
-            ItemMeta itemMeta = this.guiItem.getItemMeta();
-            itemMeta.setLore(lore);
-            this.guiItem.setItemMeta(itemMeta);
-        }
-
+    private ItemStack addGuiMeta(ItemStack guiItem) {
+        boolean hasLore = guiItem.getItemMeta().hasLore();
+        List<String> lore = hasLore ? guiItem.getItemMeta().getLore() : new ArrayList<>();
+        lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
+        ItemMeta itemMeta = guiItem.getItemMeta();
+        itemMeta.setLore(lore);
+        guiItem.setItemMeta(itemMeta);
+        return guiItem;
     }
 
     /**
