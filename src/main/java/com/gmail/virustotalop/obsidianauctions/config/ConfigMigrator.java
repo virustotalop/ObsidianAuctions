@@ -47,7 +47,6 @@ public abstract class ConfigMigrator {
     }
 
 
-
     public abstract void migrate(Configuration config);
 
     public int getVersion() {

@@ -87,7 +87,7 @@ public class AuctionManager {
      */
     public boolean isParticipant(UUID playerUUID) {
         AuctionParticipant participant = this.getParticipant(playerUUID);
-        return participant != null ? participant.isParticipating() : false;
+        return participant != null && participant.isParticipating();
     }
 
     /**

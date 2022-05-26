@@ -189,7 +189,7 @@ public class AuctionMessageParser {
                                 enchantmentList += Items.getEnchantmentName(enchantment);
                             }
                             if (enchantmentList.isEmpty())
-                                enchantmentList =  AuctionConfig.getLanguageString("auction-info-enchantment-none", auctionScope);
+                                enchantmentList = AuctionConfig.getLanguageString("auction-info-enchantment-none", auctionScope);
                             replacements.put("%item-enchantments%", enchantmentList); //%L7
                         }
                     }

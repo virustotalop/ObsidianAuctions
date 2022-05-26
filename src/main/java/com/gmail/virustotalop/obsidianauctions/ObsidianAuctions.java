@@ -431,7 +431,7 @@ public class ObsidianAuctions extends JavaPlugin {
     /**
      * Prepares chat, prepending prefix and removing colors.
      *
-     * @param message      message to prepare
+     * @param message message to prepare
      * @return prepared message
      */
     private static String chatPrepClean(String message) {
@@ -502,7 +502,7 @@ public class ObsidianAuctions extends JavaPlugin {
             if (commandManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
                 commandManager.registerBrigadier();
             }
-            if(commandManager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+            if (commandManager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
                 commandManager.registerAsynchronousCompletions();
             }
             return commandManager;

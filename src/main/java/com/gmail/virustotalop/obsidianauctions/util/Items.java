@@ -428,7 +428,7 @@ public final class Items {
         } else {
             mat = Material.getMaterial(searchString);
         }
-        if(mat == null) {
+        if (mat == null) {
             return false;
         }
         if (damageId != 0) {

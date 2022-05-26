@@ -70,7 +70,7 @@ public class AuctionProhibitionManager {
     /**
      * Checks to see if a player is on prohibition by a specified plugin and optionally sends a reminder to them that they are.
      *
-     * @param prohibitingPlugin plugin to check
+     * @param prohibitingPlugin   plugin to check
      * @param playerUUID          player to check
      * @param sendReminderMessage whether to remind
      * @return whether they're prohibited
@@ -100,7 +100,7 @@ public class AuctionProhibitionManager {
      * Mark a player as prohibited from auctioning and notify them.  Will return false if unable to prohibit user.  Plugin instituted prohibitions cannot be instituted while a player is participating in an auction.
      *
      * @param prohibitingPlugin plugin requesting prohibition
-     * @param playerUUID       player being prohibited
+     * @param playerUUID        player being prohibited
      * @return success as prohibiting
      */
     public boolean prohibitPlayer(Plugin prohibitingPlugin, UUID playerUUID) {
@@ -113,10 +113,10 @@ public class AuctionProhibitionManager {
      * Optional messages can be set to override floAuction's normal notification.  Set these to null to use the floAuction's normal messages.
      *
      * @param prohibitingPlugin plugin requesting prohibition
-     * @param playerUUID       player being prohibited
-     * @param enableMessage    message to send when starting prohibition
-     * @param reminderMessage  message to send when reminding player of prohibition
-     * @param disableMessage   message to send when ending prohibition
+     * @param playerUUID        player being prohibited
+     * @param enableMessage     message to send when starting prohibition
+     * @param reminderMessage   message to send when reminding player of prohibition
+     * @param disableMessage    message to send when ending prohibition
      * @return success as prohibiting
      */
     public boolean prohibitPlayer(Plugin prohibitingPlugin, UUID playerUUID, String enableMessage, String reminderMessage, String disableMessage) {
@@ -148,7 +148,7 @@ public class AuctionProhibitionManager {
      * Removes the prohibition set by a specific plugin and notifies user of such.
      *
      * @param prohibitingPlugin plugin which requested prohibition
-     * @param playerUUID       prohibited player
+     * @param playerUUID        prohibited player
      */
     public void removeProhibition(Plugin prohibitingPlugin, UUID playerUUID) {
         Player player = Bukkit.getPlayer(playerUUID);
