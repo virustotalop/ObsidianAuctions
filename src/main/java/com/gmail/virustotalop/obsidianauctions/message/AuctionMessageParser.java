@@ -28,7 +28,6 @@ import com.gmail.virustotalop.obsidianauctions.placeholder.Placeholder;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
