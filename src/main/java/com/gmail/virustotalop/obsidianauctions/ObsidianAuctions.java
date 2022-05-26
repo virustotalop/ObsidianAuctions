@@ -118,37 +118,6 @@ public class ObsidianAuctions extends JavaPlugin {
     private CommandManager<CommandSender> commandManager;
     private AnnotationParser<CommandSender> commandParser;
 
-    /**
-     * Used by AuctionLot to store auction lots which could not be given to players because they were offline.
-     *
-     * @param auctionLot AuctionLot to save.
-     */
-    public void saveOrphanLot(AuctionLot auctionLot) {
-        this.orphanLots.add(auctionLot);
-        FileUtil.save(this.orphanLots, "orphanLots.ser");
-    }
-
-    /**
-     * Attempts to give lost AuctionLots back to their intended destination.
-     *
-     * @param player the player to check for missing items
-     */
-    // Eliminate orphan lots (i.e. try to give the items to a player again).
-    public void killOrphan(Player player) {
-        if (this.orphanLots != null && this.orphanLots.size() > 0) {
-            Iterator<AuctionLot> it = this.orphanLots.iterator();
-            while (it.hasNext()) {
-                AuctionLot lot = it.next();
-                if (lot.getOwner().equalsIgnoreCase(player.getName())) {
-                    lot.cancelLot();
-                    it.remove();
-                }
-            }
-            FileUtil.save(this.orphanLots, "orphanLots.ser");
-        }
-    }
-
-
     // Vault objects
     private Economy econ = null;
     private Permission perms = null;
@@ -306,6 +275,36 @@ public class ObsidianAuctions extends JavaPlugin {
         if (this.adventure != null) {
             this.adventure.close();
             this.adventure = null;
+        }
+    }
+
+    /**
+     * Used by AuctionLot to store auction lots which could not be given to players because they were offline.
+     *
+     * @param auctionLot AuctionLot to save.
+     */
+    public void saveOrphanLot(AuctionLot auctionLot) {
+        this.orphanLots.add(auctionLot);
+        FileUtil.save(this.orphanLots, "orphanLots.ser");
+    }
+
+    /**
+     * Attempts to give lost AuctionLots back to their intended destination.
+     *
+     * @param player the player to check for missing items
+     */
+    // Eliminate orphan lots (i.e. try to give the items to a player again).
+    public void killOrphan(Player player) {
+        if (this.orphanLots != null && this.orphanLots.size() > 0) {
+            Iterator<AuctionLot> it = this.orphanLots.iterator();
+            while (it.hasNext()) {
+                AuctionLot lot = it.next();
+                if (lot.getOwner().equalsIgnoreCase(player.getName())) {
+                    lot.cancelLot();
+                    it.remove();
+                }
+            }
+            FileUtil.save(this.orphanLots, "orphanLots.ser");
         }
     }
 
