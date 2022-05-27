@@ -425,16 +425,13 @@ public class ObsidianAuctions extends JavaPlugin {
     }
 
     /**
-     * Prepares chat, prepending prefix and removing colors.
+     * Prepares chat removing colors.
      *
      * @param message message to prepare
      * @return prepared message
      */
-    private static String chatPrepClean(String message) {
-        message = AuctionConfig.getLanguageString("chat-prefix", null) + message;
-        message = ChatColor.translateAlternateColorCodes('&', message);
-        message = ChatColor.stripColor(message);
-        return message;
+    private String chatPrepClean(String message) {
+        return MiniMessage.miniMessage().stripTags(message);
     }
 
     public MessageManager getMessageManager() {
