@@ -45,6 +45,7 @@ import com.gmail.virustotalop.obsidianauctions.util.InjectUtil;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -157,7 +158,6 @@ public class ObsidianAuctions extends JavaPlugin {
         this.loadConfig();
 
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
-            logToBukkit("plugin-disabled-no-vault", Level.SEVERE);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -198,8 +198,6 @@ public class ObsidianAuctions extends JavaPlugin {
                 CommandSender.class, parameters ->
                 SimpleCommandMeta.empty());
         this.commandParser.parse(injector.getInstance(AuctionCommands.class));
-
-        this.messageManager.sendPlayerMessage("plugin-enabled", null, (AuctionScope) null);
         scheduler.runTaskTimerAsynchronously(this, this::writeCurrentLog, 20, 20);
     }
 
@@ -270,7 +268,6 @@ public class ObsidianAuctions extends JavaPlugin {
         this.writeCurrentLog();
         this.auctionManager.cancelAllAuctions();
         instance = null;
-        this.logToBukkit("plugin-disabled", Level.INFO);
         this.auctionLog = null;
         if (this.adventure != null) {
             this.adventure.close();

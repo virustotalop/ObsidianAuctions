@@ -1,6 +1,4 @@
 chat-prefix: '<white>[<gray>Obsidian<blue>Auctions<white>] <blue>'
-plugin-enabled: '<white>has been enabled.'
-plugin-disabled: '<white>has been disabled.'
 plugin-disabled-no-vault:
   - '----- Vault Dependency Failure -----'
   - Vault is a needed dependency, please install it.
