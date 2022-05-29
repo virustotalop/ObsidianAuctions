@@ -1,4 +1,5 @@
 queue-gui-title: "<blue>ObsidianAuctions Queue"
+queue-gui-item-auctioned-by: "<blue>Auctioned by: <white>%player-name%"
 chat-prefix: '<white>[<gray>Obsidian<blue>Auctions<white>] <blue>'
 plugin-disabled-no-vault:
   - '----- Vault Dependency Failure -----'

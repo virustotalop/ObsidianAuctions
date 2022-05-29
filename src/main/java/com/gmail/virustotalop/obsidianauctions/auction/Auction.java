@@ -24,6 +24,7 @@ import com.gmail.virustotalop.obsidianauctions.event.AuctionBidEvent;
 import com.gmail.virustotalop.obsidianauctions.event.AuctionEndEvent;
 import com.gmail.virustotalop.obsidianauctions.event.AuctionStartEvent;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
+import com.gmail.virustotalop.obsidianauctions.util.AdventureUtil;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
@@ -115,7 +116,9 @@ public class Auction {
         ItemMeta itemMeta = guiItem.getItemMeta();
         boolean hasLore = itemMeta.hasLore();
         List<String> lore = hasLore ? itemMeta.getLore() : new ArrayList<>();
-        lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
+        lore.add(AdventureUtil.miniToLegacy(
+                AuctionConfig.getLanguageString("queue-gui-item-auctioned-by", this.scope)
+                .replace("%player-name%", this.ownerName)));
         itemMeta.setLore(lore);
         guiItem.setItemMeta(itemMeta);
         return guiItem;
