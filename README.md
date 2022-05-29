@@ -5,6 +5,8 @@
 </div>
 
 ## FAQ
+* The plugin doesn't work on my server?
+  * What version is your server on? Is it one of the supported versions listed above. We also only support the lastest version of any major version for example we support 1.13.2 but we do not support 1.13.1 or 1.13.
 * What is ObsidianAuctions?
   * Obsidian auctions is a chat based auction plugin, and it is fork of the FloAuctions plugin.
 * I have a bug can you fix it?
