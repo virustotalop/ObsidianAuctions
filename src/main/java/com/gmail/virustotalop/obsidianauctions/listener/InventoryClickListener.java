@@ -21,6 +21,7 @@ package com.gmail.virustotalop.obsidianauctions.listener;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.util.AdventureUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -43,7 +44,9 @@ public class InventoryClickListener implements Listener {
                 if (e.getWhoClicked().getOpenInventory() != null) {
                     String title = e.getWhoClicked().getOpenInventory().getTitle();
                     for (AuctionScope scope : this.auctionManager.getAuctionScopes()) {
-                        if (title.equals(AuctionConfig.getString("queue-gui-name", scope))) {
+                        String guiTitle = AuctionConfig.getLanguageString("queue-gui-title", scope);
+                        String colorizedTitle = AdventureUtil.miniToLegacy(guiTitle);
+                        if (title.equals(colorizedTitle)) {
                             e.setCancelled(true);
                             break;
                         }

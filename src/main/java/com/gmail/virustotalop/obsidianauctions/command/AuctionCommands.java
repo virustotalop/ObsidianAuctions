@@ -209,8 +209,9 @@ public class AuctionCommands {
                 if (auctionQueue.isEmpty()) {
                     this.message.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
                 } else {
-                    String queueName = AdventureUtil.miniToLegacy(AuctionConfig.getString("queue-gui-name", userScope));
-                    Inventory inv = this.plugin.getServer().createInventory(null, 18, queueName);
+                    String guiTitle = AuctionConfig.getLanguageString("queue-gui-title", userScope);
+                    String colorizedTitle = AdventureUtil.miniToLegacy(guiTitle);
+                    Inventory inv = this.plugin.getServer().createInventory(null, 18, colorizedTitle);
                     for (int i = 0; i < auctionQueue.size(); i++) {
                         if (i == inv.getSize()) {
                             break;
