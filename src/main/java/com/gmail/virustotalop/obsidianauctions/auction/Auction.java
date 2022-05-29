@@ -103,10 +103,15 @@ public class Auction {
         this.scope = scope;
         this.sealed = sealed;
         this.messageManager = messageManager;
-        this.guiItem = this.addGuiMeta(guiItem);
+        this.guiItem = this.buildGuiItem(guiItem);
     }
 
-    private ItemStack addGuiMeta(ItemStack guiItem) {
+    private ItemStack buildGuiItem(ItemStack guiItem) {
+        guiItem = this.addLore(guiItem);
+        return guiItem;
+    }
+
+    private ItemStack addLore(ItemStack guiItem) {
         boolean hasLore = guiItem.getItemMeta().hasLore();
         List<String> lore = hasLore ? guiItem.getItemMeta().getLore() : new ArrayList<>();
         lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
