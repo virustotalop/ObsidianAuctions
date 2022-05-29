@@ -37,6 +37,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -205,7 +206,11 @@ public class AuctionCommands {
             Player player = this.plugin.getServer().getPlayer(uuid);
             AuctionScope userScope = this.auctionManager.getPlayerScope(player);
             if (userScope != null) {
-                List<Auction> auctionQueue = userScope.getAuctionQueue();
+                List<Auction> auctionQueue = new ArrayList<>(userScope.getAuctionQueue()); //Copy queue
+                Auction activeAuction = userScope.getActiveAuction();
+                if (activeAuction != null) { //Add current auction to copied queue if available
+                    auctionQueue.add(activeAuction);
+                }
                 if (auctionQueue.isEmpty()) {
                     this.message.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
                 } else {
