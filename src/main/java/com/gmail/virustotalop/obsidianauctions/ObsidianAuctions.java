@@ -243,11 +243,11 @@ public class ObsidianAuctions extends JavaPlugin {
      * Loads config.yml and language.yml configuration files.
      */
     public void loadConfig() {
-        File configFile = new File(this.dataFolder, "config.yml");
-        File textConfigFile = new File(this.dataFolder, "language.yml");
-        int version = Configuration.load(configFile).getInteger("config-version");
-        this.loadMainConfig(configFile, version);
-        this.loadLanguageConfig(textConfigFile, version);
+        File mainConfigFile = new File(this.dataFolder, "config.yml");
+        File languageConfigFile = new File(this.dataFolder, "language.yml");
+        int version = Configuration.load(mainConfigFile).getInteger("config-version");
+        this.loadMainConfig(mainConfigFile, version);
+        this.loadLanguageConfig(languageConfigFile, version);
     }
 
     private void loadMainConfig(File configFile, int version) {
