@@ -209,7 +209,7 @@ public class AuctionCommands {
                 List<Auction> auctionQueue = new ArrayList<>(userScope.getAuctionQueue()); //Copy queue
                 Auction activeAuction = userScope.getActiveAuction();
                 if (activeAuction != null) { //Add current auction to copied queue if available
-                    auctionQueue.add(activeAuction);
+                    auctionQueue.add(0, activeAuction);
                 }
                 if (auctionQueue.isEmpty()) {
                     this.message.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
