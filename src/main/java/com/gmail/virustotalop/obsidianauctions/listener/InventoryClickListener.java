@@ -18,13 +18,12 @@
 
 package com.gmail.virustotalop.obsidianauctions.listener;
 
-import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
-import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
-import com.gmail.virustotalop.obsidianauctions.util.AdventureUtil;
+import com.gmail.virustotalop.obsidianauctions.inventory.QueueInventoryHolder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.InventoryView;
 
 import javax.inject.Inject;
 
@@ -42,17 +41,17 @@ public class InventoryClickListener implements Listener {
         if (e.getInventory() != null) {
             if (e.getClick() != null) {
                 if (e.getWhoClicked().getOpenInventory() != null) {
-                    String title = e.getWhoClicked().getOpenInventory().getTitle();
-                    for (AuctionScope scope : this.auctionManager.getAuctionScopes()) {
-                        String guiTitle = AuctionConfig.getLanguageString("queue-gui-title", scope);
-                        String colorizedTitle = AdventureUtil.miniToLegacy(guiTitle);
-                        if (title.equals(colorizedTitle)) {
-                            e.setCancelled(true);
-                            break;
-                        }
+                    InventoryView view = e.getWhoClicked().getOpenInventory();
+                    if (isAuctionHolder(view)) {
+                        e.setCancelled(true);
                     }
                 }
             }
         }
+    }
+
+    private boolean isAuctionHolder(InventoryView view) {
+        return view.getTopInventory().getHolder() instanceof QueueInventoryHolder
+        || view.getBottomInventory().getHolder() instanceof QueueInventoryHolder;
     }
 }

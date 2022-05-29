@@ -27,6 +27,7 @@ import com.gmail.virustotalop.obsidianauctions.Permission;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
+import com.gmail.virustotalop.obsidianauctions.inventory.QueueInventoryHolder;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import com.gmail.virustotalop.obsidianauctions.util.AdventureUtil;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
@@ -34,6 +35,7 @@ import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import javax.inject.Inject;
@@ -214,9 +216,8 @@ public class AuctionCommands {
                 if (auctionQueue.isEmpty()) {
                     this.message.sendPlayerMessage("auction-queue-status-not-in-queue", uuid, (AuctionScope) null);
                 } else {
-                    String guiTitle = AuctionConfig.getLanguageString("queue-gui-title", userScope);
-                    String colorizedTitle = AdventureUtil.miniToLegacy(guiTitle);
-                    Inventory inv = this.plugin.getServer().createInventory(null, 18, colorizedTitle);
+                    InventoryHolder holder = new QueueInventoryHolder(userScope);
+                    Inventory inv = holder.getInventory();
                     for (int i = 0; i < auctionQueue.size(); i++) {
                         if (i == inv.getSize()) {
                             break;
