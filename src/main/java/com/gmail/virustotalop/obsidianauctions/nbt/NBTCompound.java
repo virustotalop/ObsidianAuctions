@@ -18,6 +18,7 @@
 
 package com.gmail.virustotalop.obsidianauctions.nbt;
 
+import com.gmail.virustotalop.obsidianauctions.util.ReflectionUtil;
 import com.gmail.virustotalop.obsidianauctions.util.VersionUtil;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,61 +28,51 @@ import java.util.Set;
 
 public class NBTCompound {
 
-    private static final String version;
+    private static final String VERSION = VersionUtil.getVersion();
+    private static final Class<?> NMS_ITEM_STACK_CLASS = ReflectionUtil.getClassIfExists(
+            "net.minecraft.world.item.ItemStack",
+            "net.minecraft.server." + VERSION + ".ItemStack"
+    );
+    private static final Class<?> CRAFT_ITEM_STACK_CLASS = ReflectionUtil.getClassIfExists(
+            "org.bukkit.craftbukkit." + VERSION + ".inventory.CraftItemStack"
+    );
+    private static final Class<?> COMPOUND_CLASS = ReflectionUtil.getClassIfExists(
+            "net.minecraft.nbt.NBTTagCompound",
+            "net.minecraft.server." + VERSION + ".NBTTagCompound"
+    );
+    private static final Class<?> PARSER_CLASS = ReflectionUtil.getClassIfExists(
+            "net.minecraft.nbt.MojangsonParser",
+            "net.minecraft.server." + VERSION + ".MojangsonParser"
+    );
+    private static final Class<?> TAG_CLASS = ReflectionUtil.getClassIfExists(
+            "net.minecraft.nbt.NBTBase",
+            "net.minecraft.server." + VERSION + ".NBTBase"
+    );
 
-    private static Class<?> compoundClass;
-
-    private static Method parse;
-    private static Method getKeys;
-    private static Method get;
-
-    static {
-        version = VersionUtil.getVersion();
-        try {
-            Class<?> parser = findParserClass();
-            parse = parser.getDeclaredMethod("parse", String.class);
-            compoundClass = findCompoundClass();
-            for (Method method : compoundClass.getDeclaredMethods()) {
-                if (method.getReturnType().equals(Set.class)) {
-                    getKeys = method;
-                    break;
-                }
-            }
-            get = compoundClass.getDeclaredMethod("get", String.class);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static Class<?> findCompoundClass() {
-        try {
-            return Class.forName("net.minecraft.server." + version + ".NBTTagCompound");
-        } catch (ClassNotFoundException ex) {
-            try {
-                return Class.forName("net.minecraft.nbt.NBTTagCompound");
-            } catch (ClassNotFoundException e) {
-                return null;
-            }
-        }
-    }
-
-    private static Class<?> findParserClass() {
-        try {
-            return Class.forName("net.minecraft.server." + version + ".MojangsonParser");
-        } catch (ClassNotFoundException ex) {
-            try {
-                return Class.forName("net.minecraft.nbt.MojangsonParser");
-            } catch (ClassNotFoundException e) {
-                return null;
-            }
-        }
-    }
+    private static final Method PARSE = ReflectionUtil.getStaticMethod(PARSER_CLASS, COMPOUND_CLASS);
+    private static final Method GET_KEYS = ReflectionUtil.getMethodByReturnType(COMPOUND_CLASS, Set.class);
+    private static final Method GET = ReflectionUtil.getMethodByReturnType(COMPOUND_CLASS, TAG_CLASS);
+    private static final Method AS_CRAFT_COPY = ReflectionUtil.getStaticMethod(
+            CRAFT_ITEM_STACK_CLASS,
+            CRAFT_ITEM_STACK_CLASS,
+            ItemStack.class
+    );
+    private static final Method AS_NMS_COPY = ReflectionUtil.getStaticMethod(
+            CRAFT_ITEM_STACK_CLASS,
+            NMS_ITEM_STACK_CLASS,
+            ItemStack.class
+    );
+    private static final Method GET_COMPOUND_TAG = ReflectionUtil.getMethodByReturnType(
+            NMS_ITEM_STACK_CLASS,
+            COMPOUND_CLASS,
+            new Class<?>[0]
+    );
 
     public static boolean isCompound(Object compound) {
         if (compound == null) {
             return false;
         }
-        return compound.getClass().equals(compoundClass);
+        return compound.getClass().equals(COMPOUND_CLASS);
     }
 
     public static boolean fuzzyMatches(NBTCompound compare, NBTCompound compound) {
@@ -122,7 +113,7 @@ public class NBTCompound {
 
     public Set<String> getKeys() {
         try {
-            return (Set<String>) getKeys.invoke(this.inner);
+            return (Set<String>) GET_KEYS.invoke(this.inner);
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -138,7 +129,7 @@ public class NBTCompound {
             if (!this.hasKey(key)) {
                 return null;
             }
-            return get.invoke(this.inner, key);
+            return GET.invoke(this.inner, key);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -146,18 +137,14 @@ public class NBTCompound {
     }
 
     private Object parseNBTCompoundFromJson(String json) throws Exception {
-        return parse.invoke(null, json);
+        return PARSE.invoke(null, json);
     }
 
     private Object retrieveNBTCompoundFromItem(ItemStack itemStack) {
         try {
-            Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
-            Method asCraftCopy = craftItemStack.getMethod("asCraftCopy", ItemStack.class);
-            Method asNMSCopy = craftItemStack.getMethod("asNMSCopy", ItemStack.class);
-            Object craftCopy = asCraftCopy.invoke(null, itemStack);
-            Object nmsStack = asNMSCopy.invoke(null, craftCopy);
-            Method tagField = nmsStack.getClass().getMethod("getTag");
-            return tagField.invoke(nmsStack);
+            Object craftCopy = AS_CRAFT_COPY.invoke(null, itemStack);
+            Object nmsStack = AS_NMS_COPY.invoke(null, craftCopy);
+            return GET_COMPOUND_TAG.invoke(nmsStack);
         } catch (Exception e) {
             e.printStackTrace();
         }
