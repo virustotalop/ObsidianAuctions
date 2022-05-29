@@ -112,10 +112,10 @@ public class Auction {
     }
 
     private ItemStack addLore(ItemStack guiItem) {
-        boolean hasLore = guiItem.getItemMeta().hasLore();
-        List<String> lore = hasLore ? guiItem.getItemMeta().getLore() : new ArrayList<>();
-        lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
         ItemMeta itemMeta = guiItem.getItemMeta();
+        boolean hasLore = itemMeta.hasLore();
+        List<String> lore = hasLore ? itemMeta.getLore() : new ArrayList<>();
+        lore.add(ChatColor.BLUE + "Auction by: " + this.getOwnerDisplayName());
         itemMeta.setLore(lore);
         guiItem.setItemMeta(itemMeta);
         return guiItem;
