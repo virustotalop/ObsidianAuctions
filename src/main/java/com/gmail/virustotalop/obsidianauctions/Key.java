@@ -33,6 +33,8 @@ public enum Key {
     CONFISCATE_FAIL_CONSOLE("confiscate-fail-console"),
     ENABLE_ACTION_BAR_MESSAGES("enable-actionbar-messages"),
     ENABLE_CHAT_MESSAGES("enable-chat-messages"),
+    LOG_AUCTIONS("log-auctions"),
+    PLUGIN_DISABLED_NO_ECONOMY("plugin-disabled-no-economy"),
     PLUGIN_RELOAD_FAIL_AUCTIONS_RUNNING("plugin-reload-fail-auctions-running"),
     PLUGIN_RELOADED("plugin-reloaded"),
     SUSPENSION_USER_FAIL_IS_OFFLINE("suspension-user-fail-is-offline"),
@@ -46,12 +48,7 @@ public enum Key {
     UNSUSPENSION_USER_FAIL_NOT_SUSPENDED("unsuspension-user-fail-not-suspended"),
     UNSUSPENSION_USER("unsuspension-user"),
     UNSUSPENSION_USER_SUCCESS("unsuspension-user-success"),
-    UNSUSPENSION_GLOBAL("unsuspension-global"),
-
-
-
-
-
+    UNSUSPENSION_GLOBAL("unsuspension-global");
 
     private final String configKey;
 

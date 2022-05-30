@@ -203,7 +203,7 @@ public class ObsidianAuctions extends JavaPlugin {
 
     private boolean setupVault() {
         if (!this.setupEconomy()) {
-            logToBukkit("plugin-disabled-no-economy", Level.SEVERE);
+            logToBukkit(Key.PLUGIN_DISABLED_NO_ECONOMY, Level.SEVERE);
             return false;
         } else {
             decimalPlaces = Math.max(econ.fractionalDigits(), 0);
@@ -313,7 +313,7 @@ public class ObsidianAuctions extends JavaPlugin {
      * @param auctionScope the auction scope being referenced if any
      */
     public void log(String playerName, String message, AuctionScope auctionScope) {
-        if (AuctionConfig.getBoolean("log-auctions", auctionScope)) {
+        if (AuctionConfig.getBoolean(Key.LOG_AUCTIONS, auctionScope)) {
             String scopeId = "NOSCOPE";
             if (auctionScope != null) {
                 scopeId = auctionScope.getScopeId();
@@ -458,7 +458,7 @@ public class ObsidianAuctions extends JavaPlugin {
         return this.auctionManager;
     }
 
-    private void logToBukkit(String key, Level level) {
+    private void logToBukkit(Key key, Level level) {
         List<String> messageList = AuctionConfig.getLanguageStringList(key, null);
 
         String originalMessage;
