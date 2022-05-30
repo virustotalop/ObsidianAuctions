@@ -19,6 +19,7 @@
 package com.gmail.virustotalop.obsidianauctions.message;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
@@ -57,14 +58,14 @@ public class AuctionMessageManager implements MessageManager {
     }
 
     @Override
-    public void sendPlayerMessage(String messageKey, UUID playerUUID, Auction auction) {
-        List<String> messageKeys = new ArrayList<>();
+    public void sendPlayerMessage(Key messageKey, UUID playerUUID, Auction auction) {
+        List<Key> messageKeys = new ArrayList<>();
         messageKeys.add(messageKey);
         this.sendPlayerMessage(messageKeys, playerUUID, auction);
     }
 
     @Override
-    public void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, Auction auction) {
+    public void sendPlayerMessage(List<Key> messageKeys, UUID playerUUID, Auction auction) {
         CommandSender recipient;
         if (playerUUID == null) {
             recipient = Bukkit.getConsoleSender();
@@ -82,14 +83,14 @@ public class AuctionMessageManager implements MessageManager {
     }
 
     @Override
-    public void sendPlayerMessage(String messageKey, UUID playerUUID, AuctionScope auctionScope) {
-        List<String> messageKeys = new ArrayList<>();
+    public void sendPlayerMessage(Key messageKey, UUID playerUUID, AuctionScope auctionScope) {
+        List<Key> messageKeys = new ArrayList<>();
         messageKeys.add(messageKey);
         this.sendPlayerMessage(messageKeys, playerUUID, auctionScope);
     }
 
     @Override
-    public void sendPlayerMessage(List<String> messageKeys, UUID playerUUID, AuctionScope auctionScope) {
+    public void sendPlayerMessage(List<Key> messageKeys, UUID playerUUID, AuctionScope auctionScope) {
         CommandSender recipient;
         if (playerUUID == null) {
             recipient = Bukkit.getConsoleSender();
@@ -103,12 +104,12 @@ public class AuctionMessageManager implements MessageManager {
     }
 
     @Override
-    public void broadcastAuctionMessage(String messageKey, Auction auction) {
+    public void broadcastAuctionMessage(Key messageKey, Auction auction) {
         this.broadcastAuctionMessage(Collections.singletonList(messageKey), auction);
     }
 
     @Override
-    public void broadcastAuctionMessage(List<String> messageKeys, Auction auction) {
+    public void broadcastAuctionMessage(List<Key> messageKeys, Auction auction) {
         if (auction == null) {
             return;
         }
@@ -117,14 +118,14 @@ public class AuctionMessageManager implements MessageManager {
     }
 
     @Override
-    public void broadcastAuctionScopeMessage(String messageKey, AuctionScope auctionScope) {
-        List<String> messageKeys = new ArrayList<>();
+    public void broadcastAuctionScopeMessage(Key messageKey, AuctionScope auctionScope) {
+        List<Key> messageKeys = new ArrayList<>();
         messageKeys.add(messageKey);
         this.broadcastAuctionScopeMessage(messageKeys, auctionScope);
     }
 
     @Override
-    public void broadcastAuctionScopeMessage(List<String> messageKeys, AuctionScope auctionScope) {
+    public void broadcastAuctionScopeMessage(List<Key> messageKeys, AuctionScope auctionScope) {
         this.sendMessage(messageKeys, null, auctionScope, true);
     }
 
@@ -136,7 +137,7 @@ public class AuctionMessageManager implements MessageManager {
      * @param auctionScope  focused scope
      * @param fullBroadcast whether to broadcast or send to player
      */
-    private void sendMessage(List<String> messageKeys, CommandSender sender, AuctionScope auctionScope, boolean fullBroadcast) {
+    private void sendMessage(List<Key> messageKeys, CommandSender sender, AuctionScope auctionScope, boolean fullBroadcast) {
         Auction auction = null;
         Player player = null;
 
@@ -194,10 +195,10 @@ public class AuctionMessageManager implements MessageManager {
 
             Audience audience = this.adventure.player(player);
             for (String message : messages) {
-                if (AuctionConfig.getBoolean("enable-chat-messages", auctionScope)) {
+                if (AuctionConfig.getBoolean(Key.ENABLE_CHAT_MESSAGES, auctionScope)) {
                     audience.sendMessage(MiniMessage.miniMessage().deserialize(message));
                 }
-                if (AuctionConfig.getBoolean("enable-actionbar-messages", auctionScope)) {
+                if (AuctionConfig.getBoolean(Key.ENABLE_ACTION_BAR_MESSAGES, auctionScope)) {
                     audience.sendActionBar(MiniMessage.miniMessage().deserialize(message));
                     this.actionBar.addPlayer(player, message, auctionScope);
                 }

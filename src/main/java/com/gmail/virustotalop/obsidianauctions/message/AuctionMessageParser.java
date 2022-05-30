@@ -19,6 +19,7 @@
 package com.gmail.virustotalop.obsidianauctions.message;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionBid;
@@ -63,10 +64,10 @@ public class AuctionMessageParser {
      * @param auctionScope A scope to check for local messages
      * @return List of actual messages to send
      */
-    public List<String> parseMessages(List<String> messageKeys, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) {
+    public List<String> parseMessages(List<Key> messageKeys, AuctionScope auctionScope, Auction auction, Player player, boolean isBroadcast) {
         List<String> messageList = new ArrayList<>();
 
-        for (String messageKey : messageKeys) {
+        for (Key messageKey : messageKeys) {
             if (messageKey == null) {
                 continue;
             }

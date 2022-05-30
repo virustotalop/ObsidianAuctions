@@ -38,22 +38,23 @@ public class AuctionConfig {
     /**
      * Gets a double from the config converted to floAuction's proprietary "safe money."
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return "safe money" from config
      */
-    public static long getSafeMoneyFromDouble(String path, AuctionScope auctionScope) {
-        return Functions.getSafeMoney(getDouble(path, auctionScope));
+    public static long getSafeMoneyFromDouble(Key key, AuctionScope auctionScope) {
+        return Functions.getSafeMoney(getDouble(key, auctionScope));
     }
 
     /**
      * Gets a double value from the config.
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return double from the config
      */
-    public static double getDouble(String path, AuctionScope auctionScope) {
+    public static double getDouble(Key key, AuctionScope auctionScope) {
+        String path = key.toString();
         Double result = null;
         if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getDouble(path);
@@ -68,11 +69,12 @@ public class AuctionConfig {
     /**
      * Gets an integer value from the config.
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return integer from the config
      */
-    public static int getInt(String path, AuctionScope auctionScope) {
+    public static int getInt(Key key, AuctionScope auctionScope) {
+        String path = key.toString();
         Integer result = null;
         if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getInteger(path);
@@ -87,12 +89,13 @@ public class AuctionConfig {
     /**
      * Gets a boolean value from the config.
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return boolean from the config
      */
-    public static boolean getBoolean(String path, AuctionScope auctionScope) {
+    public static boolean getBoolean(Key key, AuctionScope auctionScope) {
         Boolean result = null;
+        String path = key.toString();
         if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getBoolean(path);
         }
@@ -106,11 +109,12 @@ public class AuctionConfig {
     /**
      * Gets a string list from the config.
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return string list from the config
      */
-    public static List<String> getStringList(String path, AuctionScope auctionScope) {
+    public static List<String> getStringList(Key key, AuctionScope auctionScope) {
+        String path = key.toString();
         List<String> result = null;
         if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getStringList(path);
@@ -125,11 +129,12 @@ public class AuctionConfig {
     /**
      * Gets a string value from the config.
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return string from the config
      */
-    public static String getString(String path, AuctionScope auctionScope) {
+    public static String getString(Key key, AuctionScope auctionScope) {
+        String path = key.toString();
         String result = null;
         if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getString(path);
@@ -144,11 +149,12 @@ public class AuctionConfig {
     /**
      * Gets a uuid value from the config.
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return uuid from the config
      */
-    public static UUID getUUID(String path, AuctionScope auctionScope) {
+    public static UUID getUUID(Key key, AuctionScope auctionScope) {
+        String path = key.toString();
         UUID result = null;
         if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             result = auctionScope.getConfig().getUUID(path);
@@ -162,13 +168,13 @@ public class AuctionConfig {
     /**
      * Gets a string to string map from the config.
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return string to string map from the config
      */
-    public static Map<String, String> getStringStringMap(String path, AuctionScope auctionScope) {
+    public static Map<String, String> getStringStringMap(Key key, AuctionScope auctionScope) {
+        String path = key.toString();
         Map<String, String> result = new HashMap<>();
-
         ConfigurationSection section = null;
         if (auctionScope != null && auctionScope.getConfig() != null && auctionScope.getConfig().hasKey(path)) {
             section = auctionScope.getConfig().getConfigurationSection(path);
@@ -193,7 +199,8 @@ public class AuctionConfig {
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return string from language file
      */
-    public static String getLanguageString(String path, AuctionScope auctionScope) {
+    public static String getLanguageString(Key key, AuctionScope auctionScope) {
+        String path = key.toString();
         String result = null;
         if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().hasKey(path)) {
             result = auctionScope.getTextConfig().getString(path);
@@ -208,11 +215,12 @@ public class AuctionConfig {
     /**
      * Gets a string list from the language file.
      *
-     * @param path         the location in the config of the value
+     * @param key         the location in the config of the value
      * @param auctionScope the preferred AuctionScope for retrieval
      * @return string list from language file
      */
-    public static List<String> getLanguageStringList(String path, AuctionScope auctionScope) {
+    public static List<String> getLanguageStringList(Key key, AuctionScope auctionScope) {
+        String path = key.toString();
         List<String> result = null;
         if (auctionScope != null && auctionScope.getTextConfig() != null && auctionScope.getTextConfig().hasKey(path)) {
             result = auctionScope.getTextConfig().getStringList(path);
