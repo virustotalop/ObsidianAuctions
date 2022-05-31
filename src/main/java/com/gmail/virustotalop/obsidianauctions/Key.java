@@ -34,6 +34,7 @@ public enum Key {
     AUCTION_INFO("auction-info"),
     AUCTION_START("auction-start"),
     AUCTION_START_TAX("auction-start-tax"),
+    AUCTIONSCOPE_ESCAPE_WARNING("auctionscope-escape-warning"),
     ALLOW_SEALED_AUCTIONS("allow-sealed-auctions"),
     ALLOW_UNSEALED_AUCTIONS("allow-unsealed-auctions"),
     ALLOW_EARLY_END("allow-early-end"),

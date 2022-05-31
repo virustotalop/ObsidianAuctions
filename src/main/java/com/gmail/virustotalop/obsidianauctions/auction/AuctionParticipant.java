@@ -18,6 +18,7 @@
 
 package com.gmail.virustotalop.obsidianauctions.auction;
 
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import org.bukkit.Location;
 
@@ -100,7 +101,7 @@ public class AuctionParticipant {
         if (this.sentArenaWarning) {
             return;
         }
-        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", this.playerUUID, (AuctionScope) null);
+        ObsidianAuctions.get().getMessageManager().sendPlayerMessage(Key.ARENA_WARNING, this.playerUUID, (AuctionScope) null);
         this.sentArenaWarning = true;
     }
 
@@ -111,7 +112,7 @@ public class AuctionParticipant {
         if (this.sentEscapeWarning) {
             return;
         }
-        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-escape-warning", this.playerUUID, (AuctionScope) null);
+        ObsidianAuctions.get().getMessageManager().sendPlayerMessage(Key.AUCTIONSCOPE_ESCAPE_WARNING, this.playerUUID, (AuctionScope) null);
         this.sentEscapeWarning = true;
     }
 
