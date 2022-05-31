@@ -29,7 +29,6 @@ import com.gmail.virustotalop.obsidianauctions.util.AdventureUtil;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -421,7 +420,7 @@ public class Auction {
                         AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
                         this.plugin.getServer().getPluginManager().callEvent(auctionBidEvent);
                         if (auctionBidEvent.isCancelled()) {
-                            this.failBid(bid, "bid-fail-blocked-by-other-plugin");
+                            this.failBid(bid, Key.BID_FAIL_BLOCKED_BY_OTHER_PLUGIN);
                         } else {
                             this.setNewBid(bid, null);
                             this.end();
@@ -441,16 +440,16 @@ public class Auction {
 
         if (this.currentBid == null) {
             if (bid.getBidAmount() < getStartingBid()) {
-                this.failBid(bid, "bid-fail-under-starting-bid");
+                this.failBid(bid, Key.BID_FAIL_UNDER_STARTING_BID);
                 return;
             }
             // Let other plugins figure out any reasons why this buy shouldn't happen.
             AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
             this.plugin.getServer().getPluginManager().callEvent(auctionBidEvent);
             if (auctionBidEvent.isCancelled()) {
-                failBid(bid, "bid-fail-blocked-by-other-plugin");
+                failBid(bid, Key.BID_FAIL_BLOCKED_BY_OTHER_PLUGIN);
             } else {
-                setNewBid(bid, "bid-success-no-challenger");
+                setNewBid(bid, Key.BID_SUCCESS_NO_CHALLENGER);
             }
             return;
         }
@@ -463,15 +462,15 @@ public class Auction {
                 AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
                 this.plugin.getServer().getPluginManager().callEvent(auctionBidEvent);
                 if (auctionBidEvent.isCancelled()) {
-                    this.failBid(bid, "bid-fail-blocked-by-other-plugin");
+                    this.failBid(bid, Key.BID_FAIL_BLOCKED_BY_OTHER_PLUGIN);
                 } else {
-                    this.setNewBid(bid, "bid-success-update-own-bid");
+                    this.setNewBid(bid, Key.BID_SUCCESS_UPDATE_OWN_BID);
                 }
             } else {
                 if (previousMaxBidAmount < currentBid.getMaxBidAmount()) {
-                    this.failBid(bid, "bid-success-update-own-maxbid");
+                    this.failBid(bid, Key.BID_SUCCESS_UPDATE_OWN_MAXBID);
                 } else {
-                    this.failBid(bid, "bid-fail-already-current-bidder");
+                    this.failBid(bid, Key.BID_FAIL_ALREADY_CURRENT_BIDDER);
                 }
             }
             return;
@@ -514,9 +513,9 @@ public class Auction {
                 AuctionBidEvent auctionBidEvent = new AuctionBidEvent(bidder, this, Functions.getUnsafeMoney(bid.getBidAmount()), Functions.getUnsafeMoney(bid.getMaxBidAmount()), true);
                 this.plugin.getServer().getPluginManager().callEvent(auctionBidEvent);
                 if (auctionBidEvent.isCancelled()) {
-                    failBid(bid, "bid-fail-blocked-by-other-plugin");
+                    failBid(bid, Key.BID_FAIL_BLOCKED_BY_OTHER_PLUGIN);
                 } else {
-                    setNewBid(bid, "bid-success-outbid");
+                    setNewBid(bid, Key.BID_SUCCESS_OUTBID);
                 }
             } else {
                 // Did the old bid have to raise the bid to stay winner?
@@ -524,7 +523,7 @@ public class Auction {
                     if (!this.sealed && !AuctionConfig.getBoolean(Key.BROADCAST_BID_UPDATES, scope)) {
                         this.messageManager.broadcastAuctionMessage(Key.BID_AUTO_OUTBID, this);
                     }
-                    failBid(bid, "bid-fail-auto-outbid");
+                    failBid(bid, Key.BID_FAIL_AUTO_OUTBID);
                 } else {
                     if (!this.sealed) {
                         this.messageManager.sendPlayerMessage(Key.BID_FAIL_TOO_LOW, bid.getBidderUUID(), this);
@@ -546,7 +545,7 @@ public class Auction {
      */
     private void failBid(AuctionBid attemptedBid, Key reason) {
         attemptedBid.cancelBid();
-        if (this.sealed && (attemptedBid.getError() == null || attemptedBid.getError().isEmpty())) {
+        if (this.sealed && (attemptedBid.getError() == null)) {
             this.messageManager.sendPlayerMessage(Key.BID_SUCCESS_SEALED, attemptedBid.getBidderUUID(), this);
         } else {
             this.messageManager.sendPlayerMessage(reason, attemptedBid.getBidderUUID(), this);
@@ -559,10 +558,10 @@ public class Auction {
      * @param newBid the new bid
      * @param reason message key to broadcast
      */
-    private void setNewBid(AuctionBid newBid, String reason) {
+    private void setNewBid(AuctionBid newBid, Key reason) {
         AuctionBid prevBid = this.currentBid;
 
-        if (AuctionConfig.getBoolean("expire-buynow-at-first-bid", this.scope)) {
+        if (AuctionConfig.getBoolean(Key.EXPIRE_BUYNOW_AT_FIRST_BID, this.scope)) {
             this.buyNow = 0;
         }
 
@@ -571,8 +570,8 @@ public class Auction {
         }
         this.currentBid = newBid;
         if (this.sealed) {
-            this.messageManager.sendPlayerMessage("bid-success-sealed", newBid.getBidderUUID(), this);
-        } else if (AuctionConfig.getBoolean("broadcast-bid-updates", this.scope)) {
+            this.messageManager.sendPlayerMessage(Key.BID_SUCCESS_SEALED, newBid.getBidderUUID(), this);
+        } else if (AuctionConfig.getBoolean(Key.BROADCAST_BID_UPDATES, this.scope)) {
             this.messageManager.broadcastAuctionMessage(reason, this);
         } else {
             this.messageManager.sendPlayerMessage(reason, newBid.getBidderUUID(), this);
@@ -586,9 +585,9 @@ public class Auction {
         }
 
         // see if antisnipe is enabled...
-        if (!this.sealed && AuctionConfig.getBoolean("anti-snipe", this.scope) && this.getRemainingTime() <= AuctionConfig.getInt("anti-snipe-prevention-seconds", this.scope)) {
-            this.addToRemainingTime(AuctionConfig.getInt("anti-snipe-prevention-seconds", this.scope));
-            this.messageManager.broadcastAuctionMessage("anti-snipe-time-added", this);
+        if (!this.sealed && AuctionConfig.getBoolean(Key.ANTI_SNIPE, this.scope) && this.getRemainingTime() <= AuctionConfig.getInt(Key.ANTI_SNIPE_PREVENTION_SECONDS, this.scope)) {
+            this.addToRemainingTime(AuctionConfig.getInt(Key.ANTI_SNIPE_PREVENTION_SECONDS, this.scope));
+            this.messageManager.broadcastAuctionMessage(Key.ANTI_SNIPE_TIME_ADDED, this);
         }
     }
 
@@ -604,7 +603,7 @@ public class Auction {
         }
         ItemStack heldItem = LegacyUtil.getItemInMainHand(owner);
         if (heldItem == null || heldItem.getAmount() == 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-hand-is-empty", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_HAND_IS_EMPTY, this.ownerUUID, this);
             return false;
         }
         this.lot = new AuctionLot(heldItem, this.ownerUUID, this.ownerName);
@@ -884,14 +883,14 @@ public class Auction {
             if (this.args[3].matches("[0-9]{1,7}")) {
                 this.time = Integer.parseInt(this.args[3]);
             } else {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-time", this.ownerUUID, this);
+                this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_TIME, this.ownerUUID, this);
                 return false;
             }
         } else {
-            this.time = AuctionConfig.getInt("default-auction-time", this.scope);
+            this.time = AuctionConfig.getInt(Key.DEFAULT_AUCTION_TIME, this.scope);
         }
         if (this.time < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-time", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_TIME, this.ownerUUID, this);
             return false;
         }
         return true;
@@ -904,7 +903,7 @@ public class Auction {
      */
     private boolean parseArgBuyNow() {
 
-        if (this.sealed || !AuctionConfig.getBoolean("allow-buynow", this.scope)) {
+        if (this.sealed || !AuctionConfig.getBoolean(Key.ALLOW_BUYNOW, this.scope)) {
             this.buyNow = 0;
             return true;
         }
@@ -917,14 +916,14 @@ public class Auction {
             if (!this.args[4].isEmpty() && this.args[4].matches(ObsidianAuctions.decimalRegex)) {
                 this.buyNow = Functions.getSafeMoney(Double.parseDouble(args[4]));
             } else {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-buynow", this.ownerUUID, this);
+                this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_BUYNOW, this.ownerUUID, this);
                 return false;
             }
         } else {
             this.buyNow = 0;
         }
         if (getBuyNow() < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-buynow", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_BUYNOW, this.ownerUUID, this);
             return false;
         }
         return true;

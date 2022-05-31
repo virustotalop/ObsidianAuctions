@@ -20,6 +20,7 @@ package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.clubobsidian.wrappy.Configuration;
 import com.clubobsidian.wrappy.ConfigurationSection;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
 import org.bukkit.Bukkit;
@@ -200,7 +201,7 @@ public class AuctionManager {
                         playerScopeId = playerScope.getScopeId();
                     }
                     if (playerScopeId == null || playerScopeId.isEmpty() || !playerScopeId.equalsIgnoreCase(oldScopeId)) {
-                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage("auctionscope-fairwell", playerUUID, oldScope);
+                        ObsidianAuctions.get().getMessageManager().sendPlayerMessage(Key.AUCTIONSCOPE_FAIRWELL, playerUUID, oldScope);
                         playerIterator.remove();
                         this.playerScopeCache.remove(playerUUID);
                     }
@@ -219,10 +220,7 @@ public class AuctionManager {
 
     @ApiStatus.Internal
     public void sendWelcomeMessage(Player player, boolean isOnJoin) {
-        String welcomeMessageKey = "auctionscope-welcome";
-        if (isOnJoin) {
-            welcomeMessageKey += "-onjoin";
-        }
+        Key welcomeMessageKey = isOnJoin ? Key.AUCTIONSCOPE_WELCOME_ONJOIN : Key.AUCTIONSCOPE_WELCOME;
         UUID playerUUID = player.getUniqueId();
         if (!this.isParticipant(playerUUID)) {
             AuctionScope playerScope = this.getPlayerScope(player);

@@ -18,6 +18,7 @@
 
 package com.gmail.virustotalop.obsidianauctions.auction;
 
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
 import org.bukkit.Bukkit;
@@ -137,7 +138,7 @@ public class AuctionLot implements Serializable {
             // Give whatever items space permits at this time.
             ItemStack typeStack = getTypeStack();
             if (amountToGive > 0) {
-                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-give", playerUUID, (AuctionScope) null);
+                ObsidianAuctions.get().getMessageManager().sendPlayerMessage(Key.LOT_GIVE, playerUUID, (AuctionScope) null);
             }
             while (amountToGive > 0) {
                 ItemStack givingItems = lotTypeLock.clone();
@@ -160,7 +161,7 @@ public class AuctionLot implements Serializable {
                     Item drop = player.getWorld().dropItemNaturally(player.getLocation(), cloneStack);
                     drop.setItemStack(cloneStack);
                 }
-                ObsidianAuctions.get().getMessageManager().sendPlayerMessage("lot-drop", playerUUID, (AuctionScope) null);
+                ObsidianAuctions.get().getMessageManager().sendPlayerMessage(Key.LOT_DROP, playerUUID, (AuctionScope) null);
             }
         } else {
             // Player is offline, queue lot for give on login.

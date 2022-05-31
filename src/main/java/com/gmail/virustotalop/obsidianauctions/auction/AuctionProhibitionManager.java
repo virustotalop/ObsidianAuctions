@@ -18,6 +18,7 @@
 
 package com.gmail.virustotalop.obsidianauctions.auction;
 
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import org.bukkit.Bukkit;
@@ -56,7 +57,7 @@ public class AuctionProhibitionManager {
                 }
                 if (prohibition.getReminderMessage() == null) {
                     // Send stock message.
-                    this.messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerUUID, (AuctionScope) null);
+                    this.messageManager.sendPlayerMessage(Key.REMOTE_PLUGIN_PROHIBITION_REMINDER, playerUUID, (AuctionScope) null);
                 } else {
                     player.sendMessage(prohibition.getReminderMessage());
                 }
@@ -85,7 +86,7 @@ public class AuctionProhibitionManager {
                 }
                 if (prohibition.getReminderMessage() == null) {
                     // Send stock message.
-                    this.messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerUUID, (AuctionScope) null);
+                    this.messageManager.sendPlayerMessage(Key.REMOTE_PLUGIN_PROHIBITION_REMINDER, playerUUID, (AuctionScope) null);
                 } else {
                     player.sendMessage(prohibition.getReminderMessage());
                 }
@@ -137,7 +138,7 @@ public class AuctionProhibitionManager {
         }
         if (enableMessage == null) {
             // Send stock message.
-            this.messageManager.sendPlayerMessage("remote-plugin-prohibition-enabled", playerUUID, (AuctionScope) null);
+            this.messageManager.sendPlayerMessage(Key.REMOTE_PLUGIN_PROHIBITION_ENABLED, playerUUID, (AuctionScope) null);
         } else {
             player.sendMessage(enableMessage);
         }
@@ -158,7 +159,7 @@ public class AuctionProhibitionManager {
                 if (player != null) {
                     if (prohibition.getDisableMessage() == null) {
                         // Send stock message.
-                        this.messageManager.sendPlayerMessage("remote-plugin-prohibition-disabled", playerUUID, (AuctionScope) null);
+                        this.messageManager.sendPlayerMessage(Key.REMOTE_PLUGIN_PROHIBITION_DISABLED, playerUUID, (AuctionScope) null);
                     } else {
                         player.sendMessage(prohibition.getDisableMessage());
                     }
@@ -173,7 +174,7 @@ public class AuctionProhibitionManager {
             if (player != null) {
                 if (prohibition.getEnableMessage() == null) {
                     // Send stock message.
-                    this.messageManager.sendPlayerMessage("remote-plugin-prohibition-enabled", playerUUID, (AuctionScope) null);
+                    this.messageManager.sendPlayerMessage(Key.REMOTE_PLUGIN_PROHIBITION_ENABLED, playerUUID, (AuctionScope) null);
                 } else {
                     player.sendMessage(prohibition.getEnableMessage());
                 }
