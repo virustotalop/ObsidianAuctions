@@ -19,6 +19,7 @@
 package com.gmail.virustotalop.obsidianauctions.listener;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionLocationManager;
@@ -76,13 +77,13 @@ public class PlayerListener implements Listener {
         UUID playerUUID = player.getUniqueId();
         AuctionScope playerScope = this.auctionManager.getPlayerScope(player);
         Auction playerAuction = ObsidianAuctions.get().getPlayerAuction(player);
-        if (AuctionConfig.getBoolean("allow-gamemode-change", playerScope) || playerAuction == null) {
+        if (AuctionConfig.getBoolean(Key.ALLOW_GAMEMODE_CHANGE, playerScope) || playerAuction == null) {
             return;
         }
 
         if (ObsidianAuctions.get().getAuctionManager().isParticipant(playerUUID)) {
             event.setCancelled(true);
-            this.message.sendPlayerMessage("gamemodechange-fail-participating", playerUUID, (AuctionScope) null);
+            this.message.sendPlayerMessage(Key.GAMEMODE_CHANGE_FAIL_PARTICIPATING, playerUUID, (AuctionScope) null);
         }
     }
 
@@ -101,12 +102,12 @@ public class PlayerListener implements Listener {
         AuctionScope playerScope = this.auctionManager.getPlayerScope(player);
 
         // Check inscope disabled commands, doesn't matter if participating:
-        List<String> disabledCommands = AuctionConfig.getStringList("disabled-commands-inscope", playerScope);
+        List<String> disabledCommands = AuctionConfig.getStringList(Key.DISABLED_COMMANDS_INSCOPE, playerScope);
         for (String disabledCommand : disabledCommands) {
             if (disabledCommand.isEmpty()) continue;
             if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
-                this.message.sendPlayerMessage("disabled-command-inscope", playerUUID, (AuctionScope) null);
+                this.message.sendPlayerMessage(Key.DISABLED_COMMAND_INSCOPE_MESSAGE, playerUUID, (AuctionScope) null);
                 return;
             }
         }
@@ -119,14 +120,14 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        disabledCommands = AuctionConfig.getStringList("disabled-commands-participating", playerScope);
+        disabledCommands = AuctionConfig.getStringList(Key.DISABLED_COMMANDS_PARTICIPATING, playerScope);
         for (String disabledCommand : disabledCommands) {
             if (disabledCommand.isEmpty()) {
                 continue;
             }
             if (message.toLowerCase().startsWith(disabledCommand.toLowerCase())) {
                 event.setCancelled(true);
-                this.message.sendPlayerMessage("disabled-command-participating", playerUUID, (AuctionScope) null);
+                this.message.sendPlayerMessage(Key.DISABLED_COMMAND_PARTICIPATING_MESSAGE, playerUUID, (AuctionScope) null);
                 return;
             }
         }

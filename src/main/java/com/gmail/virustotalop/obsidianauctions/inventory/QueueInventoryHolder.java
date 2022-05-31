@@ -1,6 +1,7 @@
 package com.gmail.virustotalop.obsidianauctions.inventory;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.util.AdventureUtil;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ public class QueueInventoryHolder implements InventoryHolder {
     }
 
     private Inventory createInventory(AuctionScope auctionScope) {
-        String guiTitle = AuctionConfig.getLanguageString("queue-gui-title", auctionScope);
+        String guiTitle = AuctionConfig.getLanguageString(Key.QUEUE_GUI_TITLE, auctionScope);
         String colorizedTitle = AdventureUtil.miniToLegacy(guiTitle);
         return Bukkit.getServer().createInventory(this, 18, colorizedTitle);
     }

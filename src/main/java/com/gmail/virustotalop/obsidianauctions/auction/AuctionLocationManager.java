@@ -21,6 +21,7 @@ package com.gmail.virustotalop.obsidianauctions.auction;
 import com.clubobsidian.wrappy.Configuration;
 import com.clubobsidian.wrappy.ConfigurationSection;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
 import com.gmail.virustotalop.obsidianauctions.region.CuboidRegion;
@@ -206,7 +207,7 @@ public class AuctionLocationManager {
     public boolean isInArena(Location location) {
         if (location == null) {
             return false;
-        } else if (AuctionConfig.getBoolean("allow-arenas", this.auctionManager.getLocationScope(location))) {
+        } else if (AuctionConfig.getBoolean(Key.ALLOW_ARENAS, this.auctionManager.getLocationScope(location))) {
             return false;
         }
         Collection<Region> regions = this.regions.get(location.getWorld().getName());

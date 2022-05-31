@@ -19,6 +19,7 @@
 package com.gmail.virustotalop.obsidianauctions.listener;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionLocationManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
@@ -64,14 +65,14 @@ public class ArenaListener implements Listener {
         // Having arena check first is most optimal since we are just doing math here
         // and a world check
         if (this.areaManager.isInArena(event.getTo()) && this.canNotJoinArenas(player) && this.participating(playerUUID)) {
-            ObsidianAuctions.get().getMessageManager().sendPlayerMessage("arena-warning", playerUUID, (AuctionScope) null);
+            ObsidianAuctions.get().getMessageManager().sendPlayerMessage(Key.ARENA_WARNING, playerUUID, (AuctionScope) null);
             return true;
         }
         return false;
     }
 
     private boolean canNotJoinArenas(Player player) {
-        return !AuctionConfig.getBoolean("allow-arenas", this.scope.getPlayerScope(player));
+        return !AuctionConfig.getBoolean(Key.ALLOW_ARENAS, this.scope.getPlayerScope(player));
     }
 
     private boolean participating(UUID playerUUID) {

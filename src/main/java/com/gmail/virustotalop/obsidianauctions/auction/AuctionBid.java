@@ -19,6 +19,7 @@
 package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.util.Functions;
 import com.gmail.virustotalop.obsidianauctions.util.Items;
@@ -41,7 +42,7 @@ public class AuctionBid {
     private final String bidderName;
     private long bidAmount = 0;
     private long maxBidAmount = 0;
-    private String error;
+    private Key error;
     private final String[] args;
     private double reserve = 0;
 
@@ -95,7 +96,7 @@ public class AuctionBid {
             this.reserve = Functions.getUnsafeMoney(amountToReserve);
             return true;
         } else {
-            this.error = "bid-fail-cant-allocate-funds";
+            this.error = Key.BID_FAIL_CANNOT_ALLOCATE_FUNDS;
             return false;
         }
     }
@@ -124,11 +125,11 @@ public class AuctionBid {
 
         // Extract taxes:
         double taxes = 0D;
-        double taxPercent = AuctionConfig.getDouble("auction-end-tax-percent", this.auction.getScope());
+        double taxPercent = AuctionConfig.getDouble(Key.AUCTION_END_TAX_PERCENT, this.auction.getScope());
         ItemStack typeStack = this.auction.getLotType();
 
         // TODO: Check this line for possible NULL
-        for (Map.Entry<String, String> entry : AuctionConfig.getStringStringMap("taxed-items", this.auction.getScope()).entrySet()) {
+        for (Map.Entry<String, String> entry : AuctionConfig.getStringStringMap(Key.TAXED_ITEMS, this.auction.getScope()).entrySet()) {
             if (Items.isSameItem(typeStack, entry.getKey())) {
                 if (entry.getValue().endsWith("%")) {
                     try {
@@ -148,9 +149,9 @@ public class AuctionBid {
         if (taxPercent > 0D) {
             taxes = unsafeBidAmount * (taxPercent / 100D);
             this.auction.setExtractedPostTax(taxes);
-            this.auction.getMessageManager().sendPlayerMessage("auction-end-tax", this.auction.getOwnerUUID(), this.auction);
+            this.auction.getMessageManager().sendPlayerMessage(Key.AUCTION_END_TAX, this.auction.getOwnerUUID(), this.auction);
             unsafeBidAmount -= taxes;
-            UUID taxDestinationUser = AuctionConfig.getUUID("deposit-tax-to-user", this.auction.getScope());
+            UUID taxDestinationUser = AuctionConfig.getUUID(Key.DEPOSIT_TAX_TO_USER, this.auction.getScope());
             if (taxDestinationUser != null) {
                 Functions.depositPlayer(taxDestinationUser, taxes);
             }
@@ -172,16 +173,16 @@ public class AuctionBid {
      */
     private boolean validateBidder() {
         if (this.bidderName == null) {
-            this.error = "bid-fail-no-bidder";
+            this.error = Key.BID_FAIL_NO_BIDDER;
             return false;
         } else if (ObsidianAuctions.get().getProhibitionManager().isOnProhibition(this.bidderUUID, false)) {
-            this.error = "remote-plugin-prohibition-reminder";
+            this.error = Key.REMOTE_PLUGIN_PROHIBITION_REMINDER;
             return false;
         } else if (!ObsidianAuctions.get().getAuctionLocationManager().checkLocation(this.bidderUUID)) {
-            this.error = "bid-fail-outside-auctionhouse";
+            this.error = Key.BID_FAIL_OUTSIDE_AUCTIONHOUSE;
             return false;
-        } else if (bidderUUID.equals(auction.getOwnerUUID()) && !AuctionConfig.getBoolean("allow-bid-on-own-auction", this.auction.getScope())) {
-            this.error = "bid-fail-is-auction-owner";
+        } else if (bidderUUID.equals(auction.getOwnerUUID()) && !AuctionConfig.getBoolean(Key.ALLOW_BID_ON_OWN_AUCTION, this.auction.getScope())) {
+            this.error = Key.BID_FAIL_IS_AUCTION_OWNER;
             return false;
         }
         return true;
@@ -256,19 +257,19 @@ public class AuctionBid {
                 /*Should fix the bug that allowed over-sized payments
                  */
                 if (!Functions.hasBalance(this.bidderUUID, this.bidAmount)) {
-                    this.error = "bid-fail-cant-allocate-funds";
+                    this.error = Key.BID_FAIL_CANNOT_ALLOCATE_FUNDS;
                     return false;
                 } else if (this.bidAmount == 0) {
-                    this.error = "parse-error-invalid-bid";
+                    this.error = Key.PARSE_ERROR_INVALID_BID;
                     return false;
                 }
             } else {
-                this.error = "parse-error-invalid-bid";
+                this.error = Key.PARSE_ERROR_INVALID_BID;
                 return false;
             }
         } else {
-            if (this.auction.isSealed() || !AuctionConfig.getBoolean("allow-auto-bid", this.auction.getScope())) {
-                this.error = "bid-fail-bid-required";
+            if (this.auction.isSealed() || !AuctionConfig.getBoolean(Key.ALLOW_AUTO_BID, this.auction.getScope())) {
+                this.error = Key.BID_FAIL_BID_REQUIRED;
                 return false;
             } else {
                 // Leaving it up to automatic:
@@ -293,7 +294,7 @@ public class AuctionBid {
             }
         }
         if (this.bidAmount <= 0) {
-            this.error = "parse-error-invalid-bid";
+            this.error = Key.PARSE_ERROR_INVALID_BID;
             return false;
         }
         return true;
@@ -305,7 +306,7 @@ public class AuctionBid {
      * @return acceptability of max bid
      */
     private boolean parseArgMaxBid() {
-        if (!AuctionConfig.getBoolean("allow-max-bids", this.auction.getScope()) || this.auction.isSealed()) {
+        if (!AuctionConfig.getBoolean(Key.ALLOW_MAX_BIDS, this.auction.getScope()) || this.auction.isSealed()) {
             // Just ignore it.
             this.maxBidAmount = this.bidAmount;
             return true;
@@ -314,13 +315,13 @@ public class AuctionBid {
             if (!args[1].isEmpty() && args[1].matches(ObsidianAuctions.decimalRegex)) {
                 this.maxBidAmount = Functions.getSafeMoney(Double.parseDouble(this.args[1]));
             } else {
-                this.error = "parse-error-invalid-max-bid";
+                this.error = Key.PARSE_ERROR_INVALID_MAX_BID;
                 return false;
             }
         }
         this.maxBidAmount = Math.max(this.bidAmount, this.maxBidAmount);
         if (this.maxBidAmount <= 0) {
-            this.error = "parse-error-invalid-max-bid";
+            this.error = Key.PARSE_ERROR_INVALID_MAX_BID;
             return false;
         }
         return true;
@@ -331,7 +332,7 @@ public class AuctionBid {
      *
      * @return the error
      */
-    public String getError() {
+    public Key getError() {
         return this.error;
     }
 

@@ -19,6 +19,7 @@
 package com.gmail.virustotalop.obsidianauctions.command;
 
 import cloud.commandframework.exceptions.NoPermissionException;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.Permission;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
@@ -70,7 +71,7 @@ public class CommandPermissionHandler implements BiConsumer<CommandSender, NoPer
         }
     }
 
-    private void sendMessage(CommandSender sender, String key) {
+    private void sendMessage(CommandSender sender, Key key) {
         UUID uuid = null;
         if (sender instanceof Player) {
             uuid = ((Player) sender).getUniqueId();
