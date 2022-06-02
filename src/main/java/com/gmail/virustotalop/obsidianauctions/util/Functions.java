@@ -19,6 +19,7 @@
 package com.gmail.virustotalop.obsidianauctions.util;
 
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -36,11 +37,11 @@ public final class Functions {
     public static String formatTime(int seconds, AuctionScope auctionScope) {
         String returnTime;
         if (seconds >= 60) {
-            returnTime = AuctionConfig.getLanguageString("time-format-minsec", auctionScope);
+            returnTime = AuctionConfig.getLanguageString(Key.TIME_FORMAT_MINSEC, auctionScope);
             returnTime = returnTime.replace("%s", Integer.toString(seconds % 60));
             returnTime = returnTime.replace("%m", Integer.toString((seconds - (seconds % 60)) / 60));
         } else {
-            returnTime = AuctionConfig.getLanguageString("time-format-seconly", auctionScope);
+            returnTime = AuctionConfig.getLanguageString(Key.TIME_FORMAT_SECONLY, auctionScope);
             returnTime = returnTime.replace("%s", Integer.toString(seconds));
         }
         return returnTime;
@@ -57,9 +58,9 @@ public final class Functions {
     public static String[] mergeInputArgs(UUID playerUUID, String[] inputArgs, boolean validateArgs) {
         // Get existing defaults (if present)
         String[] resultArgs = new String[]{"this",
-                removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-starting-bid", null))),
-                removeUselessDecimal(Double.toString(AuctionConfig.getDouble("default-bid-increment", null))),
-                Integer.toString(AuctionConfig.getInt("default-auction-time", null)), "0"};
+                removeUselessDecimal(Double.toString(AuctionConfig.getDouble(Key.DEFAULT_STARTING_BID, null))),
+                removeUselessDecimal(Double.toString(AuctionConfig.getDouble(Key.DEFAULT_BID_INCREMENT, null))),
+                Integer.toString(AuctionConfig.getInt(Key.DEFAULT_AUCTION_TIME, null)), "0"};
 
         // Remove the "start" and "prep" args:
         String[] processArgs = inputArgs;
