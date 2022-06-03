@@ -44,6 +44,7 @@ public final class Key {
     public static final Key AUCTION_HELP = new Key("auction-help");
     public static final Key AUCTION_ENABLED = new Key("auction-enabled");
     public static final Key AUCTION_DISABLED = new Key("auction-disabled");
+    public static final Key AUCTION_FAIL_AUCTION_EXISTS = new Key("auction-fail-auction-exists");
     public static final Key AUCTION_FAIL_BANNED = new Key("auction-fail-banned");
     public static final Key AUCTION_FAIL_BLACKLIST_NAME = new Key("auction-fail-blacklist-name");
     public static final Key AUCTION_FAIL_BLOCKED_BY_OTHER_PLUGIN = new Key("auction-fail-blocked-by-other-plugin");
@@ -96,6 +97,10 @@ public final class Key {
     public static final Key AUCTION_FAIL_TIME_TOO_HIGH = new Key("auction-fail-time-too-high");
     public static final Key AUCTION_FAIL_TIME_TOO_LOW = new Key("auction-fail-time-too-low");
     public static final Key AUCTION_CANCEL_QUEUED = new Key("auction-cancel-queued");
+    public static final Key AUCTION_QUEUE_FAIL_CURRENT_AUCTION = new Key("auction-queue-fail-current-auction");
+    public static final Key AUCTION_QUEUE_FAIL_FULL = new Key("auction-queue-fail-full");
+    public static final Key AUCTION_QUEUE_FAIL_IN_QUEUE = new Key("auction-queue-fail-in-queue");
+    public static final Key AUCTION_QUEUE_ENTER = new Key("auction-queue-enter");
     public static final Key AUCTION_QUEUE_STATUS_NOT_IN_QUEUE = new Key("auction-queue-status-not-in-queue");
     public static final Key AUCTION_QUEUE_PERMISSIONS = new Key("auction-queue-permissions");
     public static final Key AUCTION_INFO_NO_AUCTION = new Key("auction-info-no-auction");
@@ -148,10 +153,12 @@ public final class Key {
     public static final Key LOG_AUCTIONS = new Key("log-auctions");
     public static final Key LOT_DROP = new Key("lot-drop");
     public static final Key LOT_GIVE = new Key("lot-give");
+    public static final Key MAX_AUCTION_QUEUE_LENGTH = new Key("max-auction-queue-length");
     public static final Key MAX_AUCTION_TIME = new Key("max-auction-time");
     public static final Key MAX_BUYNOW = new Key("max-buynow");
     public static final Key MAX_STARTING_BID = new Key("max-starting-bid");
     public static final Key MAX_BID_INCREMENT = new Key("max-bid-increment");
+    public static final Key MIN_AUCTION_INTERVAL_SECS = new Key("min-auction-interval-secs");
     public static final Key MIN_AUCTION_TIME = new Key("min-auction-time");
     public static final Key MIN_BID_INCREMENT = new Key("min-bid-increment");
     public static final Key NAME_BLACKLIST = new Key("name-blacklist");

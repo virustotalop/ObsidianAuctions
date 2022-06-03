@@ -20,6 +20,7 @@ package com.gmail.virustotalop.obsidianauctions.auction;
 
 import com.clubobsidian.wrappy.ConfigurationSection;
 import com.gmail.virustotalop.obsidianauctions.AuctionConfig;
+import com.gmail.virustotalop.obsidianauctions.Key;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
 import org.bukkit.Bukkit;
@@ -156,36 +157,36 @@ public class AuctionScope {
         if (this.activeAuction == null) {
             // Queuing because of interval not yet timed out.
             // Allow a queue of 1 to override if 0 for this condition.
-            if (Math.max(AuctionConfig.getInt("max-auction-queue-length", this), 1) <= this.auctionQueue.size()) {
-                messageManager.sendPlayerMessage("auction-queue-fail-full", playerUUID, auctionToQueue);
+            if (Math.max(AuctionConfig.getInt(Key.MAX_AUCTION_QUEUE_LENGTH, this), 1) <= this.auctionQueue.size()) {
+                messageManager.sendPlayerMessage(Key.AUCTION_QUEUE_FAIL_FULL, playerUUID, auctionToQueue);
                 return;
             }
         } else {
-            if (AuctionConfig.getInt("max-auction-queue-length", this) <= 0) {
-                messageManager.sendPlayerMessage("auction-fail-auction-exists", playerUUID, auctionToQueue);
+            if (AuctionConfig.getInt(Key.MAX_AUCTION_QUEUE_LENGTH, this) <= 0) {
+                messageManager.sendPlayerMessage(Key.AUCTION_FAIL_AUCTION_EXISTS, playerUUID, auctionToQueue);
                 return;
             } else if (this.activeAuction.getOwnerUUID().equals(playerUUID)) {
-                messageManager.sendPlayerMessage("auction-queue-fail-current-auction", playerUUID, auctionToQueue);
+                messageManager.sendPlayerMessage(Key.AUCTION_QUEUE_FAIL_CURRENT_AUCTION, playerUUID, auctionToQueue);
                 return;
-            } else if (AuctionConfig.getInt("max-auction-queue-length", this) <= auctionQueue.size()) {
-                messageManager.sendPlayerMessage("auction-queue-fail-full", playerUUID, auctionToQueue);
+            } else if (AuctionConfig.getInt(Key.MAX_AUCTION_QUEUE_LENGTH, this) <= auctionQueue.size()) {
+                messageManager.sendPlayerMessage(Key.AUCTION_QUEUE_FAIL_FULL, playerUUID, auctionToQueue);
                 return;
             }
         }
         for (Auction auction : this.auctionQueue) {
             if (auction != null) {
                 if (auction.getOwnerUUID().equals(playerUUID)) {
-                    messageManager.sendPlayerMessage("auction-queue-fail-in-queue", playerUUID, auctionToQueue);
+                    messageManager.sendPlayerMessage(Key.AUCTION_QUEUE_FAIL_IN_QUEUE, playerUUID, auctionToQueue);
                     return;
                 }
             }
         }
-        if ((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt("min-auction-interval-secs", this) * 1000L) || auctionToQueue.isValid()) {
+        if ((this.auctionQueue.size() == 0 && System.currentTimeMillis() - this.lastAuctionDestroyTime >= AuctionConfig.getInt(Key.MIN_AUCTION_INTERVAL_SECS, this) * 1000L) || auctionToQueue.isValid()) {
             this.auctionQueue.add(auctionToQueue);
             ObsidianAuctions.get().getAuctionManager().addParticipant(playerUUID, this);
             ObsidianAuctions.get().getAuctionManager().checkAuctionQueue();
             if (this.auctionQueue.contains(auctionToQueue)) {
-                messageManager.sendPlayerMessage("auction-queue-enter", playerUUID, auctionToQueue);
+                messageManager.sendPlayerMessage(Key.AUCTION_QUEUE_ENTER, playerUUID, auctionToQueue);
             }
         }
     }
@@ -196,7 +197,7 @@ public class AuctionScope {
     void checkThisAuctionQueue() {
         if (this.activeAuction != null) {
             return;
-        } else if (System.currentTimeMillis() - this.lastAuctionDestroyTime < AuctionConfig.getInt("min-auction-interval-secs", this) * 1000L) {
+        } else if (System.currentTimeMillis() - this.lastAuctionDestroyTime < AuctionConfig.getInt(Key.MIN_AUCTION_INTERVAL_SECS, this) * 1000L) {
             return;
         } else if (this.auctionQueue.size() == 0) {
             return;
@@ -212,13 +213,13 @@ public class AuctionScope {
         if (player == null || !player.isOnline()) {
             return;
         } else if (ObsidianAuctions.get().getProhibitionManager().isOnProhibition(auction.getOwnerUUID(), false)) {
-            messageManager.sendPlayerMessage("remote-plugin-prohibition-reminder", playerUUID, auction);
+            messageManager.sendPlayerMessage(Key.REMOTE_PLUGIN_PROHIBITION_REMINDER, playerUUID, auction);
             return;
-        } else if (!AuctionConfig.getBoolean("allow-gamemode-creative", this) && player.getGameMode() == GameMode.CREATIVE) {
-            messageManager.sendPlayerMessage("auction-fail-gamemode-creative", playerUUID, auction);
+        } else if (!AuctionConfig.getBoolean(Key.ALLOW_GAMEMODE_CREATIVE, this) && player.getGameMode() == GameMode.CREATIVE) {
+            messageManager.sendPlayerMessage(Key.AUCTION_FAIL_GAMEMODE_CREATIVE, playerUUID, auction);
             return;
         } else if (!ObsidianAuctions.get().getPermission().has(player, "auction.start")) {
-            messageManager.sendPlayerMessage("auction-fail-permissions", playerUUID, auction);
+            messageManager.sendPlayerMessage(Key.AUCTION_FAIL_PERMISSIONS, playerUUID, auction);
             return;
         } else if (!auction.isValid()) {
             return;
