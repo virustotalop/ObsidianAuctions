@@ -57,6 +57,7 @@ public final class Key {
     public static final Key AUCTION_INFO_BIDDER_NOONE = new Key("auction-info-bidder-noone");
     public static final Key AUCTION_INFO_ENCHANTMENT_NONE = new Key("auction-info-enchantment-none");
     public static final Key AUCTION_INFO_ENCHANTMENT_SEPARATOR = new Key("auction-info-enchantment-separator");
+    public static final Key AUCTION_INFO_PAYLOAD_SEPARATOR = new Key("auction-info-payload-separator");
     public static final Key AUCTION_START = new Key("auction-start");
     public static final Key AUCTION_START_TAX = new Key("auction-start-tax");
     public static final Key AUCTIONSCOPE_ESCAPE_WARNING = new Key("auctionscope-escape-warning");
@@ -99,6 +100,7 @@ public final class Key {
     public static final Key BROADCAST_BID_UPDATES = new Key("broadcast-bid-updates");
     public static final Key CANCEL_PREVENTION_SECONDS = new Key("cancel-prevention-seconds");
     public static final Key CANCEL_PREVENTION_PERCENT = new Key("cancel-prevention-percent");
+    public static final Key CHAT_PREFIX = new Key("chat-prefix");
     public static final Key CONFISCATE_FAIL_SELF = new Key("confiscate-fail-self");
     public static final Key CONFISCATE_FAIL_CONSOLE = new Key("confiscate-fail-console");
     public static final Key CONFISCATE_SUCCESS = new Key("confiscate-success");
@@ -113,6 +115,8 @@ public final class Key {
     public static final Key ENABLE_ACTION_BAR_MESSAGES = new Key("enable-actionbar-messages");
     public static final Key ENABLE_CHAT_MESSAGES = new Key("enable-chat-messages");
     public static final Key EXPIRE_BUYNOW_AT_FIRST_BID = new Key("expire-buynow-at-first-bid");
+    public static final Key FIREWORK_TRAIL = new Key("firework-trail");
+    public static final Key FIREWORK_TWINKLE = new Key("firework-twinkle");
     public static final Key GAMEMODE_CHANGE_FAIL_PARTICIPATING = new Key("gamemodechange-fail-participating");
     public static final Key LOG_AUCTIONS = new Key("log-auctions");
     public static final Key LOT_DROP = new Key("lot-drop");

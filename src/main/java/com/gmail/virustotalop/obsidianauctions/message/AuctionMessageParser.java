@@ -244,9 +244,9 @@ public class AuctionMessageParser {
                 conditionals.put("allow-buynow", AuctionConfig.getBoolean(Key.ALLOW_BUYNOW, auctionScope)); //G
                 conditionals.put("allow-auto-bid", AuctionConfig.getBoolean(Key.ALLOW_AUTO_BID, auctionScope)); //H
                 conditionals.put("allow-early-bid", AuctionConfig.getBoolean(Key.ALLOW_EARLY_END, auctionScope)); //I
-                conditionals.put("cancel-prevention-percent", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100); //J
-                conditionals.put("allow-unsealed-auctions", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope)); //K
-                conditionals.put("allow-sealed-auctions", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope)); //L
+                conditionals.put("cancel-prevention-percent", AuctionConfig.getInt(Key.CANCEL_PREVENTION_PERCENT, auctionScope) < 100); //J
+                conditionals.put("allow-unsealed-auctions", AuctionConfig.getBoolean(Key.ALLOW_UNSEALED_AUCTIONS, auctionScope)); //K
+                conditionals.put("allow-sealed-auctions", AuctionConfig.getBoolean(Key.ALLOW_SEALED_AUCTIONS, auctionScope)); //L
                 conditionals.put("is-item-logic", conditionals.get("allow-unsealed-auctions") || conditionals.get("allow-sealed-auctions")); //L or K
                 conditionals.put("get-active-auction", auctionScope != null && auctionScope.getActiveAuction() != null); //N
                 conditionals.put("item-is-in-queue", auctionScope != null && auctionScope.getAuctionQueueLength() > 0); //O
@@ -299,12 +299,12 @@ public class AuctionMessageParser {
                             // %A lists all aspects of the payload
                             if (payload != null) {
                                 String payloadAspects = "";
-                                String payloadSeparator = AuctionConfig.getLanguageString("auction-info-payload-separator", auctionScope);
+                                String payloadSeparator = AuctionConfig.getLanguageString(Key.AUCTION_INFO_PAYLOAD_SEPARATOR, auctionScope);
 
                                 FireworkEffect.Type type = payload.getType();
                                 if (type != null) {
                                     if (!payloadAspects.isEmpty()) payloadAspects += payloadSeparator;
-                                    String fireworkShape = AuctionConfig.getLanguageString("firework-shapes." + type, auctionScope);
+                                    String fireworkShape = AuctionConfig.getLanguageString(Key.create("firework-shapes." + type), auctionScope);
                                     if (fireworkShape == null) {
                                         payloadAspects += type.toString();
                                     } else {
@@ -318,7 +318,7 @@ public class AuctionMessageParser {
                                     }
                                     Color color = value;
                                     String colorRGB = color.toString().replace("Color:[rgb0x", "").replace("]", "");
-                                    String fireworkColor = AuctionConfig.getLanguageString("firework-colors." + colorRGB, auctionScope);
+                                    String fireworkColor = AuctionConfig.getLanguageString(Key.create("firework-colors." + colorRGB), auctionScope);
                                     if (fireworkColor == null) {
                                         payloadAspects += "#" + colorRGB;
                                     } else {
@@ -330,13 +330,13 @@ public class AuctionMessageParser {
                                         payloadAspects += payloadSeparator;
                                     }
 
-                                    payloadAspects += AuctionConfig.getLanguageString("firework-twinkle", auctionScope);
+                                    payloadAspects += AuctionConfig.getLanguageString(Key.FIREWORK_TWINKLE, auctionScope);
                                 }
                                 if (payload.hasTrail()) {
                                     if (!payloadAspects.isEmpty()) {
                                         payloadAspects += payloadSeparator;
                                     }
-                                    payloadAspects += AuctionConfig.getLanguageString("firework-trail", auctionScope);
+                                    payloadAspects += AuctionConfig.getLanguageString(Key.FIREWORK_TRAIL, auctionScope);
                                 }
                                 newMessageList.add(chatPrep(message, auctionScope).replace("%repeatable-firework-payload%", payloadAspects));
                             }
@@ -420,6 +420,6 @@ public class AuctionMessageParser {
      * @return prepared message
      */
     private static String chatPrep(String message, AuctionScope auctionScope) {
-        return AuctionConfig.getLanguageString("chat-prefix", auctionScope) + message;
+        return AuctionConfig.getLanguageString(Key.CHAT_PREFIX, auctionScope) + message;
     }
 }
