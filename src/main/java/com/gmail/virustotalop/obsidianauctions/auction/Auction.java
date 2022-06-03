@@ -610,8 +610,8 @@ public class Auction {
 
         ItemStack itemType = this.lot.getTypeStack();
 
-        if (!AuctionConfig.getBoolean("allow-damaged-items", scope) && itemType.getType().getMaxDurability() > 0 && LegacyUtil.getDurability(itemType) > 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-damaged-item", this.ownerUUID, this);
+        if (!AuctionConfig.getBoolean(Key.ALLOW_DAMAGED_ITEMS, scope) && itemType.getType().getMaxDurability() > 0 && LegacyUtil.getDurability(itemType) > 0) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_DAMAGED_ITEM, this.ownerUUID, this);
             this.lot = null;
             return false;
         }
@@ -623,11 +623,11 @@ public class Auction {
         //Implementing allowing auctioned mob-spawners
         //if display name is not empty do function if not fall through to next if
         if (!displayName.isEmpty()) {
-            if (AuctionConfig.getBoolean("name-blacklist-enabled", this.scope)) {
+            if (AuctionConfig.getBoolean(Key.NAME_BLACKLIST_ENABLED, this.scope)) {
                 String lowerCaseDisplay = displayName.toLowerCase();
-                for (String string : AuctionConfig.getStringList("name-blacklist", this.scope)) {
+                for (String string : AuctionConfig.getStringList(Key.NAME_BLACKLIST, this.scope)) {
                     if (lowerCaseDisplay.contains(string)) {
-                        this.messageManager.sendPlayerMessage("auction-fail-blacklist-name", this.ownerUUID, this);
+                        this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_BLACKLIST_NAME, this.ownerUUID, this);
                         return false;
                     }
                 }
@@ -635,26 +635,26 @@ public class Auction {
         }
 
         String typeStr = itemType.getType().toString();
-        if ((typeStr.equals("MOB_SPAWNER") || typeStr.equals("SPAWNER")) && !AuctionConfig.getBoolean("allow-mobspawners", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-spawner", this.ownerUUID, this);
+        if ((typeStr.equals("MOB_SPAWNER") || typeStr.equals("SPAWNER")) && !AuctionConfig.getBoolean(Key.ALLOW_MOBSPAWNERS, scope)) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_SPAWNER, this.ownerUUID, this);
             this.lot = null;
             return false;
         }
 
-        if (!displayName.isEmpty() && !AuctionConfig.getBoolean("allow-renamed-items", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-renamed-item", this.ownerUUID, this);
+        if (!displayName.isEmpty() && !AuctionConfig.getBoolean(Key.ALLOW_RENAMED_ITEMS, scope)) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_RENAMED_ITEM, this.ownerUUID, this);
             this.lot = null;
             return false;
         }
 
         // Check lore:
         String[] lore = Items.getLore(heldItem);
-        List<String> bannedLore = AuctionConfig.getStringList("banned-lore", scope);
+        List<String> bannedLore = AuctionConfig.getStringList(Key.BANNED_LORE, scope);
         if (lore != null && bannedLore != null) {
             for (String s : bannedLore) {
                 for (String value : lore) {
                     if (value.toLowerCase().contains(s.toLowerCase())) {
-                        this.messageManager.sendPlayerMessage("auction-fail-banned-lore", this.ownerUUID, this);
+                        this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_BANNED_LORE, this.ownerUUID, this);
                         this.lot = null;
                         return false;
                     }
@@ -690,7 +690,7 @@ public class Auction {
      */
     private boolean isValidOwner() {
         if (this.ownerName == null) {
-            this.messageManager.sendPlayerMessage("auction-fail-invalid-owner", null, this);
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_INVALID_OWNER, null, this);
             return false;
         }
         return true;
@@ -703,14 +703,14 @@ public class Auction {
      */
     private boolean isValidAmount() {
         if (this.quantity <= 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-quantity-too-low", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_QUANTITY_TOO_LOW, this.ownerUUID, this);
             return false;
         }
 
         // TODO: Add config setting for max quantity.
 
         if (!Items.hasAmount(this.ownerName, this.quantity, this.lot.getTypeStack())) {
-            this.messageManager.sendPlayerMessage("auction-fail-insufficient-supply", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_INSUFFICIENT_SUPPLY, this.ownerUUID, this);
             return false;
         }
         return true;
@@ -723,10 +723,10 @@ public class Auction {
      */
     private boolean isValidStartingBid() {
         if (this.startingBid < 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-starting-bid-too-low", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_STARTING_BID_TOO_LOW, this.ownerUUID, this);
             return false;
-        } else if (this.startingBid > AuctionConfig.getSafeMoneyFromDouble("max-starting-bid", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-starting-bid-too-high", this.ownerUUID, this);
+        } else if (this.startingBid > AuctionConfig.getSafeMoneyFromDouble(Key.MAX_STARTING_BID, scope)) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_STARTING_BID_TOO_HIGH, this.ownerUUID, this);
             return false;
         }
         return true;
@@ -738,12 +738,12 @@ public class Auction {
      * @return if minimum bid increment is okay
      */
     private boolean isValidIncrement() {
-        if (getMinBidIncrement() < AuctionConfig.getSafeMoneyFromDouble("min-bid-increment", this.scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-increment-too-low", this.ownerUUID, this);
+        if (getMinBidIncrement() < AuctionConfig.getSafeMoneyFromDouble(Key.MIN_BID_INCREMENT, this.scope)) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_INCREMENT_TOO_LOW, this.ownerUUID, this);
             return false;
         }
-        if (getMinBidIncrement() > AuctionConfig.getSafeMoneyFromDouble("max-bid-increment", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-increment-too-high", this.ownerUUID, this);
+        if (getMinBidIncrement() > AuctionConfig.getSafeMoneyFromDouble(Key.MAX_BID_INCREMENT, scope)) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_INCREMENT_TOO_HIGH, this.ownerUUID, this);
             return false;
         }
         return true;
@@ -756,10 +756,10 @@ public class Auction {
      */
     private boolean isValidBuyNow() {
         if (getBuyNow() < 0) {
-            this.messageManager.sendPlayerMessage("auction-fail-buynow-too-low", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_BUYNOW_TOO_LOW, this.ownerUUID, this);
             return false;
-        } else if (getBuyNow() > AuctionConfig.getSafeMoneyFromDouble("max-buynow", scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-buynow-too-high", this.ownerUUID, this);
+        } else if (getBuyNow() > AuctionConfig.getSafeMoneyFromDouble(Key.MAX_BUYNOW, scope)) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_BUYNOW_TOO_HIGH, this.ownerUUID, this);
             return false;
         }
         return true;
@@ -771,11 +771,11 @@ public class Auction {
      * @return if auction time limit is okiedokie
      */
     private boolean isValidTime() {
-        if (this.time < AuctionConfig.getInt("min-auction-time", this.scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-time-too-low", this.ownerUUID, this);
+        if (this.time < AuctionConfig.getInt(Key.MIN_AUCTION_TIME, this.scope)) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_TIME_TOO_LOW, this.ownerUUID, this);
             return false;
-        } else if (this.time > AuctionConfig.getInt("max-auction-time", this.scope)) {
-            this.messageManager.sendPlayerMessage("auction-fail-time-too-high", this.ownerUUID, this);
+        } else if (this.time > AuctionConfig.getInt(Key.MAX_AUCTION_TIME, this.scope)) {
+            this.messageManager.sendPlayerMessage(Key.AUCTION_FAIL_TIME_TOO_HIGH, this.ownerUUID, this);
             return false;
         }
         return true;
@@ -800,14 +800,14 @@ public class Auction {
             } else if (args[0].matches("[0-9]{1,7}")) {
                 this.quantity = Integer.parseInt(this.args[0]);
             } else {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-quantity", this.ownerUUID, this);
+                this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_QUANTITY, this.ownerUUID, this);
                 return false;
             }
         } else {
             this.quantity = lotType.getAmount();
         }
         if (this.quantity < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-quantity", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_QUANTITY, this.ownerUUID, this);
             return false;
         }
         return true;
@@ -825,18 +825,18 @@ public class Auction {
 
         if (this.args.length > 1) {
             if (this.args[1].isEmpty()) {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerUUID, this);
+                this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_STARTING_BID, this.ownerUUID, this);
                 return false;
             } else if (!args[1].matches(ObsidianAuctions.decimalRegex)) {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerUUID, this);
+                this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_STARTING_BID, this.ownerUUID, this);
                 return false;
             }
             this.startingBid = Functions.getSafeMoney(Double.parseDouble(args[1]));
         } else {
-            this.startingBid = AuctionConfig.getSafeMoneyFromDouble("default-starting-bid", this.scope);
+            this.startingBid = AuctionConfig.getSafeMoneyFromDouble(Key.DEFAULT_STARTING_BID, this.scope);
         }
         if (this.startingBid < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-starting-bid", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_STARTING_BID, this.ownerUUID, this);
             return false;
         }
         return true;
@@ -856,14 +856,14 @@ public class Auction {
             if (!this.args[2].isEmpty() && args[2].matches(ObsidianAuctions.decimalRegex)) {
                 this.minBidIncrement = Functions.getSafeMoney(Double.parseDouble(this.args[2]));
             } else {
-                this.messageManager.sendPlayerMessage("parse-error-invalid-bid-increment", this.ownerUUID, this);
+                this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_BID_INCREMENT, this.ownerUUID, this);
                 return false;
             }
         } else {
-            this.minBidIncrement = AuctionConfig.getSafeMoneyFromDouble("default-bid-increment", this.scope);
+            this.minBidIncrement = AuctionConfig.getSafeMoneyFromDouble(Key.DEFAULT_BID_INCREMENT, this.scope);
         }
         if (this.minBidIncrement < 0) {
-            this.messageManager.sendPlayerMessage("parse-error-invalid-bid-increment", this.ownerUUID, this);
+            this.messageManager.sendPlayerMessage(Key.PARSE_ERROR_INVALID_BID_INCREMENT, this.ownerUUID, this);
             return false;
         }
         return true;
