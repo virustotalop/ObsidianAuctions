@@ -131,7 +131,7 @@ public class AuctionMessageParser {
                         replacements.put("%current-bid-amount%", Functions.formatAmount(currentBid.getBidAmount())); //%B3
                         replacements.put("%auction-bid-starting%", Functions.formatAmount(auction.getStartingBid())); //%B4
                     } else {
-                        String bidderName = AuctionConfig.getLanguageString("auction-info-bidder-noone", auctionScope);
+                        String bidderName = AuctionConfig.getLanguageString(Key.AUCTION_INFO_BIDDER_NOONE, auctionScope);
                         String startingBid = Functions.formatAmount(auction.getStartingBid());
                         replacements.put("%current-bid-name%", bidderName); //%B1
                         replacements.put("%current-bid-display-name%", bidderName); //%B2
@@ -184,13 +184,13 @@ public class AuctionMessageParser {
                         }
                         if (enchantments != null) {
                             String enchantmentList = "";
-                            String enchantmentSeparator = AuctionConfig.getLanguageString("auction-info-enchantment-separator", auctionScope);
+                            String enchantmentSeparator = AuctionConfig.getLanguageString(Key.AUCTION_INFO_ENCHANTMENT_SEPARATOR, auctionScope);
                             for (Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
                                 if (!enchantmentList.isEmpty()) enchantmentList += enchantmentSeparator;
                                 enchantmentList += Items.getEnchantmentName(enchantment);
                             }
                             if (enchantmentList.isEmpty())
-                                enchantmentList = AuctionConfig.getLanguageString("auction-info-enchantment-none", auctionScope);
+                                enchantmentList = AuctionConfig.getLanguageString(Key.AUCTION_INFO_ENCHANTMENT_NONE, auctionScope);
                             replacements.put("%item-enchantments%", enchantmentList); //%L7
                         }
                     }
@@ -227,7 +227,7 @@ public class AuctionMessageParser {
                 conditionals.put("is-admin", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.admin")); //1
                 conditionals.put("can-start", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.start")); //2
                 conditionals.put("can-bid", player != null && ObsidianAuctions.get().getPermission().has(player, "auction.bid")); //3
-                conditionals.put("has-display-name", lot != null && AuctionConfig.getBoolean("allow-renamed-items", auctionScope) && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
+                conditionals.put("has-display-name", lot != null && AuctionConfig.getBoolean(Key.ALLOW_RENAMED_ITEMS, auctionScope) && lot.getItemMeta() != null && lot.getItemMeta().hasDisplayName());
                 conditionals.put("has-enchantment", lot != null && lot.getEnchantments() != null && lot.getEnchantments().size() > 0); //5
                 conditionals.put("is-sealed", auction != null && auction.isSealed()); //6
                 conditionals.put("not-sealed", auction != null && !auction.isSealed() && auction.getCurrentBid() != null); //7
@@ -240,10 +240,10 @@ public class AuctionMessageParser {
                 conditionals.put("is-player-head", Items.isPlayerHead(lot));
                 conditionals.put("is-buynow", auction != null && auction.getBuyNow() != 0); //D
                 conditionals.put("has-enchantments", lot != null && ((lot.getEnchantments() != null && lot.getEnchantments().size() > 0) || (Items.getStoredEnchantments(lot) != null && Items.getStoredEnchantments(lot).size() > 0))); //E
-                conditionals.put("allow-max-bids", AuctionConfig.getBoolean("allow-max-bids", auctionScope)); //F
-                conditionals.put("allow-buynow", AuctionConfig.getBoolean("allow-buynow", auctionScope)); //G
-                conditionals.put("allow-auto-bid", AuctionConfig.getBoolean("allow-auto-bid", auctionScope)); //H
-                conditionals.put("allow-early-bid", AuctionConfig.getBoolean("allow-early-end", auctionScope)); //I
+                conditionals.put("allow-max-bids", AuctionConfig.getBoolean(Key.ALLOW_MAX_BIDS, auctionScope)); //F
+                conditionals.put("allow-buynow", AuctionConfig.getBoolean(Key.ALLOW_BUYNOW, auctionScope)); //G
+                conditionals.put("allow-auto-bid", AuctionConfig.getBoolean(Key.ALLOW_AUTO_BID, auctionScope)); //H
+                conditionals.put("allow-early-bid", AuctionConfig.getBoolean(Key.ALLOW_EARLY_END, auctionScope)); //I
                 conditionals.put("cancel-prevention-percent", AuctionConfig.getInt("cancel-prevention-percent", auctionScope) < 100); //J
                 conditionals.put("allow-unsealed-auctions", AuctionConfig.getBoolean("allow-unsealed-auctions", auctionScope)); //K
                 conditionals.put("allow-sealed-auctions", AuctionConfig.getBoolean("allow-sealed-auctions", auctionScope)); //L
