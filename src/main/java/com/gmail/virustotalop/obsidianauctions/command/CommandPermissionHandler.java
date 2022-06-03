@@ -45,29 +45,29 @@ public class CommandPermissionHandler implements BiConsumer<CommandSender, NoPer
                 .replace("(", "")
                 .replace(")", "");
         if (missing.contains("|") || missing.equals(Permission.AUCTION_USE)) {
-            this.sendMessage(sender, "auction-use-permissions");
+            this.sendMessage(sender, Key.AUCTION_USE_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_TOGGLE)) {
-            this.sendMessage(sender, "auction-toggle-permissions");
+            this.sendMessage(sender, Key.AUCTION_TOGGLE_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_START)) {
-            this.sendMessage(sender, "auction-fail-permissions");
+            this.sendMessage(sender, Key.AUCTION_FAIL_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_END)) {
-            this.sendMessage(sender, "auction-end-permissions");
+            this.sendMessage(sender, Key.AUCTION_END_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_CANCEL)) {
-            this.sendMessage(sender, "auction-cancel-permissions");
+            this.sendMessage(sender, Key.AUCTION_CANCEL_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_QUEUE)) {
-            this.sendMessage(sender, "auction-queue-permissions");
+            this.sendMessage(sender, Key.AUCTION_QUEUE_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_INFO)) {
-            this.sendMessage(sender, "auction-info-permissions");
+            this.sendMessage(sender, Key.AUCTION_INFO_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_ADMIN_RELOAD)) {
-            this.sendMessage(sender, "plugin-reload-fail-permissions");
+            this.sendMessage(sender, Key.PLUGIN_RELOAD_FAIL_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_ADMIN_SUSPEND)) {
-            this.sendMessage(sender, "suspension-fail-permissions");
+            this.sendMessage(sender, Key.SUSPENSION_FAIL_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_ADMIN_RESUME)) {
-            this.sendMessage(sender, "unsuspension-fail-permissions");
+            this.sendMessage(sender, Key.UNSUSPENSION_FAIL_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_ADMIN_CONFISCATE)) {
-            this.sendMessage(sender, "confiscate-fail-permissions");
+            this.sendMessage(sender, Key.CONFISCATE_FAIL_PERMISSIONS);
         } else if (missing.equals(Permission.AUCTION_BID)) { //Handle bid
-            this.sendMessage(sender, "bid-fail-permissions");
+            this.sendMessage(sender, Key.BID_FAIL_PERMISSIONS);
         }
     }
 
