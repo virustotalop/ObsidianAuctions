@@ -119,6 +119,8 @@ public enum Key {
     PARSE_ERROR_INVALID_BID("parse-error-invalid-bid"),
     PARSE_ERROR_INVALID_BUYNOW("parse-error-invalid-buynow"),
     PARSE_ERROR_INVALID_MAX_BID("parse-error-invalid-max-bid"),
+    PARSE_ERROR_INVALID_QUANTITY("parse-error-invalid-quantity"),
+    PARSE_ERROR_INVALID_STARTING_BID("parse-error-invalid-starting-bid"),
     PARSE_ERROR_INVALID_TIME("parse-error-invalid-time"),
     PLUGIN_DISABLED_NO_ECONOMY("plugin-disabled-no-economy"),
     PLUGIN_RELOAD_FAIL_AUCTIONS_RUNNING("plugin-reload-fail-auctions-running"),
