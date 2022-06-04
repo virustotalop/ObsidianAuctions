@@ -28,11 +28,11 @@ import java.lang.reflect.Method;
 @ApiStatus.Internal
 public final class LegacyUtil {
 
-    private static final boolean durabilityExists = methodExists(ItemStack.class, "getDurability");
-    private static final boolean mainHandExists = methodExists(PlayerInventory.class, "getItemInMainHand");
+    private static final boolean DURABILITY_EXISTS = methodExists(ItemStack.class, "getDurability");
+    private static final boolean MAIN_HAND_EXISTS = methodExists(PlayerInventory.class, "getItemInMainHand");
 
     public static short getDurability(ItemStack itemStack) {
-        if (durabilityExists) {
+        if (DURABILITY_EXISTS) {
             return itemStack.getDurability();
         }
         return 0;
@@ -40,7 +40,7 @@ public final class LegacyUtil {
 
     @SuppressWarnings("deprecation")
     public static ItemStack getItemInMainHand(Player player) {
-        if (mainHandExists) {
+        if (MAIN_HAND_EXISTS) {
             return player.getInventory().getItemInMainHand();
         }
         return player.getItemInHand();
