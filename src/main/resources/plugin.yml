@@ -24,6 +24,7 @@ permissions:
       auction.info: true
   auction.basic:
     description: Gives access to basic player auction commands
+    default: true
     children:
       auction.use: true
       auction.start: true
