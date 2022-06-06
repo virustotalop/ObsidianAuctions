@@ -18,6 +18,9 @@
 
 package com.gmail.virustotalop.obsidianauctions;
 
+import org.jetbrains.annotations.ApiStatus;
+
+@ApiStatus.Internal
 public final class Key {
 
     public static final Key ACTION_BAR_TICKS = new Key("action-bar-ticks");
