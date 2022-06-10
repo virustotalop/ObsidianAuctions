@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.gmail.virustotalop'
-version = '5.0.0'
+version = '5.0.1'
 
 license {
     header = project.file('HEADER.txt')
