@@ -36,6 +36,11 @@ public final class AdventureUtil {
         return SECTION.serialize(component);
     }
 
+    public static String legacyToMini(String displayName) {
+        Component component = SECTION.deserialize(displayName);
+        return MiniMessage.miniMessage().serialize(component);
+    }
+
     private AdventureUtil() {
     }
 }

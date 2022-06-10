@@ -181,7 +181,7 @@ public final class Items {
         }
         String[] pages = new String[pageList.size()];
         for (int i = 0; i < pageList.size(); i++) {
-            pages[i] = pageList.get(i);
+            pages[i] = AdventureUtil.legacyToMini(pageList.get(i));
         }
         return pages;
     }
@@ -325,7 +325,7 @@ public final class Items {
             return null;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        return itemMeta == null ? null : itemMeta.getDisplayName();
+        return itemMeta == null ? null : AdventureUtil.legacyToMini(itemMeta.getDisplayName());
     }
 
 
