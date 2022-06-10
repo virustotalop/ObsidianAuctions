@@ -32,12 +32,18 @@ public final class AdventureUtil {
             .build();
 
     public static String miniToLegacy(String message) {
+        if (message == null) {
+            return null;
+        }
         Component component = MiniMessage.miniMessage().deserialize(message);
         return SECTION.serialize(component);
     }
 
-    public static String legacyToMini(String displayName) {
-        Component component = SECTION.deserialize(displayName);
+    public static String legacyToMini(String message) {
+        if (message == null) {
+            return null;
+        }
+        Component component = SECTION.deserialize(message);
         return MiniMessage.miniMessage().serialize(component);
     }
 
