@@ -63,7 +63,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-def junitVersion = '5.8.2'
+def junitVersion = '5.9.0'
 def cloudVersion = '1.7.0'
 def adventureVersion = '4.11.0'
 
