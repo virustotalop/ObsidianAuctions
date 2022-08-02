@@ -157,7 +157,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction|auc cancel")
+    @CommandMethod("auction|auc cancel|c")
     @CommandPermission(Permission.AUCTION_CANCEL)
     public void auctionCancel(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
@@ -230,7 +230,7 @@ public class AuctionCommands {
         }
     }
 
-    @CommandMethod("auction|auc info")
+    @CommandMethod("auction|auc info|i")
     @CommandPermission(Permission.AUCTION_INFO)
     public void auctionInfo(CommandSender sender) {
         UUID uuid = this.uuidFromSender(sender);
