@@ -55,4 +55,4 @@ For any new classes follow the style of other classes follow. Make sure to sign 
 
 ### Building
 
-`gradlew shadowJar`
+`gradlew build`
