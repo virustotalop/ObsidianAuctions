@@ -56,7 +56,7 @@ subprojects {
             useJUnitPlatform()
         }
 
-        var junitVersion = "5.9.0"
+        var junitVersion = "5.9.1"
         var cloudVersion = "1.7.1"
         var adventureVersion = "4.11.0"
 
