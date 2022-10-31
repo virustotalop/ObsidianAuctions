@@ -56,15 +56,15 @@ subprojects {
             useJUnitPlatform()
         }
 
-        var junitVersion = "5.9.0"
-        var cloudVersion = "1.7.0"
+        var junitVersion = "5.9.1"
+        var cloudVersion = "1.7.1"
         var adventureVersion = "4.11.0"
 
         dependencies {
             testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
             testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             testImplementation("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
-            testImplementation("org.mockito:mockito-core:4.6.1")
+            testImplementation("org.mockito:mockito-core:4.8.0")
             implementation("com.github.clubobsidian:wrappy:2.4.0")
             implementation("com.google.inject:guice:5.1.0")
             implementation("cloud.commandframework:cloud-paper:$cloudVersion")
