@@ -31,7 +31,7 @@ tasks {
 
 var junitVersion = "5.9.1"
 var cloudVersion = "1.7.1"
-var adventureVersion = "4.11.0"
+var adventureVersion = "4.12.0"
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
