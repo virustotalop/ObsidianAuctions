@@ -2,13 +2,6 @@ plugins {
     id("java")
 }
 
-group = "com.gmail.virustotalop"
-version = "5.0.1"
-
-repositories {
-    mavenCentral()
-}
-
 tasks {
     shadowJar {
         archiveBaseName.set("ObsidianAuctions")
@@ -36,3 +29,23 @@ tasks {
     }
 }
 
+var junitVersion = "5.9.1"
+var cloudVersion = "1.7.1"
+var adventureVersion = "4.11.0"
+
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
+    testImplementation("org.mockito:mockito-core:4.8.0")
+    implementation("com.github.clubobsidian:wrappy:2.4.0")
+    implementation("com.google.inject:guice:5.1.0")
+    implementation("cloud.commandframework:cloud-paper:$cloudVersion")
+    implementation("cloud.commandframework:cloud-annotations:$cloudVersion")
+    implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
+    implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
+    implementation("net.kyori:adventure-platform-bukkit:4.1.2")
+    compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
+    compileOnly("org.jetbrains:annotations:23.0.0")
+    compileOnly(":vault")
+}
