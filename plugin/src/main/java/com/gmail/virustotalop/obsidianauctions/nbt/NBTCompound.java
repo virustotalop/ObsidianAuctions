@@ -38,15 +38,18 @@ public class NBTCompound {
     );
     private static final Class<?> COMPOUND_CLASS = ReflectionUtil.getClassIfExists(
             "net.minecraft.nbt.NBTTagCompound",
-            "net.minecraft.server." + VERSION + ".NBTTagCompound"
+            "net.minecraft.server." + VERSION + ".NBTTagCompound",
+            "net.minecraft.nbt.CompoundTag"
     );
     private static final Class<?> PARSER_CLASS = ReflectionUtil.getClassIfExists(
             "net.minecraft.nbt.MojangsonParser",
-            "net.minecraft.server." + VERSION + ".MojangsonParser"
+            "net.minecraft.server." + VERSION + ".MojangsonParser",
+            "net.minecraft.nbt.TagParser"
     );
     private static final Class<?> TAG_CLASS = ReflectionUtil.getClassIfExists(
             "net.minecraft.nbt.NBTBase",
-            "net.minecraft.server." + VERSION + ".NBTBase"
+            "net.minecraft.server." + VERSION + ".NBTBase",
+            "net.minecraft.nbt.Tag"
     );
 
     private static final Method PARSE = ReflectionUtil.getStaticMethod(PARSER_CLASS, COMPOUND_CLASS);
