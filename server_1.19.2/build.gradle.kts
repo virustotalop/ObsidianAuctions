@@ -1,7 +1,7 @@
 plugins {
     id("java")
     id("io.papermc.paperweight.userdev") version "1.3.11"
-    id("xyz.jpenilla.run-paper") version "2.0.0"
+    id("xyz.jpenilla.run-paper") version "2.0.1"
 }
 
 java {
