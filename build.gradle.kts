@@ -8,7 +8,7 @@ plugins {
 
 allprojects {
     group = "com.gmail.virustotalop"
-    version = "5.0.1"
+    version = "5.1.0"
 
     repositories {
         flatDir { dirs("libs") }

@@ -1,7 +1,7 @@
 <div align="center">
 <h1>ObsidianAuctions</h1>
 
-<p>An auction plugin for spigot 1.12.2-1.18.2, you can find it <a href="https://www.spigotmc.org/resources/obsidianauctions.5595/">here on spigot!</a></p>
+<p>An auction plugin for spigot 1.12.2-1.19.3, you can find it <a href="https://www.spigotmc.org/resources/obsidianauctions.5595/">here on spigot!</a></p>
 </div>
 
 ## FAQ
