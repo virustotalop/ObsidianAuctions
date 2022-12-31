@@ -22,7 +22,7 @@ Below are some differences between ObsidianAuctions and the old FloAuctions plug
 * Full UUID support
 * Configurable language support
 * Spawner & Mob Egg Support
-* Support for modern Minecraft 1.12-1.17
+* Support for modern Minecraft 1.12-1.19
 * Easier to configure language file
   * Support for [minimessage](https://docs.adventure.kyori.net/minimessage.html#format)
 * Configurable disallowed auction areas 
