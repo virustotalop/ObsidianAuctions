@@ -5,6 +5,6 @@ pluginManagement {
     }
 }
 include("plugin")
-include("server_1.19.2")
+include("server_1.19.3")
 
 rootProject.name = "ObsidianAuctions"
