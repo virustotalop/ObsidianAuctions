@@ -39,8 +39,6 @@ import java.util.UUID;
  */
 public class AuctionLot implements Serializable {
 
-    private static final String ITEM_STACK_PATH = "itemstack";
-
     private static final long serialVersionUID = -1764290458703647129L;
 
     private UUID ownerUUID;
@@ -56,26 +54,9 @@ public class AuctionLot implements Serializable {
      * @param ownerName
      */
     public AuctionLot(ItemStack lotStack, UUID ownerUUID, String ownerName) {
-        this.itemSerialized = this.serializeItem(lotStack);
+        this.itemSerialized = Items.serializeItem(lotStack);
         this.ownerUUID = ownerUUID;
         this.ownerName = ownerName;
-    }
-
-    private String serializeItem(ItemStack itemStack) {
-        FileConfiguration temp = new YamlConfiguration();
-        temp.set(ITEM_STACK_PATH, itemStack);
-        return temp.saveToString();
-    }
-
-    public ItemStack deserializeItemString(String configContents) {
-        FileConfiguration temp = new YamlConfiguration();
-        try {
-            temp.loadFromString(configContents);
-            return temp.getItemStack(ITEM_STACK_PATH);
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**
@@ -183,7 +164,7 @@ public class AuctionLot implements Serializable {
      * @return item stack of one item
      */
     public ItemStack getTypeStack() {
-        ItemStack lotTypeLock = this.deserializeItemString(this.itemSerialized);
+        ItemStack lotTypeLock = Items.deserializeItemString(this.itemSerialized);
         lotTypeLock.setAmount(1);
         return lotTypeLock;
     }

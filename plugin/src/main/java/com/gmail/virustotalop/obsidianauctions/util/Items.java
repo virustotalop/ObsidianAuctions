@@ -18,11 +18,16 @@
 
 package com.gmail.virustotalop.obsidianauctions.util;
 
+import com.gmail.virustotalop.obsidianauctions.nbt.NBTCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
@@ -45,6 +50,7 @@ import java.util.Map.Entry;
 @ApiStatus.NonExtendable
 public final class Items {
 
+    private static final String ITEM_STACK_PATH = "itemstack";
     private static final Map<Enchantment, String> enchantmentNames = new HashMap<>();
     private static final Map<Integer, String> enchantmentLevels = new HashMap<>();
 
@@ -108,6 +114,23 @@ public final class Items {
             }
         }
         return -1;
+    }
+
+    public static String serializeItem(ItemStack itemStack) {
+        FileConfiguration temp = new YamlConfiguration();
+        temp.set(ITEM_STACK_PATH, itemStack);
+        return temp.saveToString();
+    }
+
+    public static ItemStack deserializeItemString(String configContents) {
+        FileConfiguration temp = new YamlConfiguration();
+        try {
+            temp.loadFromString(configContents);
+            return temp.getItemStack(ITEM_STACK_PATH);
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Most of this function was copied from CraftBukkit.  The above functions too.
@@ -437,16 +460,29 @@ public final class Items {
         return isSameItem(item, new ItemStack(mat, 1));
     }
 
-
-    public static boolean isSameItem(ItemStack item1, ItemStack item2) {
-        return item1.isSimilar(item2);
+    //Short for serializeAndDeserialize
+    //Helper method to get around serialization
+    //issue due to inconsistencies. This really
+    //is just a hack, but it is really all we can
+    //do besides rewriting the BukkitObjectOutputStream
+    //or something similar
+    private static ItemStack sad(ItemStack itemStack) {
+        Inventory inventory = Bukkit.createInventory(null, 9);
+        inventory.setItem(0, deserializeItemString(serializeItem(itemStack)));
+        return inventory.getItem(0);
     }
 
+    //We cannot compare null stacks but shouldn't even happen
+    public static boolean isSameItem(ItemStack item1, ItemStack item2) {
+        if (item1 != null && item2 != null && item1.getType() == item2.getType()) {
+            return sad(item1).isSimilar(sad(item2));
+        }
+        return false;
+    }
 
     public static int getMaxStackSize(ItemStack item) {
         return item == null ? 0 : item.getType().getMaxStackSize();
     }
-
 
     public static int getSpaceForItem(Player player, ItemStack item) {
         int maxstack = getMaxStackSize(item);
