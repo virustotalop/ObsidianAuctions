@@ -29,7 +29,7 @@ tasks {
     }
 }
 
-var junitVersion = "5.9.1"
+var junitVersion = "5.9.2"
 var cloudVersion = "1.8.0"
 var adventureVersion = "4.12.0"
 
