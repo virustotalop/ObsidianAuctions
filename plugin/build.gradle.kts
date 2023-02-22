@@ -30,7 +30,7 @@ tasks {
 }
 
 var junitVersion = "5.9.1"
-var cloudVersion = "1.8.0"
+var cloudVersion = "1.8.1"
 var adventureVersion = "4.12.0"
 
 dependencies {
