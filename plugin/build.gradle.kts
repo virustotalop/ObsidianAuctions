@@ -44,7 +44,7 @@ dependencies {
     implementation("cloud.commandframework:cloud-annotations:$cloudVersion")
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
-    implementation("net.kyori:adventure-platform-bukkit:4.2.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.jetbrains:annotations:23.0.0")
     compileOnly(":vault")
