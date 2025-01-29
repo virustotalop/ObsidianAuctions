@@ -24,7 +24,7 @@ tasks {
         relocate("com.google.j2objc", "com.gmail.virustotalop.obsidianauctions.shaded.j2objc")
         relocate("net.kyori.adventure", "com.gmail.virustotalop.obsidianauctions.shaded.adventure")
         relocate("net.kyori.examination", "com.gmail.virustotalop.obsidianauctions.shaded.examination")
-        relocate("cloud", "com.gmail.virustotalop.obsidianauctions.shaded.cloud")
+        relocate("org.incendo.cloud", "com.gmail.virustotalop.obsidianauctions.shaded.cloud")
         relocate("de.tr7zw.changeme.nbtapi", "com.gmail.virustotalop.obsidianauctions.shaded.nbtapi")
         minimize()
     }
