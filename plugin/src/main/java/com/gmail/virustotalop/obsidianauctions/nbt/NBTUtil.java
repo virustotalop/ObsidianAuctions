@@ -27,19 +27,14 @@ import java.util.Arrays;
 public final class NBTUtil {
 
     public static boolean fuzzyMatches(NBTCompound compare, NBTCompound compound) {
-        System.out.println("Compare: " + compare);
-        System.out.println("Compound: " + compound);
         for (String key : compare.getKeys()) {
-            System.out.println("Key: " + key);
             boolean hasKey = compound.hasTag(key);
             if (!hasKey) {
-                System.out.println("Does not have key: " + key);
                 return false;
             }
             if (compound.getType(key).equals(NBTType.NBTTagCompound)) {
                 NBTCompound compareCompound = compare.getCompound(key);
                 if (compareCompound == null) {
-                    System.out.println("Compare compound is null");
                     return false;
                 }
                 NBTCompound get = compound.getCompound(key);
@@ -48,14 +43,11 @@ public final class NBTUtil {
             NBTType compareType = compare.getType(key);
             NBTType getType = compound.getType(key);
             if (!compareType.equals(getType)) {
-                System.out.println("Compare type is not the same");
                 return false;
             }
-            System.out.println("Compare type: " + compareType + " Get type: " + getType);
             Object compareVal = NBTReflectionUtil.getEntry(compare, key);
             Object getVal = NBTReflectionUtil.getEntry(compound, key);
             if (getVal == null || (arraysNotEquals(compareVal, getVal)) || !compareVal.equals(getVal)) {
-                System.out.println("Values are not the same");
                 return false;
             }
         }

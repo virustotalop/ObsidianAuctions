@@ -105,7 +105,6 @@ public class I18nTranslationFactory implements TranslationFactory {
                 } else {
                     try {
                         compound = (NBTCompound) NBT.parseNBT(second);
-                        System.out.println(compound);
                     } catch (Exception ex) {
                         ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid nbt: " + second);
                         ex.printStackTrace();
