@@ -18,13 +18,6 @@
 
 package com.gmail.virustotalop.obsidianauctions;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.annotations.AnnotationParser;
-import cloud.commandframework.bukkit.CloudBukkitCapabilities;
-import cloud.commandframework.exceptions.NoPermissionException;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.meta.SimpleCommandMeta;
-import cloud.commandframework.paper.PaperCommandManager;
 import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.auction.Auction;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionLocationManager;
@@ -33,7 +26,6 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionScope;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
-import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.config.ConfigMigrator;
 import com.gmail.virustotalop.obsidianauctions.inject.AuctionModule;
 import com.gmail.virustotalop.obsidianauctions.message.MessageManager;
@@ -44,7 +36,6 @@ import com.gmail.virustotalop.obsidianauctions.util.FileUtil;
 import com.gmail.virustotalop.obsidianauctions.util.InjectUtil;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import de.tr7zw.changeme.nbtapi.NBT;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.milkbowl.vault.economy.Economy;
@@ -57,6 +48,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.annotations.AnnotationParser;
+import org.incendo.cloud.brigadier.BrigadierSetting;
+import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.meta.SimpleCommandMeta;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -488,16 +487,15 @@ public class ObsidianAuctions extends JavaPlugin {
 
     private CommandManager<CommandSender> createCommandManager(Injector injector) {
         try {
-            PaperCommandManager<CommandSender> commandManager = new PaperCommandManager<>(this,
-                    CommandExecutionCoordinator.simpleCoordinator(),
-                    Function.identity(),
-                    Function.identity());
-            CommandPermissionHandler handler = injector.getInstance(CommandPermissionHandler.class);
-            commandManager.registerExceptionHandler(NoPermissionException.class, handler);
-            if (commandManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
-                commandManager.registerBrigadier();
+            LegacyPaperCommandManager<CommandSender> commandManager = new LegacyPaperCommandManager<>(
+                    this,
+                    ExecutionCoordinator.simpleCoordinator(),
+                    SenderMapper.identity()
+            );
+            if (commandManager.hasBrigadierManager()) {
+                commandManager.brigadierManager().settings().set(BrigadierSetting.FORCE_EXECUTABLE, true);
             }
-            if (commandManager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+            if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
                 commandManager.registerAsynchronousCompletions();
             }
             return commandManager;

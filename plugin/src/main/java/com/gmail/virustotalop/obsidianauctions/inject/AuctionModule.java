@@ -25,7 +25,6 @@ import com.gmail.virustotalop.obsidianauctions.auction.AuctionManager;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionManagerListener;
 import com.gmail.virustotalop.obsidianauctions.auction.AuctionProhibitionManager;
 import com.gmail.virustotalop.obsidianauctions.command.AuctionCommands;
-import com.gmail.virustotalop.obsidianauctions.command.CommandPermissionHandler;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.Config;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.I18nItemConfig;
 import com.gmail.virustotalop.obsidianauctions.language.I18nTranslationFactory;
@@ -81,6 +80,5 @@ public class AuctionModule implements Module {
         binder.bind(ArenaListener.class).asEagerSingleton();
         binder.bind(AuctionManagerListener.class).asEagerSingleton();
         binder.bind(AuctionCommands.class).asEagerSingleton();
-        binder.bind(CommandPermissionHandler.class).asEagerSingleton();
     }
 }

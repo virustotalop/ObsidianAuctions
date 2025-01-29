@@ -31,7 +31,7 @@ tasks {
 }
 
 var junitVersion = "5.9.1"
-var cloudVersion = "1.8.0"
+var cloudVersion = "2.0.0-beta.10"
 var adventureVersion = "4.12.0"
 
 dependencies {
@@ -41,8 +41,8 @@ dependencies {
     testImplementation("org.mockito:mockito-core:4.8.0")
     implementation("com.github.clubobsidian:wrappy:2.4.0")
     implementation("com.google.inject:guice:5.1.0")
-    implementation("cloud.commandframework:cloud-paper:$cloudVersion")
-    implementation("cloud.commandframework:cloud-annotations:$cloudVersion")
+    implementation("org.incendo:cloud-paper:$cloudVersion")
+    implementation("org.incendo:cloud-annotations:2.0.0")
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0")

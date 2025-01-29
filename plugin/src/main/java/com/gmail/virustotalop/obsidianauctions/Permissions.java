@@ -22,7 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 @ApiStatus.NonExtendable
-public final class Permission {
+public final class Permissions {
 
     public static final String AUCTION_USE = "auction.use";
     public static final String AUCTION_START = "auction.start";
@@ -39,6 +39,6 @@ public final class Permission {
     public static final String AUCTION_ADMIN_CANCEL = "auction.admin.cancel";
     public static final String AUCTION_ADMIN_CONFISCATE = "auction.admin.confiscate";
 
-    private Permission() {
+    private Permissions() {
     }
 }
