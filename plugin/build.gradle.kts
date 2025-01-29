@@ -25,6 +25,7 @@ tasks {
         relocate("net.kyori.adventure", "com.gmail.virustotalop.obsidianauctions.shaded.adventure")
         relocate("net.kyori.examination", "com.gmail.virustotalop.obsidianauctions.shaded.examination")
         relocate("cloud", "com.gmail.virustotalop.obsidianauctions.shaded.cloud")
+        relocate("de.tr7zw.changeme.nbtapi", "com.gmail.virustotalop.obsidianauctions.shaded.nbtapi")
         minimize()
     }
 }
@@ -45,6 +46,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0")
+    implementation("de.tr7zw:item-nbt-api:2.14.1")
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.jetbrains:annotations:23.0.0")
     compileOnly(":vault")

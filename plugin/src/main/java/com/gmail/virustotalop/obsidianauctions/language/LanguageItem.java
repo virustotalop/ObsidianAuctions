@@ -18,8 +18,11 @@
 
 package com.gmail.virustotalop.obsidianauctions.language;
 
-import com.gmail.virustotalop.obsidianauctions.nbt.NBTCompound;
+import com.gmail.virustotalop.obsidianauctions.nbt.NBTUtil;
 import com.gmail.virustotalop.obsidianauctions.util.LegacyUtil;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTContainer;
+import de.tr7zw.changeme.nbtapi.NBTReflectionUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -54,8 +57,9 @@ public class LanguageItem {
             return false;
         }
         if (this.compound != null) {
-            NBTCompound stackComp = new NBTCompound(itemStack);
-            return NBTCompound.fuzzyMatches(this.compound, stackComp);
+            Object nmsItemStack = NBTReflectionUtil.getCraftItemHandle(itemStack);
+            NBTContainer stackComp = NBTReflectionUtil.convertNMSItemtoNBTCompound(nmsItemStack);
+            return NBTUtil.fuzzyMatches(this.compound, stackComp);
         }
         return true;
     }

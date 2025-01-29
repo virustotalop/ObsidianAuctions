@@ -18,7 +18,6 @@
 
 package com.gmail.virustotalop.obsidianauctions.util;
 
-import com.gmail.virustotalop.obsidianauctions.nbt.NBTCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;

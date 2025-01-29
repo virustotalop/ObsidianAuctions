@@ -21,8 +21,9 @@ package com.gmail.virustotalop.obsidianauctions.language;
 import com.clubobsidian.wrappy.Configuration;
 import com.gmail.virustotalop.obsidianauctions.ObsidianAuctions;
 import com.gmail.virustotalop.obsidianauctions.inject.annotation.I18nItemConfig;
-import com.gmail.virustotalop.obsidianauctions.nbt.NBTCompound;
 import com.gmail.virustotalop.obsidianauctions.util.EnumUtil;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -103,7 +104,8 @@ public class I18nTranslationFactory implements TranslationFactory {
                     durability = Short.parseShort(second);
                 } else {
                     try {
-                        compound = new NBTCompound(second);
+                        compound = (NBTCompound) NBT.parseNBT(second);
+                        System.out.println(compound);
                     } catch (Exception ex) {
                         ObsidianAuctions.get().getLogger().log(Level.SEVERE, "Invalid nbt: " + second);
                         ex.printStackTrace();

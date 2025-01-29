@@ -44,6 +44,7 @@ import com.gmail.virustotalop.obsidianauctions.util.FileUtil;
 import com.gmail.virustotalop.obsidianauctions.util.InjectUtil;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import de.tr7zw.changeme.nbtapi.NBT;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.milkbowl.vault.economy.Economy;
@@ -128,6 +129,7 @@ public class ObsidianAuctions extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+
         this.logQueue = new ConcurrentLinkedQueue<>();
         this.adventure = BukkitAudiences.create(this);
         instance = this;
