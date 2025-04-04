@@ -48,6 +48,6 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.2.0")
     implementation("de.tr7zw:item-nbt-api:2.14.1")
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
-    compileOnly("org.jetbrains:annotations:23.0.0")
+    compileOnly("org.jetbrains:annotations:24.0.1")
     compileOnly(":vault")
 }
