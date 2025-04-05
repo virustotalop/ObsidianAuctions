@@ -39,7 +39,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
     testImplementation("org.mockito:mockito-core:4.8.0")
-    implementation("com.github.clubobsidian:wrappy:2.4.0")
+    implementation("com.github.clubobsidian:wrappy:2.6.1")
     implementation("com.google.inject:guice:5.1.0")
     implementation("org.incendo:cloud-paper:$cloudVersion")
     implementation("org.incendo:cloud-annotations:2.0.0")
