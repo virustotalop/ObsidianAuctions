@@ -31,7 +31,7 @@ tasks {
 }
 
 var junitVersion = "5.9.1"
-var cloudVersion = "2.0.0-beta.10"
+var cloudVersion = "2.0.0-beta.13"
 var adventureVersion = "4.12.0"
 
 dependencies {
@@ -46,7 +46,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0")
-    implementation("de.tr7zw:item-nbt-api:2.14.1")
+    implementation("de.tr7zw:item-nbt-api:2.15.3")
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.jetbrains:annotations:23.0.0")
     compileOnly(":vault")
